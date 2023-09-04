@@ -1,0 +1,37 @@
+<div class="container-fluid bg-primary py-3">
+  <h1 class="text-center text-white">Sistema de Inicio de Sesión</h1>
+</div>
+
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="text-center">Iniciar Sesión</h4>
+        </div>
+        <div class="card-body">
+          <form (submit)="onSubmit()" class="mx-auto">
+            <div class="mb-3">
+              <label for="email" class="form-label">Correo Electrónico</label>
+              <input type="email" class="form-control" id="email" placeholder="example@example.com" [(ngModel)]="username" name="username" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+              <div *ngIf="!username" class="text-danger">Correo electrónico es requerido</div>
+              <div *ngIf="username && !isValidEmail(username)" class="text-danger">Ingrese un correo electrónico válido</div>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Contraseña</label>
+              <input type="password" class="form-control" id="password" placeholder="********" [(ngModel)]="password" name="password" required>
+              <div *ngIf="!password" class="text-danger">Contraseña es requerida</div>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary" [disabled]="!isFormValid()">Iniciar Sesión</button>
+              <div *ngIf="authenticationError" class="text-danger mt-2">
+                Error de autenticación. Verifica tus credenciales.
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
