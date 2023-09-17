@@ -11,6 +11,7 @@ import {Router} from '@angular/router';
 import { AdministracionComponent } from './administracion/administracion.component';
 import { MenuComponent } from './menu/menu.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ProveedorComponent } from './proveedor/proveedor.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
     LoginComponent,
     AdministracionComponent,
     MenuComponent,
+    ProveedorComponent,
   ],
   imports: [
     BrowserModule,

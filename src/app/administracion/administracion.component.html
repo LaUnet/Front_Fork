@@ -14,6 +14,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="/administracion">Administración</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/proveedor">Proveedores</a>
+              </li>                
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -23,21 +26,22 @@
     </div>
 </nav>
 
-<div class="container mt-4">
+<div class="container mt-4" style="position: relative;">
     <div class="row">
-        <div class="col-lg-3">
-            <!-- Menú lateral -->
-            <ul class="list-group">
-                <li class="list-group-item bg-danger text-light">
-                    <button type="button" class="btn btn-link btn-unstyled text-dark" (click)="toggleFormularioCrearUsuario()">Crear Usuario</button>
-                </li>
-                <li class="list-group-item bg-danger text-light">
-                    <button type="button" class="btn btn-link btn-unstyled text-dark" (click)="toggleFormularioBuscarUsuario()">Buscar Usuario</button>
-                </li>
-            </ul>
-        </div>
+<!-- Agrega esta clase 'menu-lateral' al div con clase 'col-lg-3' para aplicar estilos específicos -->
+<div class="col-lg-3 menu-lateral">
+    <!-- Menú lateral -->
+    <ul class="list-group">
+        <li class="list-group-item bg-danger text-light">
+            <button type="button" class="btn btn-custom" (click)="toggleFormularioCrearUsuario()">Crear Usuario</button>
+        </li>
+        <li class="list-group-item bg-danger text-light">
+            <button type="button" class="btn btn-custom" (click)="toggleFormularioBuscarUsuario()">Buscar Usuario</button>
+        </li>
+    </ul>
+</div>
+
         <div class="col-lg-9">
-            <!-- Formulario de creación de usuario -->
             <div class="card" *ngIf="mostrarFormularioCrearUsuario && !mostrarFormularioBuscarUsuario" >
                 <div class="card-header bg-dark text-dark" style="color: black;">
                     Crear Usuario
@@ -135,5 +139,5 @@
 
   
 
-
+  <img src="../../assets/logo.jpg" alt="Imagen" class="img-fluid" style="width: 100%; height: auto;">
        

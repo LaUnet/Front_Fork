@@ -9,11 +9,14 @@
         <a class="nav-link" href="/menu">Inicio <span class="sr-only"></span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/articulo">Articulos</a> <!-- Ajusta el href para redireccionar a /articulos -->
+        <a class="nav-link" href="/articulo">Articulos</a> 
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/administracion">Administración</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/proveedor">Proveedores</a>
+      </li>          
     </ul>
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
@@ -22,14 +25,14 @@
     </ul>
   </div>
 </nav>
-  
-  <!-- Resto de tu HTML -->
+
   <nav class="menu">
     <ul class="menu-list">
       <li><a href="#" (click)="mostrarFormularioCrearArticulo($event)">Crear Artículo</a></li>
       <li><a href="#" (click)="mostrarFormularioBuscarArticulo($event)">Buscar Artículo</a></li>
     </ul>
   </nav>
+
 
   <div *ngIf="mostrarFormulario" class="d-flex justify-content-center align-items-center vh-100">
     <div class="card w-75 bg-danger">
@@ -214,3 +217,5 @@
 <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
   {{ mensajeFallido }}
 </div>
+
+<img src="../../assets/logo.jpg" alt="Imagen" class="img-fluid" style="width: 100%; height: auto;" *ngIf="!mostrarFormulario && !mostrarFormularioBuscar">

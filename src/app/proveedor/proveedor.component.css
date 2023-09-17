@@ -1,0 +1,94 @@
+/* Estilos para el menú */
+.menu {
+  background-color: #333; /* Color de fondo del menú */
+  color: white; /* Color del texto en el menú */
+  padding: 10px 0;
+}
+
+.menu-list {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-list li {
+  margin: 0 20px;
+}
+
+.menu-list li a {
+  text-decoration: none;
+  color: white;
+  transition: color 0.3s;
+}
+
+.menu-list li a:hover {
+  color: #f39c12; /* Color al pasar el ratón sobre los enlaces */
+}
+
+.navbar {
+    background-color: #dc3545;
+    color: #fff;
+  }
+  
+  .navbar .navbar-brand {
+    color: #fff;
+  }
+  
+  .navbar .nav-link {
+    color: #fff;
+  }
+  
+  .navbar .navbar-toggler-icon {
+    background-color: #fff;
+  }
+  
+  /* Estilos para el formulario de crear proveedor */
+.form-narrow {
+    max-width: 300px; /* Cambia este valor para ajustar el ancho deseado */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .form-narrow h2 {
+    color: #343a40;
+  }
+  
+  /* Otros estilos para los elementos dentro del formulario */
+  .form-narrow .form-label {
+    color: #343a40;
+  }
+  
+  .form-narrow .form-control {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  .form-narrow .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+  }
+  
+  .table-container {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  .table {
+    font-size: 0.875rem; /* Tamaño de fuente más pequeño */
+  }
+  
+  /* Ajusta el ancho de las columnas según tus necesidades */
+  .table th,
+  .table td {
+    white-space: nowrap; /* Evita que el texto se desborde */
+    max-width: 200px; /* Cambia según tus necesidades */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
