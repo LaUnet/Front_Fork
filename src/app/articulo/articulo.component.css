@@ -45,11 +45,12 @@
 .form-control option:checked {
   background-color: #007bff;
   color: white;
+  border-color: #f39c12;
 }
 
 /* Estilos para la sección de resultados */
 .resultados-container {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .resultados-title {

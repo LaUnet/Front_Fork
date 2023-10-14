@@ -46,10 +46,12 @@ export class AdministracionComponent {
     const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users';
 
     const body = {
-      roles: [this.rol],
-      username: this.username,
-      email: this.email,
-      password: this.password
+      docs:[{
+          roles: [this.rol],
+          username: this.username,
+          email: this.email,
+          password: this.password
+        }]
     };
 
     const token = this.tokenService.token;

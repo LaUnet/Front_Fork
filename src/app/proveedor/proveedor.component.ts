@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
 
+
 @Component({
   selector: 'app-proveedor',
   templateUrl: './proveedor.component.html',
