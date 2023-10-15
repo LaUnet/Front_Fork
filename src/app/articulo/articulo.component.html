@@ -66,22 +66,6 @@
             <label for="unidadMedida" class="form-label">Unidad de Medida</label>
             <input type="text" class="form-control" id="unidadMedida" name="unidadMedida" [(ngModel)]="nuevoArticulo.unidadMedida">
           </div>
-          <div class="mb-3">
-            <label for="documentoProveedor" class="form-label">Documento del Proveedor</label>
-            <select
-              class="form-control"
-              id="documentoProveedor"
-              name="documentoProveedor"
-              [(ngModel)]="nuevoArticulo.documentoProveedor"
-              multiple
-              size="3" 
-            >
-              <option *ngFor="let proveedor of proveedores" [value]="proveedor.numeroDocumento">
-                {{ proveedor.numeroDocumento }}
-                {{ proveedor.nombreRazonSocial }}
-              </option>
-            </select>
-          </div>
                     
           <div class="mb-3">
             <label for="codigoUbicacion" class="form-label">Código de Ubicación</label>
@@ -136,7 +120,6 @@
           <th>Código</th>
           <th>Descripción</th>
           <th>Unidad de Medida</th>
-          <th>Documento Proveedor</th>
           <th>Codigo ubicacion</th>
           <th>Estado</th>
           <th>Acciones</th>
@@ -149,7 +132,6 @@
             <td>{{ articulo.codigo }}</td>
             <td>{{ articulo.descripcion }}</td>
             <td>{{ articulo.unidadMedida }}</td>
-            <td>{{ articulo.documentoProveedor }}</td>
             <td>{{ articulo.codigoUbicacion }}</td>
             <td>{{ articulo.estadoActivo }}</td>
             <td>
@@ -170,14 +152,6 @@
                     <div class="mb-3">
                       <label for="editarUnidadMedida" class="form-label">Editar Unidad de Medida</label>
                       <input type="text" class="form-control" id="editarUnidadMedida" name="editarUnidadMedida" [(ngModel)]="articuloEditando.unidadMedida">
-                    </div>
-                    <div class="mb-3">
-                      <label for="editarDocumentoProveedor" class="form-label">Editar Documento del Proveedor</label>
-                      <select class="form-select" id="editarDocumentoProveedor" name="editarDocumentoProveedor" [(ngModel)]="articuloEditando.documentoProveedor" multiple>
-                        <option *ngFor="let proveedor of proveedores" [value]="proveedor.numeroDocumento">
-                          {{ proveedor.numeroDocumento }} - {{ proveedor.nombreRazonSocial }}
-                        </option>
-                      </select>
                     </div>
                     <div class="mb-3">
                       <label for="editarCodigoUbicacion" class="form-label">Editar Código de Ubicación</label>
@@ -218,4 +192,4 @@
   {{ mensajeFallido }}
 </div>
 
-<img src="../../assets/logo.jpg" alt="Imagen" class="img-fluid" style="width: 100%; height: auto;" *ngIf="!mostrarFormulario && !mostrarFormularioBuscar">
+<img src="../../assets/PuntoU.jpg" alt="Imagen" class="img-fluid" style="width: 100%; height: auto;" *ngIf="!mostrarFormulario && !mostrarFormularioBuscar">
