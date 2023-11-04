@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {NgxPaginationModule} from 'ngx-pagination';
 
 import { AppComponent } from './app.component';
 import {ArticuloComponent} from './articulo/articulo.component';
@@ -15,7 +14,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ProveedorComponent } from './proveedor/proveedor.component';
 
 /**
- * Inicio Cambios realizados para mejoras visuales
+ * Inicio Cambios realizados
  */
 import {MatSlideToggleModule } from '@angular/material/slide-toggle';
 import {MatGridListModule} from '@angular/material/grid-list';
@@ -24,8 +23,10 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatDividerModule} from '@angular/material/divider';
+import {NgxPaginationModule} from 'ngx-pagination';
+import { FlexLayoutModule } from '@angular/flex-layout';
 /**
- * Fin Cambios realizados para mejoras visuales
+ * Fin Cambios realizados
  */
 
 
@@ -41,13 +42,12 @@ import {MatDividerModule} from '@angular/material/divider';
   ],
   imports: [
     BrowserModule,
-    NgxPaginationModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
     NoopAnimationsModule,
 /**
- * Inicio Cambios realizados para mejoras visuales
+ * Cambios realizados
  */
     MatSlideToggleModule,
     MatGridListModule,
@@ -56,8 +56,10 @@ import {MatDividerModule} from '@angular/material/divider';
     MatButtonModule,
     MatBadgeModule,
     MatDividerModule,
+    NgxPaginationModule,
+    FlexLayoutModule,
 /**
- * Fin Cambios realizados para mejoras visuales
+ * Fin Cambios realizados
  */
 
 
@@ -66,5 +68,7 @@ import {MatDividerModule} from '@angular/material/divider';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(private router:Router){}
+  constructor(private router:Router){
+  }
+
  }
