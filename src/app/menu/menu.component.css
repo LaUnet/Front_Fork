@@ -2,18 +2,8 @@
 .content {
     padding: 2rem;
   }
-  
-  /* Estilo para los botones */
-  .button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .button:hover {
-    background-color: #0056b3;
-  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }  
   

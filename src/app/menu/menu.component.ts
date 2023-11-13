@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { TokenService } from '../login/token';
+
 
 @Component({
   selector: 'app-menu',
@@ -6,6 +9,29 @@ import { Component } from '@angular/core';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent {
+
+  editingItem: any = null;
+  isEditing: boolean = false;
+
+  errorMessage: string = '';
+  successMesssage: String = '';
+
+  mostrarFormularioRegistrarUsuario: boolean = false;
+  mostrarFormularioBuscarUsuario: boolean = false;
+
+  constructor(private http: HttpClient, private tokenService: TokenService) {
+   }
+
+   registrarUsuario() {
+    this.mostrarFormularioRegistrarUsuario = !this.mostrarFormularioRegistrarUsuario;
+  }
+
+  buscarUsuario() {
+    this.mostrarFormularioBuscarUsuario = !this.mostrarFormularioBuscarUsuario;
+  }
+
+
+
   printHello() {
     console.log('Hola Mundo');
   }

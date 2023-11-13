@@ -3,11 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
 
 @Component({
-  selector: 'app-administracion',
-  templateUrl: './administracion.component.html',
-  styleUrls: ['./administracion.component.css']
+  selector: 'app-buscarUsuario',
+  templateUrl: './buscarUsuario.component.html',
+  styleUrls: ['./buscarUsuario.component.css']
 })
-export class AdministracionComponent {
+export class buscarUsuarioComponent {
   rol: string = '';
   username: string = '';
   email: string = '';

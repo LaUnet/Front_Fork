@@ -5,11 +5,11 @@ import { TokenService } from '../login/token';
 
 
 @Component({
-  selector: 'articulo-header',
-  templateUrl: './articulo.component.html',
-  styleUrls: ['./articulo.component.css']
+  selector: 'app-buscarArticulo',
+  templateUrl: './buscar.component.html',
+  styleUrls: ['./buscar.component.css']
 })
-export class ArticuloComponent {
+export class buscarArticuloComponent {
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService) { }
   ubicaciones: any[] = [];
   proveedores: any[] = [];
