@@ -1,6 +1,10 @@
-<mat-toolbar color="accent" class="mat-elevation-z6">
+<mat-toolbar color="basic" class="mat-elevation-z6">
   <button mat-icon-button routerLink="/menu" matTooltip="Menu">
     <mat-icon>menu</mat-icon>
+  </button> 
+
+  <button mat-icon-button routerLink="/registrarUsuario" matTooltip="Registrar Usuario">
+    <mat-icon>app_registration</mat-icon>
   </button> 
 
   <span class="spacer"></span>
@@ -11,15 +15,6 @@
 
   <span class="spacer"></span>
 
-  <button mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
-    <mat-icon>manage_accounts</mat-icon>
-    <mat-menu #usuarios="matMenu">
-      <ng-template matMenuContent>
-        <button mat-menu-item routerLink="/registrarUsuario">Registrar Usuario</button>
-        <button mat-menu-item routerLink="/buscarUsuario">Buscar Usuario</button>
-      </ng-template>
-    </mat-menu>
-  </button> 
   
   <button mat-icon-button matTooltip="Ajustes">
     <mat-icon>settings</mat-icon>
