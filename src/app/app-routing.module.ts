@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { MenuComponent } from './menu/menu.component';
 import { AdministracionComponent } from './administracion/administracion.component';
+import { ArticuloComponent } from './articulo/articulo.component';
 import { registrarUsuarioComponent } from './usuarios.registrar/registrar.component';
 import { buscarUsuarioComponent } from './usuarios.buscar/buscar.component';
 import { registrarArticuloComponent } from './articulos.registrar/registrar.component';
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path: 'menu', component: MenuComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'administracion', component: AdministracionComponent },
+  { path: 'articulo', component: ArticuloComponent },
   { path: 'registrarUsuario', component: registrarUsuarioComponent },
   { path: 'buscarUsuario', component: buscarUsuarioComponent },
   { path: 'registrarArticulo', component: registrarArticuloComponent },

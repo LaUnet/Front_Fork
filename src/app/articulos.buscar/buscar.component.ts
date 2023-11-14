@@ -29,7 +29,7 @@ export class buscarArticuloComponent {
   filtroDescripcion: string = '';
 
   mostrarCampoFiltrar: boolean = false;
-
+  manualToken: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MTYxMmRiZTI3MzI1MjZiYjYzMmQ4YyIsImlhdCI6MTY5OTkyMzE1MiwiZXhwIjoxNzAwMDA5NTUyfQ.rwRiN0DoyGLjEJNTRAxpeGK0pONqBX-bn9Z57JBLu_M"
 
   mostrarFormulario = false;
   mostrarFormularioBuscar = false;
@@ -56,47 +56,6 @@ export class buscarArticuloComponent {
     
   }
 
-
-  async crearArticulo() {
-    const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles';
-
-    const body = {
-      codigo: this.nuevoArticulo.codigo.substring(0, 10),
-      descripcion: this.nuevoArticulo.descripcion,
-      unidadMedida: this.nuevoArticulo.unidadMedida,
-      documentoProveedor: this.nuevoArticulo.documentoProveedor,
-      codigoUbicacion: this.nuevoArticulo.codigoUbicacion,
-      estadoActivo: this.nuevoArticulo.estadoActivo
-    };
-    console.log("estado activo ", this.nuevoArticulo.estadoActivo);
-
-    const token = this.tokenService.token;
-    console.log("el body es ", body);
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`
-      })
-    };
-
-    try {
-      const response = await this.http.post(url, body, httpOptions).toPromise();
-      this.successMesssage = 'Articulo creado correctamente';
-      console.log('Respuesta del servidor:', response);
-      this.resetNuevoArticulo();
-      this.mensajeExitoso = 'Operación exitosa: El artículo se ha creado correctamente.';
-      
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-      this.errorMessage = 'Error al crear el Articulo. Por favor, inténtelo nuevamente.';
-      this.mensajeFallido = 'Error: El artículo no se ha creado ';
-    }
-  }
-
-  isGuardarHabilitado() {
-    return this.nuevoArticulo.codigo.length === 10;
-  }
-
   limitarLongitudCodigo(event: any) {
     const maxCaracteres = 10;
     const inputElement = event.target;
@@ -105,80 +64,44 @@ export class buscarArticuloComponent {
     }
   }
 
-
-  cancelarCreacion() {
-    this.mostrarFormulario = false;
-    this.resetNuevoArticulo();
-  }
-
   ngOnInit(): void {
     this.cargarUbicaciones();
-    this.cargarProveedores();
   }
 
   cargarUbicaciones() {
-    const token = this.tokenService.token;
-
+    //const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': `${token}`
+        //'x-access-token': `${token}`
+        'x-access-token': this.manualToken
       })
     };
 
     this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
       .subscribe(response => {
         if (response.Status) {
-          this.ubicaciones = response.Data;
+          this.ubicaciones = response.Data.docs;
         }
       });
   }
-
-  cargarProveedores() {
-    const token = this.tokenService.token;
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`
-      })
-    };
-
-    this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers', httpOptions)
-      .subscribe(response => {
-        if (response.Status) {
-          this.proveedores = response.Data;
-        }
-      });
-  }
-
-  resetNuevoArticulo() {
-    this.nuevoArticulo = {
-      codigo: '',
-      descripcion: '',
-      unidadMedida: '',
-      documentoProveedor: [],
-      codigoUbicacion: '',
-      estadoActivo: false
-    };
-  }
-
 
   async buscarArticulo() {
 
-    const token = this.tokenService.token;
+    //const token = this.tokenService.token;
 
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': `${token}`
+        //'x-access-token': `${token}`
+        'x-access-token': this.manualToken
       })
     };
 
     if (!this.codigoArticuloBusqueda) {
       this.mostrarResultados = true;
       const response = await this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles', httpOptions).toPromise();
-      this.articulosEncontrados = response.Data;
+      this.articulosEncontrados = response.Data.docs;
       console.log("encontro articulos ", this.articulosEncontrados);
       this.mensajeExitoso = 'Búsqueda exitosa';
       this.mostrarCampoFiltrar = true;
@@ -196,7 +119,7 @@ export class buscarArticuloComponent {
     } else {
       this.mostrarResultados = true;
       const response = await this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${this.codigoArticuloBusqueda}`, httpOptions).toPromise();
-      this.articulosEncontrados = response.Data;
+      this.articulosEncontrados = response.Data.docs;
       console.log("encontro articulo ", this.articulosEncontrados);
     }
     
@@ -205,12 +128,13 @@ export class buscarArticuloComponent {
 
   borrarArticulo(articuloId: string) {
 
-    const token = this.tokenService.token;
+    //const token = this.tokenService.token;
 
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': `${token}`
+        //'x-access-token': `${token}`
+        'x-access-token': this.manualToken
       })
     };
 
@@ -249,12 +173,13 @@ export class buscarArticuloComponent {
 
   guardarEdicionArticulo() {
 
-    const token = this.tokenService.token;
+    //const token = this.tokenService.token;
 
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': `${token}`
+        //'x-access-token': `${token}`
+        'x-access-token': this.manualToken
       })
     };
 
