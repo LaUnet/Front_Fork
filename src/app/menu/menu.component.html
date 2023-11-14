@@ -3,15 +3,9 @@
   <button mat-icon-button matTooltip="Menú">
     <mat-icon>menu</mat-icon>
   </button> 
-
-  <mat-menu #compra="matMenu">
-    <ng-template matMenuContent>
-      <button mat-menu-item>Registrar Compra</button>
-      <button mat-menu-item>Buscar Compra</button>
-    </ng-template>    
-  </mat-menu>
-  <button mat-button [matMenuTriggerFor]="compra">Compras</button>
   
+  <span class="spacer"></span>
+
   <mat-menu #venta="matMenu">
     <ng-template matMenuContent>
       <button mat-menu-item>Registrar Venta</button>
@@ -19,7 +13,15 @@
     </ng-template>
   </mat-menu>
   <button mat-button [matMenuTriggerFor]="venta">Ventas</button>
-  
+
+  <mat-menu #cliente="matMenu">
+    <ng-template matMenuContent>
+      <button mat-menu-item>Registrar Cliente</button>
+      <button mat-menu-item>Buscar Cliente</button>
+    </ng-template>
+  </mat-menu>
+  <button mat-button [matMenuTriggerFor]="cliente">Clientes</button>
+
   <span class="spacer"></span>
 
   <mat-menu #articulo="matMenu">
@@ -31,23 +33,6 @@
   <button mat-button [matMenuTriggerFor]="articulo">Articulos</button>
   
   
-  <mat-menu #proveedor="matMenu">
-    <ng-template matMenuContent>
-      <button mat-menu-item>Registrar Proveedor</button>
-      <button mat-menu-item>Buscar Proveedor</button>
-    </ng-template>
-  </mat-menu>
-  <button mat-button [matMenuTriggerFor]="proveedor">Proveedores</button>
-  
-  
-  <mat-menu #cliente="matMenu">
-    <ng-template matMenuContent>
-      <button mat-menu-item>Registrar Cliente</button>
-      <button mat-menu-item>Buscar Cliente</button>
-    </ng-template>
-  </mat-menu>
-  <button mat-button [matMenuTriggerFor]="cliente">Clientes</button>
-  
   <mat-menu #ubicacion="matMenu">
     <ng-template matMenuContent>
       <button mat-menu-item>Registrar Ubicación</button>
@@ -55,6 +40,25 @@
     </ng-template> 
   </mat-menu>
   <button mat-button [matMenuTriggerFor]="ubicacion">Ubicaciones</button>
+
+  <span class="spacer"></span>
+
+  <mat-menu #compra="matMenu">
+    <ng-template matMenuContent>
+      <button mat-menu-item>Registrar Compra</button>
+      <button mat-menu-item>Buscar Compra</button>
+    </ng-template>    
+  </mat-menu>
+  <button mat-button [matMenuTriggerFor]="compra">Compras</button>
+
+  <mat-menu #proveedor="matMenu">
+    <ng-template matMenuContent>
+      <button mat-menu-item>Registrar Proveedor</button>
+      <button mat-menu-item>Buscar Proveedor</button>
+    </ng-template>
+  </mat-menu>
+  <button mat-button [matMenuTriggerFor]="proveedor">Proveedores</button>
+
 
   <span class="spacer"></span>
 

@@ -7,11 +7,11 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 
 
 @Component({
-  selector: 'app-registrarProveedor',
-  templateUrl: './registrar.component.html',
-  styleUrls: ['./registrar.component.css'],
+  selector: 'app-buscarCliente',
+  templateUrl: './buscar.component.html',
+  styleUrls: ['./buscar.component.css'],
 })
-export class registrarProveedorComponent {
+export class buscarClienteComponent {
 
   constructor(private http: HttpClient, private tokenService: TokenService, private _ngZone: NgZone) {}
 
@@ -20,6 +20,9 @@ export class registrarProveedorComponent {
    */
     emailFormControl = new FormControl('', [Validators.required, Validators.email]);
     matcher = new MyErrorStateMatcher();
+
+    isChecked = true;
+
 
   nuevoProveedor: any = {
     tipoDocumento: '',

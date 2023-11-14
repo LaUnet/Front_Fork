@@ -6,7 +6,7 @@
   <span class="spacer"></span>
 
   <button color="accent">
-    REGISTRAR PROVEEDOR
+    REGISTRAR CLIENTE
   </button> 
 
   <span class="spacer"></span>
@@ -32,7 +32,7 @@
       <td><mat-form-field class="full-width">
         <mat-label>Tipo Documento</mat-label>
         <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="NIT">
+        <mat-select #fontSize value="CC">
           <mat-option value="CC">Cedula Ciudadanía</mat-option>
           <mat-option value="NIT">Nit</mat-option>
           <mat-option value="CE">Cedula Extranjería</mat-option>
@@ -77,14 +77,14 @@
     <p>
     <table class="full-width" cellspacing="0"><tr>
       <td><mat-form-field class="full-width">
-        <mat-label>Departamento</mat-label>
+        <mat-label>Departamento Entrega</mat-label>
         <mat-icon matSuffix>business</mat-icon>
         <mat-select #fontSize value="ANT">
           <mat-option value="ANT">Antioquia</mat-option>
         </mat-select>
       </mat-form-field></td>
     <td><mat-form-field class="full-width">
-      <mat-label>Municipcio</mat-label>
+      <mat-label>Municipcio Entrega</mat-label>
       <mat-icon matSuffix>business</mat-icon>
       <mat-select #fontSize value="MED">
         <mat-option value="MED">Medellin</mat-option>
@@ -96,7 +96,7 @@
       </mat-select>
     </mat-form-field></td>
       <td><mat-form-field class="full-width">
-        <mat-label>Barrio</mat-label>
+        <mat-label>Barrio Entrega</mat-label>
         <mat-icon matSuffix>business</mat-icon>
         <input matInput>
       </mat-form-field></td>
@@ -105,7 +105,7 @@
     <p>
       <table class="full-width" cellspacing="0"><tr>
       <td><mat-form-field class="full-width">
-        <mat-label>Dirección</mat-label>
+        <mat-label>Dirección Entrega</mat-label>
         <mat-icon matSuffix>tour</mat-icon>
         <input matInput required placeholder="Calle 67 #55-89">
       </mat-form-field></td>
@@ -123,7 +123,9 @@
   </form>
 
   <mat-card-actions align="end">
-    <button mat-icon-button matTooltip="Guardar">
+    <mat-slide-toggle [(ngModel)]="isChecked">Misma Dirección Facturación</mat-slide-toggle>
+    <span class="spacer"></span>
+    <button mat-icon-button  align="end" matTooltip="Guardar">
       <mat-icon>save</mat-icon>
     </button> 
     <button mat-icon-button matTooltip="Cancelar">

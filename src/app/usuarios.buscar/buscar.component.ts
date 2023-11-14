@@ -3,11 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
 
 @Component({
-  selector: 'app-registrarUsuario',
-  templateUrl: './registrarUsuario.component.html',
-  styleUrls: ['./registrarUsuario.component.css']
+  selector: 'app-buscarUsuario',
+  templateUrl: './buscar.component.html',
+  styleUrls: ['./buscar.component.css']
 })
-export class registrarUsuarioComponent {
+export class buscarUsuarioComponent {
   rol: string = '';
   username: string = '';
   email: string = '';

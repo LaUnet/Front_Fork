@@ -6,7 +6,7 @@
   <span class="spacer"></span>
 
   <button color="accent">
-    REGISTRAR ARTICULO
+    REGISTRAR USUARIO
   </button> 
 
   <span class="spacer"></span>
@@ -30,42 +30,41 @@
   <td></td>
     <table class="full-width" cellspacing="0"><tr>
       <td><mat-form-field class="full-width">
-        <mat-label>Descripción</mat-label>
-        <mat-icon matSuffix>article</mat-icon>
-        <input matInput required="">
+        <mat-label>Nombre Usuario</mat-label>
+        <mat-icon matSuffix>account_box</mat-icon>
+        <input matInput required>
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
-        <mat-label>Marca</mat-label>
-        <mat-icon matSuffix>label</mat-icon>
-        <input matInput required="">
-      </mat-form-field></td>
-      <td><mat-form-field class="full-width">
-        <mat-label>Referencia</mat-label>
-        <mat-icon matSuffix>description</mat-icon>
-        <input matInput required="">
+        <mat-label>Email</mat-label>
+        <mat-icon matSuffix>email</mat-icon>
+          <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+                placeholder="Ex. correo@example.com">
       </mat-form-field></td>
     </tr></table>
 
     <table class="full-width" cellspacing="0"><tr>
       <td><mat-form-field class="full-width">
-        <mat-label>Unidad Medida</mat-label>
-        <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="UND">
-          <mat-option value="UND">Unidad</mat-option>
-          <mat-option value="CAJ">Caja</mat-option>
-          <mat-option value="ROL">Rollo</mat-option>
-          <mat-option value="HOJ">Hoja</mat-option>
-          <mat-option value="MET">Metro</mat-option>
-          <mat-option value="KIL">Kilo</mat-option>
-          <mat-option value="LIT">Litro</mat-option>
-          <mat-option value="RES">Resma</mat-option>
-        </mat-select>
+        <mat-label>Contraseña</mat-label>
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+          <mat-icon matSuffix>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <input matInput [type]="hide ? 'password' : 'text'"             
+          type="password"
+          id="ssn"
+          inputmode="numeric"
+          minlength="9"
+          maxlength="12"
+          pattern="(?!000)([0-6]\d{2}|7([0-6]\d|7[012]))([ -])?(?!00)\d\d\3(?!0000)\d{4}"
+          required
+          autocomplete="on">
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
-        <mat-label>Codigo Ubicación</mat-label>
+        <mat-label>Rol</mat-label>
         <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="UND">
-          <mat-option value="UND">Unidad</mat-option>
+        <mat-select #fontSize value="ADM">
+          <mat-option value="ADM">Administrador</mat-option>
+          <mat-option value="MOD">Moderador</mat-option>
+          <mat-option value="CLI">Cliente</mat-option>
         </mat-select>
       </mat-form-field></td>
     </tr></table>

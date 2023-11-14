@@ -7,11 +7,11 @@ import {ErrorStateMatcher} from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-registrarArticulo',
+  selector: 'app-registrarUbicacion',
   templateUrl: './registrar.component.html',
   styleUrls: ['./registrar.component.css']
 })
-export class registrarArticuloComponent {
+export class registrarUbicacionComponent {
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService) { }
 
     /**

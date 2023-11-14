@@ -1,13 +1,28 @@
-import { Component } from '@angular/core';
+import {Component, NgZone, ViewChild} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
+import {take} from 'rxjs/operators';
+import {ErrorStateMatcher} from '@angular/material/core';
+import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-buscarUsuario',
-  templateUrl: './buscarUsuario.component.html',
-  styleUrls: ['./buscarUsuario.component.css']
+  selector: 'app-registrarUsuario',
+  templateUrl: './registrar.component.html',
+  styleUrls: ['./registrar.component.css']
 })
-export class buscarUsuarioComponent {
+export class registrarUsuarioComponent {
+
+
+  constructor(private http: HttpClient, private tokenService: TokenService, private _ngZone: NgZone) {}
+
+    /**
+   * Control Error Email
+   */
+    emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+    matcher = new MyErrorStateMatcher();
+
+    hide = true;
+
   rol: string = '';
   username: string = '';
   email: string = '';
@@ -25,9 +40,6 @@ export class buscarUsuarioComponent {
 
   mostrarFormularioCrearUsuario: boolean = false;
   mostrarFormularioBuscarUsuario: boolean = false;
-
-  constructor(private http: HttpClient, private tokenService: TokenService) {
-   }
 
   toggleFormularioCrearUsuario() {
     this.mostrarFormularioCrearUsuario = !this.mostrarFormularioCrearUsuario;
@@ -167,3 +179,12 @@ export class buscarUsuarioComponent {
   }
   
 }
+
+
+  /** Error when invalid control is dirty, touched, or submitted. */
+  export class MyErrorStateMatcher implements ErrorStateMatcher {
+    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+      const isSubmitted = form && form.submitted;
+      return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    }
+  }

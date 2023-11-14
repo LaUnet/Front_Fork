@@ -6,7 +6,7 @@
   <span class="spacer"></span>
 
   <button color="accent">
-    REGISTRAR ARTICULO
+    REGISTRAR UBICACION
   </button> 
 
   <span class="spacer"></span>
@@ -30,42 +30,41 @@
   <td></td>
     <table class="full-width" cellspacing="0"><tr>
       <td><mat-form-field class="full-width">
-        <mat-label>Descripción</mat-label>
-        <mat-icon matSuffix>article</mat-icon>
-        <input matInput required="">
+        <mat-label>Nombre Zona</mat-label>
+        <mat-icon matSuffix>list</mat-icon>
+        <mat-select #fontSize value="Piso1">
+          <mat-option value="Piso1">Primer Piso</mat-option>
+          <mat-option value="Piso2">Segundo Piso</mat-option>
+        </mat-select>
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
-        <mat-label>Marca</mat-label>
-        <mat-icon matSuffix>label</mat-icon>
-        <input matInput required="">
-      </mat-form-field></td>
-      <td><mat-form-field class="full-width">
-        <mat-label>Referencia</mat-label>
-        <mat-icon matSuffix>description</mat-icon>
-        <input matInput required="">
+        <mat-label>Numero Zona</mat-label>
+        <mat-icon matSuffix>list</mat-icon>
+        <mat-select #fontSize value="Z01">
+          <mat-option value="Z01">01</mat-option>
+          <mat-option value="Z02">02</mat-option>
+          <mat-option value="Z03">03</mat-option>
+        </mat-select>
       </mat-form-field></td>
     </tr></table>
 
     <table class="full-width" cellspacing="0"><tr>
       <td><mat-form-field class="full-width">
-        <mat-label>Unidad Medida</mat-label>
+        <mat-label>Numero Estanteria</mat-label>
         <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="UND">
-          <mat-option value="UND">Unidad</mat-option>
-          <mat-option value="CAJ">Caja</mat-option>
-          <mat-option value="ROL">Rollo</mat-option>
-          <mat-option value="HOJ">Hoja</mat-option>
-          <mat-option value="MET">Metro</mat-option>
-          <mat-option value="KIL">Kilo</mat-option>
-          <mat-option value="LIT">Litro</mat-option>
-          <mat-option value="RES">Resma</mat-option>
+        <mat-select #fontSize value="E01">
+          <mat-option value="E01">01</mat-option>
+          <mat-option value="E02">02</mat-option>
+          <mat-option value="E03">03</mat-option>
         </mat-select>
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
-        <mat-label>Codigo Ubicación</mat-label>
+        <mat-label>Numero Ubicacion</mat-label>
         <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="UND">
-          <mat-option value="UND">Unidad</mat-option>
+        <mat-select #fontSize value="U01">
+          <mat-option value="U01">01</mat-option>
+          <mat-option value="U02">02</mat-option>
+          <mat-option value="U03">03</mat-option>
         </mat-select>
       </mat-form-field></td>
     </tr></table>

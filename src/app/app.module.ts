@@ -8,13 +8,16 @@ import { MenuComponent } from './menu/menu.component';
 import { AdministracionComponent } from './administracion/administracion.component';
 import { ProveedorComponent } from './proveedor/proveedor.component';
 import { ArticuloComponent } from './articulo/articulo.component';
-import { registrarUsuarioComponent } from './admon.registrarUsuario/registrarUsuario.component';
-import { buscarUsuarioComponent } from './admon.buscarUsuario/buscarUsuario.component';
+import { registrarUsuarioComponent } from './usuarios.registrar/registrar.component';
+import { buscarUsuarioComponent } from './usuarios.buscar/buscar.component';
 import {registrarArticuloComponent} from './articulos.registrar/registrar.component';
 import {buscarArticuloComponent} from './articulos.buscar/buscar.component';
 import {registrarProveedorComponent} from './proveedores.registrar/registrar.component';
 import {buscarProveedorComponent} from './proveedores.buscar/buscar.component';
-
+import {registrarClienteComponent} from './clientes.registrar/registrar.component';
+import {buscarClienteComponent} from './clientes.buscar/buscar.component';
+import {registrarUbicacionComponent} from './ubicaciones.registrar/registrar.component';
+import {buscarUbicacionComponent} from './ubicaciones.buscar/buscar.component';
 
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -37,6 +40,8 @@ import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+
 
 
 @NgModule({
@@ -53,6 +58,10 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
     buscarArticuloComponent,
     registrarProveedorComponent,
     buscarProveedorComponent,
+    registrarClienteComponent,
+    buscarClienteComponent,
+    registrarUbicacionComponent,
+    buscarUbicacionComponent
 
   ],
   imports: [
@@ -72,7 +81,8 @@ import {CdkTextareaAutosize} from '@angular/cdk/text-field';
     MatTooltipModule,
     MatCardModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

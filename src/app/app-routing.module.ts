@@ -2,13 +2,18 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { MenuComponent } from './menu/menu.component';
-import { registrarUsuarioComponent } from './admon.registrarUsuario/registrarUsuario.component';
-import { buscarUsuarioComponent } from './admon.buscarUsuario/buscarUsuario.component';
+import { AdministracionComponent } from './administracion/administracion.component';
+import { registrarUsuarioComponent } from './usuarios.registrar/registrar.component';
+import { buscarUsuarioComponent } from './usuarios.buscar/buscar.component';
 import { registrarArticuloComponent } from './articulos.registrar/registrar.component';
 import { buscarArticuloComponent } from './articulos.buscar/buscar.component';
 import { registrarProveedorComponent } from './proveedores.registrar/registrar.component';
 import { buscarProveedorComponent } from './proveedores.buscar/buscar.component';
-import { AdministracionComponent } from './administracion/administracion.component';
+import { registrarClienteComponent } from './clientes.registrar/registrar.component';
+import { buscarClienteComponent } from './clientes.buscar/buscar.component';
+import { registrarUbicacionComponent } from './ubicaciones.registrar/registrar.component';
+import { buscarUbicacionComponent } from './ubicaciones.buscar/buscar.component';
+
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -21,6 +26,10 @@ const routes: Routes = [
   { path: 'buscarArticulo', component: buscarArticuloComponent },
   { path: 'registrarProveedor', component: registrarProveedorComponent },
   { path: 'buscarProveedor', component: buscarProveedorComponent },
+  { path: 'registrarCliente', component: registrarClienteComponent },
+  { path: 'buscarCliente', component: buscarClienteComponent },
+  { path: 'registrarUbicacion', component: registrarUbicacionComponent },
+  { path: 'buscarUbicacion', component: buscarUbicacionComponent },
 
 ];
 
