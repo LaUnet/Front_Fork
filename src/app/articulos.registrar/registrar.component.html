@@ -1,5 +1,6 @@
 <mat-toolbar color="accent" class="mat-elevation-z6">
-  <button mat-icon-button matTooltip="Menu">
+  
+  <button mat-icon-button routerLink="/menu" matTooltip="Menu">
     <mat-icon>menu</mat-icon>
   </button> 
 
@@ -11,18 +12,25 @@
 
   <span class="spacer"></span>
 
-    <button mat-icon-button matTooltip="Gestión Usuarios">
-      <mat-icon>manage_accounts</mat-icon>
-    </button> 
-    <button mat-icon-button matTooltip="Ajustes">
-      <mat-icon>settings</mat-icon>
-    </button> 
-    <button mat-icon-button matTooltip="Usuario Logueado">
-      <mat-icon>assignment_ind</mat-icon>
-    </button> 
-    <button mat-icon-button matTooltip="Salir">
-      <mat-icon>logout</mat-icon>
-    </button> 
+  <button mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
+    <mat-icon>manage_accounts</mat-icon>
+    <mat-menu #usuarios="matMenu">
+      <ng-template matMenuContent>
+        <button mat-menu-item routerLink="/registrarUsuario">Registrar Usuario</button>
+        <button mat-menu-item routerLink="/buscarUsuario">Buscar Usuario</button>
+      </ng-template>
+    </mat-menu>
+  </button> 
+  
+  <button mat-icon-button matTooltip="Ajustes">
+    <mat-icon>settings</mat-icon>
+  </button> 
+  <button mat-icon-button matTooltip="Usuario Logueado">
+    <mat-icon>assignment_ind</mat-icon>
+  </button> 
+  <button mat-icon-button routerLink="/login" matTooltip="Salir">
+    <mat-icon>logout</mat-icon>
+  </button> 
 </mat-toolbar>
 
 <mat-card>
@@ -52,20 +60,20 @@
         <mat-icon matSuffix>list</mat-icon>
         <mat-select #fontSize value="UND">
           <mat-option value="UND">Unidad</mat-option>
+          <mat-option value="HOJ">Hoja</mat-option>
+          <mat-option value="RES">Resma</mat-option>
           <mat-option value="CAJ">Caja</mat-option>
           <mat-option value="ROL">Rollo</mat-option>
-          <mat-option value="HOJ">Hoja</mat-option>
           <mat-option value="MET">Metro</mat-option>
           <mat-option value="KIL">Kilo</mat-option>
           <mat-option value="LIT">Litro</mat-option>
-          <mat-option value="RES">Resma</mat-option>
         </mat-select>
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
         <mat-label>Codigo Ubicación</mat-label>
         <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="UND">
-          <mat-option value="UND">Unidad</mat-option>
+        <mat-select #fontSize value="XXX">
+          <mat-option value="XXX">Base Datos</mat-option>
         </mat-select>
       </mat-form-field></td>
     </tr></table>

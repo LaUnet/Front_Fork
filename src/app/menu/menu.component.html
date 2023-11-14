@@ -1,9 +1,10 @@
 <mat-toolbar color="primary" class="mat-elevation-z6">
 
-  <button mat-icon-button matTooltip="Menú">
+
+  <button mat-icon-button routerLink="/menu" matTooltip="Menu">
     <mat-icon>menu</mat-icon>
   </button> 
-  
+
   <span class="spacer"></span>
 
   <mat-menu #venta="matMenu">
@@ -16,8 +17,8 @@
 
   <mat-menu #cliente="matMenu">
     <ng-template matMenuContent>
-      <button mat-menu-item>Registrar Cliente</button>
-      <button mat-menu-item>Buscar Cliente</button>
+      <button mat-menu-item routerLink="/registrarCliente">Registrar Cliente</button>
+      <button mat-menu-item routerLink="/buscarCliente">Buscar Cliente</button>
     </ng-template>
   </mat-menu>
   <button mat-button [matMenuTriggerFor]="cliente">Clientes</button>
@@ -26,8 +27,8 @@
 
   <mat-menu #articulo="matMenu">
     <ng-template matMenuContent>
-      <button mat-menu-item>Registrar Articulo</button>
-      <button mat-menu-item>Buscar Articulo</button>
+      <button mat-menu-item routerLink="/registrarArticulo">Registrar Articulo</button>
+      <button mat-menu-item routerLink="/buscarArticulo">Buscar Articulo</button>
     </ng-template>
   </mat-menu>
   <button mat-button [matMenuTriggerFor]="articulo">Articulos</button>
@@ -35,8 +36,8 @@
   
   <mat-menu #ubicacion="matMenu">
     <ng-template matMenuContent>
-      <button mat-menu-item>Registrar Ubicación</button>
-      <button mat-menu-item>Buscar Ubicación</button>
+      <button mat-menu-item routerLink="/registrarUbicacion">Registrar Ubicación</button>
+      <button mat-menu-item routerLink="/buscarUbicacion">Buscar Ubicación</button>
     </ng-template> 
   </mat-menu>
   <button mat-button [matMenuTriggerFor]="ubicacion">Ubicaciones</button>
@@ -53,8 +54,8 @@
 
   <mat-menu #proveedor="matMenu">
     <ng-template matMenuContent>
-      <button mat-menu-item>Registrar Proveedor</button>
-      <button mat-menu-item>Buscar Proveedor</button>
+      <button mat-menu-item routerLink="/registrarProveedor">Registrar Proveedor</button>
+      <button mat-menu-item routerLink="/buscarProveedor">Buscar Proveedor</button>
     </ng-template>
   </mat-menu>
   <button mat-button [matMenuTriggerFor]="proveedor">Proveedores</button>
@@ -62,16 +63,23 @@
 
   <span class="spacer"></span>
 
-  <button mat-icon-button matTooltip="Gestion Usuarios">
+  <button mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
     <mat-icon>manage_accounts</mat-icon>
+    <mat-menu #usuarios="matMenu">
+      <ng-template matMenuContent>
+        <button mat-menu-item routerLink="/registrarUsuario">Registrar Usuario</button>
+        <button mat-menu-item routerLink="/buscarUsuario">Buscar Usuario</button>
+      </ng-template>
+    </mat-menu>
   </button> 
+
   <button mat-icon-button matTooltip="Ajustes">
     <mat-icon>settings</mat-icon>
   </button> 
   <button mat-icon-button matTooltip="Usuario Logueado">
     <mat-icon>assignment_ind</mat-icon>
   </button> 
-  <button mat-icon-button matTooltip="Salir">
+  <button mat-icon-button routerLink="/login" matTooltip="Salir">
     <mat-icon>logout</mat-icon>
   </button> 
 

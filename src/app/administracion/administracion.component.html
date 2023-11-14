@@ -1,32 +1,30 @@
-<mat-toolbar color="warn" class="mat-elevation-z6">
-
-    <button mat-icon-button matTooltip="Menu">
-      <mat-icon>menu</mat-icon>
-    </button> 
-  
-    <span class="spacer"></span>
-  
-    <button color="accent">
-      Gestión Usuarios
-    </button> 
-  
-    <span class="spacer"></span>
-  
-      <button mat-icon-button matTooltip="Gestión Usuarios">
-        <mat-icon>manage_accounts</mat-icon>
-      </button> 
-      <button mat-icon-button matTooltip="Ajustes">
-        <mat-icon>settings</mat-icon>
-      </button> 
-      <button mat-icon-button matTooltip="Usuario Logueado">
-        <mat-icon>assignment_ind</mat-icon>
-      </button> 
-      <button mat-icon-button matTooltip="Salir">
-        <mat-icon>logout</mat-icon>
-      </button> 
-  
-  </mat-toolbar>
-
+<nav class="navbar navbar-expand-lg navbar-light bg-danger">
+  <a class="navbar-brand" href="#">UNET</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/menu">Inicio <span class="sr-only"></span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/articulo">Articulos</a> 
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/administracion">Administración</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/proveedor">Proveedores</a>
+      </li>          
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link text-light" href="#">Cerrar Sesión</a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
 <div class="container mt-4" style="position: relative;">
     <div class="row">
