@@ -1,30 +1,88 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-danger">
-    <a class="navbar-brand" href="#">UNET</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarText">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="/menu">Inicio <span class="sr-only"></span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/articulo">Articulos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/administracion">Administración</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/proveedor">Proveedores</a>
-        </li>        
-      </ul>
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link text-light" href="#">Cerrar Sesión</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+<mat-toolbar color="primary" class="mat-elevation-z6">
+
+
+  <button mat-icon-button routerLink="/menu" matTooltip="Menu">
+    <mat-icon>menu</mat-icon>
+  </button> 
+
+  <span class="spacer"></span>
+
+  <mat-menu #venta="matMenu">
+    <ng-template matMenuContent>
+      <button mat-menu-item>Registrar Venta</button>
+      <button mat-menu-item>Buscar Venta</button>
+    </ng-template>
+  </mat-menu>
+  <button mat-button [matMenuTriggerFor]="venta">Ventas</button>
+
+  <mat-menu #cliente="matMenu">
+    <ng-template matMenuContent>
+      <button mat-menu-item routerLink="/registrarCliente">Registrar Cliente</button>
+      <button mat-menu-item routerLink="/buscarCliente">Buscar Cliente</button>
+    </ng-template>
+  </mat-menu>
+  <button mat-button [matMenuTriggerFor]="cliente">Clientes</button>
+
+  <span class="spacer"></span>
+
+  <mat-menu #articulo="matMenu">
+    <ng-template matMenuContent>
+      <button mat-menu-item routerLink="/registrarArticulo">Registrar Articulo</button>
+      <button mat-menu-item routerLink="/buscarArticulo">Buscar Articulo</button>
+    </ng-template>
+  </mat-menu>
+  <button mat-button [matMenuTriggerFor]="articulo">Articulos</button>
   
-  <img src="../../assets/logo.jpg" alt="Imagen" class="img-fluid" style="width: 100%; height: auto;">
   
+  <mat-menu #ubicacion="matMenu">
+    <ng-template matMenuContent>
+      <button mat-menu-item routerLink="/registrarUbicacion">Registrar Ubicación</button>
+      <button mat-menu-item routerLink="/buscarUbicacion">Buscar Ubicación</button>
+    </ng-template> 
+  </mat-menu>
+  <button mat-button [matMenuTriggerFor]="ubicacion">Ubicaciones</button>
+
+  <span class="spacer"></span>
+
+  <mat-menu #compra="matMenu">
+    <ng-template matMenuContent>
+      <button mat-menu-item>Registrar Compra</button>
+      <button mat-menu-item>Buscar Compra</button>
+    </ng-template>    
+  </mat-menu>
+  <button mat-button [matMenuTriggerFor]="compra">Compras</button>
+
+  <mat-menu #proveedor="matMenu">
+    <ng-template matMenuContent>
+      <button mat-menu-item routerLink="/registrarProveedor">Registrar Proveedor</button>
+      <button mat-menu-item routerLink="/buscarProveedor">Buscar Proveedor</button>
+    </ng-template>
+  </mat-menu>
+  <button mat-button [matMenuTriggerFor]="proveedor">Proveedores</button>
+
+
+  <span class="spacer"></span>
+
+  <button mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
+    <mat-icon>manage_accounts</mat-icon>
+    <mat-menu #usuarios="matMenu">
+      <ng-template matMenuContent>
+        <button mat-menu-item routerLink="/registrarUsuario">Registrar Usuario</button>
+        <button mat-menu-item routerLink="/buscarUsuario">Buscar Usuario</button>
+      </ng-template>
+    </mat-menu>
+  </button> 
+
+  <button mat-icon-button matTooltip="Ajustes">
+    <mat-icon>settings</mat-icon>
+  </button> 
+  <button mat-icon-button matTooltip="Usuario Logueado">
+    <mat-icon>assignment_ind</mat-icon>
+  </button> 
+  <button mat-icon-button routerLink="/login" matTooltip="Salir">
+    <mat-icon>logout</mat-icon>
+  </button> 
+
+</mat-toolbar>
+
+<img src="../../assets/PuntoU.jpg" alt="Imagen" class="img-fluid" style="width: 100%; height: 90%;">

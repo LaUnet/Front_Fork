@@ -1,93 +1,44 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-danger">
-  <a class="navbar-brand" href="#">UNET</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarText">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/menu">Inicio <span class="sr-only"></span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/articulo">Articulos</a> 
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/administracion">Administración</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/proveedor">Proveedores</a>
-      </li>          
-    </ul>
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link text-light" href="#">Cerrar Sesión</a>
-      </li>
-    </ul>
-  </div>
-</nav>
+<mat-toolbar color="basic" class="mat-elevation-z6">
+
+
+  <button mat-icon-button routerLink="/menu" matTooltip="Menu">
+    <mat-icon>menu</mat-icon>
+  </button> 
+
+  <button mat-icon-button routerLink="/registrarArticulo" matTooltip="Registrar Articulo">
+    <mat-icon>app_registration</mat-icon>
+  </button> 
+
+  <span class="spacer"></span>
+
+<button mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
+  <mat-icon>manage_accounts</mat-icon>
+  <mat-menu #usuarios="matMenu">
+    <ng-template matMenuContent>
+      <button mat-menu-item routerLink="/registrarUsuario">Registrar Usuario</button>
+      <button mat-menu-item routerLink="/buscarUsuario">Buscar Usuario</button>
+    </ng-template>
+  </mat-menu>
+</button> 
+
+<button mat-icon-button matTooltip="Ajustes">
+  <mat-icon>settings</mat-icon>
+</button> 
+<button mat-icon-button matTooltip="Usuario Logueado">
+  <mat-icon>assignment_ind</mat-icon>
+</button> 
+<button mat-icon-button routerLink="/login" matTooltip="Salir">
+  <mat-icon>logout</mat-icon>
+</button> 
+
+</mat-toolbar>
+
 
   <nav class="menu">
     <ul class="menu-list">
-      <li><a href="#" (click)="mostrarFormularioCrearArticulo($event)">Crear Artículo</a></li>
       <li><a href="#" (click)="mostrarFormularioBuscarArticulo($event)">Buscar Artículo</a></li>
     </ul>
   </nav>
-
-
-  <div *ngIf="mostrarFormulario" class="d-flex justify-content-center align-items-center vh-100">
-    <div class="card w-75 bg-danger">
-      <div class="card-header bg-dark text-light">
-        Crear Artículo
-      </div>
-      <div class="card-body">
-        <form (submit)="crearArticulo()" #articuloForm="ngForm">
-          <div class="mb-3">
-            <label for="codigo" class="form-label">Código (10 caracteres)</label>
-            <input
-            type="text"
-            class="form-control"
-            id="codigo"
-            name="codigo"
-            [(ngModel)]="nuevoArticulo.codigo"
-            #codigoInput="ngModel"
-            minlength="10"
-            (input)="limitarLongitudCodigo($event)"
-            required
-            >
-            <div class="text-danger" *ngIf="codigoInput.invalid && (codigoInput.dirty || codigoInput.touched)">
-              El código debe tener al menos 10 caracteres.
-            </div>
-          </div>
-          <div class="mb-3">
-            <label for="descripcion" class="form-label">Descripción</label>
-            <input type="text" class="form-control" id="descripcion" name="descripcion" [(ngModel)]="nuevoArticulo.descripcion">
-          </div>
-          <div class="mb-3">
-            <label for="unidadMedida" class="form-label">Unidad de Medida</label>
-            <input type="text" class="form-control" id="unidadMedida" name="unidadMedida" [(ngModel)]="nuevoArticulo.unidadMedida">
-          </div>
-                    
-          <div class="mb-3">
-            <label for="codigoUbicacion" class="form-label">Código de Ubicación</label>
-            <select class="form-select" id="codigoUbicacion" name="codigoUbicacion" [(ngModel)]="nuevoArticulo.codigoUbicacion">
-              <option value="" disabled selected>Selecciona una ubicación</option>
-              <option *ngFor="let ubicacion of ubicaciones" [value]="ubicacion.codigo">{{ ubicacion.nombreZona }} - {{ ubicacion.codigo }}</option>
-            </select>
-          </div>
-                  
-          <div class="mb-3">
-            <label for="estadoActivo" class="form-label">Estado Activo</label>
-            <input type="checkbox" class="form-check-input" id="estadoActivo" name="estadoActivo" [(ngModel)]="nuevoArticulo.estadoActivo">
-          </div>
-          <div class="text-center">
-            <button type="submit" class="btn btn-primary" [disabled]="codigoInput.invalid || articuloForm.invalid">Guardar</button>
-            <button type="button" class="btn btn-secondary" (click)="cancelarCreacion()">Cancelar</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  
 
 <div *ngIf="mostrarFormularioBuscar" >
 <div class="container">
@@ -189,4 +140,4 @@
   {{ mensajeFallido }}
 </div>
 
-<img src="../../assets/PuntoU.jpg" alt="Imagen" class="img-fluid" style="width: 100%; height: auto;" *ngIf="!mostrarFormulario && !mostrarFormularioBuscar">
+<img src="../../assets/PuntoU.jpg" class="img-fluid" style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;" *ngIf="!mostrarFormulario && !mostrarFormularioBuscar">

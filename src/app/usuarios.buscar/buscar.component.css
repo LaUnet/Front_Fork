@@ -71,3 +71,24 @@
 .spacer {
   flex: 1 1 auto;
 } 
+
+mat-card {
+  margin: auto;
+  width: 55%;
+  display: block;
+  margin-top: 2rem;
+  opacity: 95%;
+}
+
+.form {
+margin-left: 1%;
+}
+
+.full-width {
+  margin-top: 4%;
+  width: 100%;
+}
+
+td {
+  padding-right: 8px;
+}

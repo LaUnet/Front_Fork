@@ -4,11 +4,11 @@ import { TokenService } from '../login/token';
 
 
 @Component({
-  selector: 'app-proveedor',
-  templateUrl: './proveedor.component.html',
-  styleUrls: ['./proveedor.component.css']
+  selector: 'app-buscarProveedor',
+  templateUrl: './buscar.component.html',
+  styleUrls: ['./buscar.component.css']
 })
-export class ProveedorComponent {
+export class buscarProveedorComponent {
 
   nuevoProveedor: any = {
     tipoDocumento: '',

@@ -1,0 +1,95 @@
+<mat-toolbar color="basic" class="mat-elevation-z6">
+
+  <button mat-icon-button routerLink="/menu" matTooltip="Menu">
+    <mat-icon>menu</mat-icon>
+  </button> 
+
+  <button mat-icon-button routerLink="/buscarUbicacion" matTooltip="Buscar Ubicación">
+    <mat-icon>search</mat-icon>
+  </button> 
+
+  <span class="spacer"></span>
+
+  <button color="accent">
+    REGISTRAR UBICACION
+  </button> 
+
+  <span class="spacer"></span>
+
+  <button mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
+    <mat-icon>manage_accounts</mat-icon>
+    <mat-menu #usuarios="matMenu">
+      <ng-template matMenuContent>
+        <button mat-menu-item routerLink="/registrarUsuario">Registrar Usuario</button>
+        <button mat-menu-item routerLink="/buscarUsuario">Buscar Usuario</button>
+      </ng-template>
+    </mat-menu>
+  </button> 
+  
+  <button mat-icon-button matTooltip="Ajustes">
+    <mat-icon>settings</mat-icon>
+  </button> 
+  <button mat-icon-button matTooltip="Usuario Logueado">
+    <mat-icon>assignment_ind</mat-icon>
+  </button> 
+  <button mat-icon-button routerLink="/login" matTooltip="Salir">
+    <mat-icon>logout</mat-icon>
+  </button> 
+</mat-toolbar>
+
+<mat-card>
+  <form class="form">
+  <td></td>
+    <table class="full-width" cellspacing="0"><tr>
+      <td><mat-form-field class="full-width">
+        <mat-label>Nombre Zona</mat-label>
+        <mat-icon matSuffix>list</mat-icon>
+        <mat-select #fontSize value="Piso1">
+          <mat-option value="Piso1">Primer Piso</mat-option>
+          <mat-option value="Piso2">Segundo Piso</mat-option>
+        </mat-select>
+      </mat-form-field></td>
+      <td><mat-form-field class="full-width">
+        <mat-label>Numero Zona</mat-label>
+        <mat-icon matSuffix>list</mat-icon>
+        <mat-select #fontSize value="Z01">
+          <mat-option value="Z01">01</mat-option>
+          <mat-option value="Z02">02</mat-option>
+          <mat-option value="Z03">03</mat-option>
+        </mat-select>
+      </mat-form-field></td>
+    </tr></table>
+
+    <table class="full-width" cellspacing="0"><tr>
+      <td><mat-form-field class="full-width">
+        <mat-label>Numero Estanteria</mat-label>
+        <mat-icon matSuffix>list</mat-icon>
+        <mat-select #fontSize value="E01">
+          <mat-option value="E01">01</mat-option>
+          <mat-option value="E02">02</mat-option>
+          <mat-option value="E03">03</mat-option>
+        </mat-select>
+      </mat-form-field></td>
+      <td><mat-form-field class="full-width">
+        <mat-label>Numero Ubicacion</mat-label>
+        <mat-icon matSuffix>list</mat-icon>
+        <mat-select #fontSize value="U01">
+          <mat-option value="U01">01</mat-option>
+          <mat-option value="U02">02</mat-option>
+          <mat-option value="U03">03</mat-option>
+        </mat-select>
+      </mat-form-field></td>
+    </tr></table>
+  </form>
+
+  <mat-card-actions align="end">
+    <button mat-icon-button matTooltip="Guardar">
+      <mat-icon>save</mat-icon>
+    </button> 
+    <button mat-icon-button matTooltip="Cancelar">
+      <mat-icon>cancel_presentation</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>
+
+<img src="../../assets/PuntoU.jpg" class="img-fluid" style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;">

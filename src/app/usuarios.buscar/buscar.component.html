@@ -1,30 +1,33 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-danger">
-  <a class="navbar-brand" href="#">UNET</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarText">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/menu">Inicio <span class="sr-only"></span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/articulo">Articulos</a> 
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/administracion">Administración</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/proveedor">Proveedores</a>
-      </li>          
-    </ul>
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link text-light" href="#">Cerrar Sesión</a>
-      </li>
-    </ul>
-  </div>
-</nav>
+<mat-toolbar color="basic" class="mat-elevation-z6">
+  <button mat-icon-button routerLink="/menu" matTooltip="Menu">
+    <mat-icon>menu</mat-icon>
+  </button> 
+
+  <button mat-icon-button routerLink="/registrarUsuario" matTooltip="Registrar Usuario">
+    <mat-icon>app_registration</mat-icon>
+  </button> 
+
+  <span class="spacer"></span>
+
+  <button color="accent">
+    BUSCAR USUARIO
+  </button> 
+
+  <span class="spacer"></span>
+
+  
+  <button mat-icon-button matTooltip="Ajustes">
+    <mat-icon>settings</mat-icon>
+  </button> 
+  <button mat-icon-button matTooltip="Usuario Logueado">
+    <mat-icon>assignment_ind</mat-icon>
+  </button> 
+  <button mat-icon-button routerLink="/login" matTooltip="Salir">
+    <mat-icon>logout</mat-icon>
+  </button>  
+</mat-toolbar>
+
+
 
 <div class="container mt-4" style="position: relative;">
     <div class="row">
@@ -136,4 +139,8 @@
     </form>
   </div>
   
+
+  
+
+  <img src="../../assets/PuntoU.jpg" class="img-fluid" style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;">
        
