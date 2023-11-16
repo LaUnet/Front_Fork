@@ -30,6 +30,8 @@ export class ArticuloComponent {
 
   mostrarCampoFiltrar: boolean = false;
 
+  isChecked = true;
+
 
   mostrarFormulario = false;
   mostrarFormularioBuscar = false;
