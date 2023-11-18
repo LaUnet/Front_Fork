@@ -10,9 +10,6 @@
 
   <span class="spacer"></span>
 
-  <button color="accent">
-    REGISTRAR PROVEEDOR
-  </button> 
 
   <span class="spacer"></span>
 
@@ -44,7 +41,7 @@
       <td><mat-form-field class="full-width">
         <mat-label>Tipo Documento</mat-label>
         <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="NIT">
+        <mat-select [(ngModel)]="nuevoProveedor.tipoDocumento" name="tipoDocumento" #fontSize value="NIT">
           <mat-option value="CC">Cedula Ciudadanía</mat-option>
           <mat-option value="NIT">Nit</mat-option>
           <mat-option value="CE">Cedula Extranjería</mat-option>
@@ -55,33 +52,34 @@
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
         <mat-label>Numero Documento</mat-label>
-        <mat-icon matSuffix>contacts</mat-icon>
-        <input matInput required="">
+        <mat-icon matSuffix>document</mat-icon>
+        <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento" required="">
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
         <mat-label>Nombre - Razon Social</mat-label>
-        <mat-icon matSuffix>description</mat-icon>
-        <input matInput required="">
+        <mat-icon matSuffix>name</mat-icon>
+        <input matInput [(ngModel)]="nuevoProveedor.nombreRazonSocial" name="nombreRazonSocial" required="">
       </mat-form-field></td>
     </tr></table>
 
     <table class="full-width" cellspacing="0"><tr>
-      <td><mat-form-field class="full-width">
-        <mat-label>Numero Telefonico</mat-label>
-        <mat-icon matSuffix>phone</mat-icon>
-        <input matInput required #phone maxlength="10" placeholder="Ex. 3001002000">
-        <mat-hint align="end">{{phone.value.length}} / 10</mat-hint>
-      </mat-form-field></td>
+      <td>
+        <mat-form-field class="full-width">
+          <mat-label>Telefono</mat-label>
+          <mat-icon matSuffix>phone</mat-icon>
+          <input matInput [(ngModel)]="nuevoProveedor.telefono" name="telefono" required>
+        </mat-form-field>
+      </td>
       <td><mat-form-field class="full-width">
         <mat-label>Extensión</mat-label>
         <mat-icon matSuffix>settings_phone</mat-icon>
-        <input matInput #extention maxlength="4" placeholder="Ex. 1234">
+        <input matInput matInput [(ngModel)]="nuevoProveedor.extension" name="extension" #extention maxlength="4" placeholder="Ex. 1234">
         <mat-hint align="end">{{extention.value.length}} / 4</mat-hint>
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
         <mat-label>Email</mat-label>
         <mat-icon matSuffix>email</mat-icon>
-          <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+          <input type="email" matInput [(ngModel)]="nuevoProveedor.email" name="email" [formControl]="emailFormControl" [errorStateMatcher]="matcher"
                 placeholder="Ex. correo@example.com">
       </mat-form-field></td>
     </tr></table>
@@ -91,14 +89,14 @@
       <td><mat-form-field class="full-width">
         <mat-label>Departamento</mat-label>
         <mat-icon matSuffix>business</mat-icon>
-        <mat-select #fontSize value="ANT">
-          <mat-option value="ANT">Antioquia</mat-option>
+        <mat-select [(ngModel)]="nuevoProveedor.departamento" name="departamento" #fontSize value="ANT">
+          <mat-option  value="ANT">Antioquia</mat-option>
         </mat-select>
       </mat-form-field></td>
     <td><mat-form-field class="full-width">
       <mat-label>Municipcio</mat-label>
       <mat-icon matSuffix>business</mat-icon>
-      <mat-select #fontSize value="MED">
+      <mat-select [(ngModel)]="nuevoProveedor.municipio" name="municipio" #fontSize value="MED">
         <mat-option value="MED">Medellin</mat-option>
         <mat-option value="BEL">Bello</mat-option>
         <mat-option value="ENV">Envigado</mat-option>
@@ -110,7 +108,7 @@
       <td><mat-form-field class="full-width">
         <mat-label>Barrio</mat-label>
         <mat-icon matSuffix>business</mat-icon>
-        <input matInput>
+        <input matInput [(ngModel)]="nuevoProveedor.Barrio" name="barrio">
       </mat-form-field></td>
     </tr></table>
 
@@ -119,23 +117,23 @@
       <td><mat-form-field class="full-width">
         <mat-label>Dirección</mat-label>
         <mat-icon matSuffix>tour</mat-icon>
-        <input matInput required placeholder="Calle 67 #55-89">
+        <input matInput  [(ngModel)]="nuevoProveedor.direccion" name="direccion" required placeholder="Calle 67 #55-89">
       </mat-form-field></td>
       <td></td>
       <td><mat-form-field class="full-width">
         <mat-label>Regimen Tributario</mat-label>
         <mat-icon matSuffix>currency_exchange</mat-icon>
-        <mat-select #fontSize value="SIM">
-          <mat-option value="SIM">Simplificado</mat-option>
-          <mat-option value="COM">Común</mat-option>
-          <mat-option value="ESP">Especial</mat-option>
+        <mat-select [(ngModel)]="nuevoProveedor.regimenTributario" name="regimenTributario" #fontSize value="SIM">
+          <mat-option value="SIMPLIFICADO">Simplificado</mat-option>
+          <mat-option value="COMUN">Común</mat-option>
+          <mat-option value="ESPECIAL">Especial</mat-option>
         </mat-select>
       </mat-form-field></td>
     </tr></table>   
   </form>
 
   <mat-card-actions align="end">
-    <button mat-icon-button matTooltip="Guardar">
+    <button mat-icon-button matTooltip="Guardar" (click)="guardarProveedor()">
       <mat-icon>save</mat-icon>
     </button> 
     <button mat-icon-button matTooltip="Cancelar">
@@ -143,5 +141,14 @@
     </button>
   </mat-card-actions>
 </mat-card>
+
+<div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+  {{ mensajeExitoso }}
+</div>
+  
+
+<div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+  {{ mensajeFallido }}
+</div>
 
 <img src="../../assets/PuntoU.jpg" class="img-fluid" style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;">

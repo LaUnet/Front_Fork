@@ -28,18 +28,6 @@
     <table class="full-width" cellspacing="0"><tr>
       <td>
         <mat-form-field class="full-width">
-          <mat-label>Proveedor</mat-label>
-          <mat-icon matSuffix>documentoProveedor</mat-icon>
-          <mat-select [(ngModel)]="nuevoArticulo.documentoProveedor" name="documentoProveedor" >
-            <mat-option disabled selected>Selecciona una ubicación</mat-option>
-            <mat-option *ngFor="let proveedor of proveedores" [value]="proveedor.numeroDocumento">
-              {{ proveedor.numeroDocumento }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </td>
-      <td>
-        <mat-form-field class="full-width">
           <mat-label>Código</mat-label>
           <mat-icon matSuffix>codigo</mat-icon>
           <input matInput [(ngModel)]="nuevoArticulo.codigo" minlength="10"  maxlength="10" name="codigo" required>
@@ -53,19 +41,17 @@
           <input matInput [(ngModel)]="nuevoArticulo.descripcion" name="descripcion" required>
         </mat-form-field>
       </td>
-    </tr></table>
-
-    
-    <table class="full-width" cellspacing="0"><tr>
-
       <td>
         <mat-form-field class="full-width">
           <mat-label>Marca</mat-label>
           <mat-icon matSuffix>marca</mat-icon>
           <input matInput [(ngModel)]="nuevoArticulo.marca"  name="marca" required>
         </mat-form-field>
-      </td>
-      
+      </td>      
+    </tr></table>
+
+
+    <table class="full-width" cellspacing="0"><tr>
       <td>
         <mat-form-field class="full-width">
           <mat-label>Referencia</mat-label>
@@ -73,10 +59,6 @@
           <input matInput [(ngModel)]="nuevoArticulo.referencia" name="referencia" required>
         </mat-form-field>
       </td>
-    </tr></table> 
-
-    <table class="full-width" cellspacing="0"><tr>
-      <mat-slide-toggle [(ngModel)]="isChecked" name="estadoActivo" >Estado Activo</mat-slide-toggle>
       <td>
         <mat-form-field class="full-width">
           <mat-label>Unidad Medida</mat-label>

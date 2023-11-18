@@ -24,17 +24,20 @@ export class registrarClienteComponent {
     isChecked = true;
 
 
-  nuevoProveedor: any = {
+  nuevoCliente: any = {
     tipoDocumento: '',
     numeroDocumento: '',
     nombreRazonSocial: '',
     telefono: '',
+    extension: "",
     direccion: '',
     departamento: '',
     municipio: '',
     email: '',
     regimenTributario: '',
-    estadoActivo: false
+    estadoActivo: false,
+    barrio:"",
+    isChecked: true
   };
   
   mostrarFormulario1: boolean = false;
@@ -71,10 +74,10 @@ export class registrarClienteComponent {
     this.mostrarFormulario1 = false;
   }
   get email() {
-    return this.nuevoProveedor.email;
+    return this.nuevoCliente.email;
   }
 
-  guardarProveedor() {
+  guardarCliente() {
 
     const token = this.tokenService.token;
 
@@ -85,17 +88,20 @@ export class registrarClienteComponent {
       })
     };
 
-    this.http.post('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers', this.nuevoProveedor, httpOptions)
+    this.http.post('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers', this.nuevoCliente, httpOptions)
       .subscribe(
         (response) => {
           console.log('Proveedor guardado exitosamente', response);
+          this.mensajeExitoso = 'Operación exitosa: El cliente se ha creado correctamente.';
         },
         (errorResponse) => {
           console.error('Error al guardar el proveedor', errorResponse);
           if (errorResponse.error && errorResponse.error.Message) {
             this.error = errorResponse.error.Message;
+            this.mensajeFallido =  errorResponse.error.Message;
           } else {
             this.error = 'Error desconocido al guardar el proveedor.';
+            this.mensajeFallido = 'Error desconocido al guardar el proveedor.';
           }
         }
       );

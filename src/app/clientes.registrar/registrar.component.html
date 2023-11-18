@@ -10,10 +10,6 @@
 
   <span class="spacer"></span>
 
-  <button color="accent">
-    REGISTRAR CLIENTE
-  </button> 
-
   <span class="spacer"></span>
 
   <button mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
@@ -44,7 +40,7 @@
       <td><mat-form-field class="full-width">
         <mat-label>Tipo Documento</mat-label>
         <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="CC">
+        <mat-select [(ngModel)]="nuevoCliente.tipoDocumento" name="tipoDocumento" #fontSize value="CC">
           <mat-option value="CC">Cedula Ciudadanía</mat-option>
           <mat-option value="NIT">Nit</mat-option>
           <mat-option value="CE">Cedula Extranjería</mat-option>
@@ -56,12 +52,12 @@
       <td><mat-form-field class="full-width">
         <mat-label>Numero Documento</mat-label>
         <mat-icon matSuffix>contacts</mat-icon>
-        <input matInput required="">
+        <input matInput [(ngModel)]="nuevoCliente.numeroDocumento" name="numeroDocumento" required="">
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
         <mat-label>Nombre - Razon Social</mat-label>
         <mat-icon matSuffix>description</mat-icon>
-        <input matInput required="">
+        <input matInput [(ngModel)]="nuevoCliente.nombreRazonSocial" name="nombreRazonSocial" required="">
       </mat-form-field></td>
     </tr></table>
 
@@ -69,19 +65,19 @@
       <td><mat-form-field class="full-width">
         <mat-label>Numero Telefonico</mat-label>
         <mat-icon matSuffix>phone</mat-icon>
-        <input matInput required #phone maxlength="10" placeholder="Ex. 3001002000">
+        <input matInput [(ngModel)]="nuevoCliente.telefono" name="telefono"  required #phone maxlength="10" placeholder="Ex. 3001002000">
         <mat-hint align="end">{{phone.value.length}} / 10</mat-hint>
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
         <mat-label>Extensión</mat-label>
         <mat-icon matSuffix>settings_phone</mat-icon>
-        <input matInput #extention maxlength="4" placeholder="Ex. 1234">
+        <input matInput [(ngModel)]="nuevoCliente.extension" name="extension" #extention maxlength="4" placeholder="Ex. 1234">
         <mat-hint align="end">{{extention.value.length}} / 4</mat-hint>
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
         <mat-label>Email</mat-label>
         <mat-icon matSuffix>email</mat-icon>
-          <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+          <input type="email" matInput [(ngModel)]="nuevoCliente.email" name="email" [formControl]="emailFormControl" [errorStateMatcher]="matcher"
                 placeholder="Ex. correo@example.com">
       </mat-form-field></td>
     </tr></table>
@@ -91,14 +87,14 @@
       <td><mat-form-field class="full-width">
         <mat-label>Departamento Entrega</mat-label>
         <mat-icon matSuffix>business</mat-icon>
-        <mat-select #fontSize value="ANT">
+        <mat-select  [(ngModel)]="nuevoCliente.departamento" name="departamento" #fontSize value="ANT">
           <mat-option value="ANT">Antioquia</mat-option>
         </mat-select>
       </mat-form-field></td>
     <td><mat-form-field class="full-width">
       <mat-label>Municipcio Entrega</mat-label>
       <mat-icon matSuffix>business</mat-icon>
-      <mat-select #fontSize value="MED">
+      <mat-select [(ngModel)]="nuevoCliente.municipio" name="municipio" #fontSize value="MED">
         <mat-option value="MED">Medellin</mat-option>
         <mat-option value="BEL">Bello</mat-option>
         <mat-option value="ENV">Envigado</mat-option>
@@ -110,7 +106,7 @@
       <td><mat-form-field class="full-width">
         <mat-label>Barrio Entrega</mat-label>
         <mat-icon matSuffix>business</mat-icon>
-        <input matInput>
+        <input matInput [(ngModel)]="nuevoCliente.barrio" name="barrio" >
       </mat-form-field></td>
     </tr></table>
 
@@ -119,7 +115,7 @@
       <td><mat-form-field class="full-width">
         <mat-label>Dirección Entrega</mat-label>
         <mat-icon matSuffix>tour</mat-icon>
-        <input matInput required placeholder="Calle 67 #55-89">
+        <input matInput [(ngModel)]="nuevoCliente.direccion" name="direccion" required placeholder="Calle 67 #55-89">
       </mat-form-field></td>
       <td></td>
       <td><mat-form-field class="full-width">
@@ -137,7 +133,7 @@
   <mat-card-actions align="end">
     <mat-slide-toggle [(ngModel)]="isChecked">Misma Dirección Facturación</mat-slide-toggle>
     <span class="spacer"></span>
-    <button mat-icon-button  align="end" matTooltip="Guardar">
+    <button mat-icon-button  align="end" matTooltip="Guardar" (click)="guardarCliente()">
       <mat-icon>save</mat-icon>
     </button> 
     <button mat-icon-button matTooltip="Cancelar">
@@ -145,5 +141,14 @@
     </button>
   </mat-card-actions>
 </mat-card>
+
+<div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+  {{ mensajeExitoso }}
+</div>
+  
+
+<div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+  {{ mensajeFallido }}
+</div>
 
 <img src="../../assets/PuntoU.jpg" class="img-fluid" style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;">
