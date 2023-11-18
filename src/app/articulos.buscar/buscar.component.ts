@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+
 
 
 @Component({
@@ -10,176 +13,106 @@ import { TokenService } from '../login/token';
   styleUrls: ['./buscar.component.css']
 })
 export class buscarArticuloComponent {
-  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService) { }
+
+
+  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService) { }
+
+
+  columnas: string[] = ['codigo', 'codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'estadoActivo', 'accion'];
+
+  pageEvent!: PageEvent;
+  pageIndex:number = 0;
+  pageSize !:number;
+  length!:number;
+  pageSizeOptions = [8];
+  isLoadingResults : boolean = true;
+
+
+
   ubicaciones: any[] = [];
-  proveedores: any[] = [];
+  dataSourceArticulos:any;
+  dataSourceUbicaciones:any; 
 
-  codigoArticuloBusqueda: string = '';
-  articulosEncontrados: any[] = [];
-  mostrarResultados: boolean = false;
-
-  errorMessage: string = '';
-  successMesssage: String = '';
-
-  articuloEditando: any = null;
-
-  mensajeExitoso: string = '';
-  mensajeFallido: string = '';
-
-  filtroDescripcion: string = '';
-
-  mostrarCampoFiltrar: boolean = false;
-  manualToken: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MTYxMmRiZTI3MzI1MjZiYjYzMmQ4YyIsImlhdCI6MTY5OTkyMzE1MiwiZXhwIjoxNzAwMDA5NTUyfQ.rwRiN0DoyGLjEJNTRAxpeGK0pONqBX-bn9Z57JBLu_M"
-
-  mostrarFormulario = false;
-  mostrarFormularioBuscar = false;
-  nuevoArticulo = {
-    codigo: '',
-    descripcion: '',
-    unidadMedida: '',
-    documentoProveedor: [],
-    codigoUbicacion: '',
-    estadoActivo: false
-  };
-
-  mostrarFormularioCrearArticulo(event: Event) {
-    event.preventDefault();
-    this.mostrarFormulario = true;
-    this.mostrarFormularioBuscar = false;
-    this.mostrarResultados = false;
+  ngOnInit() {
+    this.buscarArticulo();
   }
 
-  mostrarFormularioBuscarArticulo(event: Event) {
-    event.preventDefault();
-    this.mostrarFormulario = false;
-    this.mostrarFormularioBuscar = true;
-    
-  }
-
-  limitarLongitudCodigo(event: any) {
-    const maxCaracteres = 10;
-    const inputElement = event.target;
-    if (inputElement.value.length > maxCaracteres) {
-      inputElement.value = inputElement.value.slice(0, maxCaracteres);
-    }
-  }
-
-  ngOnInit(): void {
-    this.cargarUbicaciones();
-  }
-
-  cargarUbicaciones() {
-    //const token = this.tokenService.token;
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        //'x-access-token': `${token}`
-        'x-access-token': this.manualToken
-      })
-    };
-
-    this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
-      .subscribe(response => {
-        if (response.Status) {
-          this.ubicaciones = response.Data.docs;
-        }
-      });
-  }
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   async buscarArticulo() {
-
-    //const token = this.tokenService.token;
-
+    const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        //'x-access-token': `${token}`
-        'x-access-token': this.manualToken
+        'x-access-token': `${token}`,
       })
     };
-
-    if (!this.codigoArticuloBusqueda) {
-      this.mostrarResultados = true;
-      const response = await this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles', httpOptions).toPromise();
-      this.articulosEncontrados = response.Data.docs;
-      console.log("encontro articulos ", this.articulosEncontrados);
-      this.mensajeExitoso = 'Búsqueda exitosa';
-      this.mostrarCampoFiltrar = true;
-
-    if (this.filtroDescripcion) {
-      console.log("entre a filtro descripcion")
-      this.articulosEncontrados = this.articulosEncontrados.filter((articulo) => {
-        return articulo.descripcion.toLowerCase().includes(this.filtroDescripcion.toLowerCase());
-      });
-    }
-
-      setTimeout(() => {
-        this.mensajeExitoso = '';
-      }, 5000);
-    } else {
-      this.mostrarResultados = true;
-      const response = await this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${this.codigoArticuloBusqueda}`, httpOptions).toPromise();
-      this.articulosEncontrados = response.Data.docs;
-      console.log("encontro articulo ", this.articulosEncontrados);
-    }
-    
-  }
-
-
-  borrarArticulo(articuloId: string) {
-
-    //const token = this.tokenService.token;
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        //'x-access-token': `${token}`
-        'x-access-token': this.manualToken
-      })
-    };
-
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${articuloId}`;
-
-    this.http.delete(url, httpOptions).subscribe(
-      (response) => {
-        console.log('Artículo borrado exitosamente');
-        this.mensajeExitoso = 'Operación exitosa: El artículo se ha eliminado correctamente.';
-        setTimeout(() => {
-          this.refreshPage();
-        }, 3000);
-
-
-        setTimeout(() => {
-          this.mensajeExitoso = '';
-        }, 5000);
-      },
-      (error) => {
-        console.error('Error al borrar el artículo', error);
-        this.mensajeFallido = 'Error: El artículo no se ha podido eliminar ';
+    this.isLoadingResults = true;
+    this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles', httpOptions )
+    .subscribe(response => {
+      if (response.Status) {
+        this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
+        this.dataSourceArticulos.paginator = this.paginator;
+        this.pageSize=response.Data.docs.limit;
+        this.pageIndex=response.Data.docs.page;
+        this.length = response.Data.totalDocs;
       }
-    );
+      this.isLoadingResults = false; 
+    });
   }
 
-  editarArticulo(articulo: any) {
-    this.articuloEditando = { ...articulo };
+  async recargarArticulo(page: PageEvent) {
+    this.dataSourceArticulos = new MatTableDataSource;
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    this.isLoadingResults = true;
+    this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions )
+    .subscribe(response => {
+      if (response.Status) {
+        this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
+        this.pageIndex=response.Data.docs.page;
+      }
+      this.isLoadingResults = false;
+    });
   }
 
-  cancelarEdicion() {
-    this.articuloEditando = null;
-  }
+
+  filtrar(event: Event) {
+      const filtro = (event.target as HTMLInputElement).value;
+      this.dataSourceArticulos.filter = filtro.trim().toLowerCase();
+  } 
+
+    cargarUbicaciones() {
+      const token = this.tokenService.token;
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'x-access-token': `${token}`
+        })
+      };
+  
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceUbicaciones = response.Data.docs;
+          }
+        });
+    }
 
 
-
-
+/**
   guardarEdicionArticulo() {
 
-    //const token = this.tokenService.token;
-
+    const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        //'x-access-token': `${token}`
-        'x-access-token': this.manualToken
+        'x-access-token': `${token}`
       })
     };
 
@@ -214,9 +147,18 @@ export class buscarArticuloComponent {
       }
     );
   }
+ */
 
   refreshPage() {
     window.location.reload();
   }
   
+}
+
+
+export class Articulo {
+  constructor(public codigo: string, public codigoBarras: string, public descripcion: String,
+              public marca: string, public referencia: string, public unidadMedida: String,
+              public codigoUbicacion: string, public estadoActivo: boolean
+              ){}
 }

@@ -1,12 +1,18 @@
 <mat-toolbar color="basic" class="mat-elevation-z6">
 
-
   <button mat-icon-button routerLink="/menu" matTooltip="Menu">
     <mat-icon>menu</mat-icon>
   </button> 
 
   <button mat-icon-button routerLink="/registrarArticulo" matTooltip="Registrar Articulo">
     <mat-icon>app_registration</mat-icon>
+  </button> 
+
+
+  <span class="spacer"></span>
+
+  <button color="accent">
+    BUSCAR ARTICULO
   </button> 
 
   <span class="spacer"></span>
@@ -33,111 +39,96 @@
 
 </mat-toolbar>
 
+<mat-card>  
+    <mat-form-field class="middle-width">
+      <mat-label>Filtrar Articulo</mat-label>
+      <mat-icon matSuffix>search</mat-icon>
+      <input matInput (keyup)="filtrar($event)" placeholder="buscar">
+    </mat-form-field>
 
-  <nav class="menu">
-    <ul class="menu-list">
-      <li><a href="#" (click)="mostrarFormularioBuscarArticulo($event)">Buscar Artículo</a></li>
-    </ul>
-  </nav>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">Parametro de busqueda no encontrado</td>
+    </tr>
 
-<div *ngIf="mostrarFormularioBuscar" >
-<div class="container">
-  <div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-      <div *ngIf="!mostrarCampoFiltrar">
-      <div class="input-group"> 
-        <input type="text" class="form-control" placeholder="Buscar artículo por id" [(ngModel)]="codigoArticuloBusqueda">
-        <button class="btn btn-primary" (click)="buscarArticulo()">Buscar</button>
-      </div>
+    <div *ngIf="isLoadingResults" class= "loading-shade">
+      <mat-progress-spinner 
+        color="primary" 
+        mode="indeterminate">
+      </mat-progress-spinner>
     </div>
-      <div *ngIf="mostrarCampoFiltrar">
-      <div class="input-group mt-3">
-        <input type="text" class="form-control" placeholder="Filtrar por Descripción..." [(ngModel)]="filtroDescripcion" (input)="buscarArticulo()">
-      </div>    
-    </div>  
-    </div>
-  </div>
-</div>
-</div>
 
 
-<div *ngIf="mostrarResultados" class="resultados-container">
-  <h3 class="resultados-title">Resultados de la Búsqueda</h3>
-  <div class="table-responsive">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>id</th>
-          <th>Código</th>
-          <th>Descripción</th>
-          <th>Unidad de Medida</th>
-          <th>Codigo ubicacion</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngFor="let articulo of articulosEncontrados">
-          <tr>
-            <td>{{ articulo._id }}</td>
-            <td>{{ articulo.codigo }}</td>
-            <td>{{ articulo.descripcion }}</td>
-            <td>{{ articulo.unidadMedida }}</td>
-            <td>{{ articulo.codigoUbicacion }}</td>
-            <td>{{ articulo.estadoActivo }}</td>
-            <td>
-              <button class="btn btn-sm btn-primary" (click)="editarArticulo(articulo)">Editar</button>
-              <button class="btn btn-sm btn-danger" (click)="borrarArticulo(articulo._id)">Borrar</button>
-              
-            </td>
-          </tr>
-          <tr *ngIf="articulo._id === (articuloEditando?._id || '')">
-            <td colspan="8">
-              <div class="card mt-2">
-                <div class="card-body">
-                  <form *ngIf="articuloEditando" (submit)="guardarEdicionArticulo()" #edicionForm="ngForm" class="d-flex flex-column align-items-center">
-                    <div class="mb-3">
-                      <label for="editarDescripcion" class="form-label">Editar Descripción</label>
-                      <input type="text" class="form-control" id="editarDescripcion" name="editarDescripcion" [(ngModel)]="articuloEditando.descripcion">
-                    </div>
-                    <div class="mb-3">
-                      <label for="editarUnidadMedida" class="form-label">Editar Unidad de Medida</label>
-                      <input type="text" class="form-control" id="editarUnidadMedida" name="editarUnidadMedida" [(ngModel)]="articuloEditando.unidadMedida">
-                    </div>
-                    <div class="mb-3">
-                      <label for="editarCodigoUbicacion" class="form-label">Editar Código de Ubicación</label>
-                      <select class="form-select" id="editarCodigoUbicacion" name="editarCodigoUbicacion" [(ngModel)]="articuloEditando.codigoUbicacion">
-                        <option value="" disabled>Selecciona una ubicación</option>
-                        <option *ngFor="let ubicacion of ubicaciones" [value]="ubicacion.codigo">{{ ubicacion.nombreZona }} - {{ ubicacion.codigo }}</option>
-                      </select>
-                    </div>
-                    <div class="mb-3">
-                      <label for="editarEstadoActivo" class="form-label">Editar Estado Activo</label>
-                      <input type="checkbox" class="form-check-input" id="editarEstadoActivo" name="editarEstadoActivo" [(ngModel)]="articuloEditando.estadoActivo">
-                    </div>
-                    
-                    <div class="text-center mt-3">
-                      <button type="submit" class="btn btn-primary" >Guardar</button>
-                      <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </table>
-  </div>
+  <div class="mat-elevation-z8">
+
+    <table mat-table [dataSource]="dataSourceArticulos" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="codigo">
+      <th mat-header-cell *matHeaderCellDef> Código </th>
+      <td mat-cell *matCellDef="let articulo"> {{articulo.codigo}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="codigoBarras">
+      <th mat-header-cell *matHeaderCellDef> Codigo Barras </th>
+      <td mat-cell *matCellDef="let articulo"> {{articulo.codigoBarras}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="descripcion">
+      <th mat-header-cell *matHeaderCellDef> Descripción </th>
+      <td mat-cell *matCellDef="let articulo"> {{articulo.descripcion}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="marca">
+      <th mat-header-cell *matHeaderCellDef> Marca </th>
+      <td mat-cell *matCellDef="let articulo"> {{articulo.marca}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="referencia">
+      <th mat-header-cell *matHeaderCellDef> Referencia </th>
+      <td mat-cell *matCellDef="let articulo"> {{articulo.referencia}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="unidadMedida">
+      <th mat-header-cell *matHeaderCellDef> Unidad Medida </th>
+      <td mat-cell *matCellDef="let articulo"> {{articulo.unidadMedida}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="codigoUbicacion">
+      <th mat-header-cell *matHeaderCellDef> Codigo Ubicación </th>
+      <td mat-cell *matCellDef="let articulo"> {{articulo.codigoUbicacion}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="estadoActivo">
+      <th mat-header-cell *matHeaderCellDef> Estado Activo </th>
+      <td mat-cell *matCellDef="let articulo"> {{articulo.estadoActivo}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="accion">
+      <th mat-header-cell *matHeaderCellDef> Accion </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="primary" matTooltip="Editar">
+          <mat-icon>edit_note</mat-icon>
+        </button> 
+        <button mat-icon-button color="warn" matTooltip="Eliminar">
+          <mat-icon>delete</mat-icon>
+        </button>
+    </ng-container>
+
+
+
+    <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+
+  </table>
+
+    <mat-paginator #paginator
+      [length]="length"
+      [pageIndex]="pageIndex"
+      [pageSize]="pageSize"
+      [showFirstLastButtons]="true" 
+      [pageSizeOptions] = "pageSizeOptions"
+      (page)="recargarArticulo($event)">
+    </mat-paginator>
 </div>
 
-<div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
-  {{ mensajeExitoso }}
-</div>
-  
-
-<div *ngIf="mensajeFallido" class="alert alert-success mt-3">
-  {{ mensajeFallido }}
-</div>
-
-<img src="../../assets/PuntoU.jpg" class="img-fluid" style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;" *ngIf="!mostrarFormulario && !mostrarFormularioBuscar">
+</mat-card>
+<img src="../../assets/PuntoU.jpg" class="img-fluid" style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;">

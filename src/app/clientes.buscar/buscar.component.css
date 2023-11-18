@@ -4,9 +4,9 @@
 
 mat-card {
   margin: auto;
-  width: 55%;
+  width: 80%;
+  margin-top: 0.1%;
   display: block;
-  margin-top: 2rem;
   opacity: 95%;
 }
 
@@ -15,10 +15,26 @@ margin-left: 1%;
 }
 
 .full-width {
-  margin-top: 4%;
+  margin-top: 0.1%;
   width: 100%;
+}
+
+.middle-width {
+  margin-top: 0.1%;
+  width: 50%;
+  margin-left: 20rem;
+  margin-right: 20rem;
 }
 
 td {
   padding-right: 8px;
+}
+
+.loading-shade {
+  position: absolute;
+  display: flex;
+  margin-top: 15%;
+  margin-left: 45%;
+  margin-right: 45%;
+
 }

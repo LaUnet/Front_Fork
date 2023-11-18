@@ -3,14 +3,14 @@
     <mat-icon>menu</mat-icon>
   </button> 
 
-  <button mat-icon-button routerLink="/registrarUsuario" matTooltip="Registrar Usuario">
+  <button mat-icon-button routerLink="/registrarusuario" matTooltip="Registrar usuario">
     <mat-icon>app_registration</mat-icon>
   </button> 
 
   <span class="spacer"></span>
 
   <button color="accent">
-    BUSCAR USUARIO
+    BUSCAR usuario
   </button> 
 
   <span class="spacer"></span>
@@ -19,7 +19,7 @@
   <button mat-icon-button matTooltip="Ajustes">
     <mat-icon>settings</mat-icon>
   </button> 
-  <button mat-icon-button matTooltip="Usuario Logueado">
+  <button mat-icon-button matTooltip="usuario Logueado">
     <mat-icon>assignment_ind</mat-icon>
   </button> 
   <button mat-icon-button routerLink="/login" matTooltip="Salir">
@@ -28,119 +28,74 @@
 </mat-toolbar>
 
 
+<mat-card>
+  <mat-form-field class="middle-width">
+    <mat-label>Filtrar usuario</mat-label>
+    <mat-icon matSuffix>search</mat-icon>
+    <input matInput (keyup)="filtrar($event)" placeholder="buscar">
+  </mat-form-field>
 
-<div class="container mt-4" style="position: relative;">
-    <div class="row">
-<!-- Agrega esta clase 'menu-lateral' al div con clase 'col-lg-3' para aplicar estilos específicos -->
-<div class="col-lg-3 menu-lateral">
-    <!-- Menú lateral -->
-    <ul class="list-group">
-        <li class="list-group-item bg-danger text-light">
-            <button type="button" class="btn btn-custom" (click)="toggleFormularioCrearUsuario()">Crear Usuario</button>
-        </li>
-        <li class="list-group-item bg-danger text-light">
-            <button type="button" class="btn btn-custom" (click)="toggleFormularioBuscarUsuario()">Buscar Usuario</button>
-        </li>
-    </ul>
-</div>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="4">Parametro de busqueda no encontrado</td>
+  </tr>
 
-        <div class="col-lg-9">
-            <div class="card" *ngIf="mostrarFormularioCrearUsuario && !mostrarFormularioBuscarUsuario" >
-                <div class="card-header bg-dark text-dark" style="color: black;">
-                    Crear Usuario
-                </div>
-                <div class="card-body">
-                    <form (ngSubmit)="onSubmitCrearUsuario()">
-                        <div class="mb-3">
-                            <label for="rol" class="form-label">Rol</label>
-                            <input type="text" class="form-control" id="rol" name="rol" [(ngModel)]="rol">
-                        </div>
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" [(ngModel)]="username">
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" [(ngModel)]="email">
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" [(ngModel)]="password">
-                        </div>  
-                        <button type="submit" class="btn btn-dark">Crear</button>
-                        <div *ngIf="successMesssage" class="alert alert-danger mt-3">
-                            {{ successMesssage }}
-                          </div>                         
-                        <div *ngIf="errorMessage" class="alert alert-danger mt-3">
-                            {{ errorMessage }}
-                          </div> 
-                    </form>
-                </div>
-            </div>
+  <div *ngIf="isLoadingResults" class="loading-shade">
+    <mat-progress-spinner color="primary" mode="indeterminate">
+    </mat-progress-spinner>
+  </div>
 
-            <!-- Formulario de búsqueda de usuario por email -->
-            <div class="card" *ngIf="mostrarFormularioBuscarUsuario && !mostrarFormularioCrearUsuario">
-                <div class="card-header bg-dark text-dark" style="color: black;">
-                    Buscar Usuario por ID
-                </div>
-                <div class="card-body">
-                    <form>
-                        <button type="button" class="btn btn-dark" (click)="onSubmitBuscarUsuario()">Buscar</button>                         
-                    </form>
-                </div>
-            </div>
 
-<!-- Mostrar resultados de búsqueda -->
-<div *ngIf="resultadoBusqueda">
-    <h4>Resultados de búsqueda:</h4>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>id</th>
-          <th>username</th>
-          <th>email</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of resultadoBusqueda">
-          <td>{{ item._id }}</td>
-          <td>{{ item.username }}</td>
-          <td>{{ item.email }}</td>
-          <td>
-            <button class="btn btn-primary btn-sm" (click)="editarRol(item)">Editar</button>
-            <button class="btn btn-danger btn-sm" (click)="borrarRol(item._id)">Borrar</button>
-            <div *ngIf="item.successMessage" class="alert alert-success mt-3">{{ item.successMessage }}</div>
-            <div *ngIf="item.errorMessage" class="alert alert-danger mt-3">{{ item.errorMessage }}</div>
-          </td>
-        </tr>
-      </tbody>
+  <div class="mat-elevation-z8">
+
+    <table mat-table [dataSource]="dataSourceUsuarios" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="_id">
+        <th mat-header-cell *matHeaderCellDef> Id </th>
+        <td mat-cell *matCellDef="let usuario"> {{usuario._id}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef> Nombre Usuario </th>
+        <td mat-cell *matCellDef="let usuario"> {{usuario.username}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email </th>
+        <td mat-cell *matCellDef="let usuario"> {{usuario.email}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="password">
+        <th mat-header-cell *matHeaderCellDef> Contraseña </th>
+        <td mat-cell *matCellDef="let usuario"> {{usuario.password}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="roles">
+        <th mat-header-cell *matHeaderCellDef> Roles </th>
+        <td mat-cell *matCellDef="let usuario"> {{usuario.roles}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="accion">
+        <th mat-header-cell *matHeaderCellDef> Accion </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" matTooltip="Editar">
+            <mat-icon>edit_note</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" matTooltip="Eliminar">
+            <mat-icon>delete</mat-icon>
+          </button>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+
     </table>
+
+    <mat-paginator #paginator [length]="length" [pageIndex]="pageIndex" [pageSize]="pageSize"
+      [showFirstLastButtons]="true" [pageSizeOptions]="pageSizeOptions" (page)="recargarUsuario($event)">
+    </mat-paginator>
   </div>
-
-
-
-  <div *ngIf="isEditing">
-    <form (submit)="guardarCambios(editingItem._id)">
-      <div class="mb-3">
-        <label for="edit-id" class="form-label">ID</label>
-        <input type="text" class="form-control" id="edit-id" name="edit-id" value="{{ editingItem._id }}" disabled>
-      </div>
-      <div class="mb-3">    
-        <label for="edit-username" class="form-label">Username</label>
-        <input type="text" class="form-control" id="edit-username" name="edit-username" [(ngModel)]="editingItem.username">
-      </div>
-      <div class="mb-3">
-        <label for="edit-email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="edit-email" name="edit-email" [(ngModel)]="editingItem.email">
-      </div>   
-      <button type="submit" class="btn btn-dark">Guardar cambios</button>
-      <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
-    </form>
-  </div>
-  
-
-  
+</mat-card>
 
   <img src="../../assets/PuntoU.jpg" class="img-fluid" style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;">
        

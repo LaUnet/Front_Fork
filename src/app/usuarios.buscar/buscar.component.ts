@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-buscarUsuario',
@@ -8,53 +11,85 @@ import { TokenService } from '../login/token';
   styleUrls: ['./buscar.component.css']
 })
 export class buscarUsuarioComponent {
-  rol: string = '';
-  username: string = '';
-  email: string = '';
-  password: string = '';
 
-  _id: string = '';
 
-  editingItem: any = null;
-  isEditing: boolean = false;
+  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService) { }
 
-  resultadoBusqueda: any = null;
 
-  errorMessage: string = '';
-  successMesssage: String = '';
+  columnas: string[] = ['_id', 'username', 'email', 'password', 'roles' , 'accion'];
 
-  mostrarFormularioCrearUsuario: boolean = false;
-  mostrarFormularioBuscarUsuario: boolean = false;
+  pageEvent!: PageEvent;
+  pageIndex:number = 0;
+  pageSize !:number;
+  length!:number;
+  pageSizeOptions = [8];
+  isLoadingResults : boolean = true;
 
-  constructor(private http: HttpClient, private tokenService: TokenService) {
-   }
 
-  toggleFormularioCrearUsuario() {
-    this.mostrarFormularioCrearUsuario = !this.mostrarFormularioCrearUsuario;
-    this.mostrarFormularioBuscarUsuario = false;
+
+  Usuarioes: any[] = [];
+  dataSourceUsuarios:any;
+
+
+  ngOnInit() {
+    this.buscarUsuario();
   }
 
-  toggleFormularioBuscarUsuario() {
-    this.mostrarFormularioBuscarUsuario = !this.mostrarFormularioBuscarUsuario;
-    this.mostrarFormularioCrearUsuario = false;
-  }
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
-
-  async onSubmitCrearUsuario() {
-
-    const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users';
-
-    const body = {
-      docs:[{
-          roles: [this.rol],
-          username: this.username,
-          email: this.email,
-          password: this.password
-        }]
+  async buscarUsuario() {
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
     };
+    this.isLoadingResults = true;
+    this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users', httpOptions )
+    .subscribe(response => {
+      if (response.Status) {
+        this.dataSourceUsuarios = new MatTableDataSource(response.Data.docs);
+        this.dataSourceUsuarios.paginator = this.paginator;
+        this.pageSize=response.Data.docs.limit;
+        this.pageIndex=response.Data.docs.page;
+        this.length = response.Data.totalDocs;
+      }
+      this.isLoadingResults = false; 
+    });
+  }
+
+  async recargarUsuario(page: PageEvent) {
+    this.dataSourceUsuarios = new MatTableDataSource;
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    this.isLoadingResults = true;
+    this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions )
+    .subscribe(response => {
+      if (response.Status) {
+        this.dataSourceUsuarios = new MatTableDataSource(response.Data.docs);
+        this.pageIndex=response.Data.docs.page;
+      }
+      this.isLoadingResults = false;
+    });
+  }
+
+
+  filtrar(event: Event) {
+      const filtro = (event.target as HTMLInputElement).value;
+      this.dataSourceUsuarios.filter = filtro.trim().toLowerCase();
+  } 
+
+
+/**
+  guardarEdicionUsuario() {
 
     const token = this.tokenService.token;
-    console.log("el body es ", body);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -62,108 +97,48 @@ export class buscarUsuarioComponent {
       })
     };
 
-    try {
-      const response = await this.http.post(url, body, httpOptions).toPromise();
-      this.successMesssage = 'Usuario creado correctamente';
-      console.log('Respuesta del servidor:', response);
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-      this.errorMessage = 'Error al crear el usuario. Por favor, inténtelo nuevamente.';
-    }
-  }
-
-  async onSubmitBuscarUsuario() {
-    
-    console.log("entro a buscar");
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users`;
-
-    const token = this.tokenService.token;
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`
-      })
+    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${this.UsuarioEditando._id}`;
+    const payload = {
+      descripcion: this.UsuarioEditando.descripcion,
+      unidadMedida: this.UsuarioEditando.unidadMedida,
+      documentoUsuario: this.UsuarioEditando.documentoUsuario,
+      codigoUsuario: this.UsuarioEditando.codigoUsuario,
+      estadoActivo: this.UsuarioEditando.estadoActivo,
     };
 
-    try {
-      console.log("entro a buscar2");
-      const response = await this.http.get(url, httpOptions).toPromise();
-      const jsonResponse = response as any; 
-      console.log("entro a buscar3 ", jsonResponse);
-      this.resultadoBusqueda = jsonResponse?.Data; 
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-      this.resultadoBusqueda = null; 
-    }
+    console.log("el body es ", payload);
 
+    this.http.patch(url, payload, httpOptions).subscribe(
+      (response) => {
+        console.log('Artículo editado exitosamente');
+        this.mensajeExitoso = 'Operación exitosa: El artículo se ha actualizado correctamente.';
+        setTimeout(() => {
+          this.refreshPage();
+        }, 3000);
+
+
+        setTimeout(() => {
+          this.mensajeExitoso = '';
+        }, 5000);
+
+      },
+      (error) => {
+        this.mensajeFallido = 'Error: El artículo no se ha podido actualizar ';
+        console.error('Error al editar el artículo', error);
+      }
+    );
   }
+ */
 
-
-  editarRol(item: any) {
-    this.editingItem = { ...item };
-    this.isEditing = true;
-  }
-
-  cancelarEdicion() {
-    this.isEditing = false;
-  }
-
-  async guardarCambios(id: string) {
-
-
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${id}`;
-
-    const body = {
-      username: this.username,
-      email: this.email
-    };
-
-    const token = this.tokenService.token;
-    console.log("el body es ", token);
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`
-      })
-    };
-
-    try {
-      const response = await this.http.put(url, httpOptions).toPromise();
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-      this.resultadoBusqueda = null; 
-    }
-
-    this.isEditing = false;
-    this.editingItem = null;
+  refreshPage() {
+    window.location.reload();
   }
   
-  async borrarRol(id: string) {
-
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${id}`;
-
-    const token = this.tokenService.token;
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`
-      })
-    };
+}
 
 
-    
-
-    try {
-      const response = await this.http.delete(url, httpOptions).toPromise();
-      this.successMesssage = 'Usuario borrado correctamente';
-      this.onSubmitBuscarUsuario();
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-      this.errorMessage = 'Error al eliminar el usuario. Por favor, inténtelo nuevamente.';
-    }
-
-  }
-  
+export class Usuario {
+  constructor(public id: string, public username: string, public email: String,
+              public password: string, public roles: string
+              ){}
 }

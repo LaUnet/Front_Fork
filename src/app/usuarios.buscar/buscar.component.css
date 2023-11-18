@@ -1,82 +1,12 @@
-/* Estilos para el menú */
-.menu {
-    background-color: #333; /* Color de fondo del menú */
-    color: white; /* Color del texto en el menú */
-  }
-  
-  .menu-list {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .menu-list li {
-    margin: 0 20px;
-  }
-  
-  .menu-list li a {
-    text-decoration: none;
-    color: white;
-    transition: color 0.3s;
-  }
-  
-  .menu-list li a:hover {
-    color: #f39c12; /* Color al pasar el ratón sobre los enlaces */
-  }
-  
-  body {
-    background-image: url('/src/assets/PuntoU.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center center;
-    margin: 0; /* Elimina el margen predeterminado del cuerpo */
-    padding: 0; /* Elimina el relleno predeterminado del cuerpo */
-  }
-  
-  
-
-.formulario-crear-usuario {
-    display: none; /* Por defecto, ocultamos el formulario */
-    margin-top: 20px;
-  }
-  
-  .formulario-crear-usuario form {
-    display: flex;
-    flex-direction: column;
-    max-width: 300px;
-    margin: 0 auto;
-  }
-  
-  .formulario-crear-usuario label {
-    margin-top: 10px;
-  }
-  
-  .formulario-crear-usuario input {
-    padding: 5px;
-    margin-top: 5px;
-  }
-  
-
-  /* Definición de la clase btn-unstyled */
-.btn-unstyled {
-    background-color: transparent;
-    border: none;
-    outline: none;
-    padding: 0;
-}
-
 .spacer {
   flex: 1 1 auto;
 } 
 
 mat-card {
   margin: auto;
-  width: 55%;
+  width: 80%;
+  margin-top: 0.1%;
   display: block;
-  margin-top: 2rem;
   opacity: 95%;
 }
 
@@ -85,10 +15,26 @@ margin-left: 1%;
 }
 
 .full-width {
-  margin-top: 4%;
+  margin-top: 0.1%;
   width: 100%;
+}
+
+.middle-width {
+  margin-top: 0.1%;
+  width: 50%;
+  margin-left: 20rem;
+  margin-right: 20rem;
 }
 
 td {
   padding-right: 8px;
+}
+
+.loading-shade {
+  position: absolute;
+  display: flex;
+  margin-top: 15%;
+  margin-left: 45%;
+  margin-right: 45%;
+
 }

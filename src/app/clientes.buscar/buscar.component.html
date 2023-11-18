@@ -36,113 +36,87 @@
   </button>  
 </mat-toolbar>
 
-<mat-card>
-  <form class="form">
-  <td></td>
-    <table class="full-width" cellspacing="0"><tr>
-      <td><mat-form-field class="full-width">
-        <mat-label>Tipo Documento</mat-label>
-        <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="CC">
-          <mat-option value="CC">Cedula Ciudadanía</mat-option>
-          <mat-option value="NIT">Nit</mat-option>
-          <mat-option value="CE">Cedula Extranjería</mat-option>
-          <mat-option value="TI">Tarjeta Identidad</mat-option>
-          <mat-option value="PAS">Pasaporte</mat-option>
-          <mat-option value="RC">Registro Civil</mat-option>
-        </mat-select>
-      </mat-form-field></td>
-      <td><mat-form-field class="full-width">
-        <mat-label>Numero Documento</mat-label>
-        <mat-icon matSuffix>contacts</mat-icon>
-        <input matInput required="">
-      </mat-form-field></td>
-      <td><mat-form-field class="full-width">
-        <mat-label>Nombre - Razon Social</mat-label>
-        <mat-icon matSuffix>description</mat-icon>
-        <input matInput required="">
-      </mat-form-field></td>
-    </tr></table>
+<mat-card>  
+  <mat-form-field class="middle-width">
+    <mat-label>Filtrar cliente</mat-label>
+    <mat-icon matSuffix>search</mat-icon>
+    <input matInput (keyup)="filtrar($event)" placeholder="buscar">
+  </mat-form-field>
 
-    <table class="full-width" cellspacing="0"><tr>
-      <td><mat-form-field class="full-width">
-        <mat-label>Numero Telefonico</mat-label>
-        <mat-icon matSuffix>phone</mat-icon>
-        <input matInput required #phone maxlength="10" placeholder="Ex. 3001002000">
-        <mat-hint align="end">{{phone.value.length}} / 10</mat-hint>
-      </mat-form-field></td>
-      <td><mat-form-field class="full-width">
-        <mat-label>Extensión</mat-label>
-        <mat-icon matSuffix>settings_phone</mat-icon>
-        <input matInput #extention maxlength="4" placeholder="Ex. 1234">
-        <mat-hint align="end">{{extention.value.length}} / 4</mat-hint>
-      </mat-form-field></td>
-      <td><mat-form-field class="full-width">
-        <mat-label>Email</mat-label>
-        <mat-icon matSuffix>email</mat-icon>
-          <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-                placeholder="Ex. correo@example.com">
-      </mat-form-field></td>
-    </tr></table>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="4">Parametro de busqueda no encontrado</td>
+  </tr>
 
-    <p>
-    <table class="full-width" cellspacing="0"><tr>
-      <td><mat-form-field class="full-width">
-        <mat-label>Departamento Entrega</mat-label>
-        <mat-icon matSuffix>business</mat-icon>
-        <mat-select #fontSize value="ANT">
-          <mat-option value="ANT">Antioquia</mat-option>
-        </mat-select>
-      </mat-form-field></td>
-    <td><mat-form-field class="full-width">
-      <mat-label>Municipcio Entrega</mat-label>
-      <mat-icon matSuffix>business</mat-icon>
-      <mat-select #fontSize value="MED">
-        <mat-option value="MED">Medellin</mat-option>
-        <mat-option value="BEL">Bello</mat-option>
-        <mat-option value="ENV">Envigado</mat-option>
-        <mat-option value="SAB">Sabaneta</mat-option>
-        <mat-option value="ITA">Itagui</mat-option>
-        <mat-option value="EST">Estrella</mat-option>
-      </mat-select>
-    </mat-form-field></td>
-      <td><mat-form-field class="full-width">
-        <mat-label>Barrio Entrega</mat-label>
-        <mat-icon matSuffix>business</mat-icon>
-        <input matInput>
-      </mat-form-field></td>
-    </tr></table>
+  <div *ngIf="isLoadingResults" class= "loading-shade">
+    <mat-progress-spinner 
+      color="primary" 
+      mode="indeterminate">
+    </mat-progress-spinner>
+  </div>
 
-    <p>
-      <table class="full-width" cellspacing="0"><tr>
-      <td><mat-form-field class="full-width">
-        <mat-label>Dirección Entrega</mat-label>
-        <mat-icon matSuffix>tour</mat-icon>
-        <input matInput required placeholder="Calle 67 #55-89">
-      </mat-form-field></td>
-      <td></td>
-      <td><mat-form-field class="full-width">
-        <mat-label>Regimen Tributario</mat-label>
-        <mat-icon matSuffix>currency_exchange</mat-icon>
-        <mat-select #fontSize value="SIM">
-          <mat-option value="SIM">Simplificado</mat-option>
-          <mat-option value="COM">Común</mat-option>
-          <mat-option value="ESP">Especial</mat-option>
-        </mat-select>
-      </mat-form-field></td>
-    </tr></table>   
-  </form>
 
-  <mat-card-actions align="end">
-    <mat-slide-toggle [(ngModel)]="isChecked">Misma Dirección Facturación</mat-slide-toggle>
-    <span class="spacer"></span>
-    <button mat-icon-button  align="end" matTooltip="Guardar">
-      <mat-icon>save</mat-icon>
-    </button> 
-    <button mat-icon-button matTooltip="Cancelar">
-      <mat-icon>cancel_presentation</mat-icon>
-    </button>
-  </mat-card-actions>
+<div class="mat-elevation-z8">
+
+  <table mat-table [dataSource]="dataSourceClientes" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="nombreRazonSocial">
+    <th mat-header-cell *matHeaderCellDef> Nombre o Razon Social </th>
+    <td mat-cell *matCellDef="let cliente"> {{cliente.nombreRazonSocial}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="tipoDocumento">
+    <th mat-header-cell *matHeaderCellDef> Tipo Documento </th>
+    <td mat-cell *matCellDef="let cliente"> {{cliente.tipoDocumento}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="numeroDocumento">
+    <th mat-header-cell *matHeaderCellDef> Numero Documento </th>
+    <td mat-cell *matCellDef="let cliente"> {{cliente.numeroDocumento}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="telefono">
+    <th mat-header-cell *matHeaderCellDef> Numero Telefono </th>
+    <td mat-cell *matCellDef="let cliente"> {{cliente.telefono}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef> Email </th>
+    <td mat-cell *matCellDef="let cliente"> {{cliente.email}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="estadoActivo">
+    <th mat-header-cell *matHeaderCellDef> Estado Activo </th>
+    <td mat-cell *matCellDef="let cliente"> {{cliente.estadoActivo}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="accion">
+    <th mat-header-cell *matHeaderCellDef> Accion </th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button color="primary" matTooltip="Editar">
+        <mat-icon>edit_note</mat-icon>
+      </button> 
+      <button mat-icon-button color="warn" matTooltip="Eliminar">
+        <mat-icon>delete</mat-icon>
+      </button>
+  </ng-container>
+
+
+
+  <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+
+</table>
+
+  <mat-paginator #paginator
+    [length]="length"
+    [pageIndex]="pageIndex"
+    [pageSize]="pageSize"
+    [showFirstLastButtons]="true" 
+    [pageSizeOptions] = "pageSizeOptions"
+    (page)="recargarCliente($event)">
+  </mat-paginator>
+</div>
+
 </mat-card>
 
 <img src="../../assets/PuntoU.jpg" class="img-fluid" style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;">

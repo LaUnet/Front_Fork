@@ -38,4 +38,110 @@
 
 </mat-toolbar>
 
+<mat-card>  
+  <mat-form-field class="middle-width">
+    <mat-label>Filtrar proveedor</mat-label>
+    <mat-icon matSuffix>search</mat-icon>
+    <input matInput (keyup)="filtrar($event)" placeholder="buscar">
+  </mat-form-field>
+
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="4">Parametro de busqueda no encontrado</td>
+  </tr>
+
+  <div *ngIf="isLoadingResults" class= "loading-shade">
+    <mat-progress-spinner 
+      color="primary" 
+      mode="indeterminate">
+    </mat-progress-spinner>
+  </div>
+
+
+<div class="mat-elevation-z8">
+
+  <table mat-table [dataSource]="dataSourceProveedores" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="nombreRazonSocial">
+    <th mat-header-cell *matHeaderCellDef> Nombre o Razon Social </th>
+    <td mat-cell *matCellDef="let proveedor"> {{proveedor.nombreRazonSocial}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="tipoDocumento">
+    <th mat-header-cell *matHeaderCellDef> Tipo Documento </th>
+    <td mat-cell *matCellDef="let proveedor"> {{proveedor.tipoDocumento}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="numeroDocumento">
+    <th mat-header-cell *matHeaderCellDef> Numero Documento </th>
+    <td mat-cell *matCellDef="let proveedor"> {{proveedor.numeroDocumento}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="telefono">
+    <th mat-header-cell *matHeaderCellDef> Numero Telefono </th>
+    <td mat-cell *matCellDef="let proveedor"> {{proveedor.telefono}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="departamento">
+    <th mat-header-cell *matHeaderCellDef> Departamento </th>
+    <td mat-cell *matCellDef="let proveedor"> {{proveedor.departamento}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="municipio">
+    <th mat-header-cell *matHeaderCellDef> Municipio </th>
+    <td mat-cell *matCellDef="let proveedor"> {{proveedor.municipio}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="direccion">
+    <th mat-header-cell *matHeaderCellDef> Dirección </th>
+    <td mat-cell *matCellDef="let proveedor"> {{proveedor.direccion}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef> Email </th>
+    <td mat-cell *matCellDef="let proveedor"> {{proveedor.email}} </td>
+  </ng-container>
+
+  
+  <ng-container matColumnDef="regimenTributario">
+    <th mat-header-cell *matHeaderCellDef> Regimen Tributario </th>
+    <td mat-cell *matCellDef="let proveedor"> {{proveedor.regimenTributario}} </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="estadoActivo">
+    <th mat-header-cell *matHeaderCellDef> Estado Activo </th>
+    <td mat-cell *matCellDef="let proveedor"> {{proveedor.estadoActivo}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="accion">
+    <th mat-header-cell *matHeaderCellDef> Accion </th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button color="primary" matTooltip="Editar">
+        <mat-icon>edit_note</mat-icon>
+      </button> 
+      <button mat-icon-button color="warn" matTooltip="Eliminar">
+        <mat-icon>delete</mat-icon>
+      </button>
+  </ng-container>
+
+
+
+  <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+
+</table>
+
+  <mat-paginator #paginator
+    [length]="length"
+    [pageIndex]="pageIndex"
+    [pageSize]="pageSize"
+    [showFirstLastButtons]="true" 
+    [pageSizeOptions] = "pageSizeOptions"
+    (page)="recargarProveedor($event)">
+  </mat-paginator>
+</div>
+
+</mat-card>
+
+
 <img src="../../assets/PuntoU.jpg" class="img-fluid" style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;">
