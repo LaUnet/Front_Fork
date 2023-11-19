@@ -18,6 +18,7 @@ import {registrarClienteComponent} from './clientes.registrar/registrar.componen
 import {buscarClienteComponent} from './clientes.buscar/buscar.component';
 import {registrarUbicacionComponent} from './ubicaciones.registrar/registrar.component';
 import {buscarUbicacionComponent} from './ubicaciones.buscar/buscar.component';
+import {TableHttpExample} from './pruebaServicio/prueba'
 
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -63,7 +64,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     registrarClienteComponent,
     buscarClienteComponent,
     registrarUbicacionComponent,
-    buscarUbicacionComponent
+    buscarUbicacionComponent,
+    TableHttpExample
 
   ],
   imports: [
