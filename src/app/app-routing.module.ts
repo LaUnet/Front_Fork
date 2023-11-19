@@ -14,7 +14,6 @@ import { registrarClienteComponent } from './clientes.registrar/registrar.compon
 import { buscarClienteComponent } from './clientes.buscar/buscar.component';
 import { registrarUbicacionComponent } from './ubicaciones.registrar/registrar.component';
 import { buscarUbicacionComponent } from './ubicaciones.buscar/buscar.component';
-import {TableHttpExample} from './pruebaServicio/prueba'
 
 
 const routes: Routes = [
@@ -33,7 +32,6 @@ const routes: Routes = [
   { path: 'buscarCliente', component: buscarClienteComponent },
   { path: 'registrarUbicacion', component: registrarUbicacionComponent },
   { path: 'buscarUbicacion', component: buscarUbicacionComponent },
-  { path: 'tablehttpExample', component: TableHttpExample },
 
 ];
 
