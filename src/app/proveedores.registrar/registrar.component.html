@@ -9,9 +9,8 @@
   </button> 
 
   <span class="spacer"></span>
-  <button mat-fab extended disabled>
-    REGISTRAR PROVEEDOR
-  </button>
+
+
   <span class="spacer"></span>
 
   <button mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
@@ -53,12 +52,12 @@
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
         <mat-label>Numero Documento</mat-label>
-        <mat-icon matSuffix>contacts</mat-icon>
+        <mat-icon matSuffix>document</mat-icon>
         <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento" required="">
       </mat-form-field></td>
       <td><mat-form-field class="full-width">
         <mat-label>Nombre - Razon Social</mat-label>
-        <mat-icon matSuffix>description</mat-icon>
+        <mat-icon matSuffix>name</mat-icon>
         <input matInput [(ngModel)]="nuevoProveedor.nombreRazonSocial" name="nombreRazonSocial" required="">
       </mat-form-field></td>
     </tr></table>

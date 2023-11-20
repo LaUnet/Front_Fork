@@ -9,10 +9,6 @@
   </button> 
 
   <span class="spacer"></span>
-  <button mat-fab extended disabled>
-    REGISTRAR ARTICULO
-  </button>
-  <span class="spacer"></span>
 
 
   <button mat-icon-button matTooltip="Ajustes">
@@ -29,18 +25,26 @@
 <mat-card>
   <form class="form">
   <td></td>
-    <table class="full-width" cellspacing="0"><tr>      
+    <table class="full-width" cellspacing="0"><tr>
+      <td>
+        <mat-form-field class="full-width">
+          <mat-label>Código</mat-label>
+          <mat-icon matSuffix>codigo</mat-icon>
+          <input matInput [(ngModel)]="nuevoArticulo.codigo" minlength="10"  maxlength="10" name="codigo" required>
+        </mat-form-field>
+      </td>
+      
       <td>
         <mat-form-field class="full-width">
           <mat-label>Descripción</mat-label>
-          <mat-icon matSuffix>article</mat-icon>
+          <mat-icon matSuffix>descripcion</mat-icon>
           <input matInput [(ngModel)]="nuevoArticulo.descripcion" name="descripcion" required>
         </mat-form-field>
       </td>
       <td>
         <mat-form-field class="full-width">
           <mat-label>Marca</mat-label>
-          <mat-icon matSuffix>description</mat-icon>
+          <mat-icon matSuffix>marca</mat-icon>
           <input matInput [(ngModel)]="nuevoArticulo.marca"  name="marca" required>
         </mat-form-field>
       </td>      
@@ -51,7 +55,7 @@
       <td>
         <mat-form-field class="full-width">
           <mat-label>Referencia</mat-label>
-          <mat-icon matSuffix>label</mat-icon>
+          <mat-icon matSuffix>referencia</mat-icon>
           <input matInput [(ngModel)]="nuevoArticulo.referencia" name="referencia" required>
         </mat-form-field>
       </td>
@@ -75,7 +79,7 @@
       <td>
         <mat-form-field class="full-width">
           <mat-label>Codigo Ubicación</mat-label>
-          <mat-icon matSuffix>list</mat-icon>
+          <mat-icon matSuffix>codigoUbicacion</mat-icon>
           <mat-select [(ngModel)]="nuevoArticulo.codigoUbicacion" name="codigoUbicacion" >
             <mat-option disabled selected>Selecciona una ubicación</mat-option>
             <mat-option *ngFor="let ubicacion of ubicaciones" [value]="ubicacion.codigo">
@@ -86,15 +90,18 @@
       </td>          
     </tr></table>
    
-    <mat-card-actions align="end">
-      <button mat-icon-button matTooltip="Guardar" (click)="crearArticulo()">
-        <mat-icon>save</mat-icon>
-      </button> 
-      <button mat-icon-button matTooltip="Cancelar" (click)="cancelarCreacion()">
-        <mat-icon>cancel_presentation</mat-icon>
-      </button>
-    </mat-card-actions>
+
+    <button mat-icon-button matTooltip="Guardar" (click)="crearArticulo()">
+      <mat-icon>save</mat-icon>
+    </button> 
+    <button mat-icon-button matTooltip="Cancelar" (click)="cancelarCreacion()">
+      <mat-icon>cancel_presentation</mat-icon>
+    </button>
   </form>
+
+  <mat-card-actions align="end">
+
+  </mat-card-actions>
 </mat-card>
 
 <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
