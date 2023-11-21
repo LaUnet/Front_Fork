@@ -64,7 +64,6 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     buscarClienteComponent,
     registrarUbicacionComponent,
     buscarUbicacionComponent
-
   ],
   imports: [
     BrowserModule,

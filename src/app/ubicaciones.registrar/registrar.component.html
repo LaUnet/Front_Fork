@@ -10,10 +10,6 @@
 
   <span class="spacer"></span>
 
-  <button mat-fab extended disabled>
-    REGISTRAR UBICACION
-  </button>
-
   <span class="spacer"></span>
 
   <button mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
@@ -44,7 +40,7 @@
       <td><mat-form-field class="full-width">
         <mat-label>Nombre Zona</mat-label>
         <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="Piso1">
+        <mat-select [(ngModel)]="nuevaUbicacion.zona" name="zona" #fontSize value="Piso1">
           <mat-option value="Piso1">Primer Piso</mat-option>
           <mat-option value="Piso2">Segundo Piso</mat-option>
         </mat-select>
@@ -52,7 +48,7 @@
       <td><mat-form-field class="full-width">
         <mat-label>Numero Zona</mat-label>
         <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="Z01">
+        <mat-select [(ngModel)]="nuevaUbicacion.numeroZona" name="numeroZona" #fontSize value="Z01">
           <mat-option value="Z01">01</mat-option>
           <mat-option value="Z02">02</mat-option>
           <mat-option value="Z03">03</mat-option>
@@ -64,7 +60,7 @@
       <td><mat-form-field class="full-width">
         <mat-label>Numero Estanteria</mat-label>
         <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="E01">
+        <mat-select [(ngModel)]="nuevaUbicacion.estante" name="estante" #fontSize value="E01">
           <mat-option value="E01">01</mat-option>
           <mat-option value="E02">02</mat-option>
           <mat-option value="E03">03</mat-option>
@@ -73,7 +69,7 @@
       <td><mat-form-field class="full-width">
         <mat-label>Numero Ubicacion</mat-label>
         <mat-icon matSuffix>list</mat-icon>
-        <mat-select #fontSize value="U01">
+        <mat-select [(ngModel)]="nuevaUbicacion.ubicacion" name="ubicacion" #fontSize value="U01">
           <mat-option value="U01">01</mat-option>
           <mat-option value="U02">02</mat-option>
           <mat-option value="U03">03</mat-option>
@@ -83,13 +79,23 @@
   </form>
 
   <mat-card-actions align="end">
-    <button mat-icon-button matTooltip="Guardar">
+    <button mat-icon-button matTooltip="Guardar" (click)="crearUbicacion()">
       <mat-icon>save</mat-icon>
     </button> 
-    <button mat-icon-button matTooltip="Cancelar">
+    <button mat-icon-button matTooltip="Cancelar" (click)="resetnuevaUbicacion()">
       <mat-icon>cancel_presentation</mat-icon>
     </button>
   </mat-card-actions>
 </mat-card>
+
+
+<div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+  {{ mensajeExitoso }}
+</div>
+  
+
+<div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+  {{ mensajeFallido }}
+</div>
 
 <img src="../../assets/PuntoU.jpg" class="img-fluid" style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;">

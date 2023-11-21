@@ -90,9 +90,26 @@ export class registrarProveedorComponent {
     window.location.reload();
   }
 
+  resetNuevoProveedor() {
+    this.nuevoProveedor = {
+      tipoDocumento: '',
+      numeroDocumento: '',
+      nombreRazonSocial: '',
+      telefono: '',
+      direccion: '',
+      departamento: '',
+      municipio: '',
+      email: '',
+      barrio: '',
+      regimenTributario: '',
+      estadoActivo: false
+    };
+  }
 
 
 }
+
+
 
   /** Error when invalid control is dirty, touched, or submitted. */
   export class MyErrorStateMatcher implements ErrorStateMatcher {
