@@ -60,7 +60,6 @@ export class registrarArticuloComponent {
     const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles';
 
     const body = {
-      codigo: this.nuevoArticulo.codigo.substring(0, 10),
       descripcion: this.nuevoArticulo.descripcion,
       unidadMedida: this.nuevoArticulo.unidadMedida,
       documentoProveedor: this.nuevoArticulo.documentoProveedor,
