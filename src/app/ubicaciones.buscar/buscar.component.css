@@ -1,6 +1,6 @@
 .spacer {
   flex: 1 1 auto;
-} 
+}
 
 mat-card {
   margin: auto;
@@ -11,7 +11,7 @@ mat-card {
 }
 
 .form {
-margin-left: 1%;
+  margin-left: 1%;
 }
 
 .full-width {
@@ -37,4 +37,19 @@ td {
   margin-left: 45%;
   margin-right: 45%;
 
+}
+
+mat-sidenav-container {
+  height: calc(205vh - 115vH);
+}
+
+mat-sidenav {
+  width: 230px;
+  background-color: #eee;
+}
+
+
+
+.colorText {
+  color: white;
 }

@@ -26,7 +26,8 @@ export class registrarArticuloComponent {
   codigoArticuloBusqueda: string = '';
   articulosEncontrados: any[] = [];
   mostrarResultados: boolean = false;
-
+  opened: boolean = false;
+  
   errorMessage: string = '';
   successMesssage: String = '';
 
@@ -45,7 +46,7 @@ export class registrarArticuloComponent {
   mostrarFormulario = false;
   mostrarFormularioBuscar = false;
   nuevoArticulo = {
-    codigo: '',
+    codigoBarras: '',
     descripcion: '',
     unidadMedida: '',
     documentoProveedor: [],
@@ -60,6 +61,7 @@ export class registrarArticuloComponent {
     const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles';
 
     const body = {
+      codigoBarras: this.nuevoArticulo.codigoBarras,
       descripcion: this.nuevoArticulo.descripcion,
       unidadMedida: this.nuevoArticulo.unidadMedida,
       documentoProveedor: this.nuevoArticulo.documentoProveedor,
@@ -151,7 +153,7 @@ export class registrarArticuloComponent {
 
   resetNuevoArticulo() {
     this.nuevoArticulo = {
-      codigo: '',
+      codigoBarras: '',
       descripcion: '',
       unidadMedida: 'UND',
       documentoProveedor: [],

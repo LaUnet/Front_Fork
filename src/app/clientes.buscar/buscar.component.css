@@ -38,3 +38,16 @@ td {
   margin-right: 45%;
 
 }
+
+mat-sidenav-container {
+  height: calc(205vh - 115vH);
+  }
+
+  mat-sidenav {
+    width: 230px;
+    background-color: #eee;
+  }
+
+  .colorText {
+    color: white;
+  }

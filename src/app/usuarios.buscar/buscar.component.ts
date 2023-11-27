@@ -4,6 +4,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { EditarComponent } from './editar.component';
+import { DialogConfig } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'app-buscarUsuario',
@@ -13,10 +16,10 @@ import { MatTableDataSource } from '@angular/material/table';
 export class buscarUsuarioComponent {
 
 
-  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService) { }
+  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialog:MatDialog) { }
 
 
-  columnas: string[] = ['_id', 'username', 'email', 'password', 'roles' , 'accion'];
+  columnas: string[] = ['_id', 'username', 'email', 'roles' , 'accion'];
 
   pageEvent!: PageEvent;
   pageIndex:number = 0;
@@ -24,10 +27,11 @@ export class buscarUsuarioComponent {
   length!:number;
   pageSizeOptions = [8];
   isLoadingResults : boolean = true;
+  opened: boolean = false;
 
 
 
-  Usuarioes: any[] = [];
+  data: any[] = [];
   dataSourceUsuarios:any;
 
 
@@ -85,8 +89,14 @@ export class buscarUsuarioComponent {
       this.dataSourceUsuarios.filter = filtro.trim().toLowerCase();
   } 
 
+openDialog(data:any[]) {  
+    const dialogRef = this.dialog.open(EditarComponent, {});
+    dialogRef.afterClosed().subscribe({});
+} 
+
 
 /**
+
   guardarEdicionUsuario() {
 
     const token = this.tokenService.token;

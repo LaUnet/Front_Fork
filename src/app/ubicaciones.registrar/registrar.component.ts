@@ -22,7 +22,7 @@ export class registrarUbicacionComponent {
 
   ubicaciones: any[] = [];
   proveedores: any[] = [];
-
+  opened: boolean = false;
   codigoArticuloBusqueda: string = '';
   articulosEncontrados: any[] = [];
   mostrarResultados: boolean = false;

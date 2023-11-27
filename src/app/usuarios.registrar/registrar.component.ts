@@ -29,7 +29,7 @@ export class registrarUsuarioComponent {
   password: string = '';
 
   _id: string = '';
-
+  opened: boolean = false;
   editingItem: any = null;
   isEditing: boolean = false;
 

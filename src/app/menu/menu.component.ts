@@ -9,7 +9,7 @@ import { TokenService } from '../login/token';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent {
-
+  opened: boolean = false;
   editingItem: any = null;
   isEditing: boolean = false;
 

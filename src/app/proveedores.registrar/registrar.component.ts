@@ -37,6 +37,7 @@ export class registrarProveedorComponent {
   
   mostrarFormulario1: boolean = false;
   mostrarBotonCrearProveedor = true;
+  opened: boolean = false;
 
   error: string | null = null;
 

@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-buscarProveedor',
@@ -14,7 +14,7 @@ import { MatTableDataSource } from '@angular/material/table';
 export class buscarProveedorComponent {
 
 
-  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService) { }
+  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialog:MatDialog) { }
 
 
   columnas: string[] = ['nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'telefono', 'direccion' , 'departamento' , 'municipio', 'email', 'regimenTributario', 'estadoActivo', 'accion'];
@@ -25,7 +25,7 @@ export class buscarProveedorComponent {
   length!:number;
   pageSizeOptions = [8];
   isLoadingResults : boolean = true;
-
+  opened: boolean = false;
 
 
   ubicaciones: any[] = [];
@@ -85,7 +85,6 @@ export class buscarProveedorComponent {
       const filtro = (event.target as HTMLInputElement).value;
       this.dataSourceProveedores.filter = filtro.trim().toLowerCase();
   } 
-
 
 /**
   guardarEdicionProveedor() {

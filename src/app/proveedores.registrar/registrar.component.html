@@ -1,8 +1,8 @@
-<mat-toolbar color="basic" class="mat-elevation-z6">
+<mat-toolbar color="primary" class="mat-elevation-z6">
 
-  <button mat-icon-button routerLink="/menu" matTooltip="Menu">
+  <button mat-button matTooltip="Menu" (click)="opened=!opened">
     <mat-icon>menu</mat-icon>
-  </button> 
+  </button>
 
   <button mat-icon-button routerLink="/buscarProveedor" matTooltip="Buscar Proveedor">
     <mat-icon>search</mat-icon>
@@ -10,7 +10,7 @@
 
 
   <span class="spacer"></span>
-  <button mat-fab extended disabled>
+  <button mat-fab extended disabled class="colorText">
     REGISTRAR PROVEEDOR
   </button>
 
@@ -37,6 +37,104 @@
   </button> 
 </mat-toolbar>
 
+<mat-sidenav-container>
+  <mat-sidenav [(opened)]="opened" mode="push">
+
+    <mat-nav-list>
+      <a mat-list-item routerLink="/menu">
+        <span>Menu</span>
+      </a>
+      <mat-divider></mat-divider>
+      <mat-expansion-panel [class.mat-elevation-z0]="true">
+        <mat-expansion-panel-header>
+          Ventas
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a mat-list-item routerLink="#">
+            <span>Registrar Venta</span>
+          </a>
+          <a mat-list-item routerLink="#">
+            <span>Buscar Venta</span>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+      <mat-divider></mat-divider>
+      <mat-expansion-panel [class.mat-elevation-z0]="true">
+        <mat-expansion-panel-header>
+          Clientes
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a mat-list-item routerLink="/registrarCliente">
+            <span>Registrar Cliente</span>
+          </a>
+          <a mat-list-item routerLink="/buscarCliente">
+            <span>Buscar Cliente</span>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+      <mat-divider></mat-divider>
+      <mat-expansion-panel [class.mat-elevation-z0]="true">
+        <mat-expansion-panel-header>
+          Articulos
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a mat-list-item routerLink="/registrarArticulo">
+            <span>Registrar Articulo</span>
+          </a>
+          <a mat-list-item routerLink="/buscarArticulo">
+            <span>Buscar Articulo</span>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+      <mat-divider></mat-divider>
+      <mat-expansion-panel [class.mat-elevation-z0]="true">
+        <mat-expansion-panel-header>
+          Ubicaciones
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a mat-list-item routerLink="/registrarUbicacion">
+            <span>Registrar Ubicación</span>
+          </a>
+          <a mat-list-item routerLink="/buscarUbicacion">
+            <span>Buscar Ubicación</span>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+      <mat-divider></mat-divider>
+      <mat-expansion-panel [class.mat-elevation-z0]="true">
+        <mat-expansion-panel-header>
+          Compras
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a mat-list-item routerLink="#">
+            <span>Registrar Compra</span>
+          </a>
+          <a mat-list-item routerLink="#">
+            <span>Buscar Compra</span>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+      <mat-divider></mat-divider>
+      <mat-expansion-panel [class.mat-elevation-z0]="true">
+        <mat-expansion-panel-header>
+          Proveedores
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a mat-list-item routerLink="/registrarProveedor">
+            <span>Registrar Proveedor</span>
+          </a>
+          <a mat-list-item routerLink="/buscarProveedor">
+            <span>Buscar Proveedor</span>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-nav-list>
+
+
+  </mat-sidenav>
+  <mat-sidenav-content>
+
+    
 <mat-card>
   <form class="form">
   <td></td>
@@ -145,6 +243,13 @@
   </mat-card-actions>
 </mat-card>
 
+    <img src="../../assets/PuntoU.jpg" class="img-fluid"
+    style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;">
+
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+
 <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
   {{ mensajeExitoso }}
 </div>
@@ -153,5 +258,3 @@
 <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
   {{ mensajeFallido }}
 </div>
-
-<img src="../../assets/PuntoU.jpg" class="img-fluid" style="position: absolute; right: 0; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;">

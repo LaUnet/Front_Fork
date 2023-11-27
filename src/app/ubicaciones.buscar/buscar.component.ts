@@ -4,17 +4,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+
 
 
 @Component({
   selector: 'app-buscarUbicacion',
   templateUrl: './buscar.component.html',
-  styleUrls: ['./buscar.component.css']
+  styleUrls: ['./buscar.component.css'],
 })
 export class buscarUbicacionComponent {
 
 
-  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService) { }
+  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialog:MatDialog) { }
 
 
   columnas: string[] = ['codigo', 'nombreZona', 'numeroZona', 'numeroEstanteria', 'numeroUbicacion' , 'estadoActivo', 'accion'];
@@ -25,7 +27,8 @@ export class buscarUbicacionComponent {
   length!:number;
   pageSizeOptions = [8];
   isLoadingResults : boolean = true;
-
+  opened: boolean = false;
+  openedEdit: boolean = false;
 
 
   ubicaciones: any[] = [];
@@ -85,6 +88,7 @@ export class buscarUbicacionComponent {
       const filtro = (event.target as HTMLInputElement).value;
       this.dataSourceUbicaciones.filter = filtro.trim().toLowerCase();
   } 
+
 
 
 /**

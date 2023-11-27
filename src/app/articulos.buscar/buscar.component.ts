@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
 
 
 
@@ -15,7 +16,7 @@ import { MatTableDataSource } from '@angular/material/table';
 export class buscarArticuloComponent {
 
 
-  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService) { }
+  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialog:MatDialog) { }
 
 
   columnas: string[] = ['codigo', 'codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'estadoActivo', 'accion'];
@@ -26,7 +27,7 @@ export class buscarArticuloComponent {
   length!:number;
   pageSizeOptions = [8];
   isLoadingResults : boolean = true;
-
+  opened: boolean = false;
 
 
   ubicaciones: any[] = [];

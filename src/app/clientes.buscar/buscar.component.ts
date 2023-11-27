@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -14,7 +15,7 @@ import { MatTableDataSource } from '@angular/material/table';
 export class buscarClienteComponent {
 
 
-  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService) { }
+  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialog:MatDialog) { }
 
 
   columnas: string[] = ['nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'telefono','email', 'estadoActivo', 'accion'];
@@ -25,7 +26,7 @@ export class buscarClienteComponent {
   length!:number;
   pageSizeOptions = [8];
   isLoadingResults : boolean = true;
-
+  opened: boolean = false;
 
 
   ubicaciones: any[] = [];

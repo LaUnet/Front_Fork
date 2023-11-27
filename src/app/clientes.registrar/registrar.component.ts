@@ -22,7 +22,7 @@ export class registrarClienteComponent {
     matcher = new MyErrorStateMatcher();
 
     isChecked = true;
-
+    opened: boolean = false;
 
   nuevoCliente: any = {
     tipoDocumento: '',
