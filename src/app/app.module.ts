@@ -18,7 +18,6 @@ import {registrarClienteComponent} from './clientes.registrar/registrar.componen
 import {buscarClienteComponent} from './clientes.buscar/buscar.component';
 import {registrarUbicacionComponent} from './ubicaciones.registrar/registrar.component';
 import {buscarUbicacionComponent} from './ubicaciones.buscar/buscar.component';
-import {EditarComponent} from './usuarios.buscar/editar.component'
 
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -67,8 +66,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     registrarClienteComponent,
     buscarClienteComponent,
     registrarUbicacionComponent,
-    buscarUbicacionComponent,
-    EditarComponent
+    buscarUbicacionComponent
   ],
   imports: [
     BrowserModule,

@@ -1,12 +1,9 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, ViewChild, Inject} from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { EditarComponent } from './editar.component';
-import { DialogConfig } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'app-buscarUsuario',
@@ -15,8 +12,7 @@ import { DialogConfig } from '@angular/cdk/dialog';
 })
 export class buscarUsuarioComponent {
 
-
-  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialog:MatDialog) { }
+  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService) { }
 
 
   columnas: string[] = ['_id', 'username', 'email', 'roles' , 'accion'];
@@ -27,13 +23,8 @@ export class buscarUsuarioComponent {
   length!:number;
   pageSizeOptions = [8];
   isLoadingResults : boolean = true;
-  opened: boolean = false;
-
-
-
-  data: any[] = [];
   dataSourceUsuarios:any;
-
+  opened: boolean = false;
 
   ngOnInit() {
     this.buscarUsuario();
@@ -88,12 +79,6 @@ export class buscarUsuarioComponent {
       const filtro = (event.target as HTMLInputElement).value;
       this.dataSourceUsuarios.filter = filtro.trim().toLowerCase();
   } 
-
-openDialog(data:any[]) {  
-    const dialogRef = this.dialog.open(EditarComponent, {});
-    dialogRef.afterClosed().subscribe({});
-} 
-
 
 /**
 
