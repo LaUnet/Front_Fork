@@ -29,29 +29,19 @@
 
 <mat-sidenav-container>
   <mat-sidenav [(opened)]="opened" mode="push">
-
     <mat-nav-list>
-      <a mat-list-item routerLink="/menu">
-        <span>Menu</span>
-      </a>
+      <mat-list-item routerLink="/menu" (click)="opened=!opened">
+        <mat-icon>menu</mat-icon>
+      </mat-list-item>
+      <mat-list-item routerLink="#" [class.mat-elevation-z0]="true" style="cursor: pointer">
+        <mat-icon>shopping_bag</mat-icon>
+        <span>Catalogo</span>
+      </mat-list-item>
       <mat-divider></mat-divider>
       <mat-expansion-panel [class.mat-elevation-z0]="true">
         <mat-expansion-panel-header>
-          Ventas
-        </mat-expansion-panel-header>
-        <mat-nav-list>
-          <a mat-list-item routerLink="#">
-            <span>Registrar Venta</span>
-          </a>
-          <a mat-list-item routerLink="#">
-            <span>Buscar Venta</span>
-          </a>
-        </mat-nav-list>
-      </mat-expansion-panel>
-      <mat-divider></mat-divider>
-      <mat-expansion-panel [class.mat-elevation-z0]="true">
-        <mat-expansion-panel-header>
-          Clientes
+          <mat-icon>perm_identity</mat-icon>
+          <span> Clientes</span>
         </mat-expansion-panel-header>
         <mat-nav-list>
           <a mat-list-item routerLink="/registrarCliente">
@@ -65,7 +55,8 @@
       <mat-divider></mat-divider>
       <mat-expansion-panel [class.mat-elevation-z0]="true">
         <mat-expansion-panel-header>
-          Articulos
+          <mat-icon>article</mat-icon>
+          <span> Articulos</span>
         </mat-expansion-panel-header>
         <mat-nav-list>
           <a mat-list-item routerLink="/registrarArticulo">
@@ -79,7 +70,8 @@
       <mat-divider></mat-divider>
       <mat-expansion-panel [class.mat-elevation-z0]="true">
         <mat-expansion-panel-header>
-          Ubicaciones
+          <mat-icon>location_searching</mat-icon>
+          <span> Ubicaciones</span>
         </mat-expansion-panel-header>
         <mat-nav-list>
           <a mat-list-item routerLink="/registrarUbicacion">
@@ -93,21 +85,8 @@
       <mat-divider></mat-divider>
       <mat-expansion-panel [class.mat-elevation-z0]="true">
         <mat-expansion-panel-header>
-          Compras
-        </mat-expansion-panel-header>
-        <mat-nav-list>
-          <a mat-list-item routerLink="#">
-            <span>Registrar Compra</span>
-          </a>
-          <a mat-list-item routerLink="#">
-            <span>Buscar Compra</span>
-          </a>
-        </mat-nav-list>
-      </mat-expansion-panel>
-      <mat-divider></mat-divider>
-      <mat-expansion-panel [class.mat-elevation-z0]="true">
-        <mat-expansion-panel-header>
-          Proveedores
+          <mat-icon>supervisor_account</mat-icon>
+          <span> Proveedores</span>
         </mat-expansion-panel-header>
         <mat-nav-list>
           <a mat-list-item routerLink="/registrarProveedor">
@@ -118,6 +97,11 @@
           </a>
         </mat-nav-list>
       </mat-expansion-panel>
+      <mat-divider></mat-divider>
+      <mat-list-item routerLink="#" [class.mat-elevation-z0]="true">
+        <mat-icon>shopping_basket</mat-icon>
+        <span> Pedidos</span>
+      </mat-list-item>
     </mat-nav-list>
 
 
