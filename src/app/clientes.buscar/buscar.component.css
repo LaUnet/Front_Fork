@@ -21,7 +21,7 @@ margin-left: 1%;
 
 .middle-width {
   margin-top: 0.1%;
-  width: 50%;
+  width: 75%;
   margin-left: 20rem;
   margin-right: 20rem;
 }
@@ -50,4 +50,10 @@ mat-sidenav-container {
 
   .colorText {
     color: white;
+  }
+
+  .mat-form-field{
+    margin-top: 1.5%;
+    width: 25%;
+    margin-left: auto;
   }

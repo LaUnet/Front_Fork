@@ -25,7 +25,7 @@ export class buscarArticuloComponent {
   pageIndex:number = 0;
   pageSize !:number;
   length!:number;
-  pageSizeOptions = [8];
+  pageSizeOptions = [10];
   isLoadingResults : boolean = true;
   opened: boolean = false;
 

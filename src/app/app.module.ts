@@ -18,6 +18,7 @@ import {registrarClienteComponent} from './clientes.registrar/registrar.componen
 import {buscarClienteComponent} from './clientes.buscar/buscar.component';
 import {registrarUbicacionComponent} from './ubicaciones.registrar/registrar.component';
 import {buscarUbicacionComponent} from './ubicaciones.buscar/buscar.component';
+import { CatalogoComponent } from './catalogo/catalogo.component';
 
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -47,6 +48,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatBadgeModule} from '@angular/material/badge';
+
 
 
 @NgModule({
@@ -66,7 +69,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     registrarClienteComponent,
     buscarClienteComponent,
     registrarUbicacionComponent,
-    buscarUbicacionComponent
+    buscarUbicacionComponent,
+    CatalogoComponent
   ],
   imports: [
     BrowserModule,
@@ -93,7 +97,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatProgressSpinnerModule,
     MatSidenavModule,
     MatExpansionModule,
-    MatDialogModule
+    MatDialogModule,
+    MatBadgeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

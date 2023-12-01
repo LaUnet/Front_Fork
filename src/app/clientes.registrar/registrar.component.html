@@ -1,7 +1,7 @@
 <mat-toolbar color="primary" class="mat-elevation-z6">
 
-  <button mat-button matTooltip="Menu" (click)="opened=!opened">
-    <mat-icon>menu</mat-icon>
+  <button mat-icon-button matTooltip="Menu" (click)="opened=!opened">
+    <mat-icon>reorder</mat-icon>
   </button>
 
   <button mat-icon-button routerLink="/buscarCliente" matTooltip="Buscar Cliente">
@@ -40,9 +40,9 @@
   <mat-sidenav [(opened)]="opened" mode="push">
     <mat-nav-list>
       <mat-list-item routerLink="/menu" (click)="opened=!opened">
-        <mat-icon>menu</mat-icon>
+        <mat-icon>reorder</mat-icon>
       </mat-list-item>
-      <mat-list-item routerLink="#" [class.mat-elevation-z0]="true" style="cursor: pointer">
+      <mat-list-item routerLink="/catalogoProductos" [class.mat-elevation-z0]="true" style="cursor: pointer">
         <mat-icon>shopping_bag</mat-icon>
         <span>Catalogo</span>
       </mat-list-item>
@@ -107,7 +107,7 @@
         </mat-nav-list>
       </mat-expansion-panel>
       <mat-divider></mat-divider>
-      <mat-list-item routerLink="#" [class.mat-elevation-z0]="true">
+      <mat-list-item routerLink="/catalogoProductos" [class.mat-elevation-z0]="true">
         <mat-icon>shopping_basket</mat-icon>
         <span> Pedidos</span>
       </mat-list-item>
