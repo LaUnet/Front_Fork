@@ -8,11 +8,20 @@
     <mat-icon>app_registration</mat-icon>
   </button> 
 
+  <mat-form-field class="mat-form-field">
+    <mat-label>Filtrar Proveedor</mat-label>
+    <mat-icon matSuffix color="primary">search</mat-icon>
+    <input matInput (keyup)="filtrar($event)" placeholder="buscar">
+  </mat-form-field>
+
   <span class="spacer"></span>
+
   <button mat-fab extended disabled class="colorText">
     BUSCAR PROVEEDOR
   </button>
 
+  <span class="spacer"></span>
+  <span class="spacer"></span>
   <span class="spacer"></span>
 
   <button mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
@@ -119,15 +128,6 @@
   <mat-sidenav-content>
 
     <mat-card>  
-      <mat-form-field class="middle-width">
-        <mat-label>Filtrar proveedor</mat-label>
-        <mat-icon matSuffix>search</mat-icon>
-        <input matInput (keyup)="filtrar($event)" placeholder="buscar">
-      </mat-form-field>
-    
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">Parametro de busqueda no encontrado</td>
-      </tr>
     
       <div *ngIf="isLoadingResults" class= "loading-shade">
         <mat-progress-spinner 
