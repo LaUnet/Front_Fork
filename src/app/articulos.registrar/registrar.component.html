@@ -38,7 +38,7 @@
 <mat-sidenav-container>
   <mat-sidenav [(opened)]="opened" mode="push">
     <mat-nav-list>
-      <mat-list-item routerLink="/menu" (click)="opened=!opened">
+      <mat-list-item routerLink="/menu" matTooltip="Menu" (click)="opened=!opened">
         <mat-icon>menu</mat-icon>
       </mat-list-item>
       <mat-list-item routerLink="/catalogoProductos" [class.mat-elevation-z0]="true" style="cursor: pointer">
