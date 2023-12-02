@@ -20,7 +20,7 @@ columnas: string[] = ['codigo', 'codigoBarras', 'descripcion', 'marca', 'referen
 quantityCart:number = 8;
 opened!:boolean;
 dataSourceCatalogo:any;
-isLoadingResults : boolean = true;
+isLoadingResults : boolean = false;
 pageEvent!: PageEvent;
 pageIndex:number = 0;
 pageSize !:number;
@@ -31,7 +31,7 @@ pageSizeOptions = [20];
 @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
 ngOnInit() {
-  this.buscarCatalogo();
+
 }
 
 async buscarCatalogo() {
@@ -79,6 +79,7 @@ async recargarCatalogo(page: PageEvent) {
 
 filtrar(event: Event) {
   const filtro = (event.target as HTMLInputElement).value;
+  this.buscarCatalogo();
   this.dataSourceCatalogo.filter = filtro.trim().toLowerCase();
 } 
 

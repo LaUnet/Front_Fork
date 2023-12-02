@@ -22,7 +22,7 @@ export class buscarUsuarioComponent {
   pageSize !:number;
   length!:number;
   pageSizeOptions = [10];
-  isLoadingResults : boolean = true;
+  isLoadingResults : boolean = false;
   dataSourceUsuarios:any;
   opened: boolean = false;
 

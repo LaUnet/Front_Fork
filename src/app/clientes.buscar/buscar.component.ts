@@ -25,7 +25,7 @@ export class buscarClienteComponent {
   pageSize !:number;
   length!:number;
   pageSizeOptions = [10];
-  isLoadingResults : boolean = true;
+  isLoadingResults : boolean = false;
   opened: boolean = false;
 
 
