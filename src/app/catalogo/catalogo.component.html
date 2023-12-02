@@ -5,7 +5,7 @@
     <mat-form-field class="mat-form-field">
         <mat-label>Catalogo Productos</mat-label>
         <mat-icon matSuffix color="primary">search</mat-icon>
-         <input matInput (keyup)="filtrar($event)"placeholder="buscar">     
+         <input matInput (keyup.enter)="filtrar($event)"placeholder="buscar">     
     </mat-form-field>
     <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell" colspan="4">Parametro de busqueda no encontrado</td>

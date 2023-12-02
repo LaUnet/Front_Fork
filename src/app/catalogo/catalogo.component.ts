@@ -78,8 +78,8 @@ async recargarCatalogo(page: PageEvent) {
 
 
 filtrar(event: Event) {
-  const filtro = (event.target as HTMLInputElement).value;
   this.buscarCatalogo();
+  const filtro = (event.target as HTMLInputElement).value;
   this.dataSourceCatalogo.filter = filtro.trim().toLowerCase();
 } 
 
