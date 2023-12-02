@@ -152,13 +152,13 @@
                     <ng-container matColumnDef="stock">
                         <th mat-header-cell *matHeaderCellDef>Stock</th>
                         <td mat-cell *matCellDef="let catalogo">
-                            <span *ngFor="let row of catalogo.inventario ">{{row.stock}}</span>
+                            <span *ngFor="let row of catalogo.inventario ">{{row.stock | number: '.2'}}</span>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="precioventa">
                         <th mat-header-cell *matHeaderCellDef>Precio Venta</th>
                         <td mat-cell *matCellDef="let catalogo">
-                            <span *ngFor="let row of catalogo.precio">{{row.precioVenta}}</span>
+                            <span *ngFor="let row of catalogo.precio">{{row.precioVenta | number: '.2'}}</span>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="accion">
