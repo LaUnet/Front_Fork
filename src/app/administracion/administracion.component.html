@@ -36,7 +36,7 @@
             <button type="button" class="btn btn-custom" (click)="toggleFormularioCrearUsuario()">Crear Usuario</button>
         </li>
         <li class="list-group-item bg-danger text-light">
-            <button type="button" class="btn btn-custom" (click)="toggleFormularioBuscarUsuario()">Buscar Usuario</button>
+            <button type="button" class="btn btn-custom" (click)="toggleFormularioBuscarUsuario()">Buscar</button>
         </li>
     </ul>
 </div>
@@ -78,7 +78,7 @@
             <!-- Formulario de búsqueda de usuario por email -->
             <div class="card" *ngIf="mostrarFormularioBuscarUsuario && !mostrarFormularioCrearUsuario">
                 <div class="card-header bg-dark text-dark" style="color: black;">
-                    Buscar Usuario por ID
+                    Buscar por ID
                 </div>
                 <div class="card-body">
                     <form>

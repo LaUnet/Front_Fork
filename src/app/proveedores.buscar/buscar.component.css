@@ -4,7 +4,7 @@
 
 mat-card {
   margin: auto;
-  width: 80%;
+  width: 95%;
   margin-top: 0.1%;
   display: block;
   opacity: 95%;
@@ -21,7 +21,7 @@ margin-left: 1%;
 
 .middle-width {
   margin-top: 0.1%;
-  width: 75%;
+  width: 95%;
   margin-left: 20rem;
   margin-right: 20rem;
 }

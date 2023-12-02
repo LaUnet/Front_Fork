@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 
+
 @Component({
   selector: 'app-catalogo',
   templateUrl: './catalogo.component.html',
