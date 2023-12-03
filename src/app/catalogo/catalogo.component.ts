@@ -81,6 +81,7 @@ filtrar(event: Event) {
   this.buscarCatalogo();
   const filtro = (event.target as HTMLInputElement).value;
   this.dataSourceCatalogo.filter = filtro.trim().toLowerCase();
+  this.isLoadingResults = false; 
 } 
 
 refreshPage() {
