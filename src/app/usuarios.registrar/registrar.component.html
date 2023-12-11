@@ -116,14 +116,14 @@
               <mat-label>Nombre Usuario</mat-label>
               <mat-icon matSuffix>account_box</mat-icon>
 
-                <input matInput [(ngModel)]="username" name="username" required>
+                <input matInput [(ngModel)]="username" name="username" required autocomplete="off">
 
             </mat-form-field></td>
             <td><mat-form-field class="full-width">
               <mat-label>Email</mat-label>
               <mat-icon matSuffix>email</mat-icon>
                 <input type="email" [(ngModel)]="email" name="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-                placeholder="Ex. correo@example.com">
+                placeholder="Ex. correo@example.com" autocomplete="off">
             </mat-form-field></td>
           </tr></table>
       
@@ -134,7 +134,7 @@
                 <mat-icon matSuffix>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
               </button>             
               <input type="password" [(ngModel)]="password" name="password" matInput [formControl]="passwordFormControl" [errorStateMatcher]="matcher"
-              [type]="hide ? 'password' : 'text'"  placeholder="Ex. pAs5w@rd">
+              [type]="hide ? 'password' : 'text'"  placeholder="Ex. pAs5w@rd"  autocomplete="off">
             </mat-form-field></td>
             <td><mat-form-field class="full-width">
               <mat-label>Rol</mat-label>
