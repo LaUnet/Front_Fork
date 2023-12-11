@@ -11,7 +11,7 @@
   <span class="spacer"></span>
 
   <button mat-fab extended disabled class="colorText">
-    REGISTRAR USUARIO
+    {{tittleForm}}
   </button>
 
   <span class="spacer"></span>
@@ -110,57 +110,77 @@
 
     <mat-card>
       <form class="form">
-      <td></td>
-        <table class="full-width" cellspacing="0"><tr>
-          <td><mat-form-field class="full-width">
-            <mat-label>Nombre Usuario</mat-label>
-            <mat-icon matSuffix>account_box</mat-icon>
-            <input matInput [(ngModel)]="username" name="username" required>
-          </mat-form-field></td>
-          <td><mat-form-field class="full-width">
-            <mat-label>Email</mat-label>
-            <mat-icon matSuffix>email</mat-icon>
-              <input type="email" [(ngModel)]="email" name="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-                    placeholder="Ex. correo@example.com">
-          </mat-form-field></td>
-        </tr></table>
-    
-        <table class="full-width" cellspacing="0"><tr>
-          <td><mat-form-field class="full-width">
-            <mat-label>Contraseña</mat-label>
-            <button mat-icon-button  matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-              <mat-icon matSuffix>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        <td></td>
+          <table class="full-width" cellspacing="0"><tr>
+            <td><mat-form-field class="full-width">
+              <mat-label>Nombre Usuario</mat-label>
+              <mat-icon matSuffix>account_box</mat-icon>
+
+                <input matInput [(ngModel)]="username" name="username" required>
+
+            </mat-form-field></td>
+            <td><mat-form-field class="full-width">
+              <mat-label>Email</mat-label>
+              <mat-icon matSuffix>email</mat-icon>
+
+                <input type="email" [(ngModel)]="email" name="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
+                placeholder="Ex. correo@example.com">
+
+            </mat-form-field></td>
+          </tr></table>
+      
+          <table class="full-width" cellspacing="0"><tr>
+            <td><mat-form-field class="full-width">
+              <mat-label>Contraseña</mat-label>
+              <button mat-icon-button  matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                <mat-icon matSuffix>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+              
+                <input matInput [(ngModel)]="password" name="password" [type]="hide ? 'password' : 'text'"             
+                type="password"
+                id="ssn"
+                inputmode="numeric"
+                minlength="9"
+                maxlength="12"
+                pattern="(?!000)([0-6]\d{2}|7([0-6]\d|7[012]))([ -])?(?!00)\d\d\3(?!0000)\d{4}"
+                required
+                autocomplete="on">
+
+            </mat-form-field></td>
+            <td><mat-form-field class="full-width">
+              <mat-label>Rol</mat-label>
+              <mat-icon matSuffix>list</mat-icon>
+              <mat-select [(ngModel)]="rol" name="rol" #fontSize value="admin">
+                <mat-option value="admin">Administrador</mat-option>
+                <mat-option value="seller">Vendedor</mat-option>
+                <mat-option value="client">Cliente</mat-option>
+              </mat-select>
+            </mat-form-field></td>
+          </tr></table>
+        </form> 
+
+        <div *ngIf="this._id !== null">
+          <mat-card-actions align="end">
+            <button mat-icon-button matTooltip="Editar" (click)="onSubmitCrearUsuario()">
+              <mat-icon>save</mat-icon>
+            </button> 
+            <button mat-icon-button matTooltip="Regresar" routerLink="/buscarUsuario">
+              <mat-icon>assignment_return</mat-icon>
             </button>
-            <input matInput [(ngModel)]="password" name="password" [type]="hide ? 'password' : 'text'"             
-              type="password"
-              id="ssn"
-              inputmode="numeric"
-              minlength="9"
-              maxlength="12"
-              pattern="(?!000)([0-6]\d{2}|7([0-6]\d|7[012]))([ -])?(?!00)\d\d\3(?!0000)\d{4}"
-              required
-              autocomplete="on">
-          </mat-form-field></td>
-          <td><mat-form-field class="full-width">
-            <mat-label>Rol</mat-label>
-            <mat-icon matSuffix>list</mat-icon>
-            <mat-select [(ngModel)]="rol" name="rol" #fontSize value="ADM">
-              <mat-option value="ADM">Administrador</mat-option>
-              <mat-option value="MOD">Moderador</mat-option>
-              <mat-option value="VEN">Vendedor</mat-option>
-            </mat-select>
-          </mat-form-field></td>
-        </tr></table>
-      </form>
-    
-      <mat-card-actions align="end">
-        <button mat-icon-button matTooltip="Guardar" (click)="onSubmitCrearUsuario()">
-          <mat-icon>save</mat-icon>
-        </button> 
-        <button mat-icon-button matTooltip="Cancelar">
-          <mat-icon>cancel_presentation</mat-icon>
-        </button>
-      </mat-card-actions>
+          </mat-card-actions>    
+        </div>
+        
+        <div *ngIf="this._id === null">
+          <mat-card-actions align="end">
+            <button mat-icon-button matTooltip="Guardar" (click)="onSubmitCrearUsuario()">
+              <mat-icon>save</mat-icon>
+            </button> 
+            <button mat-icon-button matTooltip="Cancelar">
+              <mat-icon>cancel_presentation</mat-icon>
+            </button>
+          </mat-card-actions>    
+        </div>
+
     </mat-card>
     
     <img src="../../assets/PuntoU.jpg" class="img-fluid"

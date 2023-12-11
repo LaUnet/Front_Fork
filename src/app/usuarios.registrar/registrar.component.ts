@@ -1,9 +1,9 @@
 import {Component, NgZone, ViewChild} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
-import {take} from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 import {ErrorStateMatcher} from '@angular/material/core';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-registrarUsuario',
@@ -13,27 +13,31 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 export class registrarUsuarioComponent {
 
 
-  constructor(private http: HttpClient, private tokenService: TokenService, private _ngZone: NgZone) {}
+  constructor(private http: HttpClient, private tokenService: TokenService, private _ngZone: NgZone, private route: ActivatedRoute) 
+  {
+    this._id = this.route.snapshot.paramMap.get('id');
+  }
 
     /**
    * Control Error Email
    */
-    emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-    matcher = new MyErrorStateMatcher();
+  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+  matcher = new MyErrorStateMatcher();
+  hide = true;
 
-    hide = true;
 
   rol: string = '';
   username: string = '';
   email: string = '';
   password: string = '';
 
-  _id: string = '';
+  _id: string | null;
   opened: boolean = false;
   editingItem: any = null;
   isEditing: boolean = false;
-
-  resultadoBusqueda: any = null;
+  usuariosEncontrados: any[] = [];
+  tittleForm: string ="REGISTRAR USUARIO"  
+  usuarioForm!: FormGroup;
 
   errorMessage: string = '';
   successMesssage: String = '';
@@ -42,6 +46,11 @@ export class registrarUsuarioComponent {
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
 
+
+
+  ngOnInit(): void {
+    this.cargarEditarUsuario();
+  }
 
   async onSubmitCrearUsuario() {
 
@@ -76,8 +85,34 @@ export class registrarUsuarioComponent {
       this.errorMessage = 'Error al crear el usuario. Por favor, inténtelo nuevamente.';
     }
   }
-
  
+  async cargarEditarUsuario() {
+    console.log("Id consultado", this._id)
+    if(this._id !== null){
+    this.tittleForm = "EDITAR USUARIO";
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${this._id}`, httpOptions )
+    .subscribe(response => {
+      if (response.Status) {
+        this.usuariosEncontrados= response.Data[0];
+        this.username = this.usuariosEncontrados[0].username;
+        this.email = this.usuariosEncontrados[0].email;
+        this.password = this.usuariosEncontrados[0].password;
+        this.rol = this.usuariosEncontrados[0].rolName[0].name;
+      }
+    
+    });
+  
+  }
+}
+
+
 }
 
 

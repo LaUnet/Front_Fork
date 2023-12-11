@@ -24,6 +24,7 @@ const routes: Routes = [
   { path: 'administracion', component: AdministracionComponent },
   { path: 'articulo', component: ArticuloComponent },
   { path: 'registrarUsuario', component: registrarUsuarioComponent },
+  { path: 'editarUsuario/:id', component: registrarUsuarioComponent },
   { path: 'buscarUsuario', component: buscarUsuarioComponent },
   { path: 'registrarArticulo', component: registrarArticuloComponent },
   { path: 'buscarArticulo', component: buscarArticuloComponent },

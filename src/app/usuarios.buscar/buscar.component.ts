@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-buscarUsuario',
@@ -74,11 +75,13 @@ export class buscarUsuarioComponent {
     });
   }
 
+  async obtenerId(id:string)  {
+  }
 
   filtrar(event: Event) {
-      const filtro = (event.target as HTMLInputElement).value;
-      this.dataSourceUsuarios.filter = filtro.trim().toLowerCase();
-  } 
+    const filtro = (event.target as HTMLInputElement).value;
+    this.dataSourceUsuarios.filter = filtro.trim().toLowerCase();
+} 
 
 /**
 
