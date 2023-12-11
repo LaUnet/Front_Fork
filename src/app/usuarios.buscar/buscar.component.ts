@@ -1,10 +1,11 @@
-import {Component, ViewChild, Inject} from '@angular/core';
+import { Component, ViewChild, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observable } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component"
 
 @Component({
   selector: 'app-buscarUsuario',
@@ -13,19 +14,21 @@ import { Observable } from 'rxjs';
 })
 export class buscarUsuarioComponent {
 
-  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService) { }
+  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
 
 
-  columnas: string[] = ['_id', 'username', 'email', 'roles' , 'accion'];
+  columnas: string[] = ['_id', 'username', 'email', 'roles', 'accion'];
 
   pageEvent!: PageEvent;
-  pageIndex:number = 0;
-  pageSize !:number;
-  length!:number;
+  pageIndex: number = 0;
+  pageSize !: number;
+  length!: number;
   pageSizeOptions = [10];
-  isLoadingResults : boolean = false;
-  dataSourceUsuarios:any;
+  isLoadingResults: boolean = false;
+  dataSourceUsuarios: any;
   opened: boolean = false;
+  mensajeExitoso: string = '';
+  mensajeFallido: string = '';
 
   ngOnInit() {
     this.buscarUsuario();
@@ -41,18 +44,26 @@ export class buscarUsuarioComponent {
         'x-access-token': `${token}`,
       })
     };
-    this.isLoadingResults = true;
-    this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users', httpOptions )
-    .subscribe(response => {
-      if (response.Status) {
-        this.dataSourceUsuarios = new MatTableDataSource(response.Data.docs);
-        this.dataSourceUsuarios.paginator = this.paginator;
-        this.pageSize=response.Data.docs.limit;
-        this.pageIndex=response.Data.docs.page;
-        this.length = response.Data.totalDocs;
-      }
-      this.isLoadingResults = false; 
-    });
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users', httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceUsuarios = new MatTableDataSource(response.Data.docs);
+            this.dataSourceUsuarios.paginator = this.paginator;
+            this.pageSize = response.Data.docs.limit;
+            this.pageIndex = response.Data.docs.page;
+            this.length = response.Data.totalDocs;
+            console.log('Respuesta del servidor:', response);
+          }
+          this.isLoadingResults = false;
+        });
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
+
   }
 
   async recargarUsuario(page: PageEvent) {
@@ -64,29 +75,27 @@ export class buscarUsuarioComponent {
         'x-access-token': `${token}`,
       })
     };
-    this.isLoadingResults = true;
-    this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions )
-    .subscribe(response => {
-      if (response.Status) {
-        this.dataSourceUsuarios = new MatTableDataSource(response.Data.docs);
-        this.pageIndex=response.Data.docs.page;
-      }
-      this.isLoadingResults = false;
-    });
+
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceUsuarios = new MatTableDataSource(response.Data.docs);
+            this.pageIndex = response.Data.docs.page;
+            console.log('Respuesta del servidor:', response);
+          }
+          this.isLoadingResults = false;
+        });  
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
+
   }
 
-  async obtenerId(id:string)  {
-  }
 
-  filtrar(event: Event) {
-    const filtro = (event.target as HTMLInputElement).value;
-    this.dataSourceUsuarios.filter = filtro.trim().toLowerCase();
-} 
-
-/**
-
-  guardarEdicionUsuario() {
-
+  borrarUsuario(id: string) {
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -94,49 +103,54 @@ export class buscarUsuarioComponent {
         'x-access-token': `${token}`
       })
     };
+    try {
+      this.http.delete<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${id}`, httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          console.log('Usuario borrado exitosamente');
+          console.log('Respuesta del servidor:', response);
+          this.mensajeExitoso = "Usuario eliminado exitosamente"
+        }
+      })  
+    } catch (error) {
+      this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
+    setTimeout(() => {
+      this.refreshPage();
+    }, 3000);
+  };
 
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${this.UsuarioEditando._id}`;
-    const payload = {
-      descripcion: this.UsuarioEditando.descripcion,
-      unidadMedida: this.UsuarioEditando.unidadMedida,
-      documentoUsuario: this.UsuarioEditando.documentoUsuario,
-      codigoUsuario: this.UsuarioEditando.codigoUsuario,
-      estadoActivo: this.UsuarioEditando.estadoActivo,
-    };
-
-    console.log("el body es ", payload);
-
-    this.http.patch(url, payload, httpOptions).subscribe(
-      (response) => {
-        console.log('Artículo editado exitosamente');
-        this.mensajeExitoso = 'Operación exitosa: El artículo se ha actualizado correctamente.';
-        setTimeout(() => {
-          this.refreshPage();
-        }, 3000);
-
-
-        setTimeout(() => {
-          this.mensajeExitoso = '';
-        }, 5000);
-
-      },
-      (error) => {
-        this.mensajeFallido = 'Error: El artículo no se ha podido actualizar ';
-        console.error('Error al editar el artículo', error);
-      }
-    );
+  filtrar(event: Event) {
+    const filtro = (event.target as HTMLInputElement).value;
+    this.dataSourceUsuarios.filter = filtro.trim().toLowerCase();
   }
- */
+
+
+  mostrarDialogo(id:string): void {
+    this.dialogo
+      .open(DialogoConfirmacionComponent, {
+        data: `Seguro deseas ELIMINARLO?`
+      })
+      .afterClosed()
+      .subscribe((confirmar: Boolean) => {
+        if (confirmar) {
+          this.borrarUsuario(id)
+        } else {
+          //alert("No hacer nada");
+        }
+      });
+  }
 
   refreshPage() {
     window.location.reload();
   }
-  
+
 }
 
 
 export class Usuario {
   constructor(public id: string, public username: string, public email: String,
-              public password: string, public roles: string
-              ){}
+    public password: string, public roles: string
+  ) { }
 }

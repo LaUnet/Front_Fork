@@ -19,6 +19,7 @@ import {buscarClienteComponent} from './clientes.buscar/buscar.component';
 import {registrarUbicacionComponent} from './ubicaciones.registrar/registrar.component';
 import {buscarUbicacionComponent} from './ubicaciones.buscar/buscar.component';
 import { CatalogoComponent } from './catalogo/catalogo.component';
+import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.component';
 
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -70,7 +71,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     buscarClienteComponent,
     registrarUbicacionComponent,
     buscarUbicacionComponent,
-    CatalogoComponent
+    CatalogoComponent,
+    DialogoConfirmacionComponent
   ],
   imports: [
     BrowserModule,
