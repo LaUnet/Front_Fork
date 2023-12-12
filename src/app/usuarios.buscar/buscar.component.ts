@@ -1,4 +1,4 @@
-import { Component, ViewChild, Inject } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
@@ -54,7 +54,6 @@ export class buscarUsuarioComponent {
             this.pageSize = response.Data.docs.limit;
             this.pageIndex = response.Data.docs.page;
             this.length = response.Data.totalDocs;
-            console.log('Respuesta del servidor:', response);
           }
           this.isLoadingResults = false;
         });
@@ -83,7 +82,6 @@ export class buscarUsuarioComponent {
           if (response.Status) {
             this.dataSourceUsuarios = new MatTableDataSource(response.Data.docs);
             this.pageIndex = response.Data.docs.page;
-            console.log('Respuesta del servidor:', response);
           }
           this.isLoadingResults = false;
         });  
@@ -107,11 +105,9 @@ export class buscarUsuarioComponent {
       this.http.delete<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${id}`, httpOptions )
       .subscribe(response => {
         if (response.Status) {
-          console.log('Usuario borrado exitosamente');
-          console.log('Respuesta del servidor:', response);
           this.mensajeExitoso = "Usuario eliminado exitosamente"
         }
-      })  
+      });
     } catch (error) {
       this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);

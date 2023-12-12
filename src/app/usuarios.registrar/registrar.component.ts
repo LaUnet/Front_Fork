@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { ActivatedRoute } from '@angular/router';
@@ -17,7 +17,7 @@ export class registrarUsuarioComponent {
   }
 
   /**
- * Control Error Email & Password
+ * Control Error Textfields
  */
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
   passwordFormControl = new FormControl('', [Validators.required, Validators.pattern('(?=\\D*\\d)(?=[^a-z]*[a-z])(?=[^A-Z]*[A-Z]).{8,30}')]);
@@ -46,6 +46,7 @@ export class registrarUsuarioComponent {
   }
 
   async onSubmitCrearUsuario() {
+
     const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users';
     const body = {
       roles: [this.rol],
@@ -54,7 +55,6 @@ export class registrarUsuarioComponent {
       password: this.password
     };
     const token = this.tokenService.token;
-    console.log("el body es ", body);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -64,7 +64,6 @@ export class registrarUsuarioComponent {
 
     try {
       const response = await this.http.post(url, body, httpOptions).toPromise();
-      console.log('Respuesta del servidor:', response);
       this.mensajeExitoso = "Usuario guardado exitosamente"
       setTimeout(() => {
         this.refreshPage();
@@ -92,7 +91,6 @@ export class registrarUsuarioComponent {
               this.usuariosEncontrados = response.Data[0];
               this.username = this.usuariosEncontrados[0].username;
               this.email = this.usuariosEncontrados[0].email;
-              this.password = this.usuariosEncontrados[0].password;
               this.rol = this.usuariosEncontrados[0].rolName[0].name;
             }
           });
@@ -112,7 +110,6 @@ export class registrarUsuarioComponent {
       password: this.password
     };
     const token = this.tokenService.token;
-    console.log("el body es ", body);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -121,7 +118,6 @@ export class registrarUsuarioComponent {
     };
     try {
       const response = await this.http.patch(url, body, httpOptions).toPromise();
-      console.log('Respuesta del servidor:', response);
       this.mensajeExitoso = "Usuario actualizado exitosamente"
       setTimeout(() => {
         this.refreshPage();
@@ -144,4 +140,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
+}
+
+function If(arg0: boolean) {
+  throw new Error('Function not implemented.');
 }
