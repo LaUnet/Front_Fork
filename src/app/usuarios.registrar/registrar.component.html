@@ -116,7 +116,7 @@
               <mat-label>Nombre Usuario</mat-label>
               <mat-icon matSuffix>account_box</mat-icon>
 
-                <input matInput [(ngModel)]="username" name="username" required autocomplete="off">
+                <input matInput [(ngModel)]="username" name="username" autocomplete="off" [formControl]="usernameFormControl" [errorStateMatcher]="matcher">
 
             </mat-form-field></td>
             <td><mat-form-field class="full-width">
@@ -139,7 +139,7 @@
             <td><mat-form-field class="full-width">
               <mat-label>Rol</mat-label>
               <mat-icon matSuffix>list</mat-icon>
-              <mat-select [(ngModel)]="rol" name="rol" #fontSize value="admin">
+              <mat-select [(ngModel)]="rol" name="rol" #fontSize value="admin" [formControl]="rolFormControl" [errorStateMatcher]="matcher">
                 <mat-option value="admin">Administrador</mat-option>
                 <mat-option value="seller">Vendedor</mat-option>
                 <mat-option value="client">Cliente</mat-option>

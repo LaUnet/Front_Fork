@@ -12,8 +12,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 })
 export class registrarUsuarioComponent {
 
-
-  constructor(private http: HttpClient, private tokenService: TokenService, private _ngZone: NgZone, private route: ActivatedRoute) {
+  constructor(private http: HttpClient, private tokenService: TokenService, private route: ActivatedRoute) {
     this._id = this.route.snapshot.paramMap.get('id');
   }
 
@@ -22,6 +21,9 @@ export class registrarUsuarioComponent {
  */
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
   passwordFormControl = new FormControl('', [Validators.required, Validators.pattern('(?=\\D*\\d)(?=[^a-z]*[a-z])(?=[^A-Z]*[A-Z]).{8,30}')]);
+  usernameFormControl = new FormControl('', [Validators.required]);
+  rolFormControl = new FormControl('', [Validators.required]);
+
   matcher = new MyErrorStateMatcher();
   hide = true;
 
@@ -64,13 +66,13 @@ export class registrarUsuarioComponent {
       const response = await this.http.post(url, body, httpOptions).toPromise();
       console.log('Respuesta del servidor:', response);
       this.mensajeExitoso = "Usuario guardado exitosamente"
+      setTimeout(() => {
+        this.refreshPage();
+      }, 3000);
     } catch (error) {
       this.mensajeFallido = 'Error al crear el usuario. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
-    setTimeout(() => {
-      this.refreshPage();
-    }, 3000);
   }
 
   async cargarEditarUsuario() {
@@ -98,9 +100,6 @@ export class registrarUsuarioComponent {
         this.mensajeFallido = 'Error al consultar el usuario. Por favor, inténtelo nuevamente.';
         console.error('Error en la solicitud:', error);
       }
-      setTimeout(() => {
-        this.refreshPage();
-      }, 3000);
     }
   }
 
@@ -124,13 +123,13 @@ export class registrarUsuarioComponent {
       const response = await this.http.patch(url, body, httpOptions).toPromise();
       console.log('Respuesta del servidor:', response);
       this.mensajeExitoso = "Usuario actualizado exitosamente"
+      setTimeout(() => {
+        this.refreshPage();
+      }, 3000);
     } catch (error) {
       this.mensajeFallido = 'Error al editar el usuario. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
-    setTimeout(() => {
-      this.refreshPage();
-    }, 3000);
   }
 
 

@@ -52,7 +52,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatBadgeModule} from '@angular/material/badge';
 
 
-
 @NgModule({
   declarations: [
     AppComponent,
