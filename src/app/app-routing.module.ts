@@ -33,6 +33,7 @@ const routes: Routes = [
   { path: 'registrarCliente', component: registrarClienteComponent },
   { path: 'buscarCliente', component: buscarClienteComponent },
   { path: 'registrarUbicacion', component: registrarUbicacionComponent },
+  { path: 'editarUbicacion/:id', component: registrarUbicacionComponent },
   { path: 'buscarUbicacion', component: buscarUbicacionComponent },
   { path: 'catalogoProductos', component: CatalogoComponent },
 

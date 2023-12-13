@@ -69,7 +69,7 @@ export class registrarUsuarioComponent {
         this.refreshPage();
       }, 3000);
     } catch (error) {
-      this.mensajeFallido = 'Error al crear el usuario. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al crear. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
   }
@@ -95,7 +95,7 @@ export class registrarUsuarioComponent {
             }
           });
       } catch (error) {
-        this.mensajeFallido = 'Error al consultar el usuario. Por favor, inténtelo nuevamente.';
+        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
         console.error('Error en la solicitud:', error);
       }
     }
@@ -123,7 +123,7 @@ export class registrarUsuarioComponent {
         this.refreshPage();
       }, 3000);
     } catch (error) {
-      this.mensajeFallido = 'Error al editar el usuario. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al editar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
   }
@@ -140,8 +140,4 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
-}
-
-function If(arg0: boolean) {
-  throw new Error('Function not implemented.');
 }

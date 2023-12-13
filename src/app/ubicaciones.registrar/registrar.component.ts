@@ -1,9 +1,8 @@
-import {Component, NgZone, ViewChild} from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
-import {take} from 'rxjs/operators';
-import {ErrorStateMatcher} from '@angular/material/core';
+import { ActivatedRoute } from '@angular/router';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 
 @Component({
@@ -12,36 +11,28 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
   styleUrls: ['./registrar.component.css']
 })
 export class registrarUbicacionComponent {
-  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService) { }
 
-    /**
-   * Control Error Email
-   */
-    emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-    matcher = new MyErrorStateMatcher();
+  constructor(private http: HttpClient, private tokenService: TokenService, private route: ActivatedRoute) 
+  { this._id = this.route.snapshot.paramMap.get('id'); }
 
+  /**
+ * Control Error Textfields
+ */
+
+  nombreZonaFormControl = new FormControl('', [Validators.required]);
+  numeroZonaFormControl = new FormControl('', [Validators.required]);
+  numeroEstanteriaFormControl = new FormControl('', [Validators.required]);
+  numeroUbicacionFormControl = new FormControl('', [Validators.required]);
+  matcher = new MyErrorStateMatcher();
+
+  _id: string | null;
+  tittleForm: string = "REGISTRAR UBICACION"
   ubicaciones: any[] = [];
   proveedores: any[] = [];
   opened: boolean = false;
-  codigoArticuloBusqueda: string = '';
-  articulosEncontrados: any[] = [];
-  mostrarResultados: boolean = false;
-
-  errorMessage: string = '';
-  successMesssage: String = '';
-
-  articuloEditando: any = null;
-
+  ubicacionesEncontrados: any[] = [];
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
-
-  filtroDescripcion: string = '';
-
-  mostrarCampoFiltrar: boolean = false;
-
-
-  mostrarFormulario = false;
-  mostrarFormularioBuscar = false;
   nuevaUbicacion = {
     zona: '',
     numeroZona: '',
@@ -49,31 +40,17 @@ export class registrarUbicacionComponent {
     ubicacion: ''
   };
 
-  mostrarFormularioCrearArticulo(event: Event) {
-    event.preventDefault();
-    this.mostrarFormulario = true;
-    this.mostrarFormularioBuscar = false;
-    this.mostrarResultados = false;
+  ngOnInit(): void {
+    this.cargarEditarUbicacion();
   }
-
-  mostrarFormularioBuscarArticulo(event: Event) {
-    event.preventDefault();
-    this.mostrarFormulario = false;
-    this.mostrarFormularioBuscar = true;
-    
-  }
-
 
   async crearUbicacion() {
     const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations';
-
     const body = {
-      codigo: "0000010103",
       nombreZona: this.nuevaUbicacion.zona.substring(0, 10),
       numeroZona: this.nuevaUbicacion.numeroZona,
       numeroEstanteria: this.nuevaUbicacion.estante,
-      numeroUbicacion: this.nuevaUbicacion.ubicacion,
-      estadoActivo: true
+      numeroUbicacion: this.nuevaUbicacion.ubicacion
     };
 
     const token = this.tokenService.token;
@@ -87,30 +64,74 @@ export class registrarUbicacionComponent {
 
     try {
       const response = await this.http.post(url, body, httpOptions).toPromise();
-      this.successMesssage = 'Ubicacion creada correctamente';
-      console.log('Respuesta del servidor:', response);
-      this.mensajeExitoso = 'Operación exitosa: La Ubicación se ha creado correctamente.';
-      
+      this.mensajeExitoso = 'Ubicación guardada exitosamente';
+      setTimeout(() => {
+        this.refreshPage();
+      }, 3000);
     } catch (error) {
-      this.errorMessage =  'Error al crear la ubicación. Por favor, inténtelo nuevamente.';
-      this.mensajeFallido = 'Error al crear la ubicación. Por favor diligenciar todo el formulario.';
+      this.mensajeFallido = 'Error al crear. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
     }
   }
 
-  
-
-  
-
-  resetnuevaUbicacion() {
-    this.nuevaUbicacion = {
-      zona: '',
-      numeroZona: '',
-      estante: '',
-      ubicacion: ''
-    };
+  async cargarEditarUbicacion() {
+    if (this._id !== null) {
+      this.tittleForm = "EDITAR UBICACION";
+      const token = this.tokenService.token;
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'x-access-token': `${token}`,
+        })
+      };
+      try {
+        this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations/${this._id}`, httpOptions)
+          .subscribe(response => {
+            if (response.Status) {
+              this.ubicacionesEncontrados = response.Data[0];
+              this.nuevaUbicacion.zona = this.ubicacionesEncontrados[0].nombreZona;
+              this.nuevaUbicacion.numeroZona = this.ubicacionesEncontrados[0].numeroZona;
+              this.nuevaUbicacion.estante = this.ubicacionesEncontrados[0].numeroEstanteria;
+              this.nuevaUbicacion.ubicacion = this.ubicacionesEncontrados[0].ubicacion;
+            }
+          });
+      } catch (error) {
+        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+        console.error('Error en la solicitud:', error);
+      }
+    }
   }
 
+  async editarUbicacion() {
+    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations/${this._id}`
+    const body = {
+      nombreZona: this.nuevaUbicacion.zona.substring(0, 10),
+      numeroZona: this.nuevaUbicacion.numeroZona,
+      numeroEstanteria: this.nuevaUbicacion.estante,
+      numeroUbicacion: this.nuevaUbicacion.ubicacion
+    };
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`
+      })
+    };
+    try {
+      const response = await this.http.patch(url, body, httpOptions).toPromise();
+      this.mensajeExitoso = "Ubicación actualizada exitosamente"
+      setTimeout(() => {
+        this.refreshPage();
+      }, 3000);
+    } catch (error) {
+      this.mensajeFallido = 'Error al editar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
+  }
 
+  refreshPage() {
+    window.location.reload()
+  }
   
 }
 

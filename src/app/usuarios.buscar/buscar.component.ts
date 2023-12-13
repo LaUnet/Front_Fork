@@ -17,7 +17,7 @@ export class buscarUsuarioComponent {
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
 
 
-  columnas: string[] = ['_id', 'username', 'email', 'roles', 'accion'];
+  columnas: string[] = ['username', 'email', 'roles', 'accion'];
 
   pageEvent!: PageEvent;
   pageIndex: number = 0;
@@ -93,7 +93,7 @@ export class buscarUsuarioComponent {
   }
 
 
-  borrarUsuario(id: string) {
+  borrar(id: string) {
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -105,7 +105,7 @@ export class buscarUsuarioComponent {
       this.http.delete<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${id}`, httpOptions )
       .subscribe(response => {
         if (response.Status) {
-          this.mensajeExitoso = "Usuario eliminado exitosamente"
+          this.mensajeExitoso = "Eliminado exitosamente"
         }
       });
     } catch (error) {
@@ -131,7 +131,7 @@ export class buscarUsuarioComponent {
       .afterClosed()
       .subscribe((confirmar: Boolean) => {
         if (confirmar) {
-          this.borrarUsuario(id)
+          this.borrar(id)
         } else {
           //alert("No hacer nada");
         }
@@ -146,7 +146,7 @@ export class buscarUsuarioComponent {
 
 
 export class Usuario {
-  constructor(public id: string, public username: string, public email: String,
+  constructor(public username: string, public email: String,
     public password: string, public roles: string
   ) { }
 }

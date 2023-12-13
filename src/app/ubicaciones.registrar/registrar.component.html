@@ -10,7 +10,7 @@
 
   <span class="spacer"></span>
   <button mat-fab extended disabled class="colorText">
-    REGISTRAR UBICACION
+    {{tittleForm}}
   </button>
   <span class="spacer"></span>
 
@@ -124,7 +124,7 @@
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Nombre Zona</mat-label>
             <mat-icon matSuffix>list</mat-icon>
-            <mat-select [(ngModel)]="nuevaUbicacion.zona" name="zona" #fontSize value="Piso1">
+            <mat-select [(ngModel)]="nuevaUbicacion.zona" name="zona" #fontSize value="Piso1" [formControl]="nombreZonaFormControl" [errorStateMatcher]="matcher">
               <mat-option value="Piso1">Primer Piso</mat-option>
               <mat-option value="Piso2">Segundo Piso</mat-option>
             </mat-select>
@@ -132,7 +132,7 @@
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Numero Zona</mat-label>
             <mat-icon matSuffix>list</mat-icon>
-            <mat-select [(ngModel)]="nuevaUbicacion.numeroZona" name="numeroZona" #fontSize value="Z01">
+            <mat-select [(ngModel)]="nuevaUbicacion.numeroZona" name="numeroZona" #fontSize value="Z01" [formControl]="numeroZonaFormControl" [errorStateMatcher]="matcher">
               <mat-option value="Z01">01</mat-option>
               <mat-option value="Z02">02</mat-option>
               <mat-option value="Z03">03</mat-option>
@@ -144,7 +144,7 @@
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Numero Estanteria</mat-label>
             <mat-icon matSuffix>list</mat-icon>
-            <mat-select [(ngModel)]="nuevaUbicacion.estante" name="estante" #fontSize value="E01">
+            <mat-select [(ngModel)]="nuevaUbicacion.estante" name="estante" #fontSize value="E01" [formControl]="numeroEstanteriaFormControl" [errorStateMatcher]="matcher">
               <mat-option value="E01">01</mat-option>
               <mat-option value="E02">02</mat-option>
               <mat-option value="E03">03</mat-option>
@@ -153,7 +153,7 @@
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Numero Ubicacion</mat-label>
             <mat-icon matSuffix>list</mat-icon>
-            <mat-select [(ngModel)]="nuevaUbicacion.ubicacion" name="ubicacion" #fontSize value="U01">
+            <mat-select [(ngModel)]="nuevaUbicacion.ubicacion" name="ubicacion" #fontSize value="U01" [formControl]="numeroUbicacionFormControl" [errorStateMatcher]="matcher">
               <mat-option value="U01">01</mat-option>
               <mat-option value="U02">02</mat-option>
               <mat-option value="U03">03</mat-option>
@@ -162,14 +162,41 @@
         </tr></table>
       </form>
     
+      <div *ngIf="this._id === null"> 
       <mat-card-actions align="end">
-        <button mat-icon-button matTooltip="Guardar" (click)="crearUbicacion()">
+        <button mat-icon-button matTooltip="Guardar" 
+        [disabled]="nombreZonaFormControl.invalid || numeroZonaFormControl.invalid || numeroEstanteriaFormControl.invalid || numeroUbicacionFormControl.invalid"
+        (click)="crearUbicacion()">
           <mat-icon>save</mat-icon>
         </button> 
-        <button mat-icon-button matTooltip="Cancelar" (click)="resetnuevaUbicacion()">
+        <button mat-icon-button matTooltip="Cancelar" (click)="refreshPage()">
           <mat-icon>cancel_presentation</mat-icon>
         </button>
       </mat-card-actions>
+      </div>
+
+      <div *ngIf="this._id !== null"> 
+        <mat-card-actions align="end">
+          <button mat-icon-button matTooltip="Editar"
+          [disabled]="nombreZonaFormControl.invalid || numeroZonaFormControl.invalid || numeroEstanteriaFormControl.invalid || numeroUbicacionFormControl.invalid"
+          (click)="editarUbicacion()">
+            <mat-icon>save</mat-icon>
+          </button> 
+          <button mat-icon-button matTooltip="Regresar" routerLink="/buscarUsuario">
+            <mat-icon>assignment_return</mat-icon>
+          </button>
+        </mat-card-actions>
+        </div>
+
+              
+      <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+        {{ mensajeExitoso }}
+      </div>
+        
+
+      <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+        {{ mensajeFallido }}
+      </div>
     </mat-card>
     
 
@@ -179,13 +206,3 @@
 
   </mat-sidenav-content>
 </mat-sidenav-container>
-
-
-<div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
-  {{ mensajeExitoso }}
-</div>
-  
-
-<div *ngIf="mensajeFallido" class="alert alert-success mt-3">
-  {{ mensajeFallido }}
-</div>
