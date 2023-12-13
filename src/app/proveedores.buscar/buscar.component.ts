@@ -1,10 +1,11 @@
-import {Component, ViewChild} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
+import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component"
 
 @Component({
   selector: 'app-buscarProveedor',
@@ -14,10 +15,10 @@ import { MatDialog } from '@angular/material/dialog';
 export class buscarProveedorComponent {
 
 
-  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialog:MatDialog) { }
+  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
 
 
-  columnas: string[] = ['nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'telefono', 'direccion' , 'departamento' , 'municipio', 'email', 'regimenTributario', 'estadoActivo', 'accion'];
+  columnas: string[] = ['nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'telefono', 'email', 'direccion' , 'departamento' , 'municipio','barrio', 'regimenTributario', 'accion'];
 
   pageEvent!: PageEvent;
   pageIndex:number = 0;
@@ -26,6 +27,8 @@ export class buscarProveedorComponent {
   pageSizeOptions = [10];
   isLoadingResults : boolean = false;
   opened: boolean = false;
+  mensajeExitoso: string = '';
+  mensajeFallido: string = '';
 
 
   ubicaciones: any[] = [];
@@ -81,14 +84,7 @@ export class buscarProveedorComponent {
   }
 
 
-  filtrar(event: Event) {
-      const filtro = (event.target as HTMLInputElement).value;
-      this.dataSourceProveedores.filter = filtro.trim().toLowerCase();
-  } 
-
-/**
-  guardarEdicionProveedor() {
-
+  borrar(id: string) {
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -96,39 +92,41 @@ export class buscarProveedorComponent {
         'x-access-token': `${token}`
       })
     };
+    try {
+      this.http.delete<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers/${id}`, httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          this.mensajeExitoso = "Eliminado exitosamente"
+        }
+      });
+    } catch (error) {
+      this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
+    setTimeout(() => {
+      this.refreshPage();
+    }, 3000);
+  };
 
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers/${this.ProveedorEditando._id}`;
-    const payload = {
-      descripcion: this.ProveedorEditando.descripcion,
-      unidadMedida: this.ProveedorEditando.unidadMedida,
-      documentoProveedor: this.ProveedorEditando.documentoProveedor,
-      codigoUbicacion: this.ProveedorEditando.codigoUbicacion,
-      estadoActivo: this.ProveedorEditando.estadoActivo,
-    };
+  filtrar(event: Event) {
+      const filtro = (event.target as HTMLInputElement).value;
+      this.dataSourceProveedores.filter = filtro.trim().toLowerCase();
+  } 
 
-    console.log("el body es ", payload);
-
-    this.http.patch(url, payload, httpOptions).subscribe(
-      (response) => {
-        console.log('Artículo editado exitosamente');
-        this.mensajeExitoso = 'Operación exitosa: El artículo se ha actualizado correctamente.';
-        setTimeout(() => {
-          this.refreshPage();
-        }, 3000);
-
-
-        setTimeout(() => {
-          this.mensajeExitoso = '';
-        }, 5000);
-
-      },
-      (error) => {
-        this.mensajeFallido = 'Error: El artículo no se ha podido actualizar ';
-        console.error('Error al editar el artículo', error);
-      }
-    );
+  mostrarDialogo(id:string): void {
+    this.dialogo
+      .open(DialogoConfirmacionComponent, {
+        data: `Seguro deseas ELIMINARLO?`
+      })
+      .afterClosed()
+      .subscribe((confirmar: Boolean) => {
+        if (confirmar) {
+          this.borrar(id)
+        } else {
+          //alert("No hacer nada");
+        }
+      });
   }
- */
 
   refreshPage() {
     window.location.reload();
@@ -137,9 +135,11 @@ export class buscarProveedorComponent {
 }
 
 
+
 export class Proveedor {
   constructor(public nombreRazonSocial: string, public tipoDocumento: string, public numeroDocumento: String,
               public telefono: string, public extension: string, public direccion: String, public departamento: String,
-              public municipio: String, public email: String, public regimenTributario: String, public estado: boolean
+              public municipio: String, public email: String, public regimenTributario: String, public estadoActivo: boolean,
+              public barrio: String,
               ){}
 }

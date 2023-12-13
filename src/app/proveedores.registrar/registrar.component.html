@@ -11,7 +11,7 @@
 
   <span class="spacer"></span>
   <button mat-fab extended disabled class="colorText">
-    REGISTRAR PROVEEDOR
+    {{tittleForm}}
   </button>
 
   <span class="spacer"></span>
@@ -126,7 +126,7 @@
       <td><mat-form-field class="full-width"  appearance="outline">
         <mat-label>Tipo Documento</mat-label>
         <mat-icon matSuffix>list</mat-icon>
-        <mat-select [(ngModel)]="nuevoProveedor.tipoDocumento" name="tipoDocumento" #fontSize value="NIT">
+        <mat-select [(ngModel)]="nuevoProveedor.tipoDocumento" name="tipoDocumento" #fontSize value="NIT" [formControl]="tipoDocumentoFormControl" [errorStateMatcher]="matcher">
           <mat-option value="CC">Cedula Ciudadanía</mat-option>
           <mat-option value="NIT">Nit</mat-option>
           <mat-option value="CE">Cedula Extranjería</mat-option>
@@ -138,12 +138,12 @@
       <td><mat-form-field class="full-width"  appearance="outline">
         <mat-label>Numero Documento</mat-label>
         <mat-icon matSuffix>contacts</mat-icon>
-        <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento" required="">
+        <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento"[formControl]="numeroDocumentoFormControl" [errorStateMatcher]="matcher">
       </mat-form-field></td>
       <td><mat-form-field class="full-width"  appearance="outline">
         <mat-label>Nombre - Razon Social</mat-label>
         <mat-icon matSuffix>description</mat-icon>
-        <input matInput [(ngModel)]="nuevoProveedor.nombreRazonSocial" name="nombreRazonSocial" required="">
+        <input matInput [(ngModel)]="nuevoProveedor.nombreRazonSocial" name="nombreRazonSocial" [formControl]="nombreRazonSocialFormControl" [errorStateMatcher]="matcher">
       </mat-form-field></td>
     </tr></table>
 
@@ -152,7 +152,8 @@
         <mat-form-field class="full-width"  appearance="outline">
           <mat-label>Telefono</mat-label>
           <mat-icon matSuffix>phone</mat-icon>
-          <input matInput [(ngModel)]="nuevoProveedor.telefono" name="telefono" required>
+          <input matInput [(ngModel)]="nuevoProveedor.telefono" name="telefono" #phone maxlength="10" [formControl]="telefonoFormControl" [errorStateMatcher]="matcher">
+          <mat-hint align="end">{{phone.value.length}} / 10</mat-hint>
         </mat-form-field>
       </td>
       <td><mat-form-field class="full-width"  appearance="outline">
@@ -174,14 +175,14 @@
       <td><mat-form-field class="full-width"  appearance="outline">
         <mat-label>Departamento</mat-label>
         <mat-icon matSuffix>business</mat-icon>
-        <mat-select [(ngModel)]="nuevoProveedor.departamento" name="departamento" #fontSize value="ANT">
+        <mat-select [(ngModel)]="nuevoProveedor.departamento" name="departamento" #fontSize value="ANT" [formControl]="departamentoFormControl" [errorStateMatcher]="matcher">
           <mat-option  value="ANT">Antioquia</mat-option>
         </mat-select>
       </mat-form-field></td>
     <td><mat-form-field class="full-width"  appearance="outline">
-      <mat-label>Municipcio</mat-label>
+      <mat-label>Municipio</mat-label>
       <mat-icon matSuffix>business</mat-icon>
-      <mat-select [(ngModel)]="nuevoProveedor.municipio" name="municipio" #fontSize value="MED">
+      <mat-select [(ngModel)]="nuevoProveedor.municipio" name="municipio" #fontSize value="MED" [formControl]="municipioFormControl" [errorStateMatcher]="matcher">
         <mat-option value="MED">Medellin</mat-option>
         <mat-option value="BEL">Bello</mat-option>
         <mat-option value="ENV">Envigado</mat-option>
@@ -202,13 +203,13 @@
       <td><mat-form-field class="full-width"  appearance="outline">
         <mat-label>Dirección</mat-label>
         <mat-icon matSuffix>tour</mat-icon>
-        <input matInput  [(ngModel)]="nuevoProveedor.direccion" name="direccion" required placeholder="Calle 67 #55-89">
+        <input matInput  [(ngModel)]="nuevoProveedor.direccion" name="direccion" required placeholder="Calle 67 #55-89" [formControl]="direccionFormControl" [errorStateMatcher]="matcher">
       </mat-form-field></td>
       <td></td>
       <td><mat-form-field class="full-width"  appearance="outline">
         <mat-label>Regimen Tributario</mat-label>
         <mat-icon matSuffix>currency_exchange</mat-icon>
-        <mat-select [(ngModel)]="nuevoProveedor.regimenTributario" name="regimenTributario" #fontSize value="SIM">
+        <mat-select [(ngModel)]="nuevoProveedor.regimenTributario" name="regimenTributario" #fontSize value="SIM" [formControl]="regimenTributarioFormControl" [errorStateMatcher]="matcher">
           <mat-option value="SIMPLIFICADO">Simplificado</mat-option>
           <mat-option value="COMUN">Común</mat-option>
           <mat-option value="ESPECIAL">Especial</mat-option>
@@ -217,14 +218,40 @@
     </tr></table>   
   </form>
 
+<div *ngIf="this._id === null">  
   <mat-card-actions align="end">
-    <button mat-icon-button matTooltip="Guardar" (click)="guardarProveedor()">
+    <button mat-icon-button matTooltip="Guardar" 
+    [disabled]="tipoDocumentoFormControl.invalid || numeroDocumentoFormControl.invalid || nombreRazonSocialFormControl.invalid || telefonoFormControl.invalid || emailFormControl.invalid || departamentoFormControl.invalid || municipioFormControl.invalid || direccionFormControl.invalid || regimenTributarioFormControl.invalid"
+    (click)="guardarProveedor()">
       <mat-icon>save</mat-icon>
     </button> 
-    <button mat-icon-button matTooltip="Cancelar"  (click)="resetNuevoProveedor()">
+    <button mat-icon-button matTooltip="Cancelar"  (click)="refreshPage()">
       <mat-icon>cancel_presentation</mat-icon>
     </button>
   </mat-card-actions>
+</div>
+
+<div *ngIf="this._id !== null">  
+  <mat-card-actions align="end">
+    <button mat-icon-button matTooltip="Editar" 
+    [disabled]="tipoDocumentoFormControl.invalid || numeroDocumentoFormControl.invalid || nombreRazonSocialFormControl.invalid || telefonoFormControl.invalid || emailFormControl.invalid || departamentoFormControl.invalid || municipioFormControl.invalid || direccionFormControl.invalid || regimenTributarioFormControl.invalid"
+    (click)="editarProveedor()">
+      <mat-icon>save</mat-icon>
+    </button> 
+    <button mat-icon-button matTooltip="Regresar" routerLink="/buscarProveedor">
+      <mat-icon>assignment_return</mat-icon>
+    </button>
+  </mat-card-actions>
+</div>
+
+  <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+    {{ mensajeExitoso }}
+  </div>
+    
+  
+  <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+    {{ mensajeFallido }}
+  </div>
 </mat-card>
 
     <img src="../../assets/PuntoU.jpg" class="img-fluid"
@@ -232,13 +259,3 @@
 
   </mat-sidenav-content>
 </mat-sidenav-container>
-
-
-<div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
-  {{ mensajeExitoso }}
-</div>
-  
-
-<div *ngIf="mensajeFallido" class="alert alert-success mt-3">
-  {{ mensajeFallido }}
-</div>

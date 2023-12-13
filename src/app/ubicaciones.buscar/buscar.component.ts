@@ -29,7 +29,6 @@ export class buscarUbicacionComponent {
   pageSizeOptions = [10];
   isLoadingResults : boolean = false;
   opened: boolean = false;
-  openedEdit: boolean = false;
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
 

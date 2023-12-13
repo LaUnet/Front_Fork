@@ -88,11 +88,12 @@ export class registrarUbicacionComponent {
         this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations/${this._id}`, httpOptions)
           .subscribe(response => {
             if (response.Status) {
-              this.ubicacionesEncontrados = response.Data[0];
-              this.nuevaUbicacion.zona = this.ubicacionesEncontrados[0].nombreZona;
-              this.nuevaUbicacion.numeroZona = this.ubicacionesEncontrados[0].numeroZona;
-              this.nuevaUbicacion.estante = this.ubicacionesEncontrados[0].numeroEstanteria;
-              this.nuevaUbicacion.ubicacion = this.ubicacionesEncontrados[0].ubicacion;
+              console.log(response.Data)
+              this.nuevaUbicacion.zona = response.Data.nombreZona;
+              console.log(response.Data.nombreZona)
+              this.nuevaUbicacion.numeroZona = response.Data.numeroZona;
+              this.nuevaUbicacion.estante = response.Data.numeroEstanteria;
+              this.nuevaUbicacion.ubicacion = response.Data.numeroUbicacion;
             }
           });
       } catch (error) {

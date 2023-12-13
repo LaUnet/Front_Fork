@@ -19,7 +19,7 @@ export class buscarArticuloComponent {
   constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialog:MatDialog) { }
 
 
-  columnas: string[] = ['codigo', 'codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'estadoActivo', 'accion'];
+  columnas: string[] = ['codigo', 'codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'accion'];
 
   pageEvent!: PageEvent;
   pageIndex:number = 0;

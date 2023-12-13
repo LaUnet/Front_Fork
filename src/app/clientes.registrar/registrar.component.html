@@ -10,7 +10,7 @@
 
   <span class="spacer"></span>
   <button mat-fab extended disabled class="colorText">
-    REGISTRAR CLIENTE
+    {{tittleForm}}
   </button>
 
   <span class="spacer"></span>
@@ -124,7 +124,7 @@
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Tipo Documento</mat-label>
             <mat-icon matSuffix>list</mat-icon>
-            <mat-select [(ngModel)]="nuevoCliente.tipoDocumento" name="tipoDocumento" required="">
+            <mat-select [(ngModel)]="nuevoCliente.tipoDocumento" name="tipoDocumento" [formControl]="tipoDocumentoFormControl" [errorStateMatcher]="matcher">
               <mat-option value="CC">Cedula Ciudadanía</mat-option>
               <mat-option value="NIT">Nit</mat-option>
               <mat-option value="CE">Cedula Extranjería</mat-option>
@@ -136,12 +136,12 @@
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Numero Documento</mat-label>
             <mat-icon matSuffix>contacts</mat-icon>
-            <input matInput [(ngModel)]="nuevoCliente.numeroDocumento" name="numeroDocumento" required="">
+            <input matInput [(ngModel)]="nuevoCliente.numeroDocumento" name="numeroDocumento" [formControl]="numeroDocumentoFormControl" [errorStateMatcher]="matcher">
           </mat-form-field></td>
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Nombre - Razon Social</mat-label>
             <mat-icon matSuffix>description</mat-icon>
-            <input matInput [(ngModel)]="nuevoCliente.nombreRazonSocial" name="nombreRazonSocial" required="">
+            <input matInput [(ngModel)]="nuevoCliente.nombreRazonSocial" name="nombreRazonSocial" [formControl]="nombreRazonSocialFormControl" [errorStateMatcher]="matcher">
           </mat-form-field></td>
         </tr></table>
     
@@ -149,7 +149,7 @@
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Numero Telefonico</mat-label>
             <mat-icon matSuffix>phone</mat-icon>
-            <input matInput [(ngModel)]="nuevoCliente.telefono" name="telefono"  required #phone maxlength="10" placeholder="Ex. 3001002000">
+            <input matInput [(ngModel)]="nuevoCliente.telefono" name="telefono" #phone maxlength="10" placeholder="Ex. 3001002000" [formControl]="telefonoFormControl" [errorStateMatcher]="matcher">
             <mat-hint align="end">{{phone.value.length}} / 10</mat-hint>
           </mat-form-field></td>
           <td><mat-form-field class="full-width"  appearance="outline">
@@ -171,14 +171,14 @@
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Departamento Entrega</mat-label>
             <mat-icon matSuffix>business</mat-icon>
-            <mat-select  [(ngModel)]="nuevoCliente.departamento" name="departamento" value="ANT">
+            <mat-select  [(ngModel)]="nuevoCliente.departamento" name="departamento" value="ANT" [formControl]="departamentoFormControl" [errorStateMatcher]="matcher">
               <mat-option value="ANT">Antioquia</mat-option>
             </mat-select>
           </mat-form-field></td>
         <td><mat-form-field class="full-width"  appearance="outline">
           <mat-label>Municipcio Entrega</mat-label>
           <mat-icon matSuffix>business</mat-icon>
-          <mat-select [(ngModel)]="nuevoCliente.municipio" name="municipio" #fontSize value="MED">
+          <mat-select [(ngModel)]="nuevoCliente.municipio" name="municipio" #fontSize value="MED" [formControl]="municipioFormControl" [errorStateMatcher]="matcher">
             <mat-option value="MED">Medellin</mat-option>
             <mat-option value="BEL">Bello</mat-option>
             <mat-option value="ENV">Envigado</mat-option>
@@ -199,31 +199,61 @@
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Dirección Entrega</mat-label>
             <mat-icon matSuffix>tour</mat-icon>
-            <input matInput [(ngModel)]="nuevoCliente.direccion" name="direccion" placeholder="Calle 67 #55-89">
+            <input matInput [(ngModel)]="nuevoCliente.direccion" name="direccion" placeholder="Calle 67 #55-89" [formControl]="direccionFormControl" [errorStateMatcher]="matcher">
           </mat-form-field></td>
           <td></td>
+
           <td><mat-form-field class="full-width"  appearance="outline">
-            <mat-label>Regimen Tributario</mat-label>
-            <mat-icon matSuffix>currency_exchange</mat-icon>
-            <mat-select #fontSize value="SIM">
-              <mat-option value="SIM">Simplificado</mat-option>
-              <mat-option value="COM">Común</mat-option>
-              <mat-option value="ESP">Especial</mat-option>
+            <mat-label>Tipo Cliente</mat-label>
+            <mat-icon matSuffix>monetization_on</mat-icon>
+            <mat-select [(ngModel)]="nuevoCliente.tipoCliente" name="tipoCliente" #fontSize value="MED" [formControl]="tipoClienteFormControl" [errorStateMatcher]="matcher">
+              <mat-option value="NAT">Natural</mat-option>
+              <mat-option value="JUR">Juridico</mat-option>
             </mat-select>
           </mat-form-field></td>
         </tr></table>   
       </form>
     
+    <div *ngIf="this._id === null">
       <mat-card-actions align="end">
-        <mat-slide-toggle [(ngModel)]="isChecked">Misma Dirección Facturación</mat-slide-toggle>
-        <span class="spacer"></span>
-        <button mat-icon-button  align="end" matTooltip="Guardar" (click)="guardarCliente()">
+        <!-- <mat-slide-toggle [(ngModel)]="isChecked">Misma Dirección Facturación</mat-slide-toggle>
+        <span class="spacer"></span>-->
+        <button mat-icon-button  align="end" matTooltip="Guardar" 
+        [disabled]="tipoDocumentoFormControl.invalid || numeroDocumentoFormControl.invalid || nombreRazonSocialFormControl.invalid || telefonoFormControl.invalid || emailFormControl.invalid || departamentoFormControl.invalid || municipioFormControl.invalid || direccionFormControl.invalid || tipoClienteFormControl.invalid"
+        (click)="guardarCliente()">
           <mat-icon>save</mat-icon>
         </button> 
-        <button mat-icon-button matTooltip="Cancelar" (click)="resetNuevoCliente()">
+        <button mat-icon-button matTooltip="Cancelar" (click)="refreshPage()">
           <mat-icon>cancel_presentation</mat-icon>
         </button>
       </mat-card-actions>
+    </div>
+
+    <div *ngIf="this._id !== null">
+      <mat-card-actions align="end">
+        <!-- <mat-slide-toggle [(ngModel)]="isChecked">Misma Dirección Facturación</mat-slide-toggle>
+        <span class="spacer"></span>-->
+        <button mat-icon-button  align="end" matTooltip="Editar" 
+        [disabled]="tipoDocumentoFormControl.invalid || numeroDocumentoFormControl.invalid || nombreRazonSocialFormControl.invalid || telefonoFormControl.invalid || emailFormControl.invalid || departamentoFormControl.invalid || municipioFormControl.invalid || direccionFormControl.invalid || tipoClienteFormControl.invalid"
+        (click)="editarCliente()">
+          <mat-icon>save</mat-icon>
+        </button> 
+        <button mat-icon-button matTooltip="Cancelar" routerLink="/buscarCliente">
+          <mat-icon>assignment_return</mat-icon>
+        </button>
+      </mat-card-actions>
+    </div>
+
+      
+      <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+        {{ mensajeExitoso }}
+      </div>
+        
+
+      <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+        {{ mensajeFallido }}
+      </div>
+
     </mat-card>
 
     <img src="../../assets/PuntoU.jpg" class="img-fluid"
@@ -231,12 +261,3 @@
 
   </mat-sidenav-content>
 </mat-sidenav-container>
-
-<div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
-  {{ mensajeExitoso }}
-</div>
-  
-
-<div *ngIf="mensajeFallido" class="alert alert-success mt-3">
-  {{ mensajeFallido }}
-</div>

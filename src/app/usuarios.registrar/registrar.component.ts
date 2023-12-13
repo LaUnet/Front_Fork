@@ -88,10 +88,9 @@ export class registrarUsuarioComponent {
         this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${this._id}`, httpOptions)
           .subscribe(response => {
             if (response.Status) {
-              this.usuariosEncontrados = response.Data[0];
-              this.username = this.usuariosEncontrados[0].username;
-              this.email = this.usuariosEncontrados[0].email;
-              this.rol = this.usuariosEncontrados[0].rolName[0].name;
+              this.username = response.Data[0].username;
+              this.email = response.Data[0].email;
+              this.rol = response.Data[0].rolName[0].name;
             }
           });
       } catch (error) {

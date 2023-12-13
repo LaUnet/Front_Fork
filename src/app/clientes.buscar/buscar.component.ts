@@ -1,11 +1,11 @@
-import {Component, ViewChild} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-
+import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component"
 
 @Component({
   selector: 'app-buscarCliente',
@@ -15,10 +15,10 @@ import { MatDialog } from '@angular/material/dialog';
 export class buscarClienteComponent {
 
 
-  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialog:MatDialog) { }
+  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
 
 
-  columnas: string[] = ['nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'telefono','email', 'estadoActivo', 'accion'];
+  columnas: string[] = ['nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'telefono','email', 'direccion' , 'departamento' , 'municipio','barrio', 'tipoCliente', 'accion'];
 
   pageEvent!: PageEvent;
   pageIndex:number = 0;
@@ -27,6 +27,8 @@ export class buscarClienteComponent {
   pageSizeOptions = [10];
   isLoadingResults : boolean = false;
   opened: boolean = false;
+  mensajeExitoso: string = '';
+  mensajeFallido: string = '';
 
 
   ubicaciones: any[] = [];
@@ -82,15 +84,7 @@ export class buscarClienteComponent {
   }
 
 
-  filtrar(event: Event) {
-      const filtro = (event.target as HTMLInputElement).value;
-      this.dataSourceClientes.filter = filtro.trim().toLowerCase();
-  } 
-
-
-/**
-  guardarEdicionCliente() {
-
+  borrar(id: string) {
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -98,39 +92,41 @@ export class buscarClienteComponent {
         'x-access-token': `${token}`
       })
     };
+    try {
+      this.http.delete<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers/${id}`, httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          this.mensajeExitoso = "Eliminado exitosamente"
+        }
+      });
+    } catch (error) {
+      this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
+    setTimeout(() => {
+      this.refreshPage();
+    }, 3000);
+  };
 
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers/${this.ClienteEditando._id}`;
-    const payload = {
-      descripcion: this.ClienteEditando.descripcion,
-      unidadMedida: this.ClienteEditando.unidadMedida,
-      documentoProveedor: this.ClienteEditando.documentoProveedor,
-      codigoUbicacion: this.ClienteEditando.codigoUbicacion,
-      estadoActivo: this.ClienteEditando.estadoActivo,
-    };
+  filtrar(event: Event) {
+      const filtro = (event.target as HTMLInputElement).value;
+      this.dataSourceClientes.filter = filtro.trim().toLowerCase();
+  } 
 
-    console.log("el body es ", payload);
-
-    this.http.patch(url, payload, httpOptions).subscribe(
-      (response) => {
-        console.log('Artículo editado exitosamente');
-        this.mensajeExitoso = 'Operación exitosa: El artículo se ha actualizado correctamente.';
-        setTimeout(() => {
-          this.refreshPage();
-        }, 3000);
-
-
-        setTimeout(() => {
-          this.mensajeExitoso = '';
-        }, 5000);
-
-      },
-      (error) => {
-        this.mensajeFallido = 'Error: El artículo no se ha podido actualizar ';
-        console.error('Error al editar el artículo', error);
-      }
-    );
+  mostrarDialogo(id:string): void {
+    this.dialogo
+      .open(DialogoConfirmacionComponent, {
+        data: `Seguro deseas ELIMINARLO?`
+      })
+      .afterClosed()
+      .subscribe((confirmar: Boolean) => {
+        if (confirmar) {
+          this.borrar(id)
+        } else {
+          //alert("No hacer nada");
+        }
+      });
   }
- */
 
   refreshPage() {
     window.location.reload();
@@ -139,10 +135,11 @@ export class buscarClienteComponent {
 }
 
 
+
 export class Cliente {
   constructor(public nombreRazonSocial: string, public tipoDocumento: string, public numeroDocumento: String,
-              public telefono: string, public extension: string, public email: string, 
-              public direccionEntrega:[] , public direccionFacturacion:[],
+              public telefono: string, public extension: string, public email: string,public tipoCliente: String, 
+              public direccion: String, public departamento: String,public municipio: String,public barrio: String,
               public estadoActivo: boolean
               ){}
 }
