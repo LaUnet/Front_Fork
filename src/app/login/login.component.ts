@@ -26,7 +26,6 @@ export class LoginComponent {
     if (this.isFormValid()) {
       this.login();
     } else {
-      console.log('Formulario no válido');
       window.location.reload();
     }
   }
@@ -72,7 +71,7 @@ export class LoginComponent {
             resolve(result);
           },
           err => {
-            console.log("entro a error", err);
+            console.error("entro a error", err);
             reject(err);
           }
         );
@@ -82,8 +81,6 @@ export class LoginComponent {
 
       if (responseFromServer) {
         this.router.navigate(['/menu']);
-      } else {
-        console.log('Respuesta fallida');
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);

@@ -94,7 +94,6 @@ tittleForm: string = "REGISTRAR ARTICULO"
       .subscribe(response => {
         if (response.Status) {
           this.ubicaciones = response.Data.docs;
-          console.log(response.Data.docs)
         }else{
           this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
           console.error('Error en la solicitud:', response);

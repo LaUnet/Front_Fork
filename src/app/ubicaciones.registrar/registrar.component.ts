@@ -54,7 +54,6 @@ export class registrarUbicacionComponent {
     };
 
     const token = this.tokenService.token;
-    console.log("el body es ", body);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -88,9 +87,7 @@ export class registrarUbicacionComponent {
         this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations/${this._id}`, httpOptions)
           .subscribe(response => {
             if (response.Status) {
-              console.log(response.Data)
               this.nuevaUbicacion.zona = response.Data.nombreZona;
-              console.log(response.Data.nombreZona)
               this.nuevaUbicacion.numeroZona = response.Data.numeroZona;
               this.nuevaUbicacion.estante = response.Data.numeroEstanteria;
               this.nuevaUbicacion.ubicacion = response.Data.numeroUbicacion;

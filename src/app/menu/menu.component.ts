@@ -29,10 +29,4 @@ export class MenuComponent {
   buscarUsuario() {
     this.mostrarFormularioBuscarUsuario = !this.mostrarFormularioBuscarUsuario;
   }
-
-
-
-  printHello() {
-    console.log('Hola Mundo');
-  }
 }

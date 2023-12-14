@@ -138,8 +138,9 @@ export class buscarArticuloComponent {
         .subscribe(response => {
           if (response.Status) {
             this.mensajeExitoso = "Eliminado exitosamente"
-            console.log(this.mensajeExitoso)
-            console.log(response.Status)
+            setTimeout(() => {
+              this.refreshPage();
+            }, 3000);
           }else{
             this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
             console.error('Error en la solicitud:', response);            
