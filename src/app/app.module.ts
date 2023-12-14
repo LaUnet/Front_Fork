@@ -5,9 +5,6 @@ import { AppComponent } from './app.component';
 import {LoginComponent} from './login/login.component'
 import { AppRoutingModule } from './app-routing.module';
 import { MenuComponent } from './menu/menu.component';
-import { AdministracionComponent } from './administracion/administracion.component';
-import { ProveedorComponent } from './proveedor/proveedor.component';
-import { ArticuloComponent } from './articulo/articulo.component';
 import { registrarUsuarioComponent } from './usuarios.registrar/registrar.component';
 import { buscarUsuarioComponent } from './usuarios.buscar/buscar.component';
 import {registrarArticuloComponent} from './articulos.registrar/registrar.component';
@@ -57,9 +54,6 @@ import {MatBadgeModule} from '@angular/material/badge';
     AppComponent,
     LoginComponent,
     MenuComponent,
-    ProveedorComponent,
-    ArticuloComponent,
-    AdministracionComponent,
     registrarUsuarioComponent,
     buscarUsuarioComponent,
     registrarArticuloComponent,

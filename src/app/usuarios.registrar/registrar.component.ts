@@ -91,6 +91,9 @@ export class registrarUsuarioComponent {
               this.username = response.Data[0].username;
               this.email = response.Data[0].email;
               this.rol = response.Data[0].rolName[0].name;
+            }else{
+              this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+              console.error('Error en la solicitud:', response);
             }
           });
       } catch (error) {

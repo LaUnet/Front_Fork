@@ -1,9 +1,8 @@
-import {Component, NgZone, ViewChild} from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
-import {take} from 'rxjs/operators';
-import {ErrorStateMatcher} from '@angular/material/core';
+import { ActivatedRoute } from '@angular/router';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 
 @Component({
@@ -12,68 +11,52 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
   styleUrls: ['./registrar.component.css']
 })
 export class registrarArticuloComponent {
-  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService) { }
+  constructor(private http: HttpClient, private tokenService: TokenService, private route: ActivatedRoute) 
+  { this._id = this.route.snapshot.paramMap.get('id'); }
 
-    /**
-   * Control Error Email
-   */
-    emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-    matcher = new MyErrorStateMatcher();
+/**
+ * Control Error Textfields
+ */
+codigoBarrasFormControl = new FormControl('', [Validators.required]);
+descripcionFormControl = new FormControl('', [Validators.required]);
+marcaFormControl = new FormControl('', [Validators.required]);
+referenciaFormControl = new FormControl('', [Validators.required]);
+unidadMedidaFormControl = new FormControl('', [Validators.required]);
+codigoUbicacionFormControl = new FormControl('', [Validators.required]);
+matcher = new MyErrorStateMatcher();
+
+_id: string | null;
+tittleForm: string = "REGISTRAR ARTICULO" 
 
   ubicaciones: any[] = [];
-  proveedores: any[] = [];
+  Artículoes: any[] = [];
 
-  codigoArticuloBusqueda: string = '';
   articulosEncontrados: any[] = [];
-  mostrarResultados: boolean = false;
   opened: boolean = false;
-  
-  errorMessage: string = '';
-  successMesssage: String = '';
-
-  articuloEditando: any = null;
-
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
 
-  filtroDescripcion: string = '';
-
-  mostrarCampoFiltrar: boolean = false;
-
-  isChecked = true;
-
-
-  mostrarFormulario = false;
-  mostrarFormularioBuscar = false;
   nuevoArticulo = {
     codigoBarras: '',
     descripcion: '',
     unidadMedida: '',
-    documentoProveedor: [],
     codigoUbicacion: '',
-    estadoActivo: false,
-    marca:"",
-    referencia: ""
+    marca:'',
+    referencia: ''
   };
 
 
   async crearArticulo() {
     const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles';
-
     const body = {
       codigoBarras: this.nuevoArticulo.codigoBarras,
       descripcion: this.nuevoArticulo.descripcion,
       unidadMedida: this.nuevoArticulo.unidadMedida,
-      documentoProveedor: this.nuevoArticulo.documentoProveedor,
       codigoUbicacion: this.nuevoArticulo.codigoUbicacion,
-      estadoActivo: this.nuevoArticulo.estadoActivo,
-      referencia: "1111",
+      referencia: this.nuevoArticulo.referencia,
       marca: this.nuevoArticulo.marca
     };
-    console.log("estado activo ", this.nuevoArticulo.estadoActivo);
-
     const token = this.tokenService.token;
-    console.log("el body es ", body);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -83,93 +66,111 @@ export class registrarArticuloComponent {
 
     try {
       const response = await this.http.post(url, body, httpOptions).toPromise();
-      this.successMesssage = 'Articulo creado correctamente';
-      console.log('Respuesta del servidor:', response);
-      this.resetNuevoArticulo();
-      this.mensajeExitoso = 'Operación exitosa: El artículo se ha creado correctamente.';
-      
+      this.mensajeExitoso = "Artículo guardado correctamente.";
+      setTimeout(() => {
+        this.refreshPage();
+      }, 3000);
     } catch (error) {
+      this.mensajeFallido = 'Error al guardar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
-      this.errorMessage = 'Error al crear el Articulo. Por favor, inténtelo nuevamente.';
-      this.mensajeFallido = 'Error: El artículo no se ha creado ';
     }
-  }
-
-
-  limitarLongitudCodigo(event: any) {
-    const maxCaracteres = 10;
-    const inputElement = event.target;
-    if (inputElement.value.length > maxCaracteres) {
-      inputElement.value = inputElement.value.slice(0, maxCaracteres);
-    }
-  }
-
-
-  cancelarCreacion() {
-    this.mostrarFormulario = false;
-    this.resetNuevoArticulo();
   }
 
   ngOnInit(): void {
     this.cargarUbicaciones();
-    this.cargarProveedores();
+    this.cargarEditarArticulo();
   }
 
   cargarUbicaciones() {
     const token = this.tokenService.token;
-
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         'x-access-token': `${token}`
       })
     };
-
-    this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
+    try {
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
       .subscribe(response => {
         if (response.Status) {
           this.ubicaciones = response.Data.docs;
+          console.log(response.Data.docs)
+        }else{
+          this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response);
         }
       });
+     
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
   }
 
-  cargarProveedores() {
-    const token = this.tokenService.token;
+  async cargarEditarArticulo() {
+    if (this._id !== null) {
+      this.tittleForm = "EDITAR ARTICULO";
+      const token = this.tokenService.token;
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'x-access-token': `${token}`,
+        })
+      };
+      try {
+        this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${this._id}`, httpOptions)
+          .subscribe(response => {
+            if (response.Status) {
+              this.nuevoArticulo.codigoBarras = response.Data.codigoBarras,
+              this.nuevoArticulo.descripcion = response.Data.descripcion,
+              this.nuevoArticulo.marca = response.Data.marca,
+              this.nuevoArticulo.referencia = response.Data.referencia,
+              this.nuevoArticulo.unidadMedida = response.Data.unidadMedida,
+              this.nuevoArticulo.codigoUbicacion = response.Data.codigoUbicacion
+            }else{
+              this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+              console.error('Error en la solicitud:', response);              
+            }
+          });
+      } catch (error) {
+        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+        console.error('Error en la solicitud:', error);
+      }
+    }
+  }
 
+  async editarArticulo() {
+    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${this._id}`
+    const body = {
+      codigoBarras: this.nuevoArticulo.codigoBarras,
+      descripcion: this.nuevoArticulo.descripcion,
+      marca: this.nuevoArticulo.marca,
+      referencia:this.nuevoArticulo.referencia,
+      unidadMedida:this.nuevoArticulo.unidadMedida,
+      codigoUbicacion:this.nuevoArticulo.codigoUbicacion
+    };
+    const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         'x-access-token': `${token}`
       })
     };
-
-    this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers', httpOptions)
-      .subscribe(response => {
-        if (response.Status) {
-          this.proveedores = response.Data.docs;
-        }
-      });
+    try {
+      const response = await this.http.patch(url,body, httpOptions).toPromise();
+      this.mensajeExitoso = "Artículo actualizado exitosamente"
+      setTimeout(() => {
+        this.refreshPage();
+      }, 3000);
+    } catch (error) {
+      this.mensajeFallido = 'Error al editar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
   }
-
-  resetNuevoArticulo() {
-    this.nuevoArticulo = {
-      codigoBarras: '',
-      descripcion: '',
-      unidadMedida: 'UND',
-      documentoProveedor: [],
-      codigoUbicacion: '',
-      estadoActivo: false,
-      marca:"",
-      referencia: ""
-    };
-  }
-
-
   
   refreshPage() {
     window.location.reload();
   }
-  
 }
 
   /** Error when invalid control is dirty, touched, or submitted. */

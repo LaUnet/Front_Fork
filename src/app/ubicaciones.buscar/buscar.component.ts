@@ -42,6 +42,7 @@ export class buscarUbicacionComponent {
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
+
   async buscarUbicacion() {
     const token = this.tokenService.token;
     const httpOptions = {
@@ -50,18 +51,27 @@ export class buscarUbicacionComponent {
         'x-access-token': `${token}`,
       })
     };
-    this.isLoadingResults = true;
-    this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions )
-    .subscribe(response => {
-      if (response.Status) {
-        this.dataSourceUbicaciones = new MatTableDataSource(response.Data.docs);
-        this.dataSourceUbicaciones.paginator = this.paginator;
-        this.pageSize=response.Data.docs.limit;
-        this.pageIndex=response.Data.docs.page;
-        this.length = response.Data.totalDocs;
-      }
-      this.isLoadingResults = false; 
-    });
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          this.dataSourceUbicaciones = new MatTableDataSource(response.Data.docs);
+          this.dataSourceUbicaciones.paginator = this.paginator;
+          this.pageSize=response.Data.docs.limit;
+          this.pageIndex=response.Data.docs.page;
+          this.length = response.Data.totalDocs;
+        }else{
+          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response);
+        }
+        this.isLoadingResults = false; 
+      });
+        
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
   }
 
   async recargarUbicacion(page: PageEvent) {
@@ -73,15 +83,23 @@ export class buscarUbicacionComponent {
         'x-access-token': `${token}`,
       })
     };
-    this.isLoadingResults = true;
-    this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions )
-    .subscribe(response => {
-      if (response.Status) {
-        this.dataSourceUbicaciones = new MatTableDataSource(response.Data.docs);
-        this.pageIndex=response.Data.docs.page;
-      }
-      this.isLoadingResults = false;
-    });
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          this.dataSourceUbicaciones = new MatTableDataSource(response.Data.docs);
+          this.pageIndex=response.Data.docs.page;
+        }else{
+          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response);
+        }
+        this.isLoadingResults = false;
+      });        
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
   }
 
   borrar(id: string) {
@@ -97,15 +115,18 @@ export class buscarUbicacionComponent {
       .subscribe(response => {
         if (response.Status) {
           this.mensajeExitoso = "Eliminado exitosamente"
+          setTimeout(() => {
+            this.refreshPage();
+          }, 3000);
+        }else{
+          this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response);
         }
       });
     } catch (error) {
       this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
-    setTimeout(() => {
-      this.refreshPage();
-    }, 3000);
   };
 
   filtrar(event: Event) {

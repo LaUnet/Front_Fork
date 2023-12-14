@@ -49,18 +49,27 @@ export class buscarClienteComponent {
         'x-access-token': `${token}`,
       })
     };
-    this.isLoadingResults = true;
-    this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers', httpOptions )
-    .subscribe(response => {
-      if (response.Status) {
-        this.dataSourceClientes = new MatTableDataSource(response.Data.docs);
-        this.dataSourceClientes.paginator = this.paginator;
-        this.pageSize=response.Data.docs.limit;
-        this.pageIndex=response.Data.docs.page;
-        this.length = response.Data.totalDocs;
-      }
-      this.isLoadingResults = false; 
-    });
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers', httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          this.dataSourceClientes = new MatTableDataSource(response.Data.docs);
+          this.dataSourceClientes.paginator = this.paginator;
+          this.pageSize=response.Data.docs.limit;
+          this.pageIndex=response.Data.docs.page;
+          this.length = response.Data.totalDocs;
+        }else{
+          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response);
+        }
+        this.isLoadingResults = false; 
+      });      
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);     
+    }
+
   }
 
   async recargarCliente(page: PageEvent) {
@@ -72,15 +81,24 @@ export class buscarClienteComponent {
         'x-access-token': `${token}`,
       })
     };
-    this.isLoadingResults = true;
-    this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions )
-    .subscribe(response => {
-      if (response.Status) {
-        this.dataSourceClientes = new MatTableDataSource(response.Data.docs);
-        this.pageIndex=response.Data.docs.page;
-      }
-      this.isLoadingResults = false;
-    });
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          this.dataSourceClientes = new MatTableDataSource(response.Data.docs);
+          this.pageIndex=response.Data.docs.page;
+        }else{
+          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response);   
+        }
+        this.isLoadingResults = false;
+      });      
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);   
+    }
+
   }
 
 
@@ -97,15 +115,18 @@ export class buscarClienteComponent {
       .subscribe(response => {
         if (response.Status) {
           this.mensajeExitoso = "Eliminado exitosamente"
+          setTimeout(() => {
+            this.refreshPage();
+          }, 3000);
+        }else{
+          this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response);        
         }
       });
     } catch (error) {
       this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
-    setTimeout(() => {
-      this.refreshPage();
-    }, 3000);
   };
 
   filtrar(event: Event) {

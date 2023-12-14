@@ -154,6 +154,15 @@
         </table>
       </form>
 
+      <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+        {{ mensajeExitoso }}
+      </div>
+
+
+      <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+        {{ mensajeFallido }}
+      </div>
+
       <div *ngIf="this._id !== null">
         <mat-card-actions align="end">
           <button mat-icon-button matTooltip="Editar"
@@ -177,15 +186,6 @@
             <mat-icon>cancel_presentation</mat-icon>
           </button>
         </mat-card-actions>
-      </div>
-
-      <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
-        {{ mensajeExitoso }}
-      </div>
-
-
-      <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
-        {{ mensajeFallido }}
       </div>
 
     </mat-card>

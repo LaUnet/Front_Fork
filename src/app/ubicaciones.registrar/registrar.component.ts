@@ -94,6 +94,9 @@ export class registrarUbicacionComponent {
               this.nuevaUbicacion.numeroZona = response.Data.numeroZona;
               this.nuevaUbicacion.estante = response.Data.numeroEstanteria;
               this.nuevaUbicacion.ubicacion = response.Data.numeroUbicacion;
+            }else{
+              this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+              console.error('Error en la solicitud:', response);
             }
           });
       } catch (error) {

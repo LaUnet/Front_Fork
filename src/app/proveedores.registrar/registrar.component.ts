@@ -103,6 +103,10 @@ export class registrarProveedorComponent {
               this.nuevoProveedor.barrio = response.Data.barrio,
               this.nuevoProveedor.regimenTributario = response.Data.regimenTributario
             }
+            else{
+              this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+              console.error('Error en la solicitud:', response);
+            }
           });
       } catch (error) {
         this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';

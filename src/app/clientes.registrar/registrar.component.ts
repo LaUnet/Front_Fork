@@ -105,6 +105,9 @@ export class registrarClienteComponent {
               this.nuevoCliente.email = response.Data.email,
               this.nuevoCliente.barrio = response.Data.barrio,
               this.nuevoCliente.tipoCliente = response.Data.tipoCliente
+            }else{
+              this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+              console.error('Error en la solicitud:', response);              
             }
           });
       } catch (error) {

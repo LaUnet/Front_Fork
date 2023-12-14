@@ -54,6 +54,9 @@ export class buscarUsuarioComponent {
             this.pageSize = response.Data.docs.limit;
             this.pageIndex = response.Data.docs.page;
             this.length = response.Data.totalDocs;
+          }else{
+          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response);
           }
           this.isLoadingResults = false;
         });
@@ -82,6 +85,9 @@ export class buscarUsuarioComponent {
           if (response.Status) {
             this.dataSourceUsuarios = new MatTableDataSource(response.Data.docs);
             this.pageIndex = response.Data.docs.page;
+          }else{
+            this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+            console.error('Error en la solicitud:', response);
           }
           this.isLoadingResults = false;
         });  
@@ -106,15 +112,18 @@ export class buscarUsuarioComponent {
       .subscribe(response => {
         if (response.Status) {
           this.mensajeExitoso = "Eliminado exitosamente"
+          setTimeout(() => {
+            this.refreshPage();
+          }, 3000);
+        }else{
+          this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response);
         }
       });
     } catch (error) {
       this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
-    setTimeout(() => {
-      this.refreshPage();
-    }, 3000);
   };
 
   filtrar(event: Event) {

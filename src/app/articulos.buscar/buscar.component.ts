@@ -1,10 +1,12 @@
-import {Component, ViewChild} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
+import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component"
+
 
 
 
@@ -16,7 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class buscarArticuloComponent {
 
 
-  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialog:MatDialog) { }
+  constructor(private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
 
 
   columnas: string[] = ['codigo', 'codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'accion'];
@@ -28,7 +30,8 @@ export class buscarArticuloComponent {
   pageSizeOptions = [10];
   isLoadingResults : boolean = false;
   opened: boolean = false;
-
+  mensajeExitoso: string = '';
+  mensajeFallido: string = '';
 
   ubicaciones: any[] = [];
   dataSourceArticulos:any;
@@ -48,18 +51,26 @@ export class buscarArticuloComponent {
         'x-access-token': `${token}`,
       })
     };
-    this.isLoadingResults = true;
-    this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles', httpOptions )
-    .subscribe(response => {
-      if (response.Status) {
-        this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
-        this.dataSourceArticulos.paginator = this.paginator;
-        this.pageSize=response.Data.docs.limit;
-        this.pageIndex=response.Data.docs.page;
-        this.length = response.Data.totalDocs;
-      }
-      this.isLoadingResults = false; 
-    });
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles', httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
+          this.dataSourceArticulos.paginator = this.paginator;
+          this.pageSize=response.Data.docs.limit;
+          this.pageIndex=response.Data.docs.page;
+          this.length = response.Data.totalDocs;
+        }else{
+          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response);
+        }
+        this.isLoadingResults = false; 
+      });       
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);     
+    }
   }
 
   async recargarArticulo(page: PageEvent) {
@@ -71,23 +82,25 @@ export class buscarArticuloComponent {
         'x-access-token': `${token}`,
       })
     };
-    this.isLoadingResults = true;
-    this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions )
-    .subscribe(response => {
-      if (response.Status) {
-        this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
-        this.pageIndex=response.Data.docs.page;
-      }
-      this.isLoadingResults = false;
-    });
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
+          this.pageIndex=response.Data.docs.page;
+        }else{
+          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response);
+        }
+        this.isLoadingResults = false;
+      });     
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);     
+    }
   }
-
-
-  filtrar(event: Event) {
-      const filtro = (event.target as HTMLInputElement).value;
-      this.dataSourceArticulos.filter = filtro.trim().toLowerCase();
-  } 
-
+ 
     cargarUbicaciones() {
       const token = this.tokenService.token;
       const httpOptions = {
@@ -96,59 +109,67 @@ export class buscarArticuloComponent {
           'x-access-token': `${token}`
         })
       };
-  
-      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
+      try {
+        this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceUbicaciones = response.Data.docs;
+          }else{
+            this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+            console.error('Error en la solicitud:', response);
+          }
+        });       
+      } catch (error) {
+        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+        console.error('Error en la solicitud:', error);       
+      }  
+    }
+
+    borrar(id: string) {
+      const token = this.tokenService.token;
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'x-access-token': `${token}`
+        })
+      };
+      try {
+        this.http.delete<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${id}`, httpOptions )
+        .subscribe(response => {
+          if (response.Status) {
+            this.mensajeExitoso = "Eliminado exitosamente"
+            console.log(this.mensajeExitoso)
+            console.log(response.Status)
+          }else{
+            this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
+            console.error('Error en la solicitud:', response);            
+          }
+        });
+      } catch (error) {
+        this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
+        console.error('Error en la solicitud:', error);
+      }
+    };
+  
+    filtrar(event: Event) {
+        const filtro = (event.target as HTMLInputElement).value;
+        this.dataSourceArticulos.filter = filtro.trim().toLowerCase();
+    } 
+  
+    mostrarDialogo(id:string): void {
+      this.dialogo
+        .open(DialogoConfirmacionComponent, {
+          data: `Seguro deseas ELIMINARLO?`
+        })
+        .afterClosed()
+        .subscribe((confirmar: Boolean) => {
+          if (confirmar) {
+            this.borrar(id)
+          } else {
+            //alert("No hacer nada");
           }
         });
     }
-
-
-/**
-  guardarEdicionArticulo() {
-
-    const token = this.tokenService.token;
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`
-      })
-    };
-
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${this.articuloEditando._id}`;
-    const payload = {
-      descripcion: this.articuloEditando.descripcion,
-      unidadMedida: this.articuloEditando.unidadMedida,
-      documentoProveedor: this.articuloEditando.documentoProveedor,
-      codigoUbicacion: this.articuloEditando.codigoUbicacion,
-      estadoActivo: this.articuloEditando.estadoActivo,
-    };
-
-    console.log("el body es ", payload);
-
-    this.http.patch(url, payload, httpOptions).subscribe(
-      (response) => {
-        console.log('Artículo editado exitosamente');
-        this.mensajeExitoso = 'Operación exitosa: El artículo se ha actualizado correctamente.';
-        setTimeout(() => {
-          this.refreshPage();
-        }, 3000);
-
-
-        setTimeout(() => {
-          this.mensajeExitoso = '';
-        }, 5000);
-
-      },
-      (error) => {
-        this.mensajeFallido = 'Error: El artículo no se ha podido actualizar ';
-        console.error('Error al editar el artículo', error);
-      }
-    );
-  }
- */
 
   refreshPage() {
     window.location.reload();
