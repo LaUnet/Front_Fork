@@ -19,6 +19,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'menu', component: MenuComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'registrarUsuario', component: registrarUsuarioComponent },
   { path: 'editarUsuario/:id', component: registrarUsuarioComponent },
   { path: 'buscarUsuario', component: buscarUsuarioComponent },
   { path: 'registrarArticulo', component: registrarArticuloComponent },

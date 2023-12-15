@@ -102,32 +102,26 @@ export class buscarUbicacionComponent {
     }
   }
 
-  borrar(id: string) {
+  async borrar(id: string){
+    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations/${id}`
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': `${token}`
+        'x-access-token': `${token}`,
       })
     };
     try {
-      this.http.delete<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations/${id}`, httpOptions )
-      .subscribe(response => {
-        if (response.Status) {
-          this.mensajeExitoso = "Eliminado exitosamente"
-          setTimeout(() => {
-            this.refreshPage();
-          }, 3000);
-        }else{
-          this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
-          console.error('Error en la solicitud:', response);
-        }
-      });
+      const response = await this.http.delete(url, httpOptions).toPromise();
+      this.mensajeExitoso = "Registro Eliminado exitosamente"
+      setTimeout(() => {
+        this.refreshPage();
+      }, 3000);
     } catch (error) {
-      this.mensajeFallido = 'Error al eliminar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al Eliminar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
-  };
+  }
 
   filtrar(event: Event) {
       const filtro = (event.target as HTMLInputElement).value;
