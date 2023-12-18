@@ -4,9 +4,9 @@
 
 mat-card {
   margin: auto;
-  width: 55%;
+  width: 75%;
   display: block;
-  margin-top: 2rem;
+  margin-top: 1rem;
   opacity: 95%;
 }
 
@@ -15,7 +15,7 @@ margin-left: 1%;
 }
 
 .full-width {
-  margin-top: 4%;
+  margin-top: 2%;
   width: 100%;
 }
 
