@@ -21,8 +21,8 @@ export class registrarUbicacionComponent {
 
   nombreZonaFormControl = new FormControl('', [Validators.required]);
   numeroZonaFormControl = new FormControl('', [Validators.required]);
-  numeroEstanteriaFormControl = new FormControl('', [Validators.required]);
-  numeroUbicacionFormControl = new FormControl('', [Validators.required]);
+  numeroEstanteriaFormControl = new FormControl('');
+  numeroUbicacionFormControl = new FormControl('');
   matcher = new MyErrorStateMatcher();
 
   _id: string | null;

@@ -39,8 +39,8 @@
 <mat-sidenav-container>
   <mat-sidenav [(opened)]="opened" mode="push">
     <mat-nav-list>
-      <mat-list-item routerLink="/menu" matTooltip="Menu" (click)="opened=!opened">
-        <mat-icon>menu</mat-icon>
+      <mat-list-item routerLink="/menu" matTooltip="Punto U" (click)="opened=!opened">
+        <mat-icon>home</mat-icon>
       </mat-list-item>
       <mat-list-item routerLink="/catalogoProductos" [class.mat-elevation-z0]="true" style="cursor: pointer">
         <mat-icon>shopping_bag</mat-icon>
@@ -136,6 +136,9 @@
               <mat-option value="Z01">01</mat-option>
               <mat-option value="Z02">02</mat-option>
               <mat-option value="Z03">03</mat-option>
+              <mat-option value="Z04-1">04-1</mat-option>
+              <mat-option value="Z04-2">04-2</mat-option>
+              <mat-option value="Z05">05</mat-option>
             </mat-select>
           </mat-form-field></td>
         </tr></table>
@@ -144,19 +147,19 @@
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Numero Estanteria</mat-label>
             <mat-icon matSuffix>list</mat-icon>
-            <mat-select [(ngModel)]="nuevaUbicacion.estante" name="estante" #fontSize value="E01" [formControl]="numeroEstanteriaFormControl" [errorStateMatcher]="matcher">
-              <mat-option value="E01">01</mat-option>
-              <mat-option value="E02">02</mat-option>
-              <mat-option value="E03">03</mat-option>
+            <mat-select [(ngModel)]="nuevaUbicacion.estante" name="estante" #fontSize value="E01" [formControl]="numeroEstanteriaFormControl" [errorStateMatcher]="matcher" [disabled]="true">
+              <mat-option [disabled]="true" value="E01">01</mat-option>
+              <mat-option [disabled]="true" value="E02">02</mat-option>
+              <mat-option [disabled]="true" value="E03">03</mat-option>
             </mat-select>
           </mat-form-field></td>
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Numero Ubicacion</mat-label>
             <mat-icon matSuffix>list</mat-icon>
             <mat-select [(ngModel)]="nuevaUbicacion.ubicacion" name="ubicacion" #fontSize value="U01" [formControl]="numeroUbicacionFormControl" [errorStateMatcher]="matcher">
-              <mat-option value="U01">01</mat-option>
-              <mat-option value="U02">02</mat-option>
-              <mat-option value="U03">03</mat-option>
+              <mat-option [disabled]="true" value="U01">01</mat-option>
+              <mat-option [disabled]="true" value="U02">02</mat-option>
+              <mat-option [disabled]="true" value="U03">03</mat-option>
             </mat-select>
           </mat-form-field></td>
         </tr></table>

@@ -1,7 +1,7 @@
 <mat-toolbar color="primary" class="mat-elevation-z6">
 
-  <button mat-icon-button matTooltip="Menu" (click)="opened=!opened">
-    <mat-icon>menu</mat-icon>
+  <button mat-icon-button matTooltip="Punto U" (click)="opened=!opened">
+    <mat-icon>home</mat-icon>
   </button>
 
   <span class="spacer"></span>
@@ -97,8 +97,8 @@
 <mat-sidenav-container>
   <mat-sidenav [(opened)]="opened" mode="push">
     <mat-nav-list>
-      <mat-list-item routerLink="/menu" matTooltip="Menu" (click)="opened=!opened">
-        <mat-icon>menu</mat-icon>
+      <mat-list-item routerLink="/menu" matTooltip="Punto U" (click)="opened=!opened">
+        <mat-icon>home</mat-icon>
       </mat-list-item>
       <mat-list-item routerLink="/catalogoProductos" [class.mat-elevation-z0]="true">
         <mat-icon>shopping_bag</mat-icon>
