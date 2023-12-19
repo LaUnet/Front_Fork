@@ -134,7 +134,7 @@
                 <mat-label>Contraseña</mat-label>
                 <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
                   [attr.aria-pressed]="hide">
-                  <mat-icon matSuffix>{{hide ? 'visibility_nope' : 'visibility'}}</mat-icon>
+                  <mat-icon matSuffix>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                 </button>
                 <input type="password" [(ngModel)]="password" name="password" matInput
                   [formControl]="passwordFormControl" [errorStateMatcher]="matcher" [type]="hide ? 'password' : 'text'"
