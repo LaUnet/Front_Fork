@@ -13,14 +13,22 @@
     margin-left: auto;
   }
 
-  mat-card {
-    margin: auto;
-    width: 95%;
+  .mat-card-left {
+    position: absolute;
+    width: 64.8%;
     margin-top: 0.1%;
-    display: block;
     opacity: 95%;
   }
   
+  .mat-card-right {
+    position:fixed;
+    width: 35%;
+    height: 100%;
+    margin-left: 65%;
+    margin-top: 0.1%;
+    opacity: 95%;
+  }
+
   .form {
   margin-left: 1%;
   }
@@ -59,26 +67,12 @@
     background-color: #eee;
   }
 
-  .demo-section + .demo-section {
-    margin-top: 16px;
-  }
-
-  mat-header-cell {
-    display:flex;
-    justify-content:flex-end;
-   }
-
-  mat-cell {
-    display:flex;
-    justify-content:flex-end;
-  }
-
   .button24 {
+    background-color: #eee;
     width: 24px;
     height: 24px;
-    margin-top: -2px;
   }
   .icon24 {
-    font-size: 18px;
-    margin-top: 8px;
+    font-size: 16px;
+    margin-top: -8px;
   }

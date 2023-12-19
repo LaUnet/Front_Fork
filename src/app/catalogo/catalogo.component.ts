@@ -16,9 +16,9 @@ export class CatalogoComponent {
   
 constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialog:MatDialog) { }  
 
-columnas: string[] = ['codigo', 'codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'stock', 'precioventa', 'accion'];
-quantityCart:number = 8;
-opened!:boolean;
+columnas: string[] = ['descripcion','referencia', 'marca', 'codigoUbicacion', 'stock', 'precioventa', 'accion'];
+openedLeft!:boolean;
+openedRight!:boolean;
 dataSourceCatalogo:any;
 isLoadingResults : boolean = false;
 pageEvent!: PageEvent;
@@ -94,8 +94,7 @@ refreshPage() {
   }
 
   export class Catalogo {
-    constructor(public codigo: string, public codigoBarras: string, public descripcion: String,
-                public marca: string, public referencia: string, public unidadMedida: String,
-                public codigoUbicacion: string, public stock: string, public precioventa: string
+    constructor(public descripcion: String,public marca: string, public referencia: string, 
+               public codigoUbicacion: string, public stock: string, public precioventa: string
                 ){}
   }
