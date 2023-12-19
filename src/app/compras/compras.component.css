@@ -1,0 +1,90 @@
+/* Estilo para la sección de contenido */
+.content {
+    padding: 2rem;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }  
+
+  .mat-form-field{
+    margin-top: 1.5%;
+    width: 25%;
+    margin-left: auto;
+  }
+
+  .mat-card-top {
+    width: auto;
+    height: 30%;
+    opacity: 95%;
+  }
+  
+  .mat-card-center {
+    width: auto;
+    height: 40%;
+    opacity: 95%;
+  }
+
+  .mat-card-down {
+    width: auto;
+    height: 30%;
+    opacity: 95%;
+  }
+
+  .form {
+  margin-left: 1%;
+  }
+  
+  .full-width {
+    margin-top: 0.1%;
+    width: 100%;
+  }
+  
+  .middle-width {
+    margin-top: 0.1%;
+    width: 95%;
+    margin-left: 20rem;
+    margin-right: 20rem;
+  }
+  
+  td {
+    padding-right: 8px;
+  }
+  
+  .loading-shade {
+    position: absolute;
+    display: flex;
+    margin-top: 15%;
+    margin-left: 45%;
+    margin-right: 45%;
+  
+  }
+  
+  mat-sidenav-container {
+  height: calc(205vh - 115vH);
+  }
+
+  mat-sidenav {
+    width: 230px;
+    background-color: #eee;
+  }
+
+  .button24 {
+    width: 24px;
+    height: 24px;
+  }
+  .icon24 {
+    font-size: 22px;
+    margin-top: 2px;
+  }
+
+  .mat-sidenav-left {
+    width: 538px;
+    background-color: white;
+  }
+
+  .mat-form-field-menu{
+    margin-top: 1%;
+    width: 25%;
+    height: 100%;
+  }

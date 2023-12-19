@@ -29,7 +29,6 @@ _id: string | null;
 tittleForm: string = "REGISTRAR ARTICULO" 
 
   ubicaciones: any[] = [];
-  Artículoes: any[] = [];
 
   articulosEncontrados: any[] = [];
   opened: boolean = false;

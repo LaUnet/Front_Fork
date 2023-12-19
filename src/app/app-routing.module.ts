@@ -13,6 +13,7 @@ import { buscarClienteComponent } from './clientes.buscar/buscar.component';
 import { registrarUbicacionComponent } from './ubicaciones.registrar/registrar.component';
 import { buscarUbicacionComponent } from './ubicaciones.buscar/buscar.component';
 import { CatalogoComponent } from './catalogo/catalogo.component';
+import { ComprasComponent } from './compras/compras.component';
 
 
 const routes: Routes = [
@@ -35,6 +36,7 @@ const routes: Routes = [
   { path: 'editarUbicacion/:id', component: registrarUbicacionComponent },
   { path: 'buscarUbicacion', component: buscarUbicacionComponent },
   { path: 'catalogoProductos', component: CatalogoComponent },
+  { path: 'comprasProductos', component: ComprasComponent },
 
 ];
 

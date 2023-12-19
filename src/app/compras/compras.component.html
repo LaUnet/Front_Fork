@@ -109,154 +109,135 @@
             </mat-list-item>
         </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav #sidenav2 position="end" [(opened)]="openedCustomer" mode="over" class="mat-sidenav-left">
+    <mat-sidenav #sidenav2 position="end" [(opened)]="openedArticle" mode="over" class="mat-sidenav-left">
         <form class="form">
             <table class="full-width" cellspacing="0">
                 <p></p>
                 <tr>
-                    <span style="font-family: Impact">Registrar Cliente</span>
+                    <span style="font-family: Impact">Registrar Articulo</span>
                 </tr>
             </table>
             <p></p>
             <h1><mat-divider style="color:blueviolet; size: 2cap;"></mat-divider></h1>
             <td></td>
-            <table class="full-width" cellspacing="0">
-                <tr>
-                    <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Tipo Documento</mat-label>
-                            <mat-icon matSuffix>list</mat-icon>
-                            <mat-select [(ngModel)]="nuevoCliente.tipoDocumento" name="tipoDocumento"
-                                [formControl]="tipoDocumentoFormControl" [errorStateMatcher]="matcher">
-                                <mat-option value="CC">Cedula Ciudadanía</mat-option>
-                                <mat-option value="NIT">Nit</mat-option>
-                                <mat-option value="CE">Cedula Extranjería</mat-option>
-                                <mat-option value="TI">Tarjeta Identidad</mat-option>
-                                <mat-option value="PAS">Pasaporte</mat-option>
-                                <mat-option value="RC">Registro Civil</mat-option>
-                            </mat-select>
-                        </mat-form-field></td>
-                    <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Numero Documento</mat-label>
-                            <mat-icon matSuffix>contacts</mat-icon>
-                            <input matInput [(ngModel)]="nuevoCliente.numeroDocumento" name="numeroDocumento"
-                                [formControl]="numeroDocumentoFormControl" [errorStateMatcher]="matcher">
-                        </mat-form-field></td>
-                </tr>
-            </table>
-
-            <table class="full-width" cellspacing="0">
-                <tr>
-                    <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Nombre - Razon Social</mat-label>
-                            <mat-icon matSuffix>description</mat-icon>
-                            <input matInput [(ngModel)]="nuevoCliente.nombreRazonSocial" name="nombreRazonSocial"
-                                [formControl]="nombreRazonSocialFormControl" [errorStateMatcher]="matcher">
-                        </mat-form-field></td>
-                    <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Numero Telefonico</mat-label>
-                            <mat-icon matSuffix>phone</mat-icon>
-                            <input matInput [(ngModel)]="nuevoCliente.telefono" name="telefono" #phone maxlength="10"
-                                placeholder="Ex. 3001002000" [formControl]="telefonoFormControl"
-                                [errorStateMatcher]="matcher">
-                            <mat-hint align="end">{{phone.value.length}} / 10</mat-hint>
-                        </mat-form-field></td>
-                </tr>
-            </table>
-
-            <table class="full-width" cellspacing="0">
-                <tr>
-                    <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Email</mat-label>
-                            <mat-icon matSuffix>email</mat-icon>
-                            <input type="email" matInput [(ngModel)]="nuevoCliente.email" name="email"
-                                [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-                                placeholder="Ex. correo@example.com">
-                        </mat-form-field></td>
-                    <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Departamento Entrega</mat-label>
-                            <mat-icon matSuffix>business</mat-icon>
-                            <mat-select [(ngModel)]="nuevoCliente.departamento" name="departamento" value="ANT"
-                                [formControl]="departamentoFormControl" [errorStateMatcher]="matcher">
-                                <mat-option value="ANT">Antioquia</mat-option>
-                            </mat-select>
-                        </mat-form-field></td>
-                </tr>
-            </table>
-            <table class="full-width" cellspacing="0">
-                <tr>
-                    <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Municipcio Entrega</mat-label>
-                            <mat-icon matSuffix>business</mat-icon>
-                            <mat-select [(ngModel)]="nuevoCliente.municipio" name="municipio" #fontSize value="MED"
-                                [formControl]="municipioFormControl" [errorStateMatcher]="matcher">
-                                <mat-option value="MED">Medellin</mat-option>
-                                <mat-option value="BEL">Bello</mat-option>
-                                <mat-option value="ENV">Envigado</mat-option>
-                                <mat-option value="SAB">Sabaneta</mat-option>
-                                <mat-option value="ITA">Itagui</mat-option>
-                                <mat-option value="EST">Estrella</mat-option>
-                            </mat-select>
-                        </mat-form-field></td>
-                    <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Barrio Entrega</mat-label>
-                            <mat-icon matSuffix>business</mat-icon>
-                            <input matInput [(ngModel)]="nuevoCliente.barrio" name="barrio">
-                        </mat-form-field></td>
-                </tr>
-            </table>
-
-            <table class="full-width" cellspacing="0">
-                <tr>
-                    <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Dirección Entrega</mat-label>
-                            <mat-icon matSuffix>tour</mat-icon>
-                            <input matInput [(ngModel)]="nuevoCliente.direccion" name="direccion"
-                                placeholder="Calle 67 #55-89" [formControl]="direccionFormControl"
-                                [errorStateMatcher]="matcher">
-                        </mat-form-field></td>
-                    <td></td>
-
-                    <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Tipo Cliente</mat-label>
-                            <mat-icon matSuffix>monetization_on</mat-icon>
-                            <mat-select [(ngModel)]="nuevoCliente.tipoCliente" name="tipoCliente" #fontSize value="MED"
-                                [formControl]="tipoClienteFormControl" [errorStateMatcher]="matcher">
-                                <mat-option value="NAT">Natural</mat-option>
-                                <mat-option value="JUR">Juridico</mat-option>
-                            </mat-select>
-                        </mat-form-field></td>
-                </tr>
-            </table>
-        </form>
-
-        <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
-            {{ mensajeExitoso }}
-        </div>
-
-
-        <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
-            {{ mensajeFallido }}
-        </div>
+            <table class="full-width" cellspacing="0"><tr>      
+                <td>
+                  <mat-form-field class="full-width"  appearance="outline">
+                    <mat-label>Codigo Barras</mat-label>
+                    <mat-icon matSuffix>code</mat-icon>
+                    <input matInput [(ngModel)]="nuevoArticulo.codigoBarras" name="codigoBarras">
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field class="full-width"  appearance="outline">
+                    <mat-label>Descripción</mat-label>
+                    <mat-icon matSuffix>description</mat-icon>
+                    <input matInput [(ngModel)]="nuevoArticulo.descripcion" name="descripcion" [formControl]="descripcionFormControl" [errorStateMatcher]="matcher">
+                  </mat-form-field>
+                </td>    
+              </tr></table>
+          
+          
+              <table class="full-width" cellspacing="0"><tr>
+                <td>
+                    <mat-form-field class="full-width"  appearance="outline">
+                      <mat-label>Marca</mat-label>
+                      <mat-icon matSuffix>label_important</mat-icon>
+                      <input matInput [(ngModel)]="nuevoArticulo.marca"  name="marca" [formControl]="marcaFormControl" [errorStateMatcher]="matcher">
+                    </mat-form-field>
+                  </td>  
+                <td>
+                  <mat-form-field class="full-width"  appearance="outline">
+                    <mat-label>Referencia</mat-label>
+                    <mat-icon matSuffix>label</mat-icon>
+                    <input matInput [(ngModel)]="nuevoArticulo.referencia" name="referencia" [formControl]="referenciaFormControl" [errorStateMatcher]="matcher">
+                  </mat-form-field>
+                </td>
+            </tr></table>
+            <table class="full-width" cellspacing="0"><tr>
+                <td>
+                  <mat-form-field class="full-width"  appearance="outline">
+                    <mat-label>Unidad Medida</mat-label>
+                    <mat-icon matSuffix>list</mat-icon>
+                    <mat-select [(ngModel)]="nuevoArticulo.unidadMedida" name="unidadMedida" [formControl]="unidadMedidaFormControl" [errorStateMatcher]="matcher">
+                      <mat-option disabled selected>Selecciona una opcíon</mat-option>
+                      <mat-option value="UND">Unidad</mat-option>
+                      <mat-option value="RES">Resma</mat-option>
+                      <mat-option value="CAJ">Caja</mat-option>
+                      <mat-option value="ROL">Rollo</mat-option>
+                      <mat-option value="MET">Metro</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                
+                <td>
+                  <mat-form-field class="full-width"  appearance="outline">
+                    <mat-label>Ubicación</mat-label>
+                    <mat-icon matSuffix>list</mat-icon>
+                    <mat-select [(ngModel)]="nuevoArticulo.codigoUbicacion" name="codigoUbicacion" [formControl]="codigoUbicacionFormControl" [errorStateMatcher]="matcher">
+                      <mat-option disabled selected>Selecciona una opcíon</mat-option>
+                      <mat-option *ngFor="let ubicacion of ubicaciones" [value]="ubicacion.codigo">
+                        {{ ubicacion.codigo }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>           
+              </tr></table>
+             
+              <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+                {{ mensajeExitoso }}
+              </div>
+                
+              
+              <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+                {{ mensajeFallido }}
+              </div>
 
         <div align="end">
-            <button mat-icon-button matTooltip="Guardar"
-                [disabled]="tipoDocumentoFormControl.invalid || numeroDocumentoFormControl.invalid || nombreRazonSocialFormControl.invalid || telefonoFormControl.invalid || emailFormControl.invalid || departamentoFormControl.invalid || municipioFormControl.invalid || direccionFormControl.invalid || tipoClienteFormControl.invalid"
-                (click)="refreshPage()">
-                <mat-icon>save</mat-icon>
-            </button>
+            <button mat-icon-button matTooltip="Guardar" 
+            [disabled]="descripcionFormControl.invalid || marcaFormControl.invalid || referenciaFormControl.invalid || unidadMedidaFormControl.invalid || codigoUbicacionFormControl.invalid"
+            (click)="refreshPage()">
+              <mat-icon>save</mat-icon>
+            </button> 
             <button mat-icon-button matTooltip="Cancelar" (click)="refreshPage()">
-                <mat-icon>assignment_return</mat-icon>
+              <mat-icon>cancel_presentation</mat-icon>
             </button>
         </div>
+        </form>
     </mat-sidenav>
     <mat-sidenav-content>
-        <mat-card class="mat-card-left">
+        <mat-card class="mat-card-top">
+            <form class="form">
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <span style="font-family: Impact">Registrar Compra</span>
+                        </td>
+                        <mat-card-actions align="end">
+                            <button mat-mini-fab matTooltip="Imprimir" color="basic"
+                                (click)="openedArticle=!openedArticle">
+                                <mat-icon>print</mat-icon>
+                            </button>
+                        </mat-card-actions>
+                    </tr>
+                </table>
+                <h1><mat-divider style="color:blueviolet; size: 2cap;"></mat-divider></h1>
+                <td></td>
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </mat-card>
+        <mat-card class="mat-card-center">
             <div *ngIf="isLoadingResults" class="loading-shade">
                 <mat-progress-spinner color="primary" mode="indeterminate">
                 </mat-progress-spinner>
             </div>
             <div class="mat-elevation-z8">
-                <table mat-table [dataSource]="dataSourceCatalogo" class="table table-striped">
+                <table mat-table [dataSource]="dataSourcecompras" class="table table-striped">
 
                     <ng-container matColumnDef="codigo">
                         <th mat-header-cell *matHeaderCellDef> Código </th>
@@ -310,21 +291,26 @@
                     <tr mat-header-row *matHeaderRowDef="columnas"></tr>
                     <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
                 </table>
-                <mat-paginator #paginator [length]="length" [pageIndex]="pageIndex" [pageSize]="pageSize"
-                    [showFirstLastButtons]="true" [pageSizeOptions]="pageSizeOptions" (page)="recargarCatalogo($event)">
-                </mat-paginator>
+            </div>
+            <div align="start">
+                <mat-label style="color: blue;margin-left: 0.5%;margin-top: 0.5%;position: absolute;" >Agregar Línea</mat-label>
+            </div>
+            <div>
+                <button mat-mini-fab matSuffix class="button24" color="primary" style="margin-top: 0.5%;margin-left:8%;">
+                    <mat-icon class="icon24" style="position: absolute;">add</mat-icon>
+                </button>
             </div>
         </mat-card>
-        <mat-card class="mat-card-right">
+        <mat-card class="mat-card-down">
             <form class="form">
                 <table class="full-width" cellspacing="0">
                     <tr>
                         <td>
-                            <span style="font-family: Impact">Facturar Pedido</span>
+                            <span style="font-family: Impact">Resumen Compra</span>
                         </td>
                         <mat-card-actions align="end">
                             <button mat-mini-fab matTooltip="Imprimir" color="basic"
-                                (click)="openedCustomer=!openedCustomer">
+                                (click)="openedArticle=!openedArticle">
                                 <mat-icon>print</mat-icon>
                             </button>
                         </mat-card-actions>

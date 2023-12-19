@@ -8,18 +8,19 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 
 @Component({
-  selector: 'app-catalogo',
-  templateUrl: './catalogo.component.html',
-  styleUrls: ['./catalogo.component.css']
+  selector: 'app-compras',
+  templateUrl: './compras.component.html',
+  styleUrls: ['./compras.component.css']
 })
-export class CatalogoComponent {
+export class ComprasComponent {
 
   constructor(private http: HttpClient, private tokenService: TokenService, public dialog: MatDialog) { }
 
   columnas: string[] = ['descripcion', 'referencia', 'marca', 'ubicacion', 'stock', 'precioventa', 'accion'];
   openedMenu!: boolean;
-  openedCustomer!: boolean;
-  dataSourceCatalogo: any;
+  openedArticle!: boolean;
+  dataSourcecompras: any;
+  ubicaciones: any[] = [];
   isLoadingResults: boolean = false;
   pageEvent!: PageEvent;
   pageIndex: number = 0;
@@ -49,33 +50,6 @@ export class CatalogoComponent {
     referencia: ''
   };
 
-  /**
- * Control Error Textfields Customers
- */
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-  tipoDocumentoFormControl = new FormControl('', [Validators.required]);
-  numeroDocumentoFormControl = new FormControl('', [Validators.required]);
-  nombreRazonSocialFormControl = new FormControl('', [Validators.required]);
-  telefonoFormControl = new FormControl('', [Validators.required]);
-  direccionFormControl = new FormControl('', [Validators.required]);
-  departamentoFormControl = new FormControl('', [Validators.required]);
-  municipioFormControl = new FormControl('', [Validators.required]);
-  barrioFormControl = new FormControl('', [Validators.required]);
-  tipoClienteFormControl = new FormControl('', [Validators.required]);
-
-  nuevoCliente: any = {
-    tipoDocumento: '',
-    numeroDocumento: '',
-    nombreRazonSocial: '',
-    telefono: '',
-    extension: "",
-    direccion: '',
-    departamento: '',
-    municipio: '',
-    email: '',
-    tipoCliente: '',
-    barrio:''
-  };
   matcher = new MyErrorStateMatcher();
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
@@ -86,7 +60,7 @@ export class CatalogoComponent {
 
   }
 
-  async buscarCatalogo() {
+  async buscarcompras() {
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -98,7 +72,7 @@ export class CatalogoComponent {
     this.http.get<any>('https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle', httpOptions)
       .subscribe(response => {
         if (response.Status) {
-          this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
+          this.dataSourcecompras = new MatTableDataSource(response.Data.docs);
           this.pageSize = response.Data.docs.limit;
           this.pageIndex = response.Data.docs.page;
           this.length = response.Data.totalDocs;
@@ -107,8 +81,8 @@ export class CatalogoComponent {
       });
   }
 
-  async recargarCatalogo(page: PageEvent) {
-    this.dataSourceCatalogo = new MatTableDataSource;
+  async recargarcompras(page: PageEvent) {
+    this.dataSourcecompras = new MatTableDataSource;
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -120,7 +94,7 @@ export class CatalogoComponent {
     this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions)
       .subscribe(response => {
         if (response.Status) {
-          this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
+          this.dataSourcecompras = new MatTableDataSource(response.Data.docs);
           this.pageIndex = response.Data.docs.page;
         }
         this.isLoadingResults = false;
@@ -130,9 +104,9 @@ export class CatalogoComponent {
 
 
   filtrar(event: Event) {
-    this.buscarCatalogo();
+    this.buscarcompras();
     const filtro = (event.target as HTMLInputElement).value;
-    this.dataSourceCatalogo.filter = filtro.trim().toLowerCase();
+    this.dataSourcecompras.filter = filtro.trim().toLowerCase();
     this.isLoadingResults = false;
   }
 
@@ -141,7 +115,7 @@ export class CatalogoComponent {
   }
 }
 
-export class Catalogo {
+export class compras {
   constructor(public descripcion: String, public marca: string, public referencia: string,
     public ubicacion: string, public stock: string, public precioventa: string
   ) { }

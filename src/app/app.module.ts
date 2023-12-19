@@ -16,6 +16,7 @@ import {buscarClienteComponent} from './clientes.buscar/buscar.component';
 import {registrarUbicacionComponent} from './ubicaciones.registrar/registrar.component';
 import {buscarUbicacionComponent} from './ubicaciones.buscar/buscar.component';
 import { CatalogoComponent } from './catalogo/catalogo.component';
+import { ComprasComponent } from './compras/compras.component';
 import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.component';
 
 
@@ -65,7 +66,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     registrarUbicacionComponent,
     buscarUbicacionComponent,
     CatalogoComponent,
-    DialogoConfirmacionComponent
+    DialogoConfirmacionComponent,
+    ComprasComponent
   ],
   imports: [
     BrowserModule,
