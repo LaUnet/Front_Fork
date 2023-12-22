@@ -229,7 +229,7 @@
                 <h1><mat-divider style="color:blueviolet; size: 2cap;"></mat-divider></h1>
                 <table cellspacing="0">
                     <tr>
-                            <mat-form-field  appearance="outline">
+                            <mat-form-field appearance="outline">
                                 <mat-label>Nombre Proveedor</mat-label>
                                 <mat-icon matSuffix>supervisor_account</mat-icon>
                                 <mat-select [(ngModel)]="nuevoProveedor.nombreRazonSocial" name="nombreRazonSocial"
@@ -237,7 +237,7 @@
                                     <mat-form-field  appearance="fill">
                                         <mat-icon matSuffix color="primary">search</mat-icon>
                                         <input matInput (keyup)="filtrarProveedor($event); "
-                                            placeholder="Filtrar Proveedor" type="text" style="width : 1px; height : 1px">
+                                            placeholder="Filtrar Proveedor" type="text">
                                     </mat-form-field>
                                     <mat-option *ngFor="let proveedor of dataSourceProveedores"
                                         [value]="proveedor.nombreRazonSocial">
@@ -245,11 +245,11 @@
                                 </mat-select>
                             </mat-form-field>
                             <mat-form-field class="mat-form-field-mat-card-top" appearance="outline">
-                                <mat-label>Tipo Documento</mat-label>
+                                <mat-label >Tipo Documento</mat-label>
                                 <mat-icon matSuffix>list</mat-icon>
                                 <input matInput [(ngModel)]="nuevoProveedor.tipoDocumento" name="tipoDocumento"
                                 [errorStateMatcher]="matcher" type="text" disabled>
-                            </mat-form-field>
+                            </mat-form-field>   
                             <mat-form-field class="mat-form-field-mat-card-top" appearance="outline">
                                 <mat-label>Numero Documento</mat-label>
                                 <mat-icon matSuffix>contacts</mat-icon>
@@ -402,36 +402,40 @@
                             <div align="start">
                             <td>
                                 <mat-form-field appearance="outline">
-                                    <mat-label>Subtotal</mat-label>
+                                    <mat-label style="font-weight:bold">Subtotal</mat-label>
                                     <mat-icon matSuffix>monetization_on</mat-icon>
                                     <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento"
-                                     [errorStateMatcher]="matcher" type="text" disabled>
+                                     [errorStateMatcher]="matcher" type="number" disabled>
+                                     <span matTextSuffix>.00</span>
                                 </mat-form-field>
                             </td>
                             <td>
                                 <mat-form-field appearance="outline">
-                                    <mat-label>Descuento</mat-label>
+                                    <mat-label style="font-weight:bold">Descuento</mat-label>
                                     <mat-icon style="font-weight:bolder;" matSuffix>%</mat-icon>
                                     <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento"
-                                     [errorStateMatcher]="matcher" type="text" disabled>
+                                     [errorStateMatcher]="matcher" type="number" disabled>
+                                     <span matTextSuffix>.00</span>
                                 </mat-form-field>
                             </td>
                             <td>
                                 <mat-form-field appearance="outline">
-                                    <mat-label>Iva</mat-label>
+                                    <mat-label style="font-weight:bold">Iva</mat-label>
                                     <mat-icon matSuffix>gavel</mat-icon>
                                     <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento"
-                                     [errorStateMatcher]="matcher" type="text" disabled>
+                                     [errorStateMatcher]="matcher" type="number" disabled>
+                                     <span matTextSuffix>.00</span>
                                 </mat-form-field>
                             </div>
                             </td>
                             <td>
                             <div>
                             <mat-form-field class="full-width-right-card-down" appearance="outline">
-                                <mat-label>Total</mat-label>
-                                <mat-icon matSuffix>attach_money</mat-icon>
+                                <mat-label style="font-weight:bolder">Total</mat-label>
+                                <mat-icon  matSuffix>attach_money</mat-icon>
                                 <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento"
-                                 [errorStateMatcher]="matcher" type="text" disabled>
+                                 [errorStateMatcher]="matcher" type="number" disabled placeholder="0">
+                                 <span matTextSuffix>.00</span>
                             </mat-form-field>
                             </div>
                         </td>
