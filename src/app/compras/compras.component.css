@@ -1,90 +1,145 @@
 /* Estilo para la sección de contenido */
 .content {
-    padding: 2rem;
-  }
+  padding: 2rem;
+}
 
-  .spacer {
-    flex: 1 1 auto;
-  }  
+.spacer {
+  flex: 1 1 auto;
+}
 
-  .mat-form-field{
-    margin-top: 1.5%;
-    width: 25%;
-    margin-left: auto;
-  }
+.mat-form-field {
+  margin-top: 1.5%;
+  width: 25%;
+  margin-left: auto;
+}
 
-  .mat-card-top {
-    width: auto;
-    height: 30%;
-    opacity: 95%;
-  }
-  
-  .mat-card-center {
-    width: auto;
-    height: 40%;
-    opacity: 95%;
-  }
+.mat-card-top {
+  width: auto;
+  height: auto;
+  opacity: 95%;
+  background-color: aliceblue;
+}
 
-  .mat-card-down {
-    width: auto;
-    height: 30%;
-    opacity: 95%;
-  }
+.mat-card-center {
+  position: relative;
+  width: auto;
+  height: auto;
+  opacity: 98%;
+}
 
-  .form {
+.mat-card-down {
+  margin-top: auto;
+  width: auto;
+  height: 30%;
+  opacity: 95%;
+  background-color: aliceblue;
+}
+
+.form {
   margin-left: 1%;
-  }
-  
-  .full-width {
-    margin-top: 0.1%;
-    width: 100%;
-  }
-  
-  .middle-width {
-    margin-top: 0.1%;
-    width: 95%;
-    margin-left: 20rem;
-    margin-right: 20rem;
-  }
-  
-  td {
-    padding-right: 8px;
-  }
-  
-  .loading-shade {
-    position: absolute;
-    display: flex;
-    margin-top: 15%;
-    margin-left: 45%;
-    margin-right: 45%;
-  
-  }
-  
-  mat-sidenav-container {
+}
+
+.full-width {
+  margin-top: 0.1%;
+  width: 100%;
+}
+
+.middle-width {
+  margin-top: 0.1%;
+  width: 95%;
+  margin-left: 20rem;
+  margin-right: 20rem;
+}
+
+td {
+  padding-right: 8px;
+}
+
+.loading-shade {
+  margin-top: 10%;
+  margin-left: 45%;
+  margin-right: 45%;
+  position:relative;
+
+}
+
+mat-sidenav-container {
   height: calc(205vh - 115vH);
-  }
+}
 
-  mat-sidenav {
-    width: 230px;
-    background-color: #eee;
-  }
+mat-sidenav {
+  width: 230px;
+  background-color: #eee;
+  display: block;
+}
 
-  .button24 {
-    width: 24px;
-    height: 24px;
-  }
-  .icon24 {
-    font-size: 22px;
-    margin-top: 2px;
-  }
+.button24 {
+  width: 24px;
+  height: 24px;
+}
 
-  .mat-sidenav-left {
-    width: 538px;
-    background-color: white;
-  }
+.icon24 {
+  font-size: 22px;
+  margin-top: 2px;
+}
 
-  .mat-form-field-menu{
-    margin-top: 1%;
-    width: 25%;
-    height: 100%;
-  }
+.mat-sidenav-right {
+  width: 538px;
+  background-color: white;
+}
+
+.mat-form-field-menu {
+  margin-top: 1%;
+  width: 25%;
+  height: 100%;
+}
+
+th,
+td {
+  width: 12%;
+  height: -10%;
+  text-align: left;
+}
+
+
+.mat-form-field-mat-card-top-list {
+  margin-top: auto;
+  margin-left: auto;
+  width: 40%;
+}
+
+.mat-form-field-mat-card-top {
+  margin-top: auto;
+  margin-left: auto;
+  width: 28%;
+}
+
+.mat-form-field-mat-card-top-list-right {
+  margin-top: 10%;
+  margin-left: 50%;
+  width: 20%;
+}
+
+.mat-form-field-mat-card-top-right {
+  margin-top: auto;
+  margin-left: 10%;
+  width: 14%;
+}
+
+.full-width-right {
+  margin-top: -5.2%;
+  margin-left: 80%;
+  width: 80%;
+}
+
+.full-width-right-down {
+  margin-top: -1%;
+  margin-left: 80%;
+  width: 80%;
+}
+
+.full-width-right-card-down {
+  margin-top: auto;
+  margin-left: 40%;
+}
+

@@ -6,6 +6,8 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-compras',
@@ -14,13 +16,15 @@ import { ErrorStateMatcher } from '@angular/material/core';
 })
 export class ComprasComponent {
 
-  constructor(private http: HttpClient, private tokenService: TokenService, public dialog: MatDialog) { }
+  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
 
-  columnas: string[] = ['descripcion', 'referencia', 'marca', 'ubicacion', 'stock', 'precioventa', 'accion'];
+  columnas: string[] = ['descripcion', 'referencia', 'marca', 'precio', 'descuento','impuesto','cantidad', 'precioventa', 'total','accion'];
   openedMenu!: boolean;
   openedArticle!: boolean;
-  dataSourcecompras: any;
-  ubicaciones: any[] = [];
+  openedProvider!: boolean;
+  dataSourceCompras: any;
+  dataSourceProveedores: any;
+  dataSourceubicaciones: any;
   isLoadingResults: boolean = false;
   pageEvent!: PageEvent;
   pageIndex: number = 0;
@@ -29,7 +33,7 @@ export class ComprasComponent {
   pageSizeOptions = [20];
   searchDescription!: boolean;
   searchCode!: boolean;
-  
+  _id!: string;
 
 
   /**
@@ -47,8 +51,54 @@ export class ComprasComponent {
     unidadMedida: '',
     codigoUbicacion: '',
     marca:'',
-    referencia: ''
+    referencia: '',
+    subotalUnitario:'',
+    ivaUnitario:'',
+    totalUnitario:'',
+    cantidad:'',
+    subtotal:'',
+    iva:'',
+    total:'',
+    valorDeVenta:'',
   };
+
+/**
+ * Control Error Textfields Providers
+ */
+     tipoDocumentoFormControl = new FormControl('', [Validators.required]);
+     numeroDocumentoFormControl = new FormControl('', [Validators.required]);
+     nombreRazonSocialFormControl = new FormControl('', [Validators.required]);
+
+   nuevoProveedor: any = {
+     tipoDocumento: '',
+     numeroDocumento: '',
+     nombreRazonSocial: ''
+   };
+
+   /**
+ * Control Error Textfields Compras
+ */
+   numeroFacturaFormControl = new FormControl('', [Validators.required]);
+   fechaFacturaFormControl = new FormControl('', [Validators.required]);
+   fechaVencimientoFormControl = new FormControl('', [Validators.required]);
+   subtotalFormControl = new FormControl('', [Validators.required]);
+   impuestoFormControl = new FormControl('', [Validators.required]);
+   totalFormControl = new FormControl('', [Validators.required]);
+   subotalUnitarioFormControl = new FormControl('', [Validators.required]);
+   impuestoUnitarioFormControl = new FormControl('', [Validators.required]);
+   totalUnitarioFormControl = new FormControl('', [Validators.required]);
+   cantidadFormControl = new FormControl('', [Validators.required]);
+   subtotalArticuloFormControl = new FormControl('', [Validators.required]);
+   totalArticuloFormControl = new FormControl('', [Validators.required]);
+   precioVentaArticuloFormControl = new FormControl('', [Validators.required]);
+
+ nuevaCompra: any = {
+  numeroFactura:'',
+  fechaFactura:'',
+  subtotal:'',
+  iva:'',
+  total:''
+ };
 
   matcher = new MyErrorStateMatcher();
   mensajeExitoso: string = '';
@@ -57,7 +107,58 @@ export class ComprasComponent {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   ngOnInit() {
+    this.cargarProveedores();
+  }
 
+  async cargarProveedores() {
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    try {
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers', httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceProveedores = response.Data.docs;
+          }else{
+            this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+            console.error('Error en la solicitud:', response); 
+          }
+        });
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error); 
+    }
+
+  }
+
+  async cargarSelectProveedor(_id: string) {
+      const token = this.tokenService.token;
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'x-access-token': `${token}`,
+        })
+      };
+      try {
+        this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers/${this._id}`, httpOptions)
+          .subscribe(response => {
+            if (response.Status) {
+              this.nuevoProveedor.tipoDocumento = response.Data.tipoDocumento,
+              this.nuevoProveedor.numeroDocumento = response.Data.numeroDocumento
+            }
+            else{
+              this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+              console.error('Error en la solicitud:', response);
+            }
+          });
+      } catch (error) {
+        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+        console.error('Error en la solicitud:', error);
+      }
   }
 
   async buscarcompras() {
@@ -68,21 +169,29 @@ export class ComprasComponent {
         'x-access-token': `${token}`,
       })
     };
+  try {
     this.isLoadingResults = true;
     this.http.get<any>('https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle', httpOptions)
       .subscribe(response => {
         if (response.Status) {
-          this.dataSourcecompras = new MatTableDataSource(response.Data.docs);
+          this.dataSourceCompras = new MatTableDataSource(response.Data.docs);
           this.pageSize = response.Data.docs.limit;
           this.pageIndex = response.Data.docs.page;
           this.length = response.Data.totalDocs;
+        }else{
+          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response); 
         }
         this.isLoadingResults = false;
       });
+  } catch (error) {
+    this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+    console.error('Error en la solicitud:', error); 
   }
+}
 
   async recargarcompras(page: PageEvent) {
-    this.dataSourcecompras = new MatTableDataSource;
+    this.dataSourceCompras = new MatTableDataSource;
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -90,25 +199,55 @@ export class ComprasComponent {
         'x-access-token': `${token}`,
       })
     };
-    this.isLoadingResults = true;
-    this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions)
-      .subscribe(response => {
-        if (response.Status) {
-          this.dataSourcecompras = new MatTableDataSource(response.Data.docs);
-          this.pageIndex = response.Data.docs.page;
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceCompras = new MatTableDataSource(response.Data.docs);
+            this.pageIndex = response.Data.docs.page;
+          }else{
+            this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+            console.error('Error en la solicitud:', response); 
+          }
+          this.isLoadingResults = false;
+        });
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error); 
+    }
+  }
+
+  mostrarDialogo(): void {
+    this.dialogo
+      .open(DialogoConfirmacionComponent, {
+        data: `Seguro requieres Registrar Proveedor?`
+      })
+      .afterClosed()
+      .subscribe((confirmar: Boolean) => {
+        if (confirmar) {
+          this.routerLinkProveedor();
+        } else {
+          //alert("No hacer nada");
         }
-        this.isLoadingResults = false;
       });
   }
 
-
+  routerLinkProveedor():void{
+    this.router.navigate(['/registrarProveedor'])
+  };
 
   filtrar(event: Event) {
     this.buscarcompras();
     const filtro = (event.target as HTMLInputElement).value;
-    this.dataSourcecompras.filter = filtro.trim().toLowerCase();
+    this.dataSourceCompras.filter = filtro.trim().toLowerCase();
     this.isLoadingResults = false;
   }
+
+  filtrarProveedor(event: Event) {
+    const filtro = (event.target as HTMLInputElement).value;
+    this.dataSourceProveedores.filter = filtro.trim().toLowerCase();
+} 
 
   refreshPage() {
     window.location.reload();
@@ -117,7 +256,8 @@ export class ComprasComponent {
 
 export class compras {
   constructor(public descripcion: String, public marca: string, public referencia: string,
-    public ubicacion: string, public stock: string, public precioventa: string
+    public precio: string, public descuento: string, public impuesto: string,public cantidad: string,
+    public precioventa: string, public vacio: string, public total: string, public accion: string
   ) { }
 }
 

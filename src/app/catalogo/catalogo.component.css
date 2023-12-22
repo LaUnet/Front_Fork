@@ -68,15 +68,16 @@
   }
 
   .button24 {
-    width: 24px;
-    height: 24px;
+    width: 24.5px;
+    height: 24.5px;
   }
   .icon24 {
     font-size: 22px;
-    margin-top: 2px;
+    margin-top: 2.5px;
+    margin-top: 2.5px;
   }
 
-  .mat-sidenav-left {
+  .mat-sidenav-right {
     width: 538px;
     background-color: white;
   }

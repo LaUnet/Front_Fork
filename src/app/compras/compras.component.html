@@ -3,15 +3,10 @@
         <mat-icon>menu</mat-icon>
     </button>
     <mat-form-field class="mat-form-field" appearance="fill">
-        <mat-label>Consultar Producto</mat-label>
-        <button mat-icon-button matSuffix>
-            <mat-icon matSuffix color="primary">search</mat-icon>
-        </button>
-        <button mat-icon-button matSuffix>
-            <mat-icon matSuffix color="primary">view_array</mat-icon>
-        </button>
+        <mat-label>Consultar Compra</mat-label>
+        <mat-icon matSuffix color="primary">search</mat-icon>
         <input matInput (keyup)="filtrar($event)" placeholder="Buscar">
-      </mat-form-field>
+    </mat-form-field>
     <span class="spacer"></span>
     <button mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
         <mat-icon>manage_accounts</mat-icon>
@@ -33,6 +28,7 @@
     </button>
 </mat-toolbar>
 <mat-sidenav-container>
+    <!-- Contenido Menu Izquierda-->
     <mat-sidenav #sidenav1 position="start" [(opened)]="openedMenu" mode="push">
         <mat-nav-list>
             <mat-list-item routerLink="/menu" matTooltip="Punto U" (click)="openedMenu=!openedMenu">
@@ -45,7 +41,7 @@
             <mat-divider></mat-divider>
             <mat-expansion-panel [class.mat-elevation-z0]="true">
                 <mat-expansion-panel-header>
-                    <mat-icon>perm_identity</mat-icon>
+                    <mat-icon>person</mat-icon>
                     <span> Clientes</span>
                 </mat-expansion-panel-header>
                 <mat-nav-list>
@@ -109,7 +105,8 @@
             </mat-list-item>
         </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav #sidenav2 position="end" [(opened)]="openedArticle" mode="over" class="mat-sidenav-left">
+    <!-- Contenido Registrar Articulo-->
+    <mat-sidenav #sidenav2 position="end" [(opened)]="openedArticle" mode="over" class="mat-sidenav-right">
         <form class="form">
             <table class="full-width" cellspacing="0">
                 <p></p>
@@ -120,92 +117,100 @@
             <p></p>
             <h1><mat-divider style="color:blueviolet; size: 2cap;"></mat-divider></h1>
             <td></td>
-            <table class="full-width" cellspacing="0"><tr>      
-                <td>
-                  <mat-form-field class="full-width"  appearance="outline">
-                    <mat-label>Codigo Barras</mat-label>
-                    <mat-icon matSuffix>code</mat-icon>
-                    <input matInput [(ngModel)]="nuevoArticulo.codigoBarras" name="codigoBarras">
-                  </mat-form-field>
-                </td>
-                <td>
-                  <mat-form-field class="full-width"  appearance="outline">
-                    <mat-label>Descripción</mat-label>
-                    <mat-icon matSuffix>description</mat-icon>
-                    <input matInput [(ngModel)]="nuevoArticulo.descripcion" name="descripcion" [formControl]="descripcionFormControl" [errorStateMatcher]="matcher">
-                  </mat-form-field>
-                </td>    
-              </tr></table>
-          
-          
-              <table class="full-width" cellspacing="0"><tr>
-                <td>
-                    <mat-form-field class="full-width"  appearance="outline">
-                      <mat-label>Marca</mat-label>
-                      <mat-icon matSuffix>label_important</mat-icon>
-                      <input matInput [(ngModel)]="nuevoArticulo.marca"  name="marca" [formControl]="marcaFormControl" [errorStateMatcher]="matcher">
-                    </mat-form-field>
-                  </td>  
-                <td>
-                  <mat-form-field class="full-width"  appearance="outline">
-                    <mat-label>Referencia</mat-label>
-                    <mat-icon matSuffix>label</mat-icon>
-                    <input matInput [(ngModel)]="nuevoArticulo.referencia" name="referencia" [formControl]="referenciaFormControl" [errorStateMatcher]="matcher">
-                  </mat-form-field>
-                </td>
-            </tr></table>
-            <table class="full-width" cellspacing="0"><tr>
-                <td>
-                  <mat-form-field class="full-width"  appearance="outline">
-                    <mat-label>Unidad Medida</mat-label>
-                    <mat-icon matSuffix>list</mat-icon>
-                    <mat-select [(ngModel)]="nuevoArticulo.unidadMedida" name="unidadMedida" [formControl]="unidadMedidaFormControl" [errorStateMatcher]="matcher">
-                      <mat-option disabled selected>Selecciona una opcíon</mat-option>
-                      <mat-option value="UND">Unidad</mat-option>
-                      <mat-option value="RES">Resma</mat-option>
-                      <mat-option value="CAJ">Caja</mat-option>
-                      <mat-option value="ROL">Rollo</mat-option>
-                      <mat-option value="MET">Metro</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </td>
-                
-                <td>
-                  <mat-form-field class="full-width"  appearance="outline">
-                    <mat-label>Ubicación</mat-label>
-                    <mat-icon matSuffix>list</mat-icon>
-                    <mat-select [(ngModel)]="nuevoArticulo.codigoUbicacion" name="codigoUbicacion" [formControl]="codigoUbicacionFormControl" [errorStateMatcher]="matcher">
-                      <mat-option disabled selected>Selecciona una opcíon</mat-option>
-                      <mat-option *ngFor="let ubicacion of ubicaciones" [value]="ubicacion.codigo">
-                        {{ ubicacion.codigo }}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </td>           
-              </tr></table>
-             
-              <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
-                {{ mensajeExitoso }}
-              </div>
-                
-              
-              <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
-                {{ mensajeFallido }}
-              </div>
+            <table class="full-width" cellspacing="0">
+                <tr>
+                    <td>
+                        <mat-form-field class="full-width" appearance="outline">
+                            <mat-label>Codigo Barras</mat-label>
+                            <mat-icon matSuffix>code</mat-icon>
+                            <input matInput [(ngModel)]="nuevoArticulo.codigoBarras" name="codigoBarras">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field class="full-width" appearance="outline">
+                            <mat-label>Descripción</mat-label>
+                            <mat-icon matSuffix>description</mat-icon>
+                            <input matInput [(ngModel)]="nuevoArticulo.descripcion" name="descripcion"
+                                [formControl]="descripcionFormControl" [errorStateMatcher]="matcher">
+                        </mat-form-field>
+                    </td>
+                </tr>
+            </table>
 
-        <div align="end">
-            <button mat-icon-button matTooltip="Guardar" 
-            [disabled]="descripcionFormControl.invalid || marcaFormControl.invalid || referenciaFormControl.invalid || unidadMedidaFormControl.invalid || codigoUbicacionFormControl.invalid"
-            (click)="refreshPage()">
-              <mat-icon>save</mat-icon>
-            </button> 
-            <button mat-icon-button matTooltip="Cancelar" (click)="refreshPage()">
-              <mat-icon>cancel_presentation</mat-icon>
-            </button>
-        </div>
+
+            <table class="full-width" cellspacing="0">
+                <tr>
+                    <td>
+                        <mat-form-field class="full-width" appearance="outline">
+                            <mat-label>Marca</mat-label>
+                            <mat-icon matSuffix>label_important</mat-icon>
+                            <input matInput [(ngModel)]="nuevoArticulo.marca" name="marca"
+                                [formControl]="marcaFormControl" [errorStateMatcher]="matcher">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field class="full-width" appearance="outline">
+                            <mat-label>Referencia</mat-label>
+                            <mat-icon matSuffix>label</mat-icon>
+                            <input matInput [(ngModel)]="nuevoArticulo.referencia" name="referencia"
+                                [formControl]="referenciaFormControl" [errorStateMatcher]="matcher">
+                        </mat-form-field>
+                    </td>
+                </tr>
+            </table>
+            <table class="full-width" cellspacing="0">
+                <tr>
+                    <td>
+                        <mat-form-field class="full-width" appearance="outline">
+                            <mat-label>Unidad Medida</mat-label>
+                            <mat-icon matSuffix>list</mat-icon>
+                            <mat-select [(ngModel)]="nuevoArticulo.unidadMedida" name="unidadMedida"
+                                [formControl]="unidadMedidaFormControl" [errorStateMatcher]="matcher">
+                                <mat-option disabled selected>Selecciona una opcíon</mat-option>
+                                <mat-option value="UND">Unidad</mat-option>
+                                <mat-option value="RES">Resma</mat-option>
+                                <mat-option value="CAJ">Caja</mat-option>
+                                <mat-option value="ROL">Rollo</mat-option>
+                                <mat-option value="MET">Metro</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+
+                    <td>
+                        <mat-form-field class="full-width" appearance="outline">
+                            <mat-label>Ubicación</mat-label>
+                            <mat-icon matSuffix>list</mat-icon>
+                            <mat-select [(ngModel)]="nuevoArticulo.codigoUbicacion" name="codigoUbicacion"
+                                [formControl]="codigoUbicacionFormControl" [errorStateMatcher]="matcher">
+                                <mat-option disabled selected>Selecciona una opcíon</mat-option>
+                                <mat-option *ngFor="let ubicacion of dataSourceubicaciones" [value]="ubicacion.codigo">
+                                    {{ ubicacion.codigo }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </tr>
+            </table>
+            <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+                {{ mensajeExitoso }}
+            </div>
+            <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+                {{ mensajeFallido }}
+            </div>
+            <div align="end">
+                <button mat-icon-button matTooltip="Guardar"
+                    [disabled]="descripcionFormControl.invalid || marcaFormControl.invalid || referenciaFormControl.invalid || unidadMedidaFormControl.invalid || codigoUbicacionFormControl.invalid"
+                    (click)="refreshPage()">
+                    <mat-icon>save</mat-icon>
+                </button>
+                <button mat-icon-button matTooltip="Cancelar" (click)="openedArticle=false">
+                    <mat-icon>cancel_presentation</mat-icon>
+                </button>
+            </div>
         </form>
     </mat-sidenav>
     <mat-sidenav-content>
+        <!-- Contenido Registrar Compra-->
         <mat-card class="mat-card-top">
             <form class="form">
                 <table class="full-width" cellspacing="0">
@@ -214,93 +219,167 @@
                             <span style="font-family: Impact">Registrar Compra</span>
                         </td>
                         <mat-card-actions align="end">
-                            <button mat-mini-fab matTooltip="Imprimir" color="basic"
-                                (click)="openedArticle=!openedArticle">
-                                <mat-icon>print</mat-icon>
+                            <button mat-mini-fab matTooltip="Registrar Proveedor" color="basic"
+                            (click)="mostrarDialogo()">
+                                <mat-icon>group_add</mat-icon>
                             </button>
                         </mat-card-actions>
                     </tr>
                 </table>
                 <h1><mat-divider style="color:blueviolet; size: 2cap;"></mat-divider></h1>
-                <td></td>
-                <table class="full-width" cellspacing="0">
+                <table cellspacing="0">
+                    <tr>
+                            <mat-form-field  appearance="outline">
+                                <mat-label>Nombre Proveedor</mat-label>
+                                <mat-icon matSuffix>supervisor_account</mat-icon>
+                                <mat-select [(ngModel)]="nuevoProveedor.nombreRazonSocial" name="nombreRazonSocial"
+                                    [formControl]="nombreRazonSocialFormControl" [errorStateMatcher]="matcher">
+                                    <mat-form-field  appearance="fill">
+                                        <mat-icon matSuffix color="primary">search</mat-icon>
+                                        <input matInput (keyup)="filtrarProveedor($event); "
+                                            placeholder="Filtrar Proveedor" type="text" style="width : 1px; height : 1px">
+                                    </mat-form-field>
+                                    <mat-option *ngFor="let proveedor of dataSourceProveedores"
+                                        [value]="proveedor.nombreRazonSocial">
+                                        {{ proveedor.nombreRazonSocial }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="mat-form-field-mat-card-top" appearance="outline">
+                                <mat-label>Tipo Documento</mat-label>
+                                <mat-icon matSuffix>list</mat-icon>
+                                <input matInput [(ngModel)]="nuevoProveedor.tipoDocumento" name="tipoDocumento"
+                                [errorStateMatcher]="matcher" type="text" disabled>
+                            </mat-form-field>
+                            <mat-form-field class="mat-form-field-mat-card-top" appearance="outline">
+                                <mat-label>Numero Documento</mat-label>
+                                <mat-icon matSuffix>contacts</mat-icon>
+                                <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento"
+                                 [errorStateMatcher]="matcher" type="text" disabled>
+                            </mat-form-field>
+                    </tr>
+                </table>
+                <table class="full-width-right" cellspacing="0">
                     <tr>
                         <td>
+                        <mat-form-field appearance="outline" class="e-input-group e-small">
+                            <mat-label>Numero Factura</mat-label>
+                            <mat-icon matSuffix>account_balance_wallet</mat-icon>
+                            <input matInput [(ngModel)]="nuevaCompra.numeroFactura" name="numeroFactura"
+                            [formControl]="numeroFacturaFormControl" [errorStateMatcher]="matcher" type="text">
+                        </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+                <table class="full-width-right-down" cellspacing="0">
+                    <tr>
+                        <td>
+                            <mat-form-field appearance="outline">
+                                <mat-label>Fecha</mat-label>
+                                <mat-icon matSuffix>today</mat-icon>
+                                <input matInput [(ngModel)]="nuevaCompra.fechaFactura" name="fechaFactura"
+                                [formControl]="fechaFacturaFormControl" [errorStateMatcher]="matcher" type="date">
+                            </mat-form-field>
                         </td>
                     </tr>
                 </table>
             </form>
         </mat-card>
+        <!-- Contenido Ingresar Articulos a la compra-->
         <mat-card class="mat-card-center">
             <div *ngIf="isLoadingResults" class="loading-shade">
-                <mat-progress-spinner color="primary" mode="indeterminate">
-                </mat-progress-spinner>
+                <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
             </div>
             <div class="mat-elevation-z8">
-                <table mat-table [dataSource]="dataSourcecompras" class="table table-striped">
-
-                    <ng-container matColumnDef="codigo">
-                        <th mat-header-cell *matHeaderCellDef> Código </th>
-                        <td mat-cell *matCellDef="let catalogo"> {{catalogo.codigo}} </td>
-                    </ng-container>
-                    <ng-container matColumnDef="codigoBarras">
-                        <th mat-header-cell *matHeaderCellDef> Codigo Barras </th>
-                        <td mat-cell *matCellDef="let catalogo"> {{catalogo.codigoBarras}} </td>
-                    </ng-container>
-
+                <table mat-table [dataSource]="dataSourceCompras" cellspacing="0">
                     <ng-container matColumnDef="descripcion">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef class="mat-header-cell">
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
                             Descripción </th>
                         <td mat-cell *matCellDef="let catalogo"> {{catalogo.descripcion}} </td>
                     </ng-container>
                     <ng-container matColumnDef="marca">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef> Marca </th>
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                            Marca </th>
                         <td mat-cell *matCellDef="let catalogo"> {{catalogo.marca}} </td>
                     </ng-container>
                     <ng-container matColumnDef="referencia">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef> Referencia </th>
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                            Referencia </th>
                         <td mat-cell *matCellDef="let catalogo"> {{catalogo.referencia}} </td>
                     </ng-container>
-                    <ng-container matColumnDef="unidadMedida">
-                        <th mat-header-cell *matHeaderCellDef> Unidad Medida </th>
-                        <td mat-cell *matCellDef="let catalogo"> {{catalogo.unidadMedida}} </td>
-                    </ng-container>
-                    <ng-container matColumnDef="ubicacion">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef> Ubicación </th>
+                    <ng-container matColumnDef="precio">
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                            Precio Compra</th>
                         <td mat-cell *matCellDef="let catalogo"> {{catalogo.codigoUbicacion}} </td>
                     </ng-container>
-                    <ng-container matColumnDef="stock">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef>Stock</th>
+                    <ng-container matColumnDef="descuento">
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                            Desc %</th>
+                        <td mat-cell *matCellDef="let catalogo">
+                            <span *ngFor="let row of catalogo.inventario ">{{row.stock | number: '.2' }}</span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="impuesto">
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                            Impuesto</th>
+                        <td mat-cell *matCellDef="let catalogo">
+                            <span *ngFor="let row of catalogo.inventario ">{{row.stock | number: '.2' }}</span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="cantidad">
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                            Cantidad</th>
                         <td mat-cell *matCellDef="let catalogo">
                             <span *ngFor="let row of catalogo.inventario ">{{row.stock | number: '.2' }}</span>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="precioventa">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef>Precio Venta</th>
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                            Precio Venta</th>
+                        <td mat-cell *matCellDef="let catalogo">
+                            <span *ngFor="let row of catalogo.precio">{{row.precioVenta | currency: 'USD'}}</span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="total">
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                            Total</th>
                         <td mat-cell *matCellDef="let catalogo">
                             <span *ngFor="let row of catalogo.precio">{{row.precioVenta | currency: 'USD'}}</span>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="accion">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef> Acción </th>
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                        </th>
                         <td mat-cell *matCellDef="let element">
-                            <button mat-mini-fab matSuffix color="warn" matTooltip="Add" class="button24">
-                                <mat-icon class="icon24">add_shopping_cart</mat-icon>
+                            <button mat-mini-fab matSuffix color="primary" Tooltip="Eliminar" class="button24">
+                                <mat-icon class="icon24">delete_forever</mat-icon>
                             </button>
                     </ng-container>
                     <tr mat-header-row *matHeaderRowDef="columnas"></tr>
                     <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
                 </table>
             </div>
+            <p></p>
             <div align="start">
-                <mat-label style="color: blue;margin-left: 0.5%;margin-top: 0.5%;position: absolute;" >Agregar Línea</mat-label>
+                <mat-label style="color: blue;margin-left: 0.5%;margin-top: 0.5%;position: absolute;">Agregar
+                    Línea</mat-label>
             </div>
             <div>
-                <button mat-mini-fab matSuffix class="button24" color="primary" style="margin-top: 0.5%;margin-left:8%;">
+                <button mat-mini-fab matSuffix class="button24" color="primary"
+                    style="margin-top: 0.5%;margin-left:8%; position: absolute;">
                     <mat-icon class="icon24" style="position: absolute;">add</mat-icon>
                 </button>
             </div>
+            <div>
+                <mat-card-actions align="end">
+                    <button mat-mini-fab matSuffix color="basic" matTooltip="Registrar Articulo"
+                        style="margin-top: -1%;" (click)="openedArticle=!openedArticle">
+                        <mat-icon class="icon24" style="position: absolute;">note_add</mat-icon>
+                    </button>
+                </mat-card-actions>
+            </div>
+            <p></p>
         </mat-card>
+        <!-- Contenido resumen de la compra-->
         <mat-card class="mat-card-down">
             <form class="form">
                 <table class="full-width" cellspacing="0">
@@ -309,8 +388,7 @@
                             <span style="font-family: Impact">Resumen Compra</span>
                         </td>
                         <mat-card-actions align="end">
-                            <button mat-mini-fab matTooltip="Imprimir" color="basic"
-                                (click)="openedArticle=!openedArticle">
+                            <button mat-mini-fab matTooltip="Imprimir" color="basic">
                                 <mat-icon>print</mat-icon>
                             </button>
                         </mat-card-actions>
@@ -321,9 +399,45 @@
                 <table class="full-width" cellspacing="0">
                     <tr>
                         <td>
+                            <div align="start">
+                            <td>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Subtotal</mat-label>
+                                    <mat-icon matSuffix>monetization_on</mat-icon>
+                                    <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento"
+                                     [errorStateMatcher]="matcher" type="text" disabled>
+                                </mat-form-field>
+                            </td>
+                            <td>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Descuento</mat-label>
+                                    <mat-icon style="font-weight:bolder;" matSuffix>%</mat-icon>
+                                    <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento"
+                                     [errorStateMatcher]="matcher" type="text" disabled>
+                                </mat-form-field>
+                            </td>
+                            <td>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Iva</mat-label>
+                                    <mat-icon matSuffix>gavel</mat-icon>
+                                    <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento"
+                                     [errorStateMatcher]="matcher" type="text" disabled>
+                                </mat-form-field>
+                            </div>
+                            </td>
+                            <td>
+                            <div>
+                            <mat-form-field class="full-width-right-card-down" appearance="outline">
+                                <mat-label>Total</mat-label>
+                                <mat-icon matSuffix>attach_money</mat-icon>
+                                <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento"
+                                 [errorStateMatcher]="matcher" type="text" disabled>
+                            </mat-form-field>
+                            </div>
                         </td>
                     </tr>
                 </table>
+                
             </form>
         </mat-card>
         <img src="../../assets/PuntoU.jpg" class="img-fluid"
