@@ -8,6 +8,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { Router } from '@angular/router';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-compras',
@@ -17,6 +18,7 @@ import { Router } from '@angular/router';
 export class ComprasComponent {
 
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
+
 
   columnas: string[] = ['descripcion', 'referencia', 'marca', 'precio', 'descuento','impuesto','cantidad', 'precioventa', 'total','accion'];
   openedMenu!: boolean;
@@ -45,6 +47,13 @@ export class ComprasComponent {
   referenciaFormControl = new FormControl('', [Validators.required]);
   unidadMedidaFormControl = new FormControl('', [Validators.required]);
   codigoUbicacionFormControl = new FormControl('', [Validators.required]);
+  subotalUnitarioFormControl = new FormControl('', [Validators.required]);
+  impuestoUnitarioFormControl = new FormControl('', [Validators.required]);
+  totalUnitarioFormControl = new FormControl('', [Validators.required]);
+  cantidadFormControl = new FormControl('', [Validators.required]);
+  subtotalArticuloFormControl = new FormControl('', [Validators.required]);
+  totalArticuloFormControl = new FormControl('', [Validators.required]);
+  precioVentaArticuloFormControl = new FormControl('', [Validators.required]);
   nuevoArticulo = {
     codigoBarras: '',
     descripcion: '',
@@ -53,6 +62,7 @@ export class ComprasComponent {
     marca:'',
     referencia: '',
     subotalUnitario:'',
+    descuento:'',
     ivaUnitario:'',
     totalUnitario:'',
     cantidad:'',
@@ -84,26 +94,22 @@ export class ComprasComponent {
    subtotalFormControl = new FormControl('', [Validators.required]);
    impuestoFormControl = new FormControl('', [Validators.required]);
    totalFormControl = new FormControl('', [Validators.required]);
-   subotalUnitarioFormControl = new FormControl('', [Validators.required]);
-   impuestoUnitarioFormControl = new FormControl('', [Validators.required]);
-   totalUnitarioFormControl = new FormControl('', [Validators.required]);
-   cantidadFormControl = new FormControl('', [Validators.required]);
-   subtotalArticuloFormControl = new FormControl('', [Validators.required]);
-   totalArticuloFormControl = new FormControl('', [Validators.required]);
-   precioVentaArticuloFormControl = new FormControl('', [Validators.required]);
 
  nuevaCompra: any = {
   numeroFactura:'',
   fechaFactura:'',
   subtotal:'',
+  descuento:'',
   iva:'',
-  total:''
+  total:'',
+  observaciones:'',
  };
 
   matcher = new MyErrorStateMatcher();
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
 
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;  
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   ngOnInit() {
@@ -123,6 +129,7 @@ export class ComprasComponent {
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceProveedores = response.Data.docs;
+            this.dataSourceProveedores.sort = this.sort;
           }else{
             this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
             console.error('Error en la solicitud:', response); 

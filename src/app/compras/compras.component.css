@@ -15,7 +15,7 @@
 
 .mat-card-top {
   width: auto;
-  height: auto;
+  height: 35%;
   opacity: 95%;
   background-color: white;
 }
@@ -31,7 +31,7 @@
 .mat-card-down {
   margin-top: auto;
   width: auto;
-  height: 30%;
+  height: auto;
   opacity: 95%;
   background-color: white;
 }
@@ -102,45 +102,20 @@ td {
   text-align: left;
 }
 
-
-.mat-form-field-mat-card-top-list {
-  margin-top: auto;
-  margin-left: auto;
-  width: 40%;
-}
-
-.mat-form-field-mat-card-top {
-  margin-top: auto;
-  margin-left: auto;
-  width: 28%;
-}
-
-.mat-form-field-mat-card-top-list-right {
-  margin-top: 10%;
-  margin-left: 50%;
-  width: 20%;
-}
-
-.mat-form-field-mat-card-top-right {
-  margin-top: auto;
-  margin-left: 10%;
-  width: 14%;
-}
-
 .full-width-right {
-  margin-top: -5.2%;
-  margin-left: 80%;
-  width: 80%;
+  position: absolute;
+  margin-top: -5.5%;
+  margin-left: 81.5%;
+  width: auto;
 }
-
 .full-width-right-down {
+  position: absolute;
   margin-top: -1%;
-  margin-left: 80%;
-  width: 80%;
+  margin-left: 81.5%;
+  width: auto;
 }
 
 .full-width-right-card-down {
   margin-top: auto;
-  margin-left: 40%;
-}
+  margin-left: 40%;}
 
