@@ -6,6 +6,9 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
+import { MatSort } from '@angular/material/sort';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-catalogo',
@@ -14,12 +17,13 @@ import { ErrorStateMatcher } from '@angular/material/core';
 })
 export class CatalogoComponent {
 
-  constructor(private http: HttpClient, private tokenService: TokenService, public dialog: MatDialog) { }
+  constructor(private router: Router,private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
 
   columnas: string[] = ['descripcion', 'referencia', 'marca', 'ubicacion', 'stock', 'precioventa', 'accion'];
   openedMenu!: boolean;
   openedCustomer!: boolean;
   dataSourceCatalogo: any;
+  dataSourceClientes: any;
   isLoadingResults: boolean = false;
   pageEvent!: PageEvent;
   pageIndex: number = 0;
@@ -80,9 +84,36 @@ export class CatalogoComponent {
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
 
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;  
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   ngOnInit() {
+    this.cargarClientes();
+  }
+
+  async cargarClientes() {
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    try {
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers', httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceClientes = response.Data.docs;
+            this.dataSourceClientes.sort = this.sort;
+          }else{
+            this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+            console.error('Error en la solicitud:', response); 
+          }
+        });
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error); 
+    }
 
   }
 
@@ -130,11 +161,34 @@ export class CatalogoComponent {
 
 
   filtrar(event: Event) {
-    this.buscarCatalogo();
     const filtro = (event.target as HTMLInputElement).value;
     this.dataSourceCatalogo.filter = filtro.trim().toLowerCase();
     this.isLoadingResults = false;
   }
+
+  filtrarCliente(event: Event) {
+    const filtro = (event.target as HTMLInputElement).value;
+    this.dataSourceClientes.filter = filtro.trim().toLowerCase();
+} 
+
+  mostrarDialogo(): void {
+    this.dialogo
+      .open(DialogoConfirmacionComponent, {
+        data: `Seguro requieres Registrar Articulo?`
+      })
+      .afterClosed()
+      .subscribe((confirmar: Boolean) => {
+        if (confirmar) {
+          this.routerLinkArticulo();
+        } else {
+          //alert("No hacer nada");
+        }
+      });
+  }
+
+  routerLinkArticulo():void{
+    this.router.navigate(['/registrarArticulo'])
+  };
 
   refreshPage() {
     window.location.reload();

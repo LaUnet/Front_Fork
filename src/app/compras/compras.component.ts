@@ -20,13 +20,14 @@ export class ComprasComponent {
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
 
 
-  columnas: string[] = ['descripcion', 'referencia', 'marca', 'precio', 'descuento','impuesto','cantidad', 'precioventa', 'total','accion'];
+  columnas: string[] = ['descripcion', 'referencia', 'marca', 'precio', 'descuento','impuesto', 'subtotal','cantidad', 'precioventa', 'total','accion'];
   openedMenu!: boolean;
   openedArticle!: boolean;
   openedProvider!: boolean;
   dataSourceCompras: any;
   dataSourceProveedores: any;
   dataSourceubicaciones: any;
+  dataSourceArticulos: any;
   isLoadingResults: boolean = false;
   pageEvent!: PageEvent;
   pageIndex: number = 0;
@@ -245,7 +246,6 @@ export class ComprasComponent {
   };
 
   filtrar(event: Event) {
-    this.buscarcompras();
     const filtro = (event.target as HTMLInputElement).value;
     this.dataSourceCompras.filter = filtro.trim().toLowerCase();
     this.isLoadingResults = false;
@@ -263,8 +263,8 @@ export class ComprasComponent {
 
 export class compras {
   constructor(public descripcion: String, public marca: string, public referencia: string,
-    public precio: string, public descuento: string, public impuesto: string,public cantidad: string,
-    public precioventa: string, public vacio: string, public total: string, public accion: string
+    public precio: string, public descuento: string, public impuesto: string, public subtotal: string, public cantidad: string,
+    public precioventa: string,public total: string, public accion: string
   ) { }
 }
 

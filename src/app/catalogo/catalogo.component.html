@@ -1,34 +1,41 @@
 <mat-toolbar color="primary" class="mat-elevation-z6">
-    <button mat-icon-button matTooltip="Menu" (click)="openedMenu=!openedMenu">
+    <button type="button" mat-icon-button matTooltip="Menu" (click)="openedMenu=!openedMenu">
         <mat-icon>menu</mat-icon>
     </button>
+    <!--
     <mat-form-field class="mat-form-field" appearance="fill">
-        <mat-label>Consultar Producto</mat-label>
-        <button mat-icon-button matSuffix>
+        <mat-label>Consultar Venta</mat-label>
+        <button type="button" mat-icon-button matSuffix color="basic">
             <mat-icon matSuffix color="primary">search</mat-icon>
         </button>
-        <button mat-icon-button matSuffix>
-            <mat-icon matSuffix color="primary">view_array</mat-icon>
-        </button>
         <input matInput (keyup)="filtrar($event)" placeholder="Buscar">
-      </mat-form-field>
+    </mat-form-field>
+    -->
     <span class="spacer"></span>
-    <button mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
+    <span class="spacer"></span>
+
+    <button type="button" mat-fab extended disabled class="colorText">
+        CATALOGO VENTAS
+    </button>
+    <span class="spacer"></span>
+    <span class="spacer"></span>
+
+    <button type="button" mat-icon-button [matMenuTriggerFor]="usuarios" matTooltip="Gestion Cuentas">
         <mat-icon>manage_accounts</mat-icon>
         <mat-menu #usuarios="matMenu">
             <ng-template matMenuContent>
-                <button mat-menu-item routerLink="/registrarUsuario">Registrar</button>
-                <button mat-menu-item routerLink="/buscarUsuario">Buscar</button>
+                <button type="button" mat-menu-item routerLink="/registrarUsuario">Registrar</button>
+                <button type="button" mat-menu-item routerLink="/buscarUsuario">Buscar</button>
             </ng-template>
         </mat-menu>
     </button>
-    <button mat-icon-button matTooltip="Ajustes">
+    <button type="button" mat-icon-button matTooltip="Ajustes">
         <mat-icon>settings</mat-icon>
     </button>
-    <button mat-icon-button matTooltip="Usuario Logueado">
+    <button type="button" mat-icon-button matTooltip="Usuario Logueado">
         <mat-icon>assignment_ind</mat-icon>
     </button>
-    <button mat-icon-button routerLink="/login" matTooltip="Salir">
+    <button type="button" mat-icon-button routerLink="/login" matTooltip="Salir">
         <mat-icon>logout</mat-icon>
     </button>
 </mat-toolbar>
@@ -41,12 +48,12 @@
             </mat-list-item>
             <mat-list-item routerLink="/catalogoProductos" [class.mat-elevation-z0]="true">
                 <mat-icon>shopping_bag</mat-icon>
-                <span>Catalogo</span>
+                <span>Catalogo Ventas</span>
             </mat-list-item>
             <mat-divider></mat-divider>
             <mat-expansion-panel [class.mat-elevation-z0]="true">
                 <mat-expansion-panel-header>
-                        <mat-icon>person</mat-icon>
+                    <mat-icon>person</mat-icon>
                     <span> Clientes</span>
                 </mat-expansion-panel-header>
                 <mat-nav-list>
@@ -106,7 +113,7 @@
             <mat-divider></mat-divider>
             <mat-list-item routerLink="/comprasProductos" [class.mat-elevation-z0]="true">
                 <mat-icon>shopping_basket</mat-icon>
-                <span> Compras</span>
+                <span>Catalogo Compras</span>
             </mat-list-item>
         </mat-nav-list>
     </mat-sidenav>
@@ -241,19 +248,68 @@
         </div>
 
         <div align="end">
-            <button mat-icon-button matTooltip="Guardar"
+            <button type="button" mat-icon-button matTooltip="Guardar"
                 [disabled]="tipoDocumentoFormControl.invalid || numeroDocumentoFormControl.invalid || nombreRazonSocialFormControl.invalid || telefonoFormControl.invalid || emailFormControl.invalid || departamentoFormControl.invalid || municipioFormControl.invalid || direccionFormControl.invalid || tipoClienteFormControl.invalid"
                 (click)="refreshPage()">
                 <mat-icon>save</mat-icon>
             </button>
-            <button mat-icon-button matTooltip="Cancelar" (click)="refreshPage()">
+            <button type="button" mat-icon-button matTooltip="Cancelar" (click)="refreshPage()">
                 <mat-icon>assignment_return</mat-icon>
             </button>
         </div>
     </mat-sidenav>
     <mat-sidenav-content>
+        <mat-card class="mat-card-left-up">
+            <form class="form">
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <span style="font-family: Impact">Seleccionar Productos</span>
+                        </td>
+                        <mat-card-actions align="end">
+                            <button type="button" mat-mini-fab matTooltip="Registrar Articulo" color="basic"
+                                (click)="mostrarDialogo()">
+                                <mat-icon>note_add</mat-icon>
+                            </button>
+                        </mat-card-actions>
+                    </tr>
+                </table>
+                <h1><mat-divider style="color:blueviolet; size: 2cap;"></mat-divider></h1>
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Consultar Descripción</mat-label>
+                                <input matInput type="search">
+                                <button type="button" mat-icon-button matSuffix color="basic">
+                                    <mat-icon matSuffix color="primary">search</mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </td>
+                        <td><mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Consultar Código Barras</mat-label>
+                                <input matInput type="search">
+                                <button type="button" mat-icon-button matSuffix color="basic">
+                                    <mat-icon matSuffix color="primary">view_array</mat-icon>
+                                </button>
+                            </mat-form-field></td>
+                    </tr>
+                </table>
+                <table class="full-width" cellspacing="0" style="margin-top: -2%;">
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Filtrar Resultado</mat-label>
+                                <input matInput type="search" (keyup)="filtrar($event)" placeholder="Buscar">
+                                <mat-icon matSuffix color="primary">filter_list</mat-icon>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </mat-card>
         <!-- Contenido Tabla Consulta Productos-->
-        <mat-card class="mat-card-left">
+        <mat-card class="mat-card-left-down">
             <div *ngIf="isLoadingResults" class="loading-shade">
                 <mat-progress-spinner color="primary" mode="indeterminate">
                 </mat-progress-spinner>
@@ -306,7 +362,8 @@
                     <ng-container matColumnDef="accion">
                         <th style="font-family: Impact" mat-header-cell *matHeaderCellDef> Acción </th>
                         <td mat-cell *matCellDef="let element">
-                            <button mat-mini-fab matSuffix color="primary" matTooltip="Adicionar" class="button24">
+                            <button type="button" mat-mini-fab matSuffix color="basic" matTooltip="Adicionar"
+                                class="button24">
                                 <mat-icon class="icon24">add_shopping_cart</mat-icon>
                             </button>
                     </ng-container>
@@ -318,8 +375,8 @@
                 </mat-paginator>
             </div>
         </mat-card>
-        <!-- Contenido Registro/Resumen Venta-->
-        <mat-card class="mat-card-right">
+        <!-- Contenido Registro/Resumen Venta arriba-->
+        <mat-card class="mat-card-right-up">
             <form class="form">
                 <table class="full-width" cellspacing="0">
                     <tr>
@@ -327,7 +384,7 @@
                             <span style="font-family: Impact">Facturar Pedido</span>
                         </td>
                         <mat-card-actions align="end">
-                            <button mat-mini-fab matTooltip="Registrar Cliente" color="basic"
+                            <button type="button" mat-mini-fab matTooltip="Registrar Cliente" color="basic"
                                 (click)="openedCustomer=!openedCustomer">
                                 <mat-icon>person_add</mat-icon>
                             </button>
@@ -339,9 +396,63 @@
                 <table class="full-width" cellspacing="0">
                     <tr>
                         <td>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Nombre Cliente</mat-label>
+                                <mat-icon matSuffix>person</mat-icon>
+                                <mat-select [(ngModel)]="nuevoCliente.nombreRazonSocial" name="nombreRazonSocial"
+                                    [formControl]="nombreRazonSocialFormControl" [errorStateMatcher]="matcher">
+                                    <mat-form-field class="full-width" appearance="fill">
+                                        <mat-icon matSuffix color="primary">search</mat-icon>
+                                        <input type="search" matInput (keyup)="filtrarCliente($event); "
+                                            placeholder="Filtrar Cliente" type="text">
+                                    </mat-form-field>
+                                    <mat-option *ngFor="let cliente of dataSourceClientes"
+                                        [value]="cliente.nombreRazonSocial">
+                                        {{ cliente.nombreRazonSocial }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
                         </td>
                     </tr>
                 </table>
+            </form>
+        </mat-card>
+        <!-- Contenido Registro/Resumen Venta centro-->
+        <mat-card class="mat-card-right-center">
+            <form class="form">
+                <td>
+                    <span>Aquí veras los productos que elijas en tu proxima venta</span>
+                </td>
+            </form>
+        </mat-card>
+        <!-- Contenido Registro/Resumen Venta abajo-->
+        <mat-card class="mat-card-right-down">
+            <form class="form">
+                <table class="full-width" cellspacing="0">
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: white; width: 30%;">Subtotal</span>
+                        <input type="text" aria-label="subtotal" class="form-control" style="margin-right: 1.2%;">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: white; width: 30%">Iva</span>
+                        <input type="text" aria-label="iva" class="form-control" style="margin-right: 1.2%;">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background-color: white; width: 30%">Total</span>
+                        <input type="text" aria-label="total" class="form-control" style="margin-right: 1.2%;">
+                    </div>
+                </table>
+                <div>
+                    <mat-card-actions align="end">
+                        <span style="font-family: Impact; margin-right: 10%;">N Articulos</span>
+                        <button mat-button style="background-color: aquamarine;width:51.5%;" type="button"
+                            color="primary" (click)="openedCustomer=!openedCustomer">Vender
+                            | 0.00
+                        </button>
+                        <button mat-button style="background-color: gainsboro;width:20%;margin-right: -0.3%;"
+                            type="button" color="primary" (click)="openedCustomer=!openedCustomer">Cancelar
+                        </button>
+                    </mat-card-actions>
+                </div>
             </form>
         </mat-card>
         <img src="../../assets/PuntoU.jpg" class="img-fluid"
