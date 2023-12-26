@@ -123,7 +123,7 @@
             <table class="full-width" cellspacing="0">
                 <p></p>
                 <tr>
-                    <span style="font-family: Impact; background-color:gainsboro">Registrar Cliente</span>
+                    <span style="font-family: Impact">Registrar Cliente</span>
                 </tr>
             </table>
             <p></p>
@@ -295,6 +295,7 @@
                             </mat-form-field></td>
                     </tr>
                 </table>
+                <h2><td></td></h2>
                 <table class="full-width" cellspacing="0" style="margin-top: -2%;">
                     <tr>
                         <td>
@@ -418,15 +419,21 @@
         <!-- Contenido Registro/Resumen Venta centro-->
         <mat-card class="mat-card-right-center">
             <form class="form">
-                <td>
-                    <span>Aquí veras los productos que elijas en tu proxima venta</span>
-                </td>
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                    <td>
+                        <mat-label>Aquí veras los productos que elijas en tu proxima venta</mat-label>
+                    </td>
+                </tr>
+                </table>
             </form>
         </mat-card>
         <!-- Contenido Registro/Resumen Venta abajo-->
         <mat-card class="mat-card-right-down">
             <form class="form">
                 <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
                     <div class="input-group" style="margin-top: 1%;">
                         <span class="input-group-text" style="background-color: white; width: 30%;">Subtotal</span>
                         <input type="text" aria-label="subtotal" class="form-control" style="margin-right: 1.2%;">
@@ -439,22 +446,27 @@
                         <span class="input-group-text" style="background-color: white; width: 30%">Total</span>
                         <input type="text" aria-label="total" class="form-control" style="margin-right: 1.2%;">
                     </div>
+                </td>
+                </tr>
                 </table>
-                <div>
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
                     <mat-card-actions align="end">
                         <span style="font-family: Impact; margin-right: 10%;">N Productos</span>
-                        <button mat-button style="background-color: aquamarine;width:51.5%;" type="button"
-                            color="primary">Vender
+                        <button mat-button style="font-family:Impact; background-color:rgba(0, 255, 85, 0.658);width:51.5%;" type="button">Vender
                             | 0.00
                         </button>
                         <button mat-button style="background-color: gainsboro;width:20%;margin-right: -0.3%;"
                             type="button" color="primary" (click)="mostrarDialogo('Seguro requieres Cancelar?', 2)">Cancelar
                         </button>
                     </mat-card-actions>
-                </div>
+                </td>
+                </tr>
+                </table>
             </form>
         </mat-card>
         <img src="../../assets/PuntoU.jpg" class="img-fluid"
-            style="position: absolute; top: 0; z-index: -100; opacity: 0.75;width: 100%; height: 100%;">
+        style="position: absolute; top: 0; z-index: -100; width: 100%; min-height: 100vh;">
     </mat-sidenav-content>
 </mat-sidenav-container>
