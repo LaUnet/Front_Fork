@@ -209,7 +209,7 @@
             <div align="end">
                 <button type="button" mat-icon-button matTooltip="Guardar"
                     [disabled]="descripcionFormControl.invalid || marcaFormControl.invalid || referenciaFormControl.invalid || unidadMedidaFormControl.invalid || codigoUbicacionFormControl.invalid"
-                    (click)="refreshPage()">
+                    (click)="openedArticle=false">
                     <mat-icon>save</mat-icon>
                 </button>
                 <button type="button" mat-icon-button matTooltip="Cancelar" (click)="openedArticle=false">
@@ -229,7 +229,7 @@
                         </td>
                         <mat-card-actions align="end">
                             <button type="button" mat-mini-fab matTooltip="Registrar Proveedor" color="basic"
-                                (click)="mostrarDialogo()">
+                            (click)="mostrarDialogo('Seguro requieres Registrar Proveedor?', 1)">
                                 <mat-icon>group_add</mat-icon>
                             </button>
                         </mat-card-actions>
@@ -237,35 +237,37 @@
                 </table>
                 <h1><mat-divider style="color:blueviolet; size: 2cap;"></mat-divider></h1>
                 <table class="full-width" cellspacing="0">
-                    <tr>    
-                        <td><mat-form-field appearance="outline">
+                    <tr>
+                        <div align="start">
+                        <td><mat-form-field class="full-width" style="width: 315px;" appearance="outline">
                                 <mat-label>Nombre Proveedor</mat-label>
                                 <mat-icon matSuffix>supervisor_account</mat-icon>
                                 <mat-select [(ngModel)]="nuevoProveedor.nombreRazonSocial" name="nombreRazonSocial"
                                     [formControl]="nombreRazonSocialFormControl" [errorStateMatcher]="matcher">
                                     <mat-form-field appearance="fill">
                                         <mat-icon matSuffix color="primary">search</mat-icon>
-                                        <input type="search" matInput (keyup)="filtrarProveedor($event); "
-                                            placeholder="Filtrar Proveedor" type="text">
+                                        <input type="text" matInput (keyup)="filtrarProveedor($event);"
+                                            placeholder="Filtrar Proveedor">
                                     </mat-form-field>
                                     <mat-option *ngFor="let proveedor of dataSourceProveedores"
-                                        [value]="proveedor.nombreRazonSocial">
+                                    [value]="proveedor.nombreRazonSocial">
                                         {{ proveedor.nombreRazonSocial }}</mat-option>
                                 </mat-select>
-                            </mat-form-field>
-                            <mat-form-field appearance="outline">
+                            </mat-form-field></td>
+                            <td><mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Tipo Documento</mat-label>
                                 <mat-icon matSuffix>list</mat-icon>
-                                <input matInput [(ngModel)]="nuevoProveedor.tipoDocumento" name="tipoDocumento"
-                                    [errorStateMatcher]="matcher" type="text" disabled>
-                            </mat-form-field>
-                            <mat-form-field appearance="outline">
+                                <input matInput type="text" [(ngModel)]="nuevoProveedor.tipoDocumento" name="tipoDocumento"
+                                    [errorStateMatcher]="matcher" disabled>
+                            </mat-form-field></td>
+                            <td><mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Numero Documento</mat-label>
                                 <mat-icon matSuffix>contacts</mat-icon>
-                                <input matInput [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento"
-                                    [errorStateMatcher]="matcher" type="text" disabled>
+                                <input matInput type="text" [(ngModel)]="nuevoProveedor.numeroDocumento" name="numeroDocumento"
+                                    [errorStateMatcher]="matcher" disabled>
                             </mat-form-field>
                         </td>
+                        </div>
                     </tr>
                 </table>
                 <table class="full-width" cellspacing="0">
@@ -300,56 +302,56 @@
             <div class="mat-elevation-z8">
                 <table mat-table [dataSource]="dataSourceArticulos" cellspacing="0">
                     <ng-container matColumnDef="descripcion">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                        <th style="font-family: Impact; background-color:gainsboro; width: 15%; " mat-header-cell *matHeaderCellDef>
                             Descripción </th>
                         <td mat-cell *matCellDef="let articulos"> {{articulos.descripcion}} </td>
                     </ng-container>
-                    <ng-container matColumnDef="marca">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
-                            Marca </th>
-                        <td mat-cell *matCellDef="let articulos"> {{articulos.marca}} </td>
-                    </ng-container>
                     <ng-container matColumnDef="referencia">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                        <th style="font-family: Impact; background-color:gainsboro; width: 15%; " mat-header-cell *matHeaderCellDef>
                             Referencia </th>
                         <td mat-cell *matCellDef="let articulos"> {{articulos.referencia}} </td>
                     </ng-container>
+                    <ng-container matColumnDef="marca">
+                        <th style="font-family: Impact; background-color:gainsboro; width: 10%; " mat-header-cell *matHeaderCellDef>
+                            Marca </th>
+                        <td mat-cell *matCellDef="let articulos"> {{articulos.marca}} </td>
+                    </ng-container>
                     <ng-container matColumnDef="precio">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                        <th style="font-family: Impact; background-color:gainsboro; width: 5%; " mat-header-cell *matHeaderCellDef>
                             PrecioCompra</th>
                         <td mat-cell *matCellDef="let articulos"> {{articulos.subotalUnitario}} </td>
                     </ng-container>
                     <ng-container matColumnDef="descuento">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                        <th style="font-family: Impact; background-color:gainsboro; width: 5%; " mat-header-cell *matHeaderCellDef>
                             Desc %</th>
                             <td mat-cell *matCellDef="let articulos"> {{articulos.descuento}} </td>
                     </ng-container>
                     <ng-container matColumnDef="impuesto">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                        <th style="font-family: Impact; background-color:gainsboro; width: 5%; " mat-header-cell *matHeaderCellDef>
                             Impuesto</th>
                             <td mat-cell *matCellDef="let articulos"> {{articulos.iva}} </td>
                     </ng-container>
                     <ng-container matColumnDef="subtotal">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                        <th style="font-family: Impact; background-color:gainsboro; width: 5%; " mat-header-cell *matHeaderCellDef>
                             Subtotal</th>
                             <td mat-cell *matCellDef="let articulos"> {{articulos.totalUnitario}} </td>
                     </ng-container>
                     <ng-container matColumnDef="cantidad">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                        <th style="font-family: Impact; background-color:gainsboro; width: 5%; " mat-header-cell *matHeaderCellDef>
                             Cantidad</th>
                             <td mat-cell *matCellDef="let articulos"> {{articulos.cantidad}} </td>
                     </ng-container>
                     <ng-container matColumnDef="precioventa">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>PrecioVenta</th>
+                        <th style="font-family: Impact; background-color:gainsboro; width: 10%; " mat-header-cell *matHeaderCellDef>PrecioVenta</th>
                             <td mat-cell *matCellDef="let articulos"> {{articulos.precioVenta}} </td>
                     </ng-container>
                     <ng-container matColumnDef="total">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                        <th style="font-family: Impact; background-color:gainsboro; width: 10%; " mat-header-cell *matHeaderCellDef>
                             Total</th>
                             <td mat-cell *matCellDef="let articulos"> {{articulos.total}} </td>
                     </ng-container>
                     <ng-container matColumnDef="accion">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>
+                        <th style="font-family: Impact; background-color:gainsboro; width: 5%; " mat-header-cell *matHeaderCellDef>
                         </th>
                         <td mat-cell *matCellDef="let element">
                             <button type="button" mat-mini-fab matSuffix color="primary"  Tooltip="Eliminar" class="button24">
@@ -360,14 +362,16 @@
                     <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
                 </table>
             </div>
+            <form class="form"> 
             <p></p>
             <div align="start">
-                <mat-label style="color: blue;margin-left: 1%;margin-top: 0.5%;position: absolute;">Agregar
+                <mat-label style="color: blue;margin-top: 0.5%;position: absolute;">Agregar
                     Línea</mat-label>
             </div>
             <div>
                 <button type="button" mat-mini-fab matSuffix class="button24" color="primary"
-                    style="margin-top: 0.5%;margin-left:8%; position: absolute;">
+                    style="margin-top: 0.5%;margin-left:7%; position: absolute;"
+                    [disabled]="numeroFacturaFormControl.invalid || fechaFacturaFormControl || nombreRazonSocialFormControl || numeroDocumentoFormControl || tipoDocumentoFormControl">
                     <mat-icon class="icon24" style="position: absolute;">add</mat-icon>
                 </button>
             </div>
@@ -379,6 +383,7 @@
                     </button>
                 </mat-card-actions>
             </div>
+        </form>
         </mat-card>
         <!-- Contenido resumen de la compra-->
         <mat-card class="mat-card-down">
@@ -399,10 +404,9 @@
                 <td></td>
                 <table class="full-width" cellspacing="0">
                     <tr>
-                        <td>
                             <div align="start">
                         <td>
-                            <mat-form-field appearance="outline">
+                            <mat-form-field  class="full-width" appearance="outline">
                                 <mat-label style="font-weight:bold">Subtotal</mat-label>
                                 <mat-icon matSuffix>monetization_on</mat-icon>
                                 <input matInput [(ngModel)]="nuevaCompra.subtotal" name="subtotal"
@@ -411,7 +415,7 @@
                             </mat-form-field>
                         </td>
                         <td>
-                            <mat-form-field appearance="outline">
+                            <mat-form-field  class="full-width" appearance="outline">
                                 <mat-label style="font-weight:bold">Descuento</mat-label>
                                 <mat-icon style="font-weight:bolder;" matSuffix>%</mat-icon>
                                 <input matInput [(ngModel)]="nuevaCompra.descuento" name="descuento"
@@ -420,15 +424,15 @@
                             </mat-form-field>
                         </td>
                         <td>
-                            <mat-form-field appearance="outline">
+                            <mat-form-field  class="full-width"  appearance="outline">
                                 <mat-label style="font-weight:bold">Impuesto</mat-label>
                                 <mat-icon matSuffix>gavel</mat-icon>
                                 <input matInput [(ngModel)]="nuevaCompra.iva" name="iva" [errorStateMatcher]="matcher"
                                     type="number" disabled>
                                 <span matTextSuffix>.00</span>
                             </mat-form-field>
-                            </div>
                         </td>
+                        </div>
                         <td>
                             <div>
                                 <mat-form-field class="full-width-right-card-down" appearance="outline">
@@ -443,7 +447,7 @@
                     </tr>
                 </table>
                 <table class="full-width" cellspacing="0">
-                    <mat-form-field style="margin-left: auto; width: 50%" appearance="outline">
+                    <mat-form-field class="full-width" style=" width: 830px"  appearance="outline">
                         <mat-label style="font-weight:bold">Observaciones</mat-label>
                         <mat-icon matSuffix>speaker_notes</mat-icon>
                         <textarea matInput [(ngModel)]="nuevaCompra.observaciones" name="observaciones"
@@ -460,7 +464,7 @@
                                 <mat-icon>save</mat-icon>
                             </button>
                             <td></td>
-                            <button type="button" mat-fab color="basic" matTooltip="Cancelar Compra" (click)="refreshPage()">
+                            <button type="button" mat-fab color="basic" matTooltip="Cancelar Compra" (click)="mostrarDialogo('Seguro requieres Cancelar?', 2)">
                                 <mat-icon>cancel_presentation</mat-icon>
                             </button>
                         </mat-card-actions>

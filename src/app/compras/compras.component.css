@@ -9,19 +9,19 @@
 
 .mat-form-field {
   margin-top: 1.5%;
-  width: 25%;
+  width: 35px;
   margin-left: auto;
 }
 
 .mat-card-top {
   width: auto;
-  height: 35%;
+  height: 220px;
   opacity: 95%;
   background-color: white;
 }
 
 .mat-card-center {
-  margin-top: -1%;
+  margin-top: -15px;
   position: relative;
   width: auto;
   height: auto;
@@ -38,7 +38,8 @@
 }
 
 .form {
-  margin-left: 1%;
+  margin-left: 15px;
+  margin-right: 5px;
 }
 
 .full-width {
@@ -96,30 +97,27 @@ mat-sidenav {
   height: 100%;
 }
 
-th,
-td {
-  width: 12%;
-  height: -10%;
-  text-align: left;
-}
-
 .full-width-right {
   position: absolute;
-  margin-top: -5.5%;
-  margin-left: 81.5%;
+  margin-top: -84px;
+  margin-left: 1250px;
   width: auto;
 }
 .full-width-right-down {
   position: absolute;
-  margin-top: -1%;
-  margin-left: 81.5%;
+  margin-top: -14px;
+  margin-left: 1250px;
   width: auto;
 }
 
 .full-width-right-card-down {
   margin-top: auto;
-  margin-left: 40%;}
+  margin-left: 475px;}
 
   .colorText {
     color: white;
+  }
+
+  table{
+      table-layout: fixed;
   }

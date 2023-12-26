@@ -123,7 +123,7 @@
             <table class="full-width" cellspacing="0">
                 <p></p>
                 <tr>
-                    <span style="font-family: Impact">Registrar Cliente</span>
+                    <span style="font-family: Impact; background-color:gainsboro">Registrar Cliente</span>
                 </tr>
             </table>
             <p></p>
@@ -253,7 +253,7 @@
                 (click)="refreshPage()">
                 <mat-icon>save</mat-icon>
             </button>
-            <button type="button" mat-icon-button matTooltip="Cancelar" (click)="refreshPage()">
+            <button type="button" mat-icon-button matTooltip="Cancelar" (click)="openedCustomer=false">
                 <mat-icon>assignment_return</mat-icon>
             </button>
         </div>
@@ -264,11 +264,11 @@
                 <table class="full-width" cellspacing="0">
                     <tr>
                         <td>
-                            <span style="font-family: Impact">Seleccionar Productos</span>
+                            <span style="font-family: Impact;">Seleccionar Productos</span>
                         </td>
                         <mat-card-actions align="end">
                             <button type="button" mat-mini-fab matTooltip="Registrar Articulo" color="basic"
-                                (click)="mostrarDialogo()">
+                                (click)="mostrarDialogo('Seguro requieres Registrar Articulo?', 1)">
                                 <mat-icon>note_add</mat-icon>
                             </button>
                         </mat-card-actions>
@@ -327,16 +327,16 @@
                     </ng-container>
 
                     <ng-container matColumnDef="descripcion">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef class="mat-header-cell">
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef class="mat-header-cell">
                             Descripción </th>
                         <td mat-cell *matCellDef="let catalogo"> {{catalogo.descripcion}} </td>
                     </ng-container>
                     <ng-container matColumnDef="marca">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef> Marca </th>
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef> Marca </th>
                         <td mat-cell *matCellDef="let catalogo"> {{catalogo.marca}} </td>
                     </ng-container>
                     <ng-container matColumnDef="referencia">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef> Referencia </th>
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef> Referencia </th>
                         <td mat-cell *matCellDef="let catalogo"> {{catalogo.referencia}} </td>
                     </ng-container>
                     <ng-container matColumnDef="unidadMedida">
@@ -344,23 +344,23 @@
                         <td mat-cell *matCellDef="let catalogo"> {{catalogo.unidadMedida}} </td>
                     </ng-container>
                     <ng-container matColumnDef="ubicacion">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef> Ubicación </th>
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef> Ubicación </th>
                         <td mat-cell *matCellDef="let catalogo"> {{catalogo.codigoUbicacion}} </td>
                     </ng-container>
                     <ng-container matColumnDef="stock">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef>Stock</th>
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>Stock</th>
                         <td mat-cell *matCellDef="let catalogo">
                             <span *ngFor="let row of catalogo.inventario ">{{row.stock | number: '.2' }}</span>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="precioventa">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef>Precio Venta</th>
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>Precio Venta</th>
                         <td mat-cell *matCellDef="let catalogo">
                             <span *ngFor="let row of catalogo.precio">{{row.precioVenta | currency: 'USD'}}</span>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="accion">
-                        <th style="font-family: Impact" mat-header-cell *matHeaderCellDef> Acción </th>
+                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef> Acción </th>
                         <td mat-cell *matCellDef="let element">
                             <button type="button" mat-mini-fab matSuffix color="basic" matTooltip="Adicionar"
                                 class="button24">
@@ -381,7 +381,7 @@
                 <table class="full-width" cellspacing="0">
                     <tr>
                         <td>
-                            <span style="font-family: Impact">Facturar Pedido</span>
+                            <span style="font-family: Impact;">Facturar Pedido</span>
                         </td>
                         <mat-card-actions align="end">
                             <button type="button" mat-mini-fab matTooltip="Registrar Cliente" color="basic"
@@ -443,13 +443,13 @@
                 </table>
                 <div>
                     <mat-card-actions align="end">
-                        <span style="font-family: Impact; margin-right: 10%;">N Articulos</span>
+                        <span style="font-family: Impact; margin-right: 10%;">N Productos</span>
                         <button mat-button style="background-color: aquamarine;width:51.5%;" type="button"
-                            color="primary" (click)="openedCustomer=!openedCustomer">Vender
+                            color="primary">Vender
                             | 0.00
                         </button>
                         <button mat-button style="background-color: gainsboro;width:20%;margin-right: -0.3%;"
-                            type="button" color="primary" (click)="openedCustomer=!openedCustomer">Cancelar
+                            type="button" color="primary" (click)="mostrarDialogo('Seguro requieres Cancelar?', 2)">Cancelar
                         </button>
                     </mat-card-actions>
                 </div>

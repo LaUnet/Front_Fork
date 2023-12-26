@@ -9,6 +9,8 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { Router } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
+import { Target } from '@angular/compiler';
+import { Proveedor } from '../proveedores.buscar/buscar.component';
 
 @Component({
   selector: 'app-compras',
@@ -226,15 +228,20 @@ export class ComprasComponent {
     }
   }
 
-  mostrarDialogo(): void {
+  mostrarDialogo(message:string, process:number): void {
     this.dialogo
       .open(DialogoConfirmacionComponent, {
-        data: `Seguro requieres Registrar Proveedor?`
+        data: message
       })
       .afterClosed()
       .subscribe((confirmar: Boolean) => {
         if (confirmar) {
+          if (process === 1) {
           this.routerLinkProveedor();
+          }
+          if (process === 2) {
+            this.refreshPage();
+            }
         } else {
           //alert("No hacer nada");
         }
@@ -252,9 +259,10 @@ export class ComprasComponent {
   }
 
   filtrarProveedor(event: Event) {
-    const filtro = (event.target as HTMLInputElement).value;
-    this.dataSourceProveedores.filter = filtro.trim().toLowerCase();
+    const filtro = (event as Target  as HTMLInputElement).value;
+    return this.dataSourceProveedores.filter = filtro.trim().toLowerCase().includes;
 } 
+
 
   refreshPage() {
     window.location.reload();

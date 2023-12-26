@@ -171,15 +171,20 @@ export class CatalogoComponent {
     this.dataSourceClientes.filter = filtro.trim().toLowerCase();
 } 
 
-  mostrarDialogo(): void {
+  mostrarDialogo(message:string, process:number): void {
     this.dialogo
       .open(DialogoConfirmacionComponent, {
-        data: `Seguro requieres Registrar Articulo?`
+        data: message
       })
       .afterClosed()
       .subscribe((confirmar: Boolean) => {
         if (confirmar) {
+          if (process === 1) {
           this.routerLinkArticulo();
+          }
+          if (process === 2) {
+            this.refreshPage();
+            }
         } else {
           //alert("No hacer nada");
         }
