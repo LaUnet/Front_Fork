@@ -87,16 +87,16 @@ mat-sidenav {
 
 
 .full-width-right {
-  position: absolute;
+  position:fixed;
   margin-top: -84px;
-  margin-left: 1250px;
+  margin-left: 85.5%;
   width: auto;
 }
 
 .full-width-right-down {
-  position: absolute;
+  position: fixed;
   margin-top: -14px;
-  margin-left: 1250px;
+  margin-left: 85.5%;
   width: auto;
 }
 
