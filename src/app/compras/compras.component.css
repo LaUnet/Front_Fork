@@ -47,12 +47,6 @@
   width: 100%;
 }
 
-.middle-width {
-  margin-top: 0.1%;
-  width: 95%;
-  margin-left: 20rem;
-  margin-right: 20rem;
-}
 
 td {
   padding-right: 8px;
@@ -91,11 +85,6 @@ mat-sidenav {
   background-color: white;
 }
 
-.mat-form-field-menu {
-  margin-top: 1%;
-  width: 25%;
-  height: 100%;
-}
 
 .full-width-right {
   position: absolute;
@@ -103,6 +92,7 @@ mat-sidenav {
   margin-left: 1250px;
   width: auto;
 }
+
 .full-width-right-down {
   position: absolute;
   margin-top: -14px;
