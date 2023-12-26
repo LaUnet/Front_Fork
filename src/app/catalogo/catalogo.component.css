@@ -7,62 +7,57 @@
     flex: 1 1 auto;
   }  
 
-  .mat-form-field{
-    margin-top: 1.5%;
-    width: 25%;
-    margin-left: auto;
-  }
-
   .mat-card-left-up {
-    position: absolute;
-    width: 64.9%;
-    height: 31.5%;
+    position: static;
+    width: 65%;
+    height: 190px;
     margin-top: 0.1%;
     opacity: 95%;
   }
 
   .mat-card-left-down {
     position: absolute;
-    margin-top: 12.8%;
-    width: 64.9%;
+    margin-top: auto;
+    width: 65%;
     height: auto;
     opacity: 95%;
   }
   
   .mat-card-right-up {
-    position:fixed;
+    position:static;
     width: 35%;
-    height: 19.5%;
+    height: 130px;
     margin-left: 65%;
-    margin-top: 0.1%;
+    margin-top: -190px;
     opacity: 95%;
   }
 
   .mat-card-right-center {
-    position:fixed;
+    position:static;
     width: 35%;
     height: 50%;
-    margin-left: 65.05%;
-    margin-top: 8.8%;
+    margin-left: 65%;
     background-color: gainsboro;
     opacity: 95%;
   }
 
   .mat-card-right-down {
-    position:fixed;
+    position:absolute;
     width: 35%;
-    height: 25%;
+    height: auto;
     margin-left: 65%;
-    margin-top: 30%;
     opacity: 95%;
   }
 
-
-
   .form {
-  margin-left: 1%;
+    margin-left: 15px;
+    margin-right: 5px;
   }
   
+  td {
+    padding-right: 8px;
+  }
+
   .full-width {
     margin-top: 0.1%;
     width: 100%;
