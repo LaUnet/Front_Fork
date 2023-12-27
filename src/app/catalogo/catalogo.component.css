@@ -10,7 +10,7 @@
   .mat-card-left-up {
     position: static;
     width: 65%;
-    height: 200px;
+    height: 205px;
     margin-top: 0.1%;
     opacity: 95%;
   }
@@ -20,29 +20,31 @@
     margin-top: auto;
     width: 65%;
     height: auto;
+    max-height: 650px;
     opacity: 95%;
   }
   
   .mat-card-right-up {
     position:static;
     width: 35%;
-    height: 137px;
+    height: 132px;
     margin-left: 65%;
-    margin-top: -200px;
+    margin-top: -205px;
     opacity: 95%;
   }
 
   .mat-card-right-center {
     position:static;
     width: 35%;
-    height: 62%;
+    min-height: 316px;
+    max-height: 650px;
     margin-left: 65%;
     background-color:rgb(0, 162, 255);
     opacity: 95%;
   }
 
   .mat-card-right-down {
-    position:static;
+    position:absolute;
     width: 35%;
     height: auto;
     margin-top: auto;
@@ -55,20 +57,10 @@
     margin-right: 5px;
   }
   
-  td {
-    padding-right: 8px;
-  }
 
   .full-width {
     margin-top: 0.1%;
     width: 100%;
-  }
-  
-  .middle-width {
-    margin-top: 0.1%;
-    width: 95%;
-    margin-left: 20rem;
-    margin-right: 20rem;
   }
   
   td {
@@ -92,7 +84,7 @@
     width: 230px;
     background-color: #eee;
   }
-
+  
   .button24 {
     width: 24.5px;
     height: 24.5px;
