@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders , HttpParams} from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -80,6 +80,19 @@ export class CatalogoComponent {
     tipoCliente: '',
     barrio:''
   };
+
+    /**
+ * Control Error Textfields Consultas
+ */
+      
+    buscarDescripcionFormControl = new FormControl('', [Validators.required]);
+    buscarCodigoBarrasFormControl = new FormControl('', [Validators.required]);
+  
+    nuevaBusqueda: any = {
+      buscarDescripcion: '',
+      buscarCodigoBarras: '',
+    };
+
   matcher = new MyErrorStateMatcher();
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
@@ -117,7 +130,7 @@ export class CatalogoComponent {
 
   }
 
-  async buscarCatalogo() {
+  async buscarCatalogo(tipo:number) {
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -125,19 +138,33 @@ export class CatalogoComponent {
         'x-access-token': `${token}`,
       })
     };
+
+    let httpParams = new HttpParams();
+    if (tipo === 1){
+      httpParams = httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion);
+    }
+    if (tipo === 2){
+      httpParams = httpParams.append('codigoBarras', this.nuevaBusqueda.buscarCodigoBarras);
+    }
+    
     this.isLoadingResults = true;
-    this.http.get<any>('https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle', httpOptions)
+    this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`,httpOptions)
       .subscribe(response => {
         if (response.Status) {
           this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
+          /**
           this.pageSize = response.Data.docs.limit;
           this.pageIndex = response.Data.docs.page;
           this.length = response.Data.totalDocs;
+           */
+          console.log(httpParams, httpOptions)
+          console.log(response)
         }
         this.isLoadingResults = false;
       });
   }
 
+/**
   async recargarCatalogo(page: PageEvent) {
     this.dataSourceCatalogo = new MatTableDataSource;
     const token = this.tokenService.token;
@@ -157,8 +184,7 @@ export class CatalogoComponent {
         this.isLoadingResults = false;
       });
   }
-
-
+ */
 
   filtrar(event: Event) {
     const filtro = (event.target as HTMLInputElement).value;

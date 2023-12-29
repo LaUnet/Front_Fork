@@ -280,16 +280,20 @@
                         <td>
                             <mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Consultar Descripción</mat-label>
-                                <input matInput type="search">
-                                <button type="button" mat-icon-button matSuffix color="basic">
-                                    <mat-icon matSuffix color="primary">search</mat-icon>
+                                <input matInput type="text" [(ngModel)]="nuevaBusqueda.buscarDescripcion" name="buscarDescripcion" [formControl]="buscarDescripcionFormControl" [errorStateMatcher]="matcher">
+                                <button type="button" mat-icon-button matSuffix color="basic"
+                                [disabled]="buscarDescripcionFormControl.invalid"
+                                (click)="buscarCatalogo(1)">
+                                    <mat-icon matSuffix color="primary">description</mat-icon>
                                 </button>
                             </mat-form-field>
                         </td>
                         <td><mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Consultar Código Barras</mat-label>
-                                <input matInput type="search">
-                                <button type="button" mat-icon-button matSuffix color="basic">
+                                <input matInput type="text" [(ngModel)]="nuevaBusqueda.buscarCodigoBarras" name="buscarCodigoBarras" [formControl]="buscarCodigoBarrasFormControl" [errorStateMatcher]="matcher">
+                                <button type="button" mat-icon-button matSuffix color="basic"
+                                [disabled]="buscarCodigoBarrasFormControl.invalid"
+                                (click)="buscarCatalogo(2)">
                                     <mat-icon matSuffix color="primary">view_array</mat-icon>
                                 </button>
                             </mat-form-field></td>
@@ -371,9 +375,11 @@
                     <tr mat-header-row *matHeaderRowDef="columnas"></tr>
                     <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
                 </table>
+                <!--
                 <mat-paginator #paginator [length]="length" [pageIndex]="pageIndex" [pageSize]="pageSize"
                     [showFirstLastButtons]="true" [pageSizeOptions]="pageSizeOptions" (page)="recargarCatalogo($event)">
                 </mat-paginator>
+                -->
             </div>
         </mat-card>
         <!-- Contenido Registro/Resumen Venta arriba-->
