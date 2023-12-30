@@ -85,8 +85,8 @@ export class CatalogoComponent {
  * Control Error Textfields Consultas
  */
       
-    buscarDescripcionFormControl = new FormControl('', [Validators.required]);
-    buscarCodigoBarrasFormControl = new FormControl('', [Validators.required]);
+    buscarDescripcionFormControl = new FormControl('');
+    buscarCodigoBarrasFormControl = new FormControl('');
   
     nuevaBusqueda: any = {
       buscarDescripcion: '',
@@ -157,7 +157,7 @@ export class CatalogoComponent {
           this.pageIndex = response.Data.docs.page;
           this.length = response.Data.totalDocs;
            */
-          console.log(httpParams, httpOptions)
+          console.log(httpParams)
           console.log(response)
         }
         this.isLoadingResults = false;
