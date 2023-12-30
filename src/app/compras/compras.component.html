@@ -244,11 +244,13 @@
                                     <mat-icon matSuffix>supervisor_account</mat-icon>
                                     <mat-select [(ngModel)]="nuevoProveedor.nombreRazonSocial" name="nombreRazonSocial"
                                         [formControl]="nombreRazonSocialFormControl" [errorStateMatcher]="matcher">
+                                        <!--
                                         <mat-form-field class="full-width" appearance="fill">
                                             <mat-icon matSuffix color="primary">search</mat-icon>
                                             <input type="text" matInput (keyup)="filtrarProveedor($event);"
                                                 placeholder="Filtrar Proveedor">
                                         </mat-form-field>
+                                        -->
                                         <mat-option *ngFor="let proveedor of dataSourceProveedores"
                                             [value]="proveedor.nombreRazonSocial">
                                             {{ proveedor.nombreRazonSocial }}</mat-option>

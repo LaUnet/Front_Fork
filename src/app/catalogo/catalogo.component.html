@@ -407,11 +407,13 @@
                                 <mat-icon matSuffix>person</mat-icon>
                                 <mat-select [(ngModel)]="nuevoCliente.nombreRazonSocial" name="nombreRazonSocial"
                                     [formControl]="nombreRazonSocialFormControl" [errorStateMatcher]="matcher">
+                                    <!--
                                     <mat-form-field class="full-width" appearance="fill">
                                         <mat-icon matSuffix color="primary">search</mat-icon>
                                         <input type="search" matInput (keyup)="filtrarCliente($event); "
                                             placeholder="Filtrar Cliente" type="text">
                                     </mat-form-field>
+                                    -->
                                     <mat-option *ngFor="let cliente of dataSourceClientes"
                                         [value]="cliente.nombreRazonSocial">
                                         {{ cliente.nombreRazonSocial }}</mat-option>

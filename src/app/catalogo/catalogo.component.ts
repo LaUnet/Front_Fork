@@ -85,8 +85,8 @@ export class CatalogoComponent {
  * Control Error Textfields Consultas
  */
       
-    buscarDescripcionFormControl = new FormControl('');
-    buscarCodigoBarrasFormControl = new FormControl('');
+    buscarDescripcionFormControl = new FormControl('', [Validators.required]);
+    buscarCodigoBarrasFormControl = new FormControl('', [Validators.required]);
   
     nuevaBusqueda: any = {
       buscarDescripcion: '',
