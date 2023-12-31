@@ -25,9 +25,9 @@
   }
   
   .mat-card-right-up {
-    position:static;
+    position:relative;
     width: 35%;
-    height: 132px;
+    height: 205px;
     margin-left: 65%;
     margin-top: -205px;
     opacity: 95%;
@@ -36,10 +36,9 @@
   .mat-card-right-center {
     position:static;
     width: 35%;
-    min-height: 316px;
+    min-height: 243px;
     max-height: 650px;
     margin-left: 65%;
-    background-color:rgb(0, 162, 255);
     opacity: 95%;
   }
 
@@ -69,11 +68,11 @@
   
   .loading-shade {
     position: absolute;
+    z-index: 999;
     display: flex;
     margin-top: 15%;
     margin-left: 45%;
     margin-right: 45%;
-  
   }
   
   mat-sidenav-container {

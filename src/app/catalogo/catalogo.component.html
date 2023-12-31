@@ -120,7 +120,7 @@
     <!-- Contenido Registrar Cliente-->
     <mat-sidenav #sidenav2 position="end" [(opened)]="openedCustomer" mode="over" class="mat-sidenav-right">
         <form class="form">
-            <table class="full-width" cellspacing="0">
+            <table class="full-width" >
                 <p></p>
                 <tr>
                     <span style="font-family: Impact">Registrar Cliente</span>
@@ -129,7 +129,7 @@
             <p></p>
             <h1><mat-divider style="color:blueviolet; size: 2cap;"></mat-divider></h1>
             <td></td>
-            <table class="full-width" cellspacing="0">
+            <table class="full-width" >
                 <tr>
                     <td><mat-form-field class="full-width" appearance="outline">
                             <mat-label>Tipo Documento</mat-label>
@@ -153,7 +153,7 @@
                 </tr>
             </table>
 
-            <table class="full-width" cellspacing="0">
+            <table class="full-width" >
                 <tr>
                     <td><mat-form-field class="full-width" appearance="outline">
                             <mat-label>Nombre - Razon Social</mat-label>
@@ -172,7 +172,7 @@
                 </tr>
             </table>
 
-            <table class="full-width" cellspacing="0">
+            <table class="full-width" >
                 <tr>
                     <td><mat-form-field class="full-width" appearance="outline">
                             <mat-label>Email</mat-label>
@@ -191,7 +191,7 @@
                         </mat-form-field></td>
                 </tr>
             </table>
-            <table class="full-width" cellspacing="0">
+            <table class="full-width" >
                 <tr>
                     <td><mat-form-field class="full-width" appearance="outline">
                             <mat-label>Municipcio Entrega</mat-label>
@@ -214,7 +214,7 @@
                 </tr>
             </table>
 
-            <table class="full-width" cellspacing="0">
+            <table class="full-width" >
                 <tr>
                     <td><mat-form-field class="full-width" appearance="outline">
                             <mat-label>Dirección Entrega</mat-label>
@@ -250,7 +250,7 @@
         <div align="end">
             <button type="button" mat-icon-button matTooltip="Guardar"
                 [disabled]="tipoDocumentoFormControl.invalid || numeroDocumentoFormControl.invalid || nombreRazonSocialFormControl.invalid || telefonoFormControl.invalid || emailFormControl.invalid || departamentoFormControl.invalid || municipioFormControl.invalid || direccionFormControl.invalid || tipoClienteFormControl.invalid"
-                (click)="refreshPage()">
+                (click)="guardarCliente()">
                 <mat-icon>save</mat-icon>
             </button>
             <button type="button" mat-icon-button matTooltip="Cancelar" (click)="openedCustomer=false">
@@ -259,9 +259,14 @@
         </div>
     </mat-sidenav>
     <mat-sidenav-content>
+        <div *ngIf="isLoadingResults" class="loading-shade">
+            <mat-progress-spinner color="primary" mode="indeterminate">
+            </mat-progress-spinner>
+        </div>
+        <!-- Contenido Consultas-->
         <mat-card class="mat-card-left-up">
             <form class="form">
-                <table class="full-width" cellspacing="0">
+                <table class="full-width" >
                     <tr>
                         <td>
                             <span style="font-family: Impact;">Seleccionar Productos</span>
@@ -275,7 +280,7 @@
                     </tr>
                 </table>
                 <h1><mat-divider style="color:blueviolet; size: 2cap;"></mat-divider></h1>
-                <table class="full-width" cellspacing="0">
+                <table class="full-width" >
                     <tr>
                         <td>
                             <mat-form-field class="full-width" appearance="outline">
@@ -283,7 +288,7 @@
                                 <input matInput type="text" [(ngModel)]="nuevaBusqueda.buscarDescripcion" name="buscarDescripcion" [formControl]="buscarDescripcionFormControl" [errorStateMatcher]="matcher">
                                 <button type="button" mat-icon-button matSuffix color="basic"
                                 [disabled]="buscarDescripcionFormControl.invalid"
-                                (click)="buscarCatalogo(1)">
+                                (click)="buscarCatalogo(0)">
                                     <mat-icon matSuffix color="primary">description</mat-icon>
                                 </button>
                             </mat-form-field>
@@ -293,17 +298,16 @@
                                 <input matInput type="text" [(ngModel)]="nuevaBusqueda.buscarCodigoBarras" name="buscarCodigoBarras" [formControl]="buscarCodigoBarrasFormControl" [errorStateMatcher]="matcher">
                                 <button type="button" mat-icon-button matSuffix color="basic"
                                 [disabled]="buscarCodigoBarrasFormControl.invalid"
-                                (click)="buscarCatalogo(2)">
+                                (click)="buscarCatalogo(1)">
                                     <mat-icon matSuffix color="primary">view_array</mat-icon>
                                 </button>
                             </mat-form-field></td>
                     </tr>
                 </table>
-                <h2><td></td></h2>
-                <table class="full-width" cellspacing="0" style="margin-top: -2%;">
+                <table class="full-width" >
                     <tr>
                         <td>
-                            <mat-form-field class="full-width" appearance="outline">
+                            <mat-form-field class="full-width" style="margin-top: -2%;" appearance="outline">
                                 <mat-label>Filtrar Resultado</mat-label>
                                 <input matInput type="search" (keyup)="filtrar($event)" placeholder="Buscar">
                                 <mat-icon matSuffix color="primary">filter_list</mat-icon>
@@ -315,10 +319,6 @@
         </mat-card>
         <!-- Contenido Tabla Consulta Productos-->
         <mat-card class="mat-card-left-down">
-            <div *ngIf="isLoadingResults" class="loading-shade">
-                <mat-progress-spinner color="primary" mode="indeterminate">
-                </mat-progress-spinner>
-            </div>
             <div class="mat-elevation-z8">
                 <table mat-table [dataSource]="dataSourceCatalogo" class="table table-striped">
 
@@ -385,7 +385,7 @@
         <!-- Contenido Registro/Resumen Venta arriba-->
         <mat-card class="mat-card-right-up">
             <form class="form">
-                <table class="full-width" cellspacing="0">
+                <table class="full-width" >
                     <tr>
                         <td>
                             <span style="font-family: Impact;">Facturar Pedido</span>
@@ -399,47 +399,59 @@
                     </tr>
                 </table>
                 <h1><mat-divider style="color:blueviolet; size: 2cap;"></mat-divider></h1>
-                <table class="full-width" cellspacing="0">
+                <table class="full-width">
                     <tr>
                         <td>
                             <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Nombre Cliente</mat-label>
+                                <mat-label>Consultar # Documento</mat-label>
+                                <input matInput type="text" [(ngModel)]="nuevoCliente.numeroDocumento" name="numeroDocumento" [formControl]="numeroDocumentoFormControl" [errorStateMatcher]="matcher">
+                                <button type="button" mat-icon-button matSuffix color="basic"
+                                [disabled]="numeroDocumentoFormControl.invalid"
+                                (click)="buscarCliente()">
+                                    <mat-icon matSuffix color="primary">contacts</mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline" style="position: static;">
+                                <mat-label style="font-weight:bold">Tipo Documento</mat-label>
+                                <mat-icon matSuffix>perm_identity</mat-icon>
+                                <input matInput style="font-weight:bold; color: rgb(53, 53, 134);" type="text" [(ngModel)]="nuevoCliente.tipoDocumento" name="tipoDocumento"
+                                [errorStateMatcher]="matcher" disabled >                               
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+                <table class="full-width"  style="margin-top: -2%;">
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label style="font-weight:bold">Nombre Cliente</mat-label>
                                 <mat-icon matSuffix>person</mat-icon>
-                                <mat-select [(ngModel)]="nuevoCliente.nombreRazonSocial" name="nombreRazonSocial"
-                                    [formControl]="nombreRazonSocialFormControl" [errorStateMatcher]="matcher">
-                                    <!--
-                                    <mat-form-field class="full-width" appearance="fill">
-                                        <mat-icon matSuffix color="primary">search</mat-icon>
-                                        <input type="search" matInput (keyup)="filtrarCliente($event); "
-                                            placeholder="Filtrar Cliente" type="text">
-                                    </mat-form-field>
-                                    -->
-                                    <mat-option *ngFor="let cliente of dataSourceClientes"
-                                        [value]="cliente.nombreRazonSocial">
-                                        {{ cliente.nombreRazonSocial }}</mat-option>
-                                </mat-select>
+                                <input matInput style="font-weight:bold; color: rgb(53, 53, 134);" type="text" [(ngModel)]="nuevoCliente.nombreRazonSocial" name="nombreRazonSocial"
+                                [errorStateMatcher]="matcher" disabled >                               
                             </mat-form-field>
                         </td>
                     </tr>
                 </table>
             </form>
+            <h1><mat-divider style="color:blueviolet; size: 2cap;margin-right: 1%;"></mat-divider></h1>
         </mat-card>
         <!-- Contenido Registro/Resumen Venta centro-->
-        <mat-card class="mat-card-right-center">
-            <form class="form">
-                <table class="full-width" cellspacing="0">
+        <mat-card class="mat-card-right-center" style="background-color: aliceblue;">
+            <form class="form" >
+                <table class="full-width" style="align-items: center;">
                     <tr>
-                    <td>
-                        <mat-label>Aquí veras los productos que elijas en tu proxima venta</mat-label>
-                    </td>
-                </tr>
+                        <td>
+                        </td>
+                    </tr>
                 </table>
             </form>
         </mat-card>
         <!-- Contenido Registro/Resumen Venta abajo-->
         <mat-card class="mat-card-right-down">
             <form class="form">
-                <table class="full-width" cellspacing="0">
+                <table class="full-width" >
                     <tr>
                         <td>
                     <div class="input-group" style="margin-top: 1%;">
@@ -457,7 +469,7 @@
                 </td>
                 </tr>
                 </table>
-                <table class="full-width" cellspacing="0">
+                <table class="full-width" >
                     <tr>
                         <td>
                     <mat-card-actions align="end">

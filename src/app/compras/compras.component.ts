@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -10,7 +10,6 @@ import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.co
 import { Router } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
 import { Target } from '@angular/compiler';
-import { Proveedor } from '../proveedores.buscar/buscar.component';
 
 @Component({
   selector: 'app-compras',
@@ -116,10 +115,37 @@ export class ComprasComponent {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   ngOnInit() {
-    this.cargarProveedores();
   }
 
-  async cargarProveedores() {
+  cargarUbicaciones() {
+    console.log("Paso por acá")
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`
+      })
+    };
+    try {
+      console.log("Tambien por acá")
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
+      .subscribe(response => {
+        if (response.Status) {
+          this.dataSourceubicaciones = response.Data;
+        }else{
+          this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response);
+        }
+      });
+     
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
+  }
+
+
+  async buscarProveedor() {
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -127,48 +153,28 @@ export class ComprasComponent {
         'x-access-token': `${token}`,
       })
     };
+
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('numeroDocumento', this.nuevoProveedor.numeroDocumento);
+    this.isLoadingResults = true;
     try {
-      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers', httpOptions)
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceProveedores = response.Data.docs;
-            this.dataSourceProveedores.sort = this.sort;
+            this.dataSourceProveedores = response.Data.docs.length > 0 ? response.Data.docs : null;
+            this.nuevoProveedor.nombreRazonSocial = this.dataSourceProveedores !== null ? this.dataSourceProveedores[0].nombreRazonSocial : "NO EXISTE"
+            this.nuevoProveedor.tipoDocumento = this.dataSourceProveedores !== null ? this.dataSourceProveedores[0].tipoDocumento : "NO EXISTE"
           }else{
             this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
             console.error('Error en la solicitud:', response); 
           }
+        this.isLoadingResults = false;
         });
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error); 
     }
-
-  }
-
-  async cargarSelectProveedor(_id: string) {
-      const token = this.tokenService.token;
-      const httpOptions = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'x-access-token': `${token}`,
-        })
-      };
-      try {
-        this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers/${this._id}`, httpOptions)
-          .subscribe(response => {
-            if (response.Status) {
-              this.nuevoProveedor.tipoDocumento = response.Data.tipoDocumento,
-              this.nuevoProveedor.numeroDocumento = response.Data.numeroDocumento
-            }
-            else{
-              this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-              console.error('Error en la solicitud:', response);
-            }
-          });
-      } catch (error) {
-        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-        console.error('Error en la solicitud:', error);
-      }
   }
 
   async buscarcompras() {
@@ -200,7 +206,8 @@ export class ComprasComponent {
   }
 }
 
-  async recargarcompras(page: PageEvent) {
+/**
+async recargarcompras(page: PageEvent) {
     this.dataSourceCompras = new MatTableDataSource;
     const token = this.tokenService.token;
     const httpOptions = {
@@ -227,6 +234,55 @@ export class ComprasComponent {
       console.error('Error en la solicitud:', error); 
     }
   }
+*/
+
+async crearArticulo() {
+  const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles';
+  const body = {
+    codigoBarras: this.nuevoArticulo.codigoBarras,
+    descripcion: this.nuevoArticulo.descripcion,
+    unidadMedida: this.nuevoArticulo.unidadMedida,
+    codigoUbicacion: this.nuevoArticulo.codigoUbicacion,
+    referencia: this.nuevoArticulo.referencia,
+    marca: this.nuevoArticulo.marca
+  };
+  const token = this.tokenService.token;
+  const httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'x-access-token': `${token}`
+    })
+  };
+
+  try {
+    const response = await this.http.post(url, body, httpOptions).toPromise();
+    this.mensajeExitoso = "Artículo guardado correctamente.";
+    setTimeout(() => {
+      this.openedArticle=false;
+      this.setArticulo();
+    }, 3000);
+  } catch (error) {
+    this.mensajeFallido = 'Error al guardar. Por favor, inténtelo nuevamente.';
+    console.error('Error en la solicitud:', error);
+  }
+}
+
+setArticulo(){
+  this.nuevoArticulo.codigoBarras= '';
+  this.codigoBarrasFormControl.reset();
+  this.nuevoArticulo.descripcion= '';
+  this.descripcionFormControl.reset();
+  this.nuevoArticulo.marca= '';
+  this.marcaFormControl.reset();
+  this.nuevoArticulo.referencia= '';
+  this.referenciaFormControl.reset();
+  this.nuevoArticulo.unidadMedida= '';
+  this.unidadMedidaFormControl.reset();
+  this.nuevoArticulo.codigoUbicacion= '';
+  this.codigoUbicacionFormControl.reset();
+  this.mensajeExitoso = '';
+  this.mensajeFallido = '';
+  };
 
   mostrarDialogo(message:string, process:number): void {
     this.dialogo

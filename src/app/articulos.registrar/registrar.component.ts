@@ -92,7 +92,7 @@ tittleForm: string = "REGISTRAR ARTICULO"
       this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
       .subscribe(response => {
         if (response.Status) {
-          this.ubicaciones = response.Data.docs;
+          this.ubicaciones = response.Data;
         }else{
           this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
           console.error('Error en la solicitud:', response);

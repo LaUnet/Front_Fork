@@ -7,14 +7,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { MenuComponent } from './menu/menu.component';
 import { registrarUsuarioComponent } from './usuarios.registrar/registrar.component';
 import { buscarUsuarioComponent } from './usuarios.buscar/buscar.component';
-import {registrarArticuloComponent} from './articulos.registrar/registrar.component';
-import {buscarArticuloComponent} from './articulos.buscar/buscar.component';
-import {registrarProveedorComponent} from './proveedores.registrar/registrar.component';
-import {buscarProveedorComponent} from './proveedores.buscar/buscar.component';
-import {registrarClienteComponent} from './clientes.registrar/registrar.component';
-import {buscarClienteComponent} from './clientes.buscar/buscar.component';
-import {registrarUbicacionComponent} from './ubicaciones.registrar/registrar.component';
-import {buscarUbicacionComponent} from './ubicaciones.buscar/buscar.component';
+import { registrarArticuloComponent} from './articulos.registrar/registrar.component';
+import { buscarArticuloComponent} from './articulos.buscar/buscar.component';
+import { registrarProveedorComponent} from './proveedores.registrar/registrar.component';
+import { buscarProveedorComponent} from './proveedores.buscar/buscar.component';
+import { registrarClienteComponent} from './clientes.registrar/registrar.component';
+import { buscarClienteComponent} from './clientes.buscar/buscar.component';
+import { registrarUbicacionComponent} from './ubicaciones.registrar/registrar.component';
+import { buscarUbicacionComponent} from './ubicaciones.buscar/buscar.component';
 import { CatalogoComponent } from './catalogo/catalogo.component';
 import { ComprasComponent } from './compras/compras.component';
 import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.component';
@@ -45,9 +45,10 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatSortModule} from '@angular/material/sort';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSidenavModule} from '@angular/material/sidenav';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatDialogModule } from '@angular/material/dialog';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatDialogModule} from '@angular/material/dialog';
 import {MatBadgeModule} from '@angular/material/badge';
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 
 @NgModule({
@@ -95,7 +96,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     MatSidenavModule,
     MatExpansionModule,
     MatDialogModule,
-    MatBadgeModule
+    MatBadgeModule,
+    FlexLayoutModule
   ],
   providers: [],
   bootstrap: [AppComponent]

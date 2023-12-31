@@ -48,11 +48,12 @@ td {
 }
 
 .loading-shade {
-  margin-top: 10%;
+  position: absolute;
+  z-index: 999;
+  display: flex;
+  margin-top: 15%;
   margin-left: 45%;
   margin-right: 45%;
-  position:relative;
-
 }
 
 mat-sidenav-container {

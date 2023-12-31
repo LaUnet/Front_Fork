@@ -101,10 +101,10 @@ export class CatalogoComponent {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   ngOnInit() {
-    this.cargarClientes();
+    
   }
 
-  async cargarClientes() {
+  async buscarCliente() {
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -112,16 +112,22 @@ export class CatalogoComponent {
         'x-access-token': `${token}`,
       })
     };
+
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('numeroDocumento', this.nuevoCliente.numeroDocumento);
+    this.isLoadingResults = true;
     try {
-      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers', httpOptions)
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceClientes = response.Data.docs;
-            this.dataSourceClientes.sort = this.sort;
+            this.dataSourceClientes = response.Data.docs.length > 0 ? response.Data.docs : null;
+            this.nuevoCliente.nombreRazonSocial = this.dataSourceClientes !== null ? this.dataSourceClientes[0].nombreRazonSocial : "NO EXISTE"
+            this.nuevoCliente.tipoDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoDocumento : "NO EXISTE"
           }else{
             this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
             console.error('Error en la solicitud:', response); 
           }
+          this.isLoadingResults = false;
         });
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
@@ -140,28 +146,23 @@ export class CatalogoComponent {
     };
 
     let httpParams = new HttpParams();
-    if (tipo === 1){
-      httpParams = httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion);
-    }
-    if (tipo === 2){
-      httpParams = httpParams.append('codigoBarras', this.nuevaBusqueda.buscarCodigoBarras);
-    }
-    
+    httpParams = tipo < 1 ? httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion) : httpParams.append('codigoBarras', this.nuevaBusqueda.buscarCodigoBarras);
     this.isLoadingResults = true;
-    this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`,httpOptions)
+    try {
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`,httpOptions)
       .subscribe(response => {
         if (response.Status) {
           this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
-          /**
-          this.pageSize = response.Data.docs.limit;
-          this.pageIndex = response.Data.docs.page;
-          this.length = response.Data.totalDocs;
-           */
-          console.log(httpParams)
-          console.log(response)
+        }else{
+          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', response); 
         }
         this.isLoadingResults = false;
-      });
+      });      
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error); 
+    }
   }
 
 /**
@@ -192,11 +193,6 @@ export class CatalogoComponent {
     this.isLoadingResults = false;
   }
 
-  filtrarCliente(event: Event) {
-    const filtro = (event.target as HTMLInputElement).value;
-    this.dataSourceClientes.filter = filtro.trim().toLowerCase();
-} 
-
   mostrarDialogo(message:string, process:number): void {
     this.dialogo
       .open(DialogoConfirmacionComponent, {
@@ -224,6 +220,53 @@ export class CatalogoComponent {
   refreshPage() {
     window.location.reload();
   }
+
+  async guardarCliente() {
+    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers`
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`
+      })
+    };
+    try {
+      const response = await this.http.post(url,this.nuevoCliente, httpOptions).toPromise();
+      this.mensajeExitoso = "Cliente guardado exitosamente"
+      setTimeout(() => {
+        this.openedCustomer=false;
+        this.setCliente();
+      }, 3000);
+    } catch (error) {
+      this.mensajeFallido = 'Error al guardar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
+  }
+
+  setCliente(){
+  this.nuevoCliente.tipoDocumento = '';
+  this.tipoDocumentoFormControl.reset();
+  this.nuevoCliente.numeroDocumento = '';
+  this.numeroDocumentoFormControl.reset();
+  this.nuevoCliente.nombreRazonSocial = '';
+  this.nombreRazonSocialFormControl.reset();
+  this.nuevoCliente.telefono = '';
+  this.telefonoFormControl.reset();
+  this.nuevoCliente.direccion = '';
+  this.direccionFormControl.reset();
+  this.nuevoCliente.departamento = '';
+  this.departamentoFormControl.reset();
+  this.nuevoCliente.municipio = '';
+  this.municipioFormControl.reset();
+  this.nuevoCliente.email = '';
+  this.emailFormControl.reset();
+  this.nuevoCliente.tipoCliente = '';
+  this.tipoClienteFormControl.reset();
+  this.nuevoCliente.barrio.reload = '';
+  this.barrioFormControl.reset();
+  this.mensajeExitoso = '';
+  this.mensajeFallido = '';
+  };
 }
 
 export class Catalogo {
