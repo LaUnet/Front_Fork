@@ -167,7 +167,7 @@ export class ComprasComponent {
             this.dataSourceProveedores = response.Data.docs;
             this.dataSourceProveedores = response.Data.docs.length > 0 ? response.Data.docs : null;
             this.nuevoProveedor.nombreRazonSocial = this.dataSourceProveedores !== null ? this.dataSourceProveedores[0].nombreRazonSocial : "NO EXISTE"
-            this.nuevoProveedor.tipoDocumento = this.dataSourceProveedores !== null ? this.dataSourceProveedores[0].tipoDocumento : "NO EXISTE"
+            //this.nuevoProveedor.tipoDocumento = this.dataSourceProveedores !== null ? this.dataSourceProveedores[0].tipoDocumento : "NO EXISTE"
           }
           this.isLoadingResults = false;
         }, error => {

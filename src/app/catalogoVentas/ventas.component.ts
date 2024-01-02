@@ -124,7 +124,7 @@ export class VentasComponent {
           if (response.Status) {
             this.dataSourceClientes = response.Data.docs.length > 0 ? response.Data.docs : null;
             this.nuevoCliente.nombreRazonSocial = this.dataSourceClientes !== null ? this.dataSourceClientes[0].nombreRazonSocial : "NO EXISTE"
-            this.nuevoCliente.tipoDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoDocumento : "NO EXISTE"
+            //this.nuevoCliente.tipoDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoDocumento : "NO EXISTE"
           }
           this.isLoadingResults = false;
         }, error => {
