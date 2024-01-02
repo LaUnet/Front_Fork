@@ -12,8 +12,8 @@ import { registrarClienteComponent } from './clientes.registrar/registrar.compon
 import { buscarClienteComponent } from './clientes.buscar/buscar.component';
 import { registrarUbicacionComponent } from './ubicaciones.registrar/registrar.component';
 import { buscarUbicacionComponent } from './ubicaciones.buscar/buscar.component';
-import { CatalogoComponent } from './catalogo/catalogo.component';
-import { ComprasComponent } from './compras/compras.component';
+import { VentasComponent } from './catalogoVentas/ventas.component';
+import { ComprasComponent } from './catalogoCompras/compras.component';
 
 
 const routes: Routes = [
@@ -35,7 +35,7 @@ const routes: Routes = [
   { path: 'registrarUbicacion', component: registrarUbicacionComponent },
   { path: 'editarUbicacion/:id', component: registrarUbicacionComponent },
   { path: 'buscarUbicacion', component: buscarUbicacionComponent },
-  { path: 'catalogoProductos', component: CatalogoComponent },
+  { path: 'ventasProductos', component: VentasComponent },
   { path: 'comprasProductos', component: ComprasComponent },
 
 ];

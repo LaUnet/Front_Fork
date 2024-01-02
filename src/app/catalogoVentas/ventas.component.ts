@@ -11,11 +11,11 @@ import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-catalogo',
-  templateUrl: './catalogo.component.html',
-  styleUrls: ['./catalogo.component.css']
+  selector: 'app-ventas',
+  templateUrl: './ventas.component.html',
+  styleUrls: ['./ventas.component.css']
 })
-export class CatalogoComponent {
+export class VentasComponent {
 
   constructor(private router: Router,private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
 

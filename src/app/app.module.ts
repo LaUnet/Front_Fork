@@ -15,8 +15,8 @@ import { registrarClienteComponent} from './clientes.registrar/registrar.compone
 import { buscarClienteComponent} from './clientes.buscar/buscar.component';
 import { registrarUbicacionComponent} from './ubicaciones.registrar/registrar.component';
 import { buscarUbicacionComponent} from './ubicaciones.buscar/buscar.component';
-import { CatalogoComponent } from './catalogo/catalogo.component';
-import { ComprasComponent } from './compras/compras.component';
+import { VentasComponent } from './catalogoVentas/ventas.component';
+import { ComprasComponent } from './catalogoCompras/compras.component';
 import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.component';
 
 
@@ -66,9 +66,9 @@ import {FlexLayoutModule} from '@angular/flex-layout';
     buscarClienteComponent,
     registrarUbicacionComponent,
     buscarUbicacionComponent,
-    CatalogoComponent,
+    ComprasComponent,
     DialogoConfirmacionComponent,
-    ComprasComponent
+    VentasComponent
   ],
   imports: [
     BrowserModule,

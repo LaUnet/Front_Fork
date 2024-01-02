@@ -118,7 +118,6 @@ export class ComprasComponent {
   }
 
   cargarUbicaciones() {
-    console.log("Paso por acá")
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -127,7 +126,6 @@ export class ComprasComponent {
       })
     };
     try {
-      console.log("Tambien por acá")
       this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
       .subscribe(response => {
         if (response.Status) {
@@ -160,6 +158,7 @@ export class ComprasComponent {
     try {
       this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers?${httpParams}`, httpOptions)
         .subscribe(response => {
+          console.log("Validar Captura", response)
           if (response.Status) {
             this.dataSourceProveedores = response.Data.docs;
             this.dataSourceProveedores = response.Data.docs.length > 0 ? response.Data.docs : null;
