@@ -200,10 +200,10 @@
                     </td>
                 </tr>
             </table>
-            <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+            <div *ngIf="mensajeExitosoArticulo" class="alert alert-success mt-3">
                 {{ mensajeExitoso }}
             </div>
-            <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+            <div *ngIf="mensajeFallidoArticulo" class="alert alert-success mt-3">
                 {{ mensajeFallido }}
             </div>
             <div align="end">
@@ -484,6 +484,12 @@
                     </td>
                 </table>
             </form>
+            <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+                {{ mensajeExitoso }}
+            </div>
+            <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+                {{ mensajeFallido }}
+            </div>
         </mat-card>
         <img src="../../assets/PuntoU.jpg" class="img-fluid"
         style="position: absolute; top: 0; z-index: -100; width: 100%; min-height:min-content; max-height: max-content;">

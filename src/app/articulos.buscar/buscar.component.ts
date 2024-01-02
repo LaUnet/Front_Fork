@@ -18,7 +18,7 @@ import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.co
 export class buscarArticuloComponent {
 
 
-  constructor(private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
+  constructor(private router: Router,private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
 
 
   columnas: string[] = ['codigo', 'codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'accion'];
@@ -61,12 +61,16 @@ export class buscarArticuloComponent {
           this.pageSize=response.Data.docs.limit;
           this.pageIndex=response.Data.docs.page;
           this.length = response.Data.totalDocs;
-        }else{
-          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-          console.error('Error en la solicitud:', response);
         }
         this.isLoadingResults = false; 
-      });       
+      }, error => {
+        this.isLoadingResults = false;
+        if (error.status === 401) {
+          this.routerLinkLogin();
+        }
+        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+        console.error('Error en la solicitud:', error);
+      });      
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);     
@@ -89,11 +93,15 @@ export class buscarArticuloComponent {
         if (response.Status) {
           this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
           this.pageIndex=response.Data.docs.page;
-        }else{
-          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-          console.error('Error en la solicitud:', response);
-        }
+        } 
+        this.isLoadingResults = false; 
+      }, error => {
         this.isLoadingResults = false;
+        if (error.status === 401) {
+          this.routerLinkLogin();
+        }
+        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+        console.error('Error en la solicitud:', error);
       });     
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
@@ -114,11 +122,14 @@ export class buscarArticuloComponent {
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceUbicaciones = response.Data.docs;
-          }else{
-            this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-            console.error('Error en la solicitud:', response);
           }
-        });       
+        }, error => {
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', error);
+        });        
       } catch (error) {
         this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
         console.error('Error en la solicitud:', error);       
@@ -169,6 +180,9 @@ export class buscarArticuloComponent {
   refreshPage() {
     window.location.reload();
   }
+  routerLinkLogin(): void {
+    this.router.navigate(['/login'])
+  };
   
 }
 

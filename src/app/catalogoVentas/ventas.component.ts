@@ -96,6 +96,8 @@ export class VentasComponent {
   matcher = new MyErrorStateMatcher();
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
+  mensajeExitosoCliente: string = '';
+  mensajeFallidoCliente: string = '';
 
   @ViewChild(MatSort, {static: true}) sort!: MatSort;  
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
@@ -123,11 +125,14 @@ export class VentasComponent {
             this.dataSourceClientes = response.Data.docs.length > 0 ? response.Data.docs : null;
             this.nuevoCliente.nombreRazonSocial = this.dataSourceClientes !== null ? this.dataSourceClientes[0].nombreRazonSocial : "NO EXISTE"
             this.nuevoCliente.tipoDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoDocumento : "NO EXISTE"
-          }else{
-            this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-            console.error('Error en la solicitud:', response); 
           }
           this.isLoadingResults = false;
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          console.error('Error en la solicitud:', error);
         });
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
@@ -153,12 +158,15 @@ export class VentasComponent {
       .subscribe(response => {
         if (response.Status) {
           this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
-        }else{
-          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-          console.error('Error en la solicitud:', response); 
         }
         this.isLoadingResults = false;
-      });      
+      }, error => {
+        this.isLoadingResults = false;
+        if (error.status === 401) {
+          this.routerLinkLogin();
+        }
+        console.error('Error en la solicitud:', error);
+      });
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error); 
@@ -216,6 +224,9 @@ export class VentasComponent {
   routerLinkArticulo():void{
     this.router.navigate(['/registrarArticulo'])
   };
+  routerLinkLogin(): void {
+    this.router.navigate(['/login'])
+  };
 
   refreshPage() {
     window.location.reload();
@@ -264,8 +275,8 @@ export class VentasComponent {
   this.tipoClienteFormControl.reset();
   this.nuevoCliente.barrio.reload = '';
   this.barrioFormControl.reset();
-  this.mensajeExitoso = '';
-  this.mensajeFallido = '';
+  this.mensajeExitosoCliente = '';
+  this.mensajeFallidoCliente = '';
   };
 }
 

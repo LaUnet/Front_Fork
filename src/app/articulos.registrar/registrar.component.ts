@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 
@@ -11,7 +11,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
   styleUrls: ['./registrar.component.css']
 })
 export class registrarArticuloComponent {
-  constructor(private http: HttpClient, private tokenService: TokenService, private route: ActivatedRoute) 
+  constructor(private router: Router,private http: HttpClient, private tokenService: TokenService, private route: ActivatedRoute) 
   { this._id = this.route.snapshot.paramMap.get('id'); }
 
 /**
@@ -93,12 +93,14 @@ tittleForm: string = "REGISTRAR ARTICULO"
       .subscribe(response => {
         if (response.Status) {
           this.ubicaciones = response.Data;
-        }else{
-          this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
-          console.error('Error en la solicitud:', response);
         }
-      });
-     
+      }, error => {
+        if (error.status === 401) {
+          this.routerLinkLogin();
+        }
+        this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
+        console.error('Error en la solicitud:', error);
+      }); 
     } catch (error) {
       this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
@@ -125,11 +127,14 @@ tittleForm: string = "REGISTRAR ARTICULO"
               this.nuevoArticulo.referencia = response.Data.referencia,
               this.nuevoArticulo.unidadMedida = response.Data.unidadMedida,
               this.nuevoArticulo.codigoUbicacion = response.Data.codigoUbicacion
-            }else{
-              this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-              console.error('Error en la solicitud:', response);              
             }
-          });
+          }, error => {
+            if (error.status === 401) {
+              this.routerLinkLogin();
+            }
+            this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+            console.error('Error en la solicitud:', error);
+          }); 
       } catch (error) {
         this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
         console.error('Error en la solicitud:', error);
@@ -169,6 +174,9 @@ tittleForm: string = "REGISTRAR ARTICULO"
   refreshPage() {
     window.location.reload();
   }
+  routerLinkLogin(): void {
+    this.router.navigate(['/login'])
+  };
 }
 
   /** Error when invalid control is dirty, touched, or submitted. */

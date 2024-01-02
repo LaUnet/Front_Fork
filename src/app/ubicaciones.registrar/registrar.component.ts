@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 
@@ -12,7 +12,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 })
 export class registrarUbicacionComponent {
 
-  constructor(private http: HttpClient, private tokenService: TokenService, private route: ActivatedRoute) 
+  constructor(private router: Router,private http: HttpClient, private tokenService: TokenService, private route: ActivatedRoute) 
   { this._id = this.route.snapshot.paramMap.get('id'); }
 
   /**
@@ -91,11 +91,14 @@ export class registrarUbicacionComponent {
               this.nuevaUbicacion.numeroZona = response.Data.numeroZona;
               this.nuevaUbicacion.estante = response.Data.numeroEstanteria;
               this.nuevaUbicacion.ubicacion = response.Data.numeroUbicacion;
-            }else{
-              this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-              console.error('Error en la solicitud:', response);
             }
-          });
+          }, error => {
+            if (error.status === 401) {
+              this.routerLinkLogin();
+            }
+            this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+            console.error('Error en la solicitud:', error);
+          }); 
       } catch (error) {
         this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
         console.error('Error en la solicitud:', error);
@@ -133,6 +136,9 @@ export class registrarUbicacionComponent {
   refreshPage() {
     window.location.reload()
   }
+  routerLinkLogin(): void {
+    this.router.navigate(['/login'])
+  };
   
 }
 

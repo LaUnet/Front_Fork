@@ -59,12 +59,15 @@ export class buscarProveedorComponent {
           this.pageSize=response.Data.docs.limit;
           this.pageIndex=response.Data.docs.page;
           this.length = response.Data.totalDocs;
-        }else{
-          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-          console.error('Error en la solicitud:', response);
         }
         this.isLoadingResults = false; 
-      });
+      }, error => {
+        if (error.status === 401) {
+          this.routerLinkLogin();
+        }
+        this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
+        console.error('Error en la solicitud:', error);
+      });  
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);    
@@ -88,12 +91,15 @@ export class buscarProveedorComponent {
         if (response.Status) {
           this.dataSourceProveedores = new MatTableDataSource(response.Data.docs);
           this.pageIndex=response.Data.docs.page;
-        }else{
-          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-          console.error('Error en la solicitud:', response); 
         }
         this.isLoadingResults = false;
-      });     
+      }, error => {
+        if (error.status === 401) {
+          this.routerLinkLogin();
+        }
+        this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
+        console.error('Error en la solicitud:', error);
+      });  
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error); 
@@ -146,6 +152,9 @@ export class buscarProveedorComponent {
   refreshPage() {
     window.location.reload();
   }
+  routerLinkLogin(): void {
+    this.router.navigate(['/login'])
+  };
   
 }
 

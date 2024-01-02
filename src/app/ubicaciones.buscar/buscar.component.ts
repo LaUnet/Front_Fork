@@ -61,13 +61,16 @@ export class buscarUbicacionComponent {
           this.pageSize=response.Data.docs.limit;
           this.pageIndex=response.Data.docs.page;
           this.length = response.Data.totalDocs;
-        }else{
-          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-          console.error('Error en la solicitud:', response);
         }
         this.isLoadingResults = false; 
-      });
-        
+      }, error => {
+        this.isLoadingResults = false;
+        if (error.status === 401) {
+          this.routerLinkLogin();
+        }
+        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+        console.error('Error en la solicitud:', error);
+      });        
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
@@ -90,12 +93,16 @@ export class buscarUbicacionComponent {
         if (response.Status) {
           this.dataSourceUbicaciones = new MatTableDataSource(response.Data.docs);
           this.pageIndex=response.Data.docs.page;
-        }else{
-          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-          console.error('Error en la solicitud:', response);
         }
-        this.isLoadingResults = false;
-      });        
+      this.isLoadingResults = false; 
+    }, error => {
+      this.isLoadingResults = false;
+      if (error.status === 401) {
+        this.routerLinkLogin();
+      }
+      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    });        
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
@@ -147,6 +154,9 @@ export class buscarUbicacionComponent {
     window.location.reload();
   }
   
+  routerLinkLogin(): void {
+    this.router.navigate(['/login'])
+  };
 }
 
 

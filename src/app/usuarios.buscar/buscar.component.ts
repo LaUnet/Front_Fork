@@ -14,7 +14,7 @@ import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.co
 })
 export class buscarUsuarioComponent {
 
-  constructor(private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
+  constructor(private router: Router,private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
 
 
   columnas: string[] = ['username', 'email', 'roles', 'accion'];
@@ -54,12 +54,16 @@ export class buscarUsuarioComponent {
             this.pageSize = response.Data.docs.limit;
             this.pageIndex = response.Data.docs.page;
             this.length = response.Data.totalDocs;
-          }else{
-          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-          console.error('Error en la solicitud:', response);
           }
+          this.isLoadingResults = false; 
+        }, error => {
           this.isLoadingResults = false;
-        });
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', error);
+        });  
     } catch (error) {
       this.isLoadingResults = false;
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
@@ -85,12 +89,16 @@ export class buscarUsuarioComponent {
           if (response.Status) {
             this.dataSourceUsuarios = new MatTableDataSource(response.Data.docs);
             this.pageIndex = response.Data.docs.page;
-          }else{
-            this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-            console.error('Error en la solicitud:', response);
           }
+          this.isLoadingResults = false; 
+        }, error => {
           this.isLoadingResults = false;
-        });  
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+          console.error('Error en la solicitud:', error);
+        });   
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
@@ -144,6 +152,9 @@ export class buscarUsuarioComponent {
     window.location.reload();
   }
 
+  routerLinkLogin(): void {
+    this.router.navigate(['/login'])
+  };
 }
 
 
