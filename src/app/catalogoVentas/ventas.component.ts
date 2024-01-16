@@ -9,6 +9,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { MatSort } from '@angular/material/sort';
 import { Router } from '@angular/router';
+import { LocalStorageService } from '../local-storage.service';
 
 @Component({
   selector: 'app-ventas',
@@ -17,13 +18,13 @@ import { Router } from '@angular/router';
 })
 export class VentasComponent {
 
-  constructor(private router: Router,private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
+  constructor(private router: Router,private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog, private localStorageService: LocalStorageService) { }
 
   columnas: string[] = ['descripcion', 'referencia', 'marca', 'ubicacion', 'stock', 'precioventa', 'accion'];
   openedMenu!: boolean;
   openedCustomer!: boolean;
-  dataSourceCatalogo: any;
-  dataSourceClientes: any;
+  dataSourceCatalogo: any = [];
+  dataSourceClientes: any = [];
   isLoadingResults: boolean = false;
   pageEvent!: PageEvent;
   pageIndex: number = 0;
@@ -124,7 +125,8 @@ export class VentasComponent {
           if (response.Status) {
             this.dataSourceClientes = response.Data.docs.length > 0 ? response.Data.docs : null;
             this.nuevoCliente.nombreRazonSocial = this.dataSourceClientes !== null ? this.dataSourceClientes[0].nombreRazonSocial : "NO EXISTE"
-            //this.nuevoCliente.tipoDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoDocumento : "NO EXISTE"
+            this.nuevoCliente.tipoDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoDocumento : "NO EXISTE"
+            this.nuevoCliente.numeroDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].numeroDocumento : null
           }
           this.isLoadingResults = false;
         }, error => {
@@ -213,23 +215,13 @@ export class VentasComponent {
           this.routerLinkArticulo();
           }
           if (process === 2) {
+            this.removeFromLocalStorage();
             this.refreshPage();
             }
         } else {
           //alert("No hacer nada");
         }
       });
-  }
-
-  routerLinkArticulo():void{
-    this.router.navigate(['/registrarArticulo'])
-  };
-  routerLinkLogin(): void {
-    this.router.navigate(['/login'])
-  };
-
-  refreshPage() {
-    window.location.reload();
   }
 
   async guardarCliente() {
@@ -278,6 +270,33 @@ export class VentasComponent {
   this.mensajeExitosoCliente = '';
   this.mensajeFallidoCliente = '';
   };
+
+  routerLinkArticulo():void{
+    this.router.navigate(['/registrarArticulo'])
+  };
+  routerLinkLogin(): void {
+    this.router.navigate(['/login'])
+    this.localStorageService.clear();
+  };
+
+  refreshPage() {
+    window.location.reload();
+  }
+
+  saveToLocalStorage(element: any = []) {
+    console.log("datos recibidos", element)
+    const value = this.localStorageService.getItem('myKey') !== null ? "Se Suma" : "La primera Vez"
+    this.localStorageService.setItem('myKey', value);
+  }
+
+  retrieveFromLocalStorage() {
+    this.localStorageService.getItem('myKey');
+  }
+
+  removeFromLocalStorage() {
+    this.localStorageService.removeItem('myKey');
+  }
+  
 }
 
 export class Catalogo {

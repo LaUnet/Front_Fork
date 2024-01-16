@@ -107,3 +107,11 @@ mat-sidenav {
   table{
       table-layout: fixed;
   }
+
+  ::ng-deep .mat-form-field-infix {
+    width: 100% !important;
+  }
+  
+  .form-input {
+    padding-right: 5px;
+  }

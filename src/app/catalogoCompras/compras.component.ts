@@ -7,38 +7,55 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
-import { Router } from '@angular/router';
+import { DialogoArticuloComponent } from "../dialogo.articulo/dialogo.articulo.component";
+import { NavigationEnd, Router, ActivatedRoute } from '@angular/router';
 import { MatSort } from '@angular/material/sort';
 import { Target } from '@angular/compiler';
+import { LocalStorageService } from '../local-storage.service';
+import { Injectable } from '@angular/core';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { filter } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
 
 @Component({
   selector: 'app-compras',
   templateUrl: './compras.component.html',
   styleUrls: ['./compras.component.css']
 })
+
 export class ComprasComponent {
 
-  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
+  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog,
+    private localStorageService: LocalStorageService) { }
 
 
-  columnas: string[] = ['descripcion', 'referencia', 'marca', 'precio', 'descuento', 'impuesto', 'subtotal', 'cantidad', 'precioventa', 'total', 'accion'];
+  columnas: string[] = ['descripcion', 'referencia', 'marca', 'precio', 'impuesto', 'subtotal', 'cantidad', 'precioventa', 'total', 'accion'];
+
   openedMenu!: boolean;
   openedArticle!: boolean;
   openedProvider!: boolean;
-  dataSourceCompras: any;
-  dataSourceProveedores: any;
-  dataSourceubicaciones: any;
-  dataSourceArticulos: any;
+  dataSourceCompras: any = [];
+  dataSourceProveedores: any = [];
+  dataSourceubicaciones: any = [];
+  dataSourceArticulos: any = [];
+  dataSourceCargarArticulos: any = [];
   isLoadingResults: boolean = false;
   pageEvent!: PageEvent;
   pageIndex: number = 0;
   pageSize !: number;
   length!: number;
+  localStorageToken !: any; 
   pageSizeOptions = [20];
   searchDescription!: boolean;
   searchCode!: boolean;
-  _id!: string;
-
+  _id!: any;
+  cantidadArticulos !: number;
+  indice !: number;
+  subscriber!: Subscription;
+  isEdit: boolean = true;
 
   /**
    * Control Error Textfields Articles
@@ -117,9 +134,19 @@ export class ComprasComponent {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   ngOnInit() {
+    this.subscriber = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {});
   }
 
-  cargarUbicaciones() {
+  ngOnDestroy() {
+    this.subscriber?.unsubscribe();
+    this.localStorageToken = this.localStorageService.getItem('access_token');
+    this.localStorageService.clear();
+    this.localStorageService.setItem('access_token', this.localStorageToken);
+  }
+
+  async cargarUbicaciones() {
     this.mensajeFallidoArticulo = "";
     const token = this.tokenService.token;
     const httpOptions = {
@@ -148,7 +175,7 @@ export class ComprasComponent {
 
 
   async buscarProveedor() {
-    this.mensajeFallido="";
+    this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -164,10 +191,10 @@ export class ComprasComponent {
       this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceProveedores = response.Data.docs;
             this.dataSourceProveedores = response.Data.docs.length > 0 ? response.Data.docs : null;
             this.nuevoProveedor.nombreRazonSocial = this.dataSourceProveedores !== null ? this.dataSourceProveedores[0].nombreRazonSocial : "NO EXISTE"
-            //this.nuevoProveedor.tipoDocumento = this.dataSourceProveedores !== null ? this.dataSourceProveedores[0].tipoDocumento : "NO EXISTE"
+            this.nuevoProveedor.tipoDocumento = this.dataSourceProveedores !== null ? this.dataSourceProveedores[0].tipoDocumento : "NO EXISTE"
+            this.nuevoProveedor.numeroDocumento = this.dataSourceProveedores !== null ? this.dataSourceProveedores[0].numeroDocumento : null
           }
           this.isLoadingResults = false;
         }, error => {
@@ -314,30 +341,57 @@ export class ComprasComponent {
       });
   }
 
+  mostrarArticuloDialogo(/*message: string*/): void {
+    this.dialogo
+      .open(DialogoArticuloComponent, {
+        //data: message
+      })
+      .afterClosed()
+      .subscribe((element: any = []) => {
+        if (element) {
+          this.cargarArticuloStorage(element)
+        } else {
+          //alert("No hacer nada");
+        }
+      });
+  }
+
   routerLinkProveedor(): void {
     this.router.navigate(['/registrarProveedor'])
   };
   routerLinkLogin(): void {
     this.router.navigate(['/login'])
+    this.localStorageService.clear();
   };
-
-  filtrar(event: Event) {
-    const filtro = (event.target as HTMLInputElement).value;
-    this.dataSourceCompras.filter = filtro.trim().toLowerCase();
-    this.isLoadingResults = false;
-  }
-
+  /**
+    filtrar(event: Event) {
+      const filtro = (event.target as HTMLInputElement).value;
+      this.dataSourceCompras.filter = filtro.trim().toLowerCase();
+      this.isLoadingResults = false;
+    }
+   */
   filtrarProveedor(event: Event) {
     const filtro = (event as Target as HTMLInputElement).value;
     return this.dataSourceProveedores.filter = filtro.trim().toLowerCase().includes;
   }
 
-
   refreshPage() {
     window.location.reload();
   }
-}
 
+  async cargarArticuloStorage(element: any = []) {
+    this.localStorageService.setItem(element._id, JSON.stringify(element));
+    this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos, JSON.parse(this.localStorageService.getItem(element._id)!)];
+    this.cantidadArticulos = this.dataSourceCargarArticulos.length
+  }
+
+  async borrarArticuloStorage(id: string, i: number){
+    this.localStorageService.removeItem(id);
+    this.dataSourceCargarArticulos.splice(i, 1);
+    this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos];
+    this.cantidadArticulos = this.dataSourceCargarArticulos.length
+  }
+}
 export class compras {
   constructor(public descripcion: String, public marca: string, public referencia: string,
     public precio: string, public descuento: string, public impuesto: string, public subtotal: string, public cantidad: string,

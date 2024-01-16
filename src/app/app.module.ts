@@ -18,6 +18,7 @@ import { buscarUbicacionComponent} from './ubicaciones.buscar/buscar.component';
 import { VentasComponent } from './catalogoVentas/ventas.component';
 import { ComprasComponent } from './catalogoCompras/compras.component';
 import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.component';
+import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.component';
 
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -49,6 +50,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatBadgeModule} from '@angular/material/badge';
 import {FlexLayoutModule} from '@angular/flex-layout';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
 
 
 @NgModule({
@@ -68,7 +71,8 @@ import {FlexLayoutModule} from '@angular/flex-layout';
     buscarUbicacionComponent,
     ComprasComponent,
     DialogoConfirmacionComponent,
-    VentasComponent
+    VentasComponent,
+    DialogoArticuloComponent,
   ],
   imports: [
     BrowserModule,
@@ -97,7 +101,9 @@ import {FlexLayoutModule} from '@angular/flex-layout';
     MatExpansionModule,
     MatDialogModule,
     MatBadgeModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [],
   bootstrap: [AppComponent]
