@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild, AfterContentChecked } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
@@ -29,10 +29,10 @@ import { filter } from 'rxjs';
 export class ComprasComponent {
 
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog,
-    private localStorageService: LocalStorageService) { }
+    private localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef) { }
 
 
-  columnas: string[] = ['descripcion', 'referencia', 'marca', 'precio', 'impuesto', 'subtotal', 'cantidad', 'precioventa', 'total', 'accion'];
+  columnas: string[] = ['No', 'descripcion', 'referencia', 'marca', 'precio', 'impuesto', 'subtotal', 'cantidad', 'precioVenta', 'total', 'isEdit'];
 
   openedMenu!: boolean;
   openedArticle!: boolean;
@@ -42,6 +42,7 @@ export class ComprasComponent {
   dataSourceubicaciones: any = [];
   dataSourceArticulos: any = [];
   dataSourceCargarArticulos: any = [];
+  dataSourcePrecio: any;
   isLoadingResults: boolean = false;
   pageEvent!: PageEvent;
   pageIndex: number = 0;
@@ -55,7 +56,6 @@ export class ComprasComponent {
   cantidadArticulos !: number;
   indice !: number;
   subscriber!: Subscription;
-  isEdit: boolean = true;
 
   /**
    * Control Error Textfields Articles
@@ -66,7 +66,7 @@ export class ComprasComponent {
   referenciaFormControl = new FormControl('', [Validators.required]);
   unidadMedidaFormControl = new FormControl('', [Validators.required]);
   codigoUbicacionFormControl = new FormControl('', [Validators.required]);
-  subotalUnitarioFormControl = new FormControl('', [Validators.required]);
+  subtotalUnitarioFormControl = new FormControl('', [Validators.required]);
   impuestoUnitarioFormControl = new FormControl('', [Validators.required]);
   totalUnitarioFormControl = new FormControl('', [Validators.required]);
   cantidadFormControl = new FormControl('', [Validators.required]);
@@ -80,7 +80,7 @@ export class ComprasComponent {
     codigoUbicacion: '',
     marca: '',
     referencia: '',
-    subotalUnitario: '',
+    subtotalUnitario: '',
     descuento: '',
     ivaUnitario: '',
     totalUnitario: '',
@@ -124,20 +124,31 @@ export class ComprasComponent {
     observaciones: '',
   };
 
+  nuevoPrecio: any = {
+    precioVenta: "0",
+    ivaCompra: "0",
+    subtotalCompra: "0",
+    totalCompra: "0",
+  }
+
   matcher = new MyErrorStateMatcher();
   mensajeExitosoArticulo: string = '';
   mensajeFallidoArticulo: string = '';
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
 
-  @ViewChild(MatSort, { static: true }) sort!: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-
   ngOnInit() {
     this.subscriber = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {});
   }
+
+  /**
+  ngAfterContentChecked(): void {
+    console.log("Pasó por acá?")
+    this.changeDetector.detectChanges();
+  }
+   */
 
   ngOnDestroy() {
     this.subscriber?.unsubscribe();
@@ -172,7 +183,6 @@ export class ComprasComponent {
       console.error('Error en la solicitud:', error);
     }
   }
-
 
   async buscarProveedor() {
     this.mensajeFallido = "";
@@ -243,36 +253,6 @@ export class ComprasComponent {
     }
   }
 
-  /**
-  async recargarcompras(page: PageEvent) {
-      this.dataSourceCompras = new MatTableDataSource;
-      const token = this.tokenService.token;
-      const httpOptions = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'x-access-token': `${token}`,
-        })
-      };
-      try {
-        this.isLoadingResults = true;
-        this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions)
-          .subscribe(response => {
-            if (response.Status) {
-              this.dataSourceCompras = new MatTableDataSource(response.Data.docs);
-              this.pageIndex = response.Data.docs.page;
-            }else{
-              this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-              console.error('Error en la solicitud:', response); 
-            }
-            this.isLoadingResults = false;
-          });
-      } catch (error) {
-        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-        console.error('Error en la solicitud:', error); 
-      }
-    }
-  */
-
   async crearArticulo() {
     const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles';
     const body = {
@@ -341,61 +321,87 @@ export class ComprasComponent {
       });
   }
 
-  mostrarArticuloDialogo(/*message: string*/): void {
+  mostrarArticuloDialogo(): void {
     this.dialogo
       .open(DialogoArticuloComponent, {
         //data: message
       })
       .afterClosed()
-      .subscribe((element: any = []) => {
-        if (element) {
-          this.cargarArticuloStorage(element)
-        } else {
+      .subscribe((element: any = []) => {   
+        try {
+          if (element.length !== 0) {
+            this.cargarArticuloStorage(element)
+          } else {
+            //alert("No hacer nada");
+          }         
+        } catch (error) {
           //alert("No hacer nada");
         }
+
       });
   }
 
   routerLinkProveedor(): void {
     this.router.navigate(['/registrarProveedor'])
   };
+
   routerLinkLogin(): void {
     this.router.navigate(['/login'])
     this.localStorageService.clear();
   };
-  /**
-    filtrar(event: Event) {
-      const filtro = (event.target as HTMLInputElement).value;
-      this.dataSourceCompras.filter = filtro.trim().toLowerCase();
-      this.isLoadingResults = false;
-    }
-   */
+
   filtrarProveedor(event: Event) {
     const filtro = (event as Target as HTMLInputElement).value;
     return this.dataSourceProveedores.filter = filtro.trim().toLowerCase().includes;
   }
 
-  refreshPage() {
-    window.location.reload();
-  }
-
-  async cargarArticuloStorage(element: any = []) {
+  cargarArticuloStorage(element: any) {
+    element.precio = element.precio.length === 0? [...this.cargarPrecio(element.precio)] : element.precio;
     this.localStorageService.setItem(element._id, JSON.stringify(element));
     this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos, JSON.parse(this.localStorageService.getItem(element._id)!)];
     this.cantidadArticulos = this.dataSourceCargarArticulos.length
   }
 
-  async borrarArticuloStorage(id: string, i: number){
+  borrarArticuloStorage(id: string, i: number){
     this.localStorageService.removeItem(id);
     this.dataSourceCargarArticulos.splice(i, 1);
     this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos];
     this.cantidadArticulos = this.dataSourceCargarArticulos.length
   }
+
+  editandoArticuloStorage(element: any, i: number){
+    element.isEdit = true;
+    //element.isEdit = element.isEdit? this.cancelarCambios(element) : true;
+  }
+
+  salvarEdicionArticuloStorage(element: any, i: number){
+    element.isEdit = false;
+    this.localStorageService.removeItem(element._id);
+    this.localStorageService.setItem(element._id, JSON.stringify(element));
+    this.dataSourceCargarArticulos.splice(i, 1, JSON.parse(this.localStorageService.getItem(element._id)!));
+    this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos];
+  }
+
+  cancelarCambios(element: any){
+    element.isEdit = false;
+  }
+
+  cargarPrecio(element: any){
+    element = [  
+      this.nuevoPrecio
+    ]
+    return element;
+  }  
+
+  refreshPage() {
+    window.location.reload();
+  }
 }
+
 export class compras {
-  constructor(public descripcion: String, public marca: string, public referencia: string,
+  constructor(public No: String, public descripcion: String, public marca: string, public referencia: string,
     public precio: string, public descuento: string, public impuesto: string, public subtotal: string, public cantidad: string,
-    public precioventa: string, public total: string, public accion: string
+    public precioVenta: string, public total: string, public isEdit: boolean
   ) { }
 }
 

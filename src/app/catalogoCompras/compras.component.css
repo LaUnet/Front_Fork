@@ -19,7 +19,8 @@
   position: relative;
   width: auto;
   height: auto;
-  max-height: 650px;
+  overflow: auto;
+  max-height: 750px;
   opacity: 98%;
   background-color: aliceblue;
 }
@@ -71,11 +72,6 @@ mat-sidenav {
   height: 24px;
 }
 
-.icon24 {
-  font-size: 22px;
-  margin-top: 2px;
-}
-
 .mat-sidenav-right {
   width: 538px;
   background-color: white;
@@ -115,3 +111,10 @@ mat-sidenav {
   .form-input {
     padding-right: 5px;
   }
+
+  .buttonMatTable {
+    width: 30px;
+    height: 30px;
+  }
+
+  
