@@ -48,14 +48,19 @@ export class ComprasComponent {
   pageIndex: number = 0;
   pageSize !: number;
   length!: number;
-  localStorageToken !: any; 
+  localStorageToken !: any;
   pageSizeOptions = [20];
   searchDescription!: boolean;
   searchCode!: boolean;
   _id!: any;
-  cantidadArticulos !: number;
   indice !: number;
   subscriber!: Subscription;
+  cantidadArticulos !: number;
+  totalUnitario!: number;
+  totalIvaCompra!: number;
+  subtotalCompra!: number;
+  totalCompraUnitario!: number;
+  totalCompra!: number;
 
   /**
    * Control Error Textfields Articles
@@ -140,7 +145,7 @@ export class ComprasComponent {
   ngOnInit() {
     this.subscriber = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {});
+    ).subscribe(() => { });
   }
 
   /**
@@ -301,7 +306,7 @@ export class ComprasComponent {
     this.mensajeFallidoArticulo = '';
   };
 
-  mostrarDialogo(message: string, process: number): void {
+  mostrarDialogo(message: string, process: number, element: any, i: number): void {
     this.dialogo
       .open(DialogoConfirmacionComponent, {
         data: message
@@ -315,9 +320,10 @@ export class ComprasComponent {
           if (process === 2) {
             this.refreshPage();
           }
-        } else {
-          //alert("No hacer nada");
-        }
+          if (process === 3) {
+            this.borrarArticuloStorage(element, i);
+          }
+        } else { }
       });
   }
 
@@ -327,13 +333,13 @@ export class ComprasComponent {
         //data: message
       })
       .afterClosed()
-      .subscribe((element: any = []) => {   
+      .subscribe((element: any = []) => {
         try {
           if (element.length !== 0) {
             this.cargarArticuloStorage(element)
           } else {
             //alert("No hacer nada");
-          }         
+          }
         } catch (error) {
           //alert("No hacer nada");
         }
@@ -356,25 +362,29 @@ export class ComprasComponent {
   }
 
   cargarArticuloStorage(element: any) {
-    element.precio = element.precio.length === 0? [...this.cargarPrecio(element.precio)] : element.precio;
+    element.precio = element.precio.length === 0 ? [...this.cargarPrecio(element.precio)] : element.precio;
+    console.log("que mierdas pasó?")
+    this.operacionesMat("sumUnitario", element);
     this.localStorageService.setItem(element._id, JSON.stringify(element));
     this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos, JSON.parse(this.localStorageService.getItem(element._id)!)];
+    this.operacionesMat("sumTotal", element);
     this.cantidadArticulos = this.dataSourceCargarArticulos.length
   }
 
-  borrarArticuloStorage(id: string, i: number){
-    this.localStorageService.removeItem(id);
+  borrarArticuloStorage(element: any, i: number) {
+    this.operacionesMat("resTotal", element);
+    this.localStorageService.removeItem(element._id);
     this.dataSourceCargarArticulos.splice(i, 1);
     this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos];
     this.cantidadArticulos = this.dataSourceCargarArticulos.length
   }
 
-  editandoArticuloStorage(element: any, i: number){
+  editandoArticuloStorage(element: any, i: number) {
     element.isEdit = true;
     //element.isEdit = element.isEdit? this.cancelarCambios(element) : true;
   }
 
-  salvarEdicionArticuloStorage(element: any, i: number){
+  salvarEdicionArticuloStorage(element: any, i: number) {
     element.isEdit = false;
     this.localStorageService.removeItem(element._id);
     this.localStorageService.setItem(element._id, JSON.stringify(element));
@@ -382,16 +392,46 @@ export class ComprasComponent {
     this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos];
   }
 
-  cancelarCambios(element: any){
+  cancelarCambios(element: any) {
     element.isEdit = false;
   }
 
-  cargarPrecio(element: any){
-    element = [  
+  cargarPrecio(element: any) {
+    element = [
       this.nuevoPrecio
     ]
     return element;
-  }  
+  }
+
+  operacionesMat(param: string, element: any) {
+    console.log("Porque se daña");
+    try {
+      if (param === "sumTotal") {
+        console.log("entró")
+        this.totalUnitario = (this.totalUnitario) + (Number(element.precio.subtotalCompra));
+        this.totalIvaCompra = (this.totalIvaCompra) + (Number(element.precio.ivaCompra));
+        this.subtotalCompra = (this.subtotalCompra) + (Number(element.precio.totalCompra));
+        this.totalCompra = ((this.totalCompra) + (Number(element.precio.totalCompra))) - (this.nuevaCompra.descuento);
+        console.log(this.totalUnitario, this.totalIvaCompra, this.subtotalCompra, this.totalCompra)
+      }
+      if (param === "resTotal") {
+        console.log("entró")
+        this.totalUnitario = 100;//(this.totalUnitario) - (Number(element.precio.subtotalCompra));
+        this.totalIvaCompra = (this.totalIvaCompra) - (Number(element.precio.ivaCompra));
+        this.subtotalCompra = (this.subtotalCompra) - (Number(element.precio.totalCompra));
+        this.totalCompra = ((this.totalCompra) - (Number(element.precio.totalCompra))) - (this.nuevaCompra.descuento);
+        console.log(this.totalUnitario, this.totalIvaCompra, this.subtotalCompra, this.totalCompra)
+      }
+      if (param === "sumUnitario") {
+        element.precio.totalCompra = (Number(element.precio.ivaCompra) + Number(element.precio.ivaCompra));
+        //this.totalCompraUnitario= ((+element.precio.cantidad) + (+element.precio.totalCompra));
+        console.log(element.precio.totalCompra);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
 
   refreshPage() {
     window.location.reload();

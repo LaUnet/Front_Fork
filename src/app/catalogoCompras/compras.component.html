@@ -234,7 +234,7 @@
                         </td>
                         <mat-card-actions align="end">
                             <button type="button" mat-mini-fab matTooltip="Registrar Proveedor" color="basic"
-                                (click)="mostrarDialogo('Seguro requieres Registrar Proveedor?', 1)">
+                                (click)="mostrarDialogo('Seguro requieres Registrar Proveedor?', 1, '', 0)">
                                 <mat-icon>group_add</mat-icon>
                             </button>
                         </mat-card-actions>
@@ -427,7 +427,7 @@
                                     <mat-icon>edit</mat-icon>
                                 </button>
                                 <button type="button" mat-mini-fab matSuffix color="warn" matTooltip="Eliminar"
-                                    class="buttonMatTable" (click)="borrarArticuloStorage(articulos._id, i)">
+                                    class="buttonMatTable" (click)="mostrarDialogo('Seguro requieres Eliminar Articulo?', 3, articulos, i)">
                                     <mat-icon>delete_forever</mat-icon>
                                 </button>
                             </div>
@@ -505,7 +505,7 @@
                                     <mat-icon matSuffix>attach_money</mat-icon>
                                     <input matInput [(ngModel)]="nuevaCompra.subtotal" name="totalUnitario"
                                         [errorStateMatcher]="matcher" type="number" disabled>
-                                    <span matTextSuffix>{{0 | currency}}</span>
+                                    <span matTextSuffix>{{totalUnitario}}</span>
                                 </mat-form-field>
                             </td>
                             <td>
@@ -568,7 +568,7 @@
                             </button>
                     <td></td>
                     <button type="button" mat-fab color="basic" matTooltip="Cancelar Compra"
-                        (click)="mostrarDialogo('Seguro requieres Cancelar?', 2)">
+                        (click)="mostrarDialogo('Seguro requieres Cancelar?', 2, '', 0)">
                         <mat-icon>cancel_presentation</mat-icon>
                     </button>
                     </mat-card-actions>
