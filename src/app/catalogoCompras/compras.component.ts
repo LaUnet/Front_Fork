@@ -33,7 +33,7 @@ export class ComprasComponent {
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
 
 
-  columnas: string[] = ['No', 'descripcion', 'referencia', 'marca', 'precio', 'impuesto', 'subtotal', 'cantidad', 'precioVenta', 'total', 'isEdit'];
+  columnas: string[] = ['No', 'descripcion', 'referencia', 'marca','cantidad', 'valorUnitario','subtotal', 'impuesto', 'total','precioVenta', 'isEdit'];
 
   openedMenu!: boolean;
   openedArticle!: boolean;
@@ -56,7 +56,7 @@ export class ComprasComponent {
   indice !: number;
   subscriber!: Subscription;
   //Datos para operaciones
-  cantidadArticulos !: number;
+  cantidadArticulos: number = 0;
   totalUnitario: number = 0;
   totalUnitarioArray: any = [];
   totalIvaCompra: number = 0;
@@ -442,7 +442,7 @@ export class ComprasComponent {
 
 export class compras {
   constructor(public No: String, public descripcion: String, public marca: string, public referencia: string,
-    public precio: string, public descuento: string, public impuesto: string, public subtotal: string, public cantidad: string,
+    public valorUnitario: string, public descuento: string, public impuesto: string, public subtotal: string, public cantidad: string,
     public precioVenta: string, public total: string, public isEdit: boolean
   ) { }
 }

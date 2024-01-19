@@ -331,7 +331,24 @@
                             Marca </th>
                         <td mat-cell *matCellDef="let articulos"> {{articulos.marca}} </td>
                     </ng-container>
-                    <ng-container matColumnDef="precio">
+                    <ng-container matColumnDef="cantidad">
+                        <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
+                            *matHeaderCellDef>
+                            Cantidad</th>
+                        <td mat-cell *matCellDef="let articulos">
+                            <span *ngFor="let row of articulos.precio">
+                                <div *ngIf="!articulos.isEdit">
+                                    {{row.cantidad}}
+                                </div>
+                                <div *ngIf="articulos.isEdit">
+                                    <input class="form-control input-sm" id="cantidad" type="number"
+                                    name="cantidad" [errorStateMatcher]="matcher" matInput
+                                        [(ngModel)]="row.cantidad" required>
+                                </div>
+                            </span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="valorUnitario">
                         <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
                             *matHeaderCellDef>
                             Valor Unitario</th>
@@ -341,10 +358,19 @@
                                     {{ utilsService.Numeros(row.subtotalCompra) | currency}}
                                 </div>
                                 <div *ngIf="articulos.isEdit">
-                                    <input class="form-control input-sm" id="precio" type="number"
-                                     name="precio" [errorStateMatcher]="matcher"
+                                    <input class="form-control input-sm" id="valorUnitario" type="number"
+                                     name="valorUnitario" [errorStateMatcher]="matcher"
                                         matInput [(ngModel)]="row.subtotalCompra" required>
                                 </div>
+                            </span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="subtotal">
+                        <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
+                            *matHeaderCellDef>
+                            Subtotal</th>
+                        <td mat-cell *matCellDef="let articulos">
+                            <span *ngFor="let row of articulos.precio">{{this.utilsService.sumarNumeros(this.utilsService.Numeros(row.ivaCompra),this.utilsService.Numeros(row.subtotalCompra))|currency}}
                             </span>
                         </td>
                     </ng-container>
@@ -365,29 +391,12 @@
                             </span>
                         </td>
                     </ng-container>
-                    <ng-container matColumnDef="subtotal">
+                    <ng-container matColumnDef="total">
                         <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
                             *matHeaderCellDef>
-                            Subtotal</th>
+                            Total</th>
                         <td mat-cell *matCellDef="let articulos">
-                            <span *ngFor="let row of articulos.precio">{{this.utilsService.sumarNumeros(this.utilsService.Numeros(row.ivaCompra),this.utilsService.Numeros(row.subtotalCompra))|currency}}
-                            </span>
-                        </td>
-                    </ng-container>
-                    <ng-container matColumnDef="cantidad">
-                        <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
-                            *matHeaderCellDef>
-                            Cantidad</th>
-                        <td mat-cell *matCellDef="let articulos">
-                            <span *ngFor="let row of articulos.precio">
-                                <div *ngIf="!articulos.isEdit">
-                                    {{row.cantidad}}
-                                </div>
-                                <div *ngIf="articulos.isEdit">
-                                    <input class="form-control input-sm" id="cantidad" type="number"
-                                    name="cantidad" [errorStateMatcher]="matcher" matInput
-                                        [(ngModel)]="row.cantidad" required>
-                                </div>
+                            <span *ngFor="let row of articulos.precio">{{utilsService.Numeros(row.cantidad) * utilsService.sumarNumeros(utilsService.Numeros(row.ivaCompra),utilsService.Numeros(row.subtotalCompra))|currency}}
                             </span>
                         </td>
                     </ng-container>
@@ -404,15 +413,6 @@
                                     name="precioVenta" [errorStateMatcher]="matcher"
                                         matInput [(ngModel)]="row.precioVenta" required>
                                 </div>
-                            </span>
-                        </td>
-                    </ng-container>
-                    <ng-container matColumnDef="total">
-                        <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
-                            *matHeaderCellDef>
-                            Total</th>
-                        <td mat-cell *matCellDef="let articulos">
-                            <span *ngFor="let row of articulos.precio">{{utilsService.Numeros(row.cantidad) * utilsService.sumarNumeros(utilsService.Numeros(row.ivaCompra),utilsService.Numeros(row.subtotalCompra))|currency}}
                             </span>
                         </td>
                     </ng-container>
@@ -500,11 +500,11 @@
                         <div align="start">
                             <td>
                                 <mat-form-field class="full-width" appearance="outline">
-                                    <mat-label style="font-weight:bold">Total Unitario</mat-label>
-                                    <mat-icon matSuffix>attach_money</mat-icon>
-                                    <input matInput [(ngModel)]="nuevaCompra.subtotal" id="totalUnitario" name="totalUnitario"
+                                    <mat-label style="font-weight:bold">Subtotal</mat-label>
+                                    <mat-icon matSuffix>summarize</mat-icon>
+                                    <input matInput [(ngModel)]="nuevaCompra.subtotal" id="subtotal" name="subtotal"
                                         [errorStateMatcher]="matcher" type="number" disabled>
-                                    <span matTextSuffix>{{this.totalUnitario  | currency}}</span>
+                                    <span matTextSuffix>{{this.subtotalCompra| currency}}</span>
                                 </mat-form-field>
                             </td>
                             <td>
@@ -516,15 +516,7 @@
                                     <span matTextSuffix>{{this.totalIvaCompra| currency}}</span>
                                 </mat-form-field>
                             </td>
-                            <td>
-                                <mat-form-field class="full-width" appearance="outline">
-                                    <mat-label style="font-weight:bold">Subtotal</mat-label>
-                                    <mat-icon matSuffix>summarize</mat-icon>
-                                    <input matInput [(ngModel)]="nuevaCompra.subtotal" id="subtotal" name="subtotal"
-                                        [errorStateMatcher]="matcher" type="number" disabled>
-                                    <span matTextSuffix>{{this.subtotalCompra| currency}}</span>
-                                </mat-form-field>
-                            </td>
+
                             <td>
                                 <mat-form-field class="full-width" appearance="outline">
                                     <mat-label style="font-weight:bold">Descuento</mat-label>
@@ -537,7 +529,7 @@
                         <td>
                             <div align="end">
                                 <mat-form-field class="full-width" style="width: 40%;" appearance="outline">
-                                    <mat-label style="font-weight:bolder; color: rgb(39, 39, 110);">Total</mat-label>
+                                    <mat-label style="font-weight:bolder; color: rgb(39, 39, 110);">Total Factura</mat-label>
                                     <mat-icon matSuffix>monetization_on</mat-icon>
                                     <input matInput [(ngModel)]="nuevaCompra.total" id="total" name="total"
                                         [errorStateMatcher]="matcher" type="number" disabled placeholder="0">
@@ -548,7 +540,7 @@
                     </tr>
                 </table>
                 <table class="full-width" cellspacing="0">
-                    <mat-form-field class="full-width" style=" width: 830px" appearance="outline">
+                    <mat-form-field class="full-width" style=" width: 845px" appearance="outline">
                         <mat-label style="font-weight:bold">Observaciones</mat-label>
                         <mat-icon matSuffix>speaker_notes</mat-icon>
                         <textarea matInput [(ngModel)]="nuevaCompra.observaciones" id="observaciones" name="observaciones"
@@ -556,8 +548,8 @@
                     </mat-form-field>
                     <td>
                         <mat-card-actions align="end">
-                            <button type="button" mat-fab color="basic" matTooltip="Guardar Compra"
-                            [disabled]="numeroFacturaFormControl.invalid || numeroDocumentoFormControl.invalid || fechaFacturaFormControl.invalid">
+                            <button type="button" mat-fab color="basic" matTooltip="Guardar Compra" [disabled]="cantidadArticulos === 0">
+                                <!-- [disabled]="numeroFacturaFormControl.invalid || numeroDocumentoFormControl.invalid || fechaFacturaFormControl.invalid"> -->
                                 <!--(click)="guardarCompra()"-->
                                 <mat-icon>save</mat-icon>
                             </button>
