@@ -336,7 +336,7 @@
                             *matHeaderCellDef>
                             Cantidad</th>
                         <td mat-cell *matCellDef="let articulos">
-                            <span *ngFor="let row of articulos.precio">
+                            <span *ngFor="let row of articulos.precios">
                                 <div *ngIf="!articulos.isEdit">
                                     {{row.cantidad}}
                                 </div>
@@ -353,14 +353,14 @@
                             *matHeaderCellDef>
                             Valor Unitario</th>
                         <td mat-cell *matCellDef="let articulos">
-                            <span *ngFor="let row of articulos.precio">
+                            <span *ngFor="let row of articulos.precios">
                                 <div *ngIf="!articulos.isEdit">
-                                    {{ utilsService.Numeros(row.subtotalCompra) | currency}}
+                                    {{ this.utilsService.Numeros(row.valorUnitario) | currency}}
                                 </div>
                                 <div *ngIf="articulos.isEdit">
                                     <input class="form-control input-sm" id="valorUnitario" type="number"
                                      name="valorUnitario" [errorStateMatcher]="matcher"
-                                        matInput [(ngModel)]="row.subtotalCompra" required>
+                                        matInput [(ngModel)]="row.valorUnitario" required>
                                 </div>
                             </span>
                         </td>
@@ -370,7 +370,7 @@
                             *matHeaderCellDef>
                             Subtotal</th>
                         <td mat-cell *matCellDef="let articulos">
-                            <span *ngFor="let row of articulos.precio">{{this.utilsService.sumarNumeros(this.utilsService.Numeros(row.ivaCompra),this.utilsService.Numeros(row.subtotalCompra))|currency}}
+                            <span *ngFor="let row of articulos.precios">{{this.utilsService.Numeros(row.valorUnitario) * this.utilsService.Numeros(row.cantidad) |currency}}
                             </span>
                         </td>
                     </ng-container>
@@ -379,14 +379,14 @@
                             *matHeaderCellDef>
                             Impuesto</th>
                         <td mat-cell *matCellDef="let articulos">
-                            <span *ngFor="let row of articulos.precio">
+                            <span *ngFor="let row of articulos.precios">
                                 <div *ngIf="!articulos.isEdit">
-                                    {{utilsService.Numeros(row.ivaCompra)| currency}}
+                                    {{this.utilsService.Numeros(row.impuestoUnitario) * this.utilsService.Numeros(row.cantidad) | currency}}
                                 </div>
                                 <div *ngIf="articulos.isEdit">
                                     <input class="form-control input-sm" id="impuesto" type="number"
                                     name="impuesto" [errorStateMatcher]="matcher"
-                                        matInput [(ngModel)]="row.ivaCompra" required>
+                                        matInput [(ngModel)]="row.impuestoUnitario" required>
                                 </div>
                             </span>
                         </td>
@@ -396,15 +396,15 @@
                             *matHeaderCellDef>
                             Total</th>
                         <td mat-cell *matCellDef="let articulos">
-                            <span *ngFor="let row of articulos.precio">{{utilsService.Numeros(row.cantidad) * utilsService.sumarNumeros(utilsService.Numeros(row.ivaCompra),utilsService.Numeros(row.subtotalCompra))|currency}}
+                            <span *ngFor="let row of articulos.precios">{{utilsService.Numeros(row.cantidad) * this.utilsService.sumarNumeros(this.utilsService.Numeros(row.valorUnitario), this.utilsService.Numeros(row.impuestoUnitario)) | currency}}
                             </span>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="precioVenta">
                         <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
-                            *matHeaderCellDef>Precio Venta</th>
+                            *matHeaderCellDef>precios Venta</th>
                         <td mat-cell *matCellDef="let articulos">
-                            <span *ngFor="let row of articulos.precio">
+                            <span *ngFor="let row of articulos.precios">
                                 <div *ngIf="!articulos.isEdit">
                                     {{utilsService.Numeros(row.precioVenta) | currency}}
                                 </div>
@@ -504,7 +504,7 @@
                                     <mat-icon matSuffix>summarize</mat-icon>
                                     <input matInput [(ngModel)]="nuevaCompra.subtotal" id="subtotal" name="subtotal"
                                         [errorStateMatcher]="matcher" type="number" disabled>
-                                    <span matTextSuffix>{{this.subtotalCompra| currency}}</span>
+                                    <span matTextSuffix>{{ this.subtotalCompra| currency}}</span>
                                 </mat-form-field>
                             </td>
                             <td>
@@ -513,7 +513,7 @@
                                     <mat-icon style="font-weight:bolder;" matSuffix>gavel</mat-icon>
                                     <input matInput [(ngModel)]="nuevaCompra.impuesto" id="impuesto" name="impuesto"
                                         [errorStateMatcher]="matcher" type="number" disabled>
-                                    <span matTextSuffix>{{this.totalIvaCompra| currency}}</span>
+                                    <span matTextSuffix>{{this.impuestoCompra| currency}}</span>
                                 </mat-form-field>
                             </td>
 

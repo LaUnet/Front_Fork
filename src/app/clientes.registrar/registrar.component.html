@@ -173,14 +173,14 @@
         <p>
         <table class="full-width" cellspacing="0"><tr>
           <td><mat-form-field class="full-width"  appearance="outline">
-            <mat-label>Departamento Entrega</mat-label>
+            <mat-label>Departamento</mat-label>
             <mat-icon matSuffix>business</mat-icon>
             <mat-select  [(ngModel)]="nuevoCliente.departamento" name="departamento" value="ANT" [formControl]="departamentoFormControl" [errorStateMatcher]="matcher">
               <mat-option value="ANT">Antioquia</mat-option>
             </mat-select>
           </mat-form-field></td>
         <td><mat-form-field class="full-width"  appearance="outline">
-          <mat-label>Municipcio Entrega</mat-label>
+          <mat-label>Municipcio</mat-label>
           <mat-icon matSuffix>business</mat-icon>
           <mat-select [(ngModel)]="nuevoCliente.municipio" name="municipio" #fontSize value="MED" [formControl]="municipioFormControl" [errorStateMatcher]="matcher">
             <mat-option value="MED">Medellin</mat-option>
@@ -192,7 +192,7 @@
           </mat-select>
         </mat-form-field></td>
           <td><mat-form-field class="full-width"  appearance="outline">
-            <mat-label>Barrio Entrega</mat-label>
+            <mat-label>Barrio</mat-label>
             <mat-icon matSuffix>business</mat-icon>
             <input matInput [(ngModel)]="nuevoCliente.barrio" name="barrio" >
           </mat-form-field></td>
@@ -201,7 +201,7 @@
         <p>
           <table class="full-width" cellspacing="0"><tr>
           <td><mat-form-field class="full-width"  appearance="outline">
-            <mat-label>Dirección Entrega</mat-label>
+            <mat-label>Dirección</mat-label>
             <mat-icon matSuffix>tour</mat-icon>
             <input matInput [(ngModel)]="nuevoCliente.direccion" name="direccion" placeholder="Calle 67 #55-89" [formControl]="direccionFormControl" [errorStateMatcher]="matcher">
           </mat-form-field></td>

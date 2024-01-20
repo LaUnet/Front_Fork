@@ -57,15 +57,13 @@ export class ComprasComponent {
   subscriber!: Subscription;
   //Datos para operaciones
   cantidadArticulos: number = 0;
-  totalUnitario: number = 0;
-  totalUnitarioArray: any = [];
-  totalIvaCompra: number = 0;
-  totalIvaCompraArray: any = [];
+  cantidad: number = 1;
   subtotalCompra: number = 0;
   subtotalCompraArray: any = [];
+  impuestoCompra: number = 0;
+  impuestoCompraArray: any = [];
   totalCompra: number = 0;
   totalCompraArray: any = [];
-
   /**
    * Control Error Textfields Articles
    */
@@ -138,6 +136,7 @@ export class ComprasComponent {
     ivaCompra: "0",
     subtotalCompra: "0",
     totalCompra: "0",
+    cantidad: "0",
   }
 
   matcher = new MyErrorStateMatcher();
@@ -359,18 +358,16 @@ export class ComprasComponent {
   }
 
   cargarArticuloStorage(element: any) {
-    element.precio = element.precio.length === 0 ? [...this.cargarPrecio(element.precio)] : element.precio;
+    element.precios = element.precios.length === 0 ? [...this.cargarPrecio(element.precios)] : element.precios;
     this.localStorageService.setItem(element._id, JSON.stringify(element));
     this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos, JSON.parse(this.localStorageService.getItem(element._id)!)];
     this.cantidadArticulos = this.dataSourceCargarArticulos.length
     let length = this.dataSourceCargarArticulos.length - 1;
-    this.totalUnitarioArray = [...this.totalUnitarioArray, this.utilsService.Numeros(this.dataSourceCargarArticulos[length].precio[0].subtotalCompra)];
-    this.totalUnitario = this.totalUnitarioArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-    this.totalIvaCompraArray = [...this.totalIvaCompraArray, this.utilsService.Numeros(this.dataSourceCargarArticulos[length].precio[0].ivaCompra)];
-    this.totalIvaCompra = this.totalIvaCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
-    this.subtotalCompra = this.utilsService.sumarNumeros(this.totalUnitario, this.totalIvaCompra)
-    this.totalCompra = this.utilsService.sumarNumeros(this.subtotalCompra, this.nuevaCompra.descuento)
+    this.subtotalCompraArray = [...this.subtotalCompraArray, this.utilsService.Numeros(this.dataSourceCargarArticulos[length].precios[0].subtotalUnitario)];
+    this.subtotalCompra = this.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+    this.impuestoCompraArray = [...this.impuestoCompraArray, this.utilsService.Numeros(this.dataSourceCargarArticulos[length].precios[0].impuestoUnitario)];
+    this.impuestoCompra = this.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+    this.totalCompra = this.utilsService.sumarNumeros(this.subtotalCompra, this.nuevaCompra.descuento);
   }
 
   borrarArticuloStorage(element: any, i: number) {
@@ -380,18 +377,16 @@ export class ComprasComponent {
     this.cantidadArticulos = this.dataSourceCargarArticulos.length
 
     if (i > 0) {
-      this.totalUnitarioArray.splice(i, 1);
-      this.totalUnitarioArray = [...this.totalUnitarioArray];
-      this.totalUnitario = this.totalUnitarioArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-      this.totalIvaCompraArray.splice(i, 1);
-      this.totalIvaCompraArray = [...this.totalIvaCompraArray];
-      this.totalIvaCompra = this.totalIvaCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-      this.subtotalCompra = this.utilsService.sumarNumeros(this.totalUnitario, this.totalIvaCompra)
+      this.subtotalCompraArray.splice(i, 1);
+      this.subtotalCompraArray = [...this.subtotalCompraArray];
+      this.subtotalCompra = this.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+      this.impuestoCompraArray.splice(i, 1);
+      this.impuestoCompraArray = [...this.impuestoCompraArray];
+      this.impuestoCompra = this.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
       this.totalCompra = this.utilsService.sumarNumeros(this.subtotalCompra, this.nuevaCompra.descuento)
     } else {
-      this.totalUnitario = 0;
-      this.totalIvaCompra = 0;
       this.subtotalCompra = 0;
+      this.impuestoCompra = 0;
       this.totalCompra = 0;
     }
   }
@@ -407,18 +402,14 @@ export class ComprasComponent {
     this.dataSourceCargarArticulos.splice(i, 1, JSON.parse(this.localStorageService.getItem(element._id)!));
     this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos];
 
-    console.log("Paso 1", this.dataSourceCargarArticulos)
-    console.log("Paso 2", this.dataSourceCargarArticulos[i].precio[0].subtotalCompra)
-    this.totalUnitarioArray.splice(i, 1, this.utilsService.Numeros(this.dataSourceCargarArticulos[i].precio[0].subtotalCompra));
-    console.log()
-    this.totalUnitarioArray = [...this.totalUnitarioArray];
-    this.totalUnitario = this.totalUnitarioArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+    this.subtotalCompraArray.splice(i, 1, this.utilsService.Numeros(this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario));
+    this.subtotalCompraArray = [...this.subtotalCompraArray];
+    this.subtotalCompra = this.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
 
-    this.totalIvaCompraArray.splice(i, 1, this.utilsService.Numeros(this.dataSourceCargarArticulos[i].precio[0].ivaCompra));
-    this.totalIvaCompraArray = [...this.totalIvaCompraArray];
-    this.totalIvaCompra = this.totalIvaCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+    this.impuestoCompraArray.splice(i, 1, this.utilsService.Numeros(this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario));
+    this.impuestoCompraArray = [...this.impuestoCompraArray];
+    this.impuestoCompra = this.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
 
-    this.subtotalCompra = this.utilsService.sumarNumeros(this.totalUnitario, this.totalIvaCompra);
     this.totalCompra = this.utilsService.restarNumeros(this.subtotalCompra, this.nuevaCompra.descuento)
   }
 
