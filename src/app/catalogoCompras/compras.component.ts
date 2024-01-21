@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ViewChild, AfterContentChecked } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
@@ -27,13 +27,12 @@ import { UtilsService } from '../utils.service';
 })
 
 export class ComprasComponent {
-  [x: string]: any;
 
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog,
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
 
 
-  columnas: string[] = ['No', 'descripcion', 'referencia', 'marca','cantidad', 'valorUnitario','subtotal', 'impuesto', 'total','precioVenta', 'isEdit'];
+  columnas: string[] = ['No', 'descripcion', 'referencia', 'marca', 'cantidad', 'valorUnitario', 'impuesto', 'subtotal', 'descuento', 'total', 'precioVenta', 'isEdit'];
 
   openedMenu!: boolean;
   openedArticle!: boolean;
@@ -41,29 +40,31 @@ export class ComprasComponent {
   dataSourceCompras: any = [];
   dataSourceProveedores: any = [];
   dataSourceubicaciones: any = [];
-  dataSourceArticulos: any = [];
   dataSourceCargarArticulos: any = [];
-  dataSourcePrecio: any;
+  dataSourcePurchase: any;
+  dataSourcePurchaseArticulo: any = [];
   isLoadingResults: boolean = false;
+  //Pagination
   pageEvent!: PageEvent;
   pageIndex: number = 0;
   pageSize !: number;
   length!: number;
-  localStorageToken !: any;
   pageSizeOptions = [20];
-  searchDescription!: boolean;
-  searchCode!: boolean;
-  indice !: number;
+  //Storage
+  localStorageToken !: any;
   subscriber!: Subscription;
   //Datos para operaciones
-  cantidadArticulos: number = 0;
-  cantidad: number = 1;
-  subtotalCompra: number = 0;
-  subtotalCompraArray: any = [];
-  impuestoCompra: number = 0;
-  impuestoCompraArray: any = [];
-  totalCompra: number = 0;
-  totalCompraArray: any = [];
+  operaciones: any = {
+    cantidadArticulos: 0,
+    subtotalCompra: 0,
+    subtotalCompraArray: [],
+    impuestoCompra: 0,
+    impuestoCompraArray: [],
+    descuentoCompra: 0,
+    descuentoCompraArray: [],
+    totalCompra: 0,
+    totalCompraArray: [],
+  }
   /**
    * Control Error Textfields Articles
    */
@@ -73,29 +74,13 @@ export class ComprasComponent {
   referenciaFormControl = new FormControl('', [Validators.required]);
   unidadMedidaFormControl = new FormControl('', [Validators.required]);
   codigoUbicacionFormControl = new FormControl('', [Validators.required]);
-  subtotalUnitarioFormControl = new FormControl('', [Validators.required]);
-  impuestoUnitarioFormControl = new FormControl('', [Validators.required]);
-  totalUnitarioFormControl = new FormControl('', [Validators.required]);
-  cantidadFormControl = new FormControl('', [Validators.required]);
-  subtotalArticuloFormControl = new FormControl('', [Validators.required]);
-  totalArticuloFormControl = new FormControl('', [Validators.required]);
-  precioVentaArticuloFormControl = new FormControl('', [Validators.required]);
   nuevoArticulo = {
     codigoBarras: '',
     descripcion: '',
     unidadMedida: '',
     codigoUbicacion: '',
     marca: '',
-    referencia: '',
-    subtotalUnitario: '',
-    descuento: '',
-    ivaUnitario: '',
-    totalUnitario: '',
-    cantidad: '',
-    subtotal: '',
-    iva: '',
-    total: '',
-    valorDeVenta: '',
+    referencia: ''
   };
 
   /**
@@ -126,17 +111,19 @@ export class ComprasComponent {
     fechaFactura: '',
     subtotal: '',
     descuento: '',
-    iva: '',
+    impuesto: '',
     total: '',
     observaciones: '',
   };
 
   nuevoPrecio: any = {
-    precioVenta: "0",
-    ivaCompra: "0",
-    subtotalCompra: "0",
-    totalCompra: "0",
-    cantidad: "0",
+    precioVenta: 0,
+    impuestoUnitario: 0,
+    valorUnitario: 0,
+    subtotalUnitario: 0,
+    total: 0,
+    cantidad: 0,
+    descuentoUnitario: 0,
   }
 
   matcher = new MyErrorStateMatcher();
@@ -156,6 +143,10 @@ export class ComprasComponent {
     this.localStorageToken = this.localStorageService.getItem('access_token');
     this.localStorageService.clear();
     this.localStorageService.setItem('access_token', this.localStorageToken);
+  }
+
+  ngAfterContentChecked() {
+    this.changeDetector.detectChanges();
   }
 
   async cargarUbicaciones() {
@@ -285,6 +276,61 @@ export class ComprasComponent {
     }
   }
 
+  async guardarCompra() {
+
+    //Crear DataSource Purchase Articles
+    for (let i = 0; i < this.dataSourceCargarArticulos.length; i++) {
+      this.dataSourcePurchaseArticulo = [...this.dataSourcePurchaseArticulo,
+      {
+        "codigo": this.dataSourceCargarArticulos[i].codigo,
+        "codigoBarras": this.dataSourceCargarArticulos[i].codigoBarras,
+        "valorUnitario": this.dataSourceCargarArticulos[i].precios[0].valorUnitario,
+        "impuestoUnitario": this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario,
+        "subtotalUnitario": this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario,
+        "cantidad": this.dataSourceCargarArticulos[i].precios[0].cantidad,
+        "descuentoUnitario": this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario,
+        "total": this.dataSourceCargarArticulos[i].precios[0].total,
+        "precioVenta": this.dataSourceCargarArticulos[i].precios[0].precioVenta
+      },
+      ]
+    }
+    //Crear DataSource Purchase
+    this.dataSourcePurchase =
+    {
+      "numeroFactura": this.nuevaCompra.numeroFactura,
+      "fechaFactura": this.nuevaCompra.fechaFactura,
+      "subtotal": this.operaciones.subtotalCompra - this.operaciones.impuestoCompra,
+      "impuesto": this.operaciones.impuestoCompra,
+      "descuento": this.operaciones.descuentoCompra,
+      "total": this.operaciones.totalCompra,
+      "proveedor": {
+        "nombreRazonSocial": this.nuevoProveedor.nombreRazonSocial,
+        "tipoDocumento": this.nuevoProveedor.tipoDocumento,
+        "numeroDocumento": this.nuevoProveedor.numeroDocumento
+      },
+      "articulo": this.dataSourcePurchaseArticulo
+    }
+    const url = 'https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/purchases';
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`
+      })
+    };
+
+    try {
+      const response = await this.http.post(url, this.dataSourcePurchase, httpOptions).toPromise();
+      this.mensajeExitoso = "Artículo guardado correctamente.";
+      setTimeout(() => {
+        this.refreshPage();
+      }, 3000);
+    } catch (error) {
+      this.mensajeFallido = 'Error al guardar. Por favor, inténtelo nuevamente.';
+      console.error('Error en la solicitud:', error);
+    }
+  }
+
   setArticulo() {
     this.nuevoArticulo.codigoBarras = '';
     this.codigoBarrasFormControl.reset();
@@ -300,6 +346,18 @@ export class ComprasComponent {
     this.codigoUbicacionFormControl.reset();
     this.mensajeExitosoArticulo = '';
     this.mensajeFallidoArticulo = '';
+  };
+
+  setOperaciones() {
+    this.operaciones.cantidadArticulos = 0,
+      this.operaciones.subtotalCompra = 0,
+      this.operaciones.subtotalCompraArray = [],
+      this.operaciones.impuestoCompra = 0,
+      this.operaciones.impuestoCompraArray = [],
+      this.operaciones.descuentoCompra = 0,
+      this.operaciones.descuentoCompraArray = [],
+      this.operaciones.totalCompra = 0,
+      this.operaciones.totalCompraArray = []
   };
 
   mostrarDialogo(message: string, process: number, element: any, i: number): void {
@@ -361,33 +419,58 @@ export class ComprasComponent {
     element.precios = element.precios.length === 0 ? [...this.cargarPrecio(element.precios)] : element.precios;
     this.localStorageService.setItem(element._id, JSON.stringify(element));
     this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos, JSON.parse(this.localStorageService.getItem(element._id)!)];
-    this.cantidadArticulos = this.dataSourceCargarArticulos.length
-    let length = this.dataSourceCargarArticulos.length - 1;
-    this.subtotalCompraArray = [...this.subtotalCompraArray, this.utilsService.Numeros(this.dataSourceCargarArticulos[length].precios[0].subtotalUnitario)];
-    this.subtotalCompra = this.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-    this.impuestoCompraArray = [...this.impuestoCompraArray, this.utilsService.Numeros(this.dataSourceCargarArticulos[length].precios[0].impuestoUnitario)];
-    this.impuestoCompra = this.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-    this.totalCompra = this.utilsService.sumarNumeros(this.subtotalCompra, this.nuevaCompra.descuento);
+
+    let i = this.dataSourceCargarArticulos.length - 1;
+
+    this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario = this.utilsService.calcularSubtotal(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario);
+    this.dataSourceCargarArticulos[i].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario), this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario);
+
+
+    this.localStorageService.removeItem(this.dataSourceCargarArticulos[i]._id);
+    this.localStorageService.setItem(this.dataSourceCargarArticulos[i]._id, JSON.stringify(this.dataSourceCargarArticulos[i]));
+
+    this.dataSourceCargarArticulos.splice(i, 1, JSON.parse(this.localStorageService.getItem(this.dataSourceCargarArticulos[i]._id)!));
+    this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos];
+
+    this.operaciones.cantidadArticulos = this.dataSourceCargarArticulos.length;
+
+    this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, this.utilsService.numeros(this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario)];
+    this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+    this.operaciones.impuestoCompraArray = [...this.operaciones.impuestoCompraArray, this.utilsService.calcularImpuesto(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario)];
+    this.operaciones.impuestoCompra = this.operaciones.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+    this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.dataSourceCargarArticulos[i].precios[0].total, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario)];
+    this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+    this.operaciones.totalCompraArray = [...this.operaciones.totalCompraArray, this.utilsService.numeros(this.dataSourceCargarArticulos[i].precios[0].total)];
+    this.operaciones.totalCompra = this.operaciones.totalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
   }
 
   borrarArticuloStorage(element: any, i: number) {
     this.localStorageService.removeItem(element._id);
     this.dataSourceCargarArticulos.splice(i, 1);
     this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos];
-    this.cantidadArticulos = this.dataSourceCargarArticulos.length
+    this.operaciones.cantidadArticulos = this.dataSourceCargarArticulos.length
 
     if (i > 0) {
-      this.subtotalCompraArray.splice(i, 1);
-      this.subtotalCompraArray = [...this.subtotalCompraArray];
-      this.subtotalCompra = this.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-      this.impuestoCompraArray.splice(i, 1);
-      this.impuestoCompraArray = [...this.impuestoCompraArray];
-      this.impuestoCompra = this.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-      this.totalCompra = this.utilsService.sumarNumeros(this.subtotalCompra, this.nuevaCompra.descuento)
+      this.operaciones.subtotalCompraArray.splice(i, 1);
+      this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
+      this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.impuestoCompraArray.splice(i, 1);
+      this.operaciones.impuestoCompraArray = [...this.operaciones.impuestoCompraArray];
+      this.operaciones.impuestoCompra = this.operaciones.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.descuentoCompraArray.splice(i, 1);
+      this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray];
+      this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.totalCompraArray.splice(i, 1);
+      this.operaciones.totalCompraArray = [...this.operaciones.totalCompraArray];
+      this.operaciones.totalCompra = this.operaciones.totalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
     } else {
-      this.subtotalCompra = 0;
-      this.impuestoCompra = 0;
-      this.totalCompra = 0;
+      this.setOperaciones();
     }
   }
 
@@ -402,15 +485,28 @@ export class ComprasComponent {
     this.dataSourceCargarArticulos.splice(i, 1, JSON.parse(this.localStorageService.getItem(element._id)!));
     this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos];
 
-    this.subtotalCompraArray.splice(i, 1, this.utilsService.Numeros(this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario));
-    this.subtotalCompraArray = [...this.subtotalCompraArray];
-    this.subtotalCompra = this.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+    this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario = this.utilsService.calcularSubtotal(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario);
+    this.dataSourceCargarArticulos[i].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario), this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario);
 
-    this.impuestoCompraArray.splice(i, 1, this.utilsService.Numeros(this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario));
-    this.impuestoCompraArray = [...this.impuestoCompraArray];
-    this.impuestoCompra = this.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+    this.localStorageService.removeItem(this.dataSourceCargarArticulos[i]._id);
+    this.localStorageService.setItem(this.dataSourceCargarArticulos[i]._id, JSON.stringify(this.dataSourceCargarArticulos[i]));
 
-    this.totalCompra = this.utilsService.restarNumeros(this.subtotalCompra, this.nuevaCompra.descuento)
+    this.operaciones.subtotalCompraArray.splice(i, 1, this.utilsService.numeros(this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario));
+    this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
+    this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+    this.operaciones.impuestoCompraArray.splice(i, 1, this.utilsService.calcularImpuesto(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario));
+    this.operaciones.impuestoCompraArray = [...this.operaciones.impuestoCompraArray];
+    this.operaciones.impuestoCompra = this.operaciones.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+    this.operaciones.descuentoCompraArray.splice(i, 1, this.utilsService.calcularDescuento(this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario));
+    this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray];
+    this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+    this.operaciones.totalCompraArray.splice(i, 1, this.utilsService.numeros(this.dataSourceCargarArticulos[i].precios[0].total));
+    this.operaciones.totalCompraArray = [...this.operaciones.totalCompraArray];
+    this.operaciones.totalCompra = this.operaciones.totalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
   }
 
   cancelarCambios(element: any, i: number) {
@@ -426,9 +522,19 @@ export class ComprasComponent {
     return element;
   }
 
+  subtotal(element: any, index: number) {
+    this.dataSourceCargarArticulos[index].precios[0].subtotalUnitario = this.utilsService.calcularSubtotal(element[0].valorUnitario, element[0].cantidad, element[0].impuestoUnitario)
+  }
+
+  total(element: any, index: number) {
+    this.dataSourceCargarArticulos[index].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(element[0].valorUnitario, element[0].cantidad, element[0].impuestoUnitario), element[0].descuentoUnitario)
+  }
+
   refreshPage() {
+    this.ngOnDestroy();
     window.location.reload();
   }
+
 }
 
 export class compras {

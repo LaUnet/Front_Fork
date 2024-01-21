@@ -132,7 +132,8 @@
                         <mat-form-field class="full-width" appearance="outline">
                             <mat-label>Codigo Barras</mat-label>
                             <mat-icon matSuffix>code</mat-icon>
-                            <input matInput [(ngModel)]="nuevoArticulo.codigoBarras" id="codigoBarras" name="codigoBarras">
+                            <input matInput [(ngModel)]="nuevoArticulo.codigoBarras" id="codigoBarras"
+                                name="codigoBarras">
                         </mat-form-field>
                     </td>
                     <td>
@@ -153,7 +154,7 @@
                         <mat-form-field class="full-width" appearance="outline">
                             <mat-label>Marca</mat-label>
                             <mat-icon matSuffix>label_important</mat-icon>
-                            <input matInput [(ngModel)]="nuevoArticulo.marca" id= "marca" name="marca"
+                            <input matInput [(ngModel)]="nuevoArticulo.marca" id="marca" name="marca"
                                 [formControl]="marcaFormControl" [errorStateMatcher]="matcher">
                         </mat-form-field>
                     </td>
@@ -248,8 +249,8 @@
                                 <mat-form-field class="full-width" appearance="outline">
                                     <mat-label>Consultar # Documento</mat-label>
                                     <input matInput type="text" [(ngModel)]="nuevoProveedor.numeroDocumento"
-                                    id="numeroDocumento" name="numeroDocumento" [formControl]="numeroDocumentoFormControl"
-                                        [errorStateMatcher]="matcher">
+                                        id="numeroDocumento" name="numeroDocumento"
+                                        [formControl]="numeroDocumentoFormControl" [errorStateMatcher]="matcher">
                                     <button type="button" mat-icon-button matSuffix color="basic"
                                         [disabled]="numeroDocumentoFormControl.invalid" (click)="buscarProveedor()">
                                         <mat-icon matSuffix color="primary">contacts</mat-icon>
@@ -260,15 +261,15 @@
                                     <mat-label style="font-weight:bold">Tipo Documento</mat-label>
                                     <mat-icon matSuffix>list</mat-icon>
                                     <input matInput style="font-weight:bold; color: rgb(53, 53, 134);" type="text"
-                                        [(ngModel)]="nuevoProveedor.tipoDocumento" id="tipoDocumento" name="tipoDocumento"
-                                        [errorStateMatcher]="matcher" disabled>
+                                        [(ngModel)]="nuevoProveedor.tipoDocumento" id="tipoDocumento"
+                                        name="tipoDocumento" [errorStateMatcher]="matcher" disabled>
                                 </mat-form-field></td>
                             <td><mat-form-field class="full-width" style="width: 360px;" appearance="outline">
                                     <mat-label style="font-weight:bold">Nombre Proveedor</mat-label>
                                     <mat-icon matSuffix>supervisor_account</mat-icon>
                                     <input matInput style="font-weight:bold; color: rgb(53, 53, 134);" type="text"
-                                        [(ngModel)]="nuevoProveedor.nombreRazonSocial" id="nombreRazonSocial" name="nombreRazonSocial"
-                                        [errorStateMatcher]="matcher" disabled>
+                                        [(ngModel)]="nuevoProveedor.nombreRazonSocial" id="nombreRazonSocial"
+                                        name="nombreRazonSocial" [errorStateMatcher]="matcher" disabled>
                                 </mat-form-field></td>
                         </div>
                         <td>
@@ -276,9 +277,9 @@
                                 <mat-form-field appearance="outline">
                                     <mat-label>Numero Factura</mat-label>
                                     <mat-icon matSuffix>account_balance_wallet</mat-icon>
-                                    <input matInput [(ngModel)]="nuevaCompra.numeroFactura" id="numeroFactura" name="numeroFactura"
-                                        [formControl]="numeroFacturaFormControl" [errorStateMatcher]="matcher"
-                                        type="text">
+                                    <input matInput [(ngModel)]="nuevaCompra.numeroFactura" id="numeroFactura"
+                                        name="numeroFactura" [formControl]="numeroFacturaFormControl"
+                                        [errorStateMatcher]="matcher" type="text">
                                 </mat-form-field>
                             </div>
                         </td>
@@ -291,9 +292,9 @@
                                 <mat-form-field style="margin-top: -1rem;" appearance="outline">
                                     <mat-label>Fecha</mat-label>
                                     <mat-icon matSuffix>today</mat-icon>
-                                    <input matInput [(ngModel)]="nuevaCompra.fechaFactura" id="fechaFactura" name="fechaFactura"
-                                        [formControl]="fechaFacturaFormControl" [errorStateMatcher]="matcher"
-                                        type="date">
+                                    <input matInput [(ngModel)]="nuevaCompra.fechaFactura" id="fechaFactura"
+                                        name="fechaFactura" [formControl]="fechaFacturaFormControl"
+                                        [errorStateMatcher]="matcher" type="date">
                                 </mat-form-field>
                             </div>
                         </td>
@@ -304,7 +305,7 @@
         <!-- Contenido Ingresar Articulos a la compra-->
         <mat-card class="mat-card-center">
             <div class="mat-elevation-z8">
-                <table mat-table [dataSource]="dataSourceCargarArticulos" cellspacing="0">
+                <table mat-table #myTable [dataSource]="dataSourceCargarArticulos" cellspacing="0">
                     <ng-container matColumnDef="No">
                         <th style="font-family: Impact; background-color:gainsboro; width: 1%; " mat-header-cell
                             *matHeaderCellDef>
@@ -312,13 +313,13 @@
                         <td mat-cell *matCellDef="let articulos;let i = index"> {{i+1}} </td>
                     </ng-container>
                     <ng-container matColumnDef="descripcion">
-                        <th style="font-family: Impact; background-color:gainsboro; width: 15%; " mat-header-cell
+                        <th style="font-family: Impact; background-color:gainsboro; width: 12%; " mat-header-cell
                             *matHeaderCellDef>
                             Descripción </th>
                         <td mat-cell *matCellDef="let articulos"> {{articulos.descripcion}} </td>
                     </ng-container>
                     <ng-container matColumnDef="referencia">
-                        <th style="font-family: Impact; background-color:gainsboro; width: 15%; " mat-header-cell
+                        <th style="font-family: Impact; background-color:gainsboro; width: 10%; " mat-header-cell
                             *matHeaderCellDef>
                             Referencia </th>
                         <td mat-cell *matCellDef="let articulos">
@@ -326,7 +327,7 @@
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="marca">
-                        <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
+                        <th style="font-family: Impact; background-color:gainsboro; width: 8%; " mat-header-cell
                             *matHeaderCellDef>
                             Marca </th>
                         <td mat-cell *matCellDef="let articulos"> {{articulos.marca}} </td>
@@ -341,9 +342,9 @@
                                     {{row.cantidad}}
                                 </div>
                                 <div *ngIf="articulos.isEdit">
-                                    <input class="form-control input-sm" id="cantidad" type="number"
-                                    name="cantidad" [errorStateMatcher]="matcher" matInput
-                                        [(ngModel)]="row.cantidad" required>
+                                    <input class="input-group input-group-sm" id="cantidad" type="number"
+                                        name="cantidad" [errorStateMatcher]="matcher" matInput
+                                        [(ngModel)]="row.cantidad" (ngModelChange)="row.cantidad = $event" required>
                                 </div>
                             </span>
                         </td>
@@ -355,22 +356,14 @@
                         <td mat-cell *matCellDef="let articulos">
                             <span *ngFor="let row of articulos.precios">
                                 <div *ngIf="!articulos.isEdit">
-                                    {{ this.utilsService.Numeros(row.valorUnitario) | currency}}
+                                    {{ this.utilsService.numeros(row.valorUnitario) | currency}}
                                 </div>
                                 <div *ngIf="articulos.isEdit">
-                                    <input class="form-control input-sm" id="valorUnitario" type="number"
-                                     name="valorUnitario" [errorStateMatcher]="matcher"
-                                        matInput [(ngModel)]="row.valorUnitario" required>
+                                    <input class="input-group input-group-sm" id="valorUnitario" type="number"
+                                        name="valorUnitario" [errorStateMatcher]="matcher" matInput
+                                        [(ngModel)]="row.valorUnitario" (ngModelChange)="row.valorUnitario = $event"
+                                        required>
                                 </div>
-                            </span>
-                        </td>
-                    </ng-container>
-                    <ng-container matColumnDef="subtotal">
-                        <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
-                            *matHeaderCellDef>
-                            Subtotal</th>
-                        <td mat-cell *matCellDef="let articulos">
-                            <span *ngFor="let row of articulos.precios">{{this.utilsService.Numeros(row.valorUnitario) * this.utilsService.Numeros(row.cantidad) |currency}}
                             </span>
                         </td>
                     </ng-container>
@@ -381,12 +374,44 @@
                         <td mat-cell *matCellDef="let articulos">
                             <span *ngFor="let row of articulos.precios">
                                 <div *ngIf="!articulos.isEdit">
-                                    {{this.utilsService.Numeros(row.impuestoUnitario) * this.utilsService.Numeros(row.cantidad) | currency}}
+                                    {{this.utilsService.percent(row.impuestoUnitario)}}
                                 </div>
                                 <div *ngIf="articulos.isEdit">
-                                    <input class="form-control input-sm" id="impuesto" type="number"
-                                    name="impuesto" [errorStateMatcher]="matcher"
-                                        matInput [(ngModel)]="row.impuestoUnitario" required>
+                                    <div class="input-group input-group-sm">
+                                        <select class="custom-select" id="impuesto" type="number" name="impuesto"
+                                            matInput [(ngModel)]="row.impuestoUnitario">
+                                            <option value=19>SI</option>
+                                            <option value=0>NO</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="subtotal">
+                        <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
+                            *matHeaderCellDef>
+                            Subtotal</th>
+                        <td mat-cell *matCellDef="let articulos, let i = index">
+                            <span *ngFor="let row of articulos.precios">
+                                {{row.subtotalUnitario | currency}}
+                                {{subtotal(articulos.precios, i)}}
+                            </span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="descuento">
+                        <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
+                            *matHeaderCellDef>
+                            Descuento %</th>
+                        <td mat-cell *matCellDef="let articulos">
+                            <span *ngFor="let row of articulos.precios">
+                                <div *ngIf="!articulos.isEdit">
+                                    {{this.utilsService.percent(row.descuentoUnitario)}}
+                                </div>
+                                <div *ngIf="articulos.isEdit">
+                                    <input class="input-group input-group-sm" id="descuento" type="number"
+                                        name="descuento" [errorStateMatcher]="matcher" matInput
+                                        [(ngModel)]="row.descuentoUnitario" (ngModelChange)="row.descuentoUnitario = $event" required>
                                 </div>
                             </span>
                         </td>
@@ -395,23 +420,26 @@
                         <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
                             *matHeaderCellDef>
                             Total</th>
-                        <td mat-cell *matCellDef="let articulos">
-                            <span *ngFor="let row of articulos.precios">{{utilsService.Numeros(row.cantidad) * this.utilsService.sumarNumeros(this.utilsService.Numeros(row.valorUnitario), this.utilsService.Numeros(row.impuestoUnitario)) | currency}}
+                        <td mat-cell *matCellDef="let articulos; let i = index">
+                            <span *ngFor="let row of articulos.precios">
+                                {{row.total | currency}}
+                                {{total(articulos.precios, i)}}
                             </span>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="precioVenta">
                         <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
-                            *matHeaderCellDef>precios Venta</th>
+                            *matHeaderCellDef>Precio Venta</th>
                         <td mat-cell *matCellDef="let articulos">
                             <span *ngFor="let row of articulos.precios">
                                 <div *ngIf="!articulos.isEdit">
-                                    {{utilsService.Numeros(row.precioVenta) | currency}}
+                                    {{utilsService.numeros(row.precioVenta) | currency}}
                                 </div>
                                 <div *ngIf="articulos.isEdit">
-                                    <input class="form-control input-sm" id="precioVenta" type="number"
-                                    name="precioVenta" [errorStateMatcher]="matcher"
-                                        matInput [(ngModel)]="row.precioVenta" required>
+                                    <input class="input-group input-group-sm" id="precioVenta" type="number"
+                                        name="precioVenta" [errorStateMatcher]="matcher" matInput
+                                        [(ngModel)]="row.precioVenta" (ngModelChange)="row.precioVenta = $event"
+                                        required>
                                 </div>
                             </span>
                         </td>
@@ -421,27 +449,31 @@
                             *matHeaderCellDef>
                             Accion</th>
                         <td mat-cell *matCellDef="let articulos; let i = index">
-                            <div *ngIf="!articulos.isEdit">
-                                <button type="button" mat-mini-fab matSuffix color="primary" matTooltip="Editar"
-                                    class="buttonMatTable" (click)="editandoArticuloStorage(articulos, i)">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                                <button type="button" mat-mini-fab matSuffix color="warn" matTooltip="Eliminar"
-                                    class="buttonMatTable" (click)="mostrarDialogo('Seguro requieres Eliminar Articulo?', 3, articulos, i)">
-                                    <mat-icon>delete_forever</mat-icon>
-                                </button>
-                            </div>
-                            <div *ngIf="articulos.isEdit">
+                            <span *ngFor="let row of articulos.precios">
+                                <div *ngIf="!articulos.isEdit">
+                                    <button type="button" mat-mini-fab matSuffix color="primary" matTooltip="Editar"
+                                        class="buttonMatTable" (click)="editandoArticuloStorage(articulos, i)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button type="button" mat-mini-fab matSuffix color="warn" matTooltip="Eliminar"
+                                        class="buttonMatTable"
+                                        (click)="mostrarDialogo('Seguro requieres Eliminar Articulo?', 3, articulos, i)">
+                                        <mat-icon>delete_forever</mat-icon>
+                                    </button>
+                                </div>
+                                <div *ngIf="articulos.isEdit">
                                     <button type="button" mat-mini-fab mat-small-icon-button matSuffix color="primary"
                                         matTooltip="Guardar" class="buttonMatTable"
                                         (click)="salvarEdicionArticuloStorage(articulos, i)">
                                         <mat-icon>check_circle</mat-icon>
                                     </button>
-                                <button type="button" mat-mini-fab mat-small-icon-button matSuffix color="warn"
-                                    matTooltip="Descartar" class="buttonMatTable" (click)="cancelarCambios(articulos, i)">
-                                    <mat-icon>cancel</mat-icon>
-                                </button>
-                            </div>
+                                    <button type="button" mat-mini-fab mat-small-icon-button matSuffix color="warn"
+                                        matTooltip="Descartar" class="buttonMatTable"
+                                        (click)="cancelarCambios(articulos, i)">
+                                        <mat-icon>cancel</mat-icon>
+                                    </button>
+                                </div>
+                            </span>
                     </ng-container>
                     <tr mat-header-row *matHeaderRowDef="columnas"></tr>
                     <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
@@ -466,7 +498,7 @@
                         Articulos</span>
                     <span class="spacer"></span>
                     <span
-                        style="color: black;margin-top: 0.5%;position: absolute; margin-left: 55%; font-family: Impact">{{cantidadArticulos}}</span>
+                        style="color: black;margin-top: 0.5%;position: absolute; margin-left: 55%; font-family: Impact">{{operaciones.cantidadArticulos}}</span>
                 </div>
                 <div>
                     <mat-card-actions align="end">
@@ -499,58 +531,60 @@
                     <tr>
                         <div align="start">
                             <td>
-                                <mat-form-field class="full-width" appearance="outline">
-                                    <mat-label style="font-weight:bold">Subtotal</mat-label>
+                                <mat-form-field class="full-width" appearance="outline" cellspacing="0">
+                                    <mat-label style="font-weight:bold">Subtotal(base)</mat-label>
                                     <mat-icon matSuffix>summarize</mat-icon>
                                     <input matInput [(ngModel)]="nuevaCompra.subtotal" id="subtotal" name="subtotal"
                                         [errorStateMatcher]="matcher" type="number" disabled>
-                                    <span matTextSuffix>{{ this.subtotalCompra| currency}}</span>
+                                    <span matTextSuffix>{{ this.operaciones.subtotalCompra-this.operaciones.impuestoCompra | currency}}</span>
                                 </mat-form-field>
                             </td>
                             <td>
-                                <mat-form-field class="full-width" appearance="outline">
+                                <mat-form-field class="full-width" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bold">Total Impuesto</mat-label>
                                     <mat-icon style="font-weight:bolder;" matSuffix>gavel</mat-icon>
                                     <input matInput [(ngModel)]="nuevaCompra.impuesto" id="impuesto" name="impuesto"
                                         [errorStateMatcher]="matcher" type="number" disabled>
-                                    <span matTextSuffix>{{this.impuestoCompra| currency}}</span>
+                                    <span matTextSuffix>{{this.operaciones.impuestoCompra| currency}}</span>
                                 </mat-form-field>
                             </td>
-
                             <td>
-                                <mat-form-field class="full-width" appearance="outline">
+                                <mat-form-field class="full-width" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bold">Descuento</mat-label>
                                     <mat-icon matSuffix>percent</mat-icon>
                                     <input matInput [(ngModel)]="nuevaCompra.descuento" id="descuento" name="descuento"
-                                        [errorStateMatcher]="matcher" type="number" matInput [(ngModel)]="this.nuevaCompra.descuento">
+                                        [errorStateMatcher]="matcher" type="number" matInput
+                                        [(ngModel)]="nuevaCompra.descuento" disabled>
+                                    <span matTextSuffix>{{this.operaciones.descuentoCompra| currency}}</span>
                                 </mat-form-field>
                             </td>
                         </div>
                         <td>
                             <div align="end">
-                                <mat-form-field class="full-width" style="width: 40%;" appearance="outline">
-                                    <mat-label style="font-weight:bolder; color: rgb(39, 39, 110);">Total Factura</mat-label>
+                                <mat-form-field class="full-width" style="width: 40%;" appearance="outline" cellspacing="0">
+                                    <mat-label style="font-weight:bolder; color: rgb(39, 39, 110);">Total
+                                        Factura</mat-label>
                                     <mat-icon matSuffix>monetization_on</mat-icon>
                                     <input matInput [(ngModel)]="nuevaCompra.total" id="total" name="total"
                                         [errorStateMatcher]="matcher" type="number" disabled placeholder="0">
-                                    <span matTextSuffix>{{this.totalCompra| currency}}</span>
+                                    <span matTextSuffix>{{this.operaciones.totalCompra| currency}}</span>
                                 </mat-form-field>
                             </div>
                         </td>
                     </tr>
                 </table>
                 <table class="full-width" cellspacing="0">
-                    <mat-form-field class="full-width" style=" width: 845px" appearance="outline">
+                    <mat-form-field class="full-width" style=" width: 880px" appearance="outline">
                         <mat-label style="font-weight:bold">Observaciones</mat-label>
                         <mat-icon matSuffix>speaker_notes</mat-icon>
-                        <textarea matInput [(ngModel)]="nuevaCompra.observaciones" id="observaciones" name="observaciones"
-                            [errorStateMatcher]="matcher"></textarea>
+                        <textarea matInput [(ngModel)]="nuevaCompra.observaciones" id="observaciones"
+                            name="observaciones" [errorStateMatcher]="matcher"></textarea>
                     </mat-form-field>
                     <td>
                         <mat-card-actions align="end">
-                            <button type="button" mat-fab color="basic" matTooltip="Guardar Compra" [disabled]="cantidadArticulos === 0">
-                                <!-- [disabled]="numeroFacturaFormControl.invalid || numeroDocumentoFormControl.invalid || fechaFacturaFormControl.invalid"> -->
-                                <!--(click)="guardarCompra()"-->
+                            <button type="button" mat-fab color="basic" matTooltip="Guardar Compra"
+                                [disabled]="this.operaciones.totalCompra === 0"
+                                (click)="guardarCompra()">
                                 <mat-icon>save</mat-icon>
                             </button>
                     <td></td>

@@ -28,24 +28,66 @@ export class UtilsService {
   };
 
   //Sumar valores
-  sumarNumeros(a: number, b:number) {
+  sumarNumeros(a: number, b: number) {
     a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
     b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
-    return (a+b);
+    return (a + b);
   }
 
-    //Restar valores
-    restarNumeros(a: number, b:number) {
-      a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
-      b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
-      return (a-b);
-    }
+  //Restar valores
+  restarNumeros(a: number, b: number) {
+    a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
+    b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
+    return (a - b);
+  }
 
-    //Convertir valores
-    Numeros(a: any) {
-      a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
-      console.log(a);
-      return (a);
-    }
+  //Convertir valores
+  numeros(a: any) {
+    a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
+    return (a);
+  }
+
+  // Percentage
+  percent(a: any) {
+    a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
+    return Intl.NumberFormat("en-US", {style: "percent",}).format(a / 100);
+  }
+
+  calcularImpuesto(a: any, b:any, c:any){
+    a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
+    b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
+    c = !isNaN(c) && typeof c !== 'boolean' ? +c : 0;
+    c = c !== 0? c/100 : 1
+    let valorXcantidad = a*b;
+    let valorImpuesto = c !== 1? valorXcantidad*c : 0;
+    return valorImpuesto;
+  }
+
+  calcularDescuento(a: any, b:any){
+    console.log(b);
+    a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
+    b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
+    let descuento = b !== 0? (a*(b/100)) : 0
+    return descuento; 
+  }
+
+  calculartotal(a: any, b:any){
+    a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
+    b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
+    let descuento = b !== 0? a*(b/100): 0
+    let total = a-descuento
+    return total; 
+  }
+
+  calcularSubtotal(a: any, b:any, c:any){
+    a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
+    b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
+    c = !isNaN(c) && typeof c !== 'boolean' ? +c : 0;
+    c = c !== 0? c/100 : 1
+    let valorXcantidad = a*b;
+    let valorImpuesto = c !== 1? valorXcantidad*c : 0;
+    let subtotal = +valorXcantidad+valorImpuesto;
+    return subtotal;
+  }
 
 }
