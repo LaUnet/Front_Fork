@@ -65,7 +65,6 @@ export class UtilsService {
   }
 
   calcularDescuento(a: any, b:any){
-    console.log(b);
     a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
     b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
     let descuento = b !== 0? (a*(b/100)) : 0
@@ -94,15 +93,9 @@ export class UtilsService {
   calcularUnitario(a: any, b:any){
     a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
     b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
-    let iva;
-    let valorUnitario;
-    if (b === 119){
-      iva = a*0.19
-      valorUnitario = a-iva
-    }else{
-      valorUnitario = a
-    }
-    return valorUnitario;
+    let descuentoIva = a/((b/100)+1);
+    descuentoIva = Number(descuentoIva.toFixed(2));
+    return descuentoIva;
   }
 
 }

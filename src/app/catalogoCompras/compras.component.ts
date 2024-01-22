@@ -54,6 +54,9 @@ export class ComprasComponent {
   localStorageToken !: any;
   subscriber!: Subscription;
   //Datos para operaciones
+  //IvaIncluido Valor Unitario
+  ivaIncluido : boolean = false;
+
   operaciones: any = {
     cantidadArticulos: 0,
     subtotalCompra: 0,
@@ -531,8 +534,12 @@ export class ComprasComponent {
   }
 
   unitarioIvaIncluido(element: any, index: number) {
-    console.log(element)
-    this.dataSourceCargarArticulos[index].precios[0].valorUnitario = this.utilsService.calcularUnitario(element[0].valorUnitario, element[0].impuestoUnitario);
+    console.log("IVA", element[0].impuestoUnitario);
+    this.ivaIncluido = element[0].impuestoUnitario === "019"? true : false;
+    console.log("Bandera", this.ivaIncluido)
+    if(this.ivaIncluido){
+      this.dataSourceCargarArticulos[index].precios[0].valorUnitario = this.utilsService.calcularUnitario(element[0].valorUnitario, parseInt(element[0].impuestoUnitario));
+    }   
   }
 
   refreshPage() {
