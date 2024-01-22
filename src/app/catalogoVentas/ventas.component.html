@@ -182,10 +182,9 @@
                                 placeholder="Ex. correo@example.com">
                         </mat-form-field></td>
                     <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Departamento Entrega</mat-label>
+                            <mat-label>Departamento</mat-label>
                             <mat-icon matSuffix>business</mat-icon>
-                            <mat-select [(ngModel)]="nuevoCliente.departamento" name="departamento" value="ANT"
-                                [formControl]="departamentoFormControl" [errorStateMatcher]="matcher">
+                            <mat-select [(ngModel)]="nuevoCliente.departamento" name="departamento" value="ANT">
                                 <mat-option value="ANT">Antioquia</mat-option>
                             </mat-select>
                         </mat-form-field></td>
@@ -194,10 +193,9 @@
             <table class="full-width" >
                 <tr>
                     <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Municipcio Entrega</mat-label>
+                            <mat-label>Municipcio</mat-label>
                             <mat-icon matSuffix>business</mat-icon>
-                            <mat-select [(ngModel)]="nuevoCliente.municipio" name="municipio" #fontSize value="MED"
-                                [formControl]="municipioFormControl" [errorStateMatcher]="matcher">
+                            <mat-select [(ngModel)]="nuevoCliente.municipio" name="municipio" #fontSize value="MED">
                                 <mat-option value="MED">Medellin</mat-option>
                                 <mat-option value="BEL">Bello</mat-option>
                                 <mat-option value="ENV">Envigado</mat-option>
@@ -207,7 +205,7 @@
                             </mat-select>
                         </mat-form-field></td>
                     <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Barrio Entrega</mat-label>
+                            <mat-label>Barrio</mat-label>
                             <mat-icon matSuffix>business</mat-icon>
                             <input matInput [(ngModel)]="nuevoCliente.barrio" name="barrio">
                         </mat-form-field></td>
@@ -217,11 +215,10 @@
             <table class="full-width" >
                 <tr>
                     <td><mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Dirección Entrega</mat-label>
+                            <mat-label>Dirección</mat-label>
                             <mat-icon matSuffix>tour</mat-icon>
                             <input matInput [(ngModel)]="nuevoCliente.direccion" name="direccion"
-                                placeholder="Calle 67 #55-89" [formControl]="direccionFormControl"
-                                [errorStateMatcher]="matcher">
+                                placeholder="Calle 67 #55-89">
                         </mat-form-field></td>
                     <td></td>
 
@@ -243,13 +240,13 @@
         </div>
 
 
-        <div *ngIf="mensajeFallidoCliente" class="alert alert-success mt-3">
+        <div *ngIf="mensajeFallidoCliente" class="alert alert-danger mt-3">
             {{ mensajeFallido }}
         </div>
 
         <div align="end">
             <button type="button" mat-icon-button matTooltip="Guardar"
-                [disabled]="tipoDocumentoFormControl.invalid || numeroDocumentoFormControl.invalid || nombreRazonSocialFormControl.invalid || telefonoFormControl.invalid || emailFormControl.invalid || departamentoFormControl.invalid || municipioFormControl.invalid || direccionFormControl.invalid || tipoClienteFormControl.invalid"
+                [disabled]="tipoDocumentoFormControl.invalid || numeroDocumentoFormControl.invalid || nombreRazonSocialFormControl.invalid || telefonoFormControl.invalid || emailFormControl.invalid || tipoClienteFormControl.invalid"
                 (click)="guardarCliente()">
                 <mat-icon>save</mat-icon>
             </button>
@@ -320,8 +317,7 @@
         <!-- Contenido Tabla Consulta Productos-->
         <mat-card class="mat-card-left-down">
             <div class="mat-elevation-z8">
-                <table mat-table [dataSource]="dataSourceCatalogo" class="table table-striped">
-
+                <table mat-table [dataSource]="dataSourceCatalogo" cellspacing="0">
                     <ng-container matColumnDef="codigo">
                         <th mat-header-cell *matHeaderCellDef> Código </th>
                         <td mat-cell *matCellDef="let catalogo"> {{catalogo.codigo}} </td>
@@ -355,13 +351,14 @@
                     <ng-container matColumnDef="stock">
                         <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>Stock</th>
                         <td mat-cell *matCellDef="let catalogo">
-                            <span *ngFor="let row of catalogo.inventario ">{{row.stock | number: '.2' }}</span>
+                            <span *ngFor="let row of catalogo.inventarios
+                             ">{{row.stock | number: '.2' }}</span>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="precioventa">
                         <th style="font-family: Impact; background-color:gainsboro" mat-header-cell *matHeaderCellDef>Precio Venta</th>
                         <td mat-cell *matCellDef="let catalogo">
-                            <span *ngFor="let row of catalogo.precio">{{row.precioVenta | currency: 'USD'}}</span>
+                            <span *ngFor="let row of catalogo.precios">{{row.precioVenta | currency: 'USD'}}</span>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="accion">
@@ -386,7 +383,7 @@
             </div>
     
     
-            <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+            <div *ngIf="mensajeFallido" class="alert alert-danger mt-3">
                 {{ mensajeFallido }}
             </div>
         </mat-card>

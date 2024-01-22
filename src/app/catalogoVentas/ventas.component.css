@@ -20,8 +20,10 @@
     margin-top: auto;
     width: 65%;
     height: auto;
-    max-height: 650px;
+    max-height: 750px;
     opacity: 95%;
+    overflow: auto;
+    background-color: aliceblue;
   }
   
   .mat-card-right-up {
@@ -85,13 +87,10 @@
   }
   
   .button24 {
-    width: 24.5px;
-    height: 24.5px;
-    color: white;
+    width: 30px;
+    height: 30px;
   }
   .icon24 {
-    font-size: 22px;
-    margin-top: 2.7px;
     color: blue;
   }
 

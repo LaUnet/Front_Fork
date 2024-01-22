@@ -321,7 +321,7 @@ export class ComprasComponent {
 
     try {
       const response = await this.http.post(url, this.dataSourcePurchase, httpOptions).toPromise();
-      this.mensajeExitoso = "Artículo guardado correctamente.";
+      this.mensajeExitoso = "Compra guardada correctamente.";
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
@@ -528,6 +528,11 @@ export class ComprasComponent {
 
   total(element: any, index: number) {
     this.dataSourceCargarArticulos[index].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(element[0].valorUnitario, element[0].cantidad, element[0].impuestoUnitario), element[0].descuentoUnitario)
+  }
+
+  unitarioIvaIncluido(element: any, index: number) {
+    console.log(element)
+    this.dataSourceCargarArticulos[index].precios[0].valorUnitario = this.utilsService.calcularUnitario(element[0].valorUnitario, element[0].impuestoUnitario);
   }
 
   refreshPage() {

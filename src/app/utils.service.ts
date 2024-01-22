@@ -50,6 +50,7 @@ export class UtilsService {
   // Percentage
   percent(a: any) {
     a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
+    if (a === 1){ a = 19}
     return Intl.NumberFormat("en-US", {style: "percent",}).format(a / 100);
   }
 
@@ -88,6 +89,20 @@ export class UtilsService {
     let valorImpuesto = c !== 1? valorXcantidad*c : 0;
     let subtotal = +valorXcantidad+valorImpuesto;
     return subtotal;
+  }
+
+  calcularUnitario(a: any, b:any){
+    a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
+    b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
+    let iva;
+    let valorUnitario;
+    if (b === 119){
+      iva = a*0.19
+      valorUnitario = a-iva
+    }else{
+      valorUnitario = a
+    }
+    return valorUnitario;
   }
 
 }

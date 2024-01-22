@@ -52,6 +52,7 @@ export class DialogoArticuloComponent implements OnInit {
   }
 
   async buscarArticulo() {
+    this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -68,7 +69,10 @@ export class DialogoArticuloComponent implements OnInit {
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
+            this.dataSourceArticulos = new MatTableDataSource(response.Data.docs)
+            if(response.Data.totalDocs === 0){
+              this.mensajeFallido = 'Articulo no Existe';
+            }
           }
           this.isLoadingResults = false;
         }, error => {

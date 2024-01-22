@@ -201,10 +201,10 @@
                     </td>
                 </tr>
             </table>
-            <div *ngIf="mensajeExitosoArticulo" class="alert alert-success mt-3">
+            <div *ngIf="mensajeExitosoArticulo" class="alert alert-danger mt-3">
                 {{ mensajeExitoso }}
             </div>
-            <div *ngIf="mensajeFallidoArticulo" class="alert alert-success mt-3">
+            <div *ngIf="mensajeFallidoArticulo" class="alert alert-danger mt-3">
                 {{ mensajeFallido }}
             </div>
             <div align="end">
@@ -247,7 +247,7 @@
                         <div align="start">
                             <td>
                                 <mat-form-field class="full-width" appearance="outline">
-                                    <mat-label>Consultar # Documento</mat-label>
+                                    <mat-label>Documento Proveedor</mat-label>
                                     <input matInput type="text" [(ngModel)]="nuevoProveedor.numeroDocumento"
                                         id="numeroDocumento" name="numeroDocumento"
                                         [formControl]="numeroDocumentoFormControl" [errorStateMatcher]="matcher">
@@ -353,10 +353,11 @@
                         <th style="font-family: Impact; background-color:gainsboro; width: 9%; " mat-header-cell
                             *matHeaderCellDef>
                             Valor Unitario</th>
-                        <td mat-cell *matCellDef="let articulos">
+                        <td mat-cell *matCellDef="let articulos; let i = index">
                             <span *ngFor="let row of articulos.precios">
                                 <div *ngIf="!articulos.isEdit">
                                     {{ this.utilsService.numeros(row.valorUnitario) | currency}}
+                                   <!-- {{this.unitarioIvaIncluido(articulos.precios, i)}} -->
                                 </div>
                                 <div *ngIf="articulos.isEdit">
                                     <input class="input-group input-group-sm" id="valorUnitario" type="number"
@@ -380,8 +381,8 @@
                                     <div class="input-group input-group-sm">
                                         <select class="custom-select" id="impuesto" type="number" name="impuesto"
                                             matInput [(ngModel)]="row.impuestoUnitario">
-                                            <option value=19>SI</option>
-                                            <option value=0>NO</option>
+                                            <option value=19>IVA 19%</option>
+                                            <option value=0>N/A 0%</option>
                                         </select>
                                     </div>
                                 </div>
@@ -596,10 +597,10 @@
                     </td>
                 </table>
             </form>
-            <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+            <div *ngIf="mensajeExitoso" class="alert alert-danger mt-3">
                 {{ mensajeExitoso }}
             </div>
-            <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+            <div *ngIf="mensajeFallido" class="alert alert-danger mt-3">
                 {{ mensajeFallido }}
             </div>
         </mat-card>

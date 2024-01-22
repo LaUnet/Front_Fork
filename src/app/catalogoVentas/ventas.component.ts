@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders , HttpParams} from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
@@ -8,8 +8,12 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { MatSort } from '@angular/material/sort';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { LocalStorageService } from '../local-storage.service';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { filter } from 'rxjs';
+import { UtilsService } from '../utils.service';
+import { Injectable } from '@angular/core';
 
 @Component({
   selector: 'app-ventas',
@@ -18,7 +22,8 @@ import { LocalStorageService } from '../local-storage.service';
 })
 export class VentasComponent {
 
-  constructor(private router: Router,private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog, private localStorageService: LocalStorageService) { }
+  constructor(private router: Router,private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog, 
+    public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
 
   columnas: string[] = ['descripcion', 'referencia', 'marca', 'ubicacion', 'stock', 'precioventa', 'accion'];
   openedMenu!: boolean;
@@ -26,14 +31,18 @@ export class VentasComponent {
   dataSourceCatalogo: any = [];
   dataSourceClientes: any = [];
   isLoadingResults: boolean = false;
+  //Pagination
   pageEvent!: PageEvent;
   pageIndex: number = 0;
   pageSize !: number;
   length!: number;
   pageSizeOptions = [20];
+  //Busquedas
   searchDescription!: boolean;
   searchCode!: boolean;
-  
+  //Storage
+  localStorageToken !: any;
+  subscriber!: Subscription;
 
 
   /**
@@ -104,7 +113,17 @@ export class VentasComponent {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   ngOnInit() {
-    
+    this.subscriber = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => { });
+  }
+
+  ngOnDestroy() {
+    this.subscriber?.unsubscribe();
+  }
+
+  ngAfterContentChecked() {
+    this.changeDetector.detectChanges();
   }
 
   async buscarCliente() {
@@ -235,13 +254,13 @@ export class VentasComponent {
     };
     try {
       const response = await this.http.post(url,this.nuevoCliente, httpOptions).toPromise();
-      this.mensajeExitoso = "Cliente guardado exitosamente"
+      this.mensajeExitosoCliente = "Cliente guardado exitosamente"
       setTimeout(() => {
         this.openedCustomer=false;
         this.setCliente();
       }, 3000);
     } catch (error) {
-      this.mensajeFallido = 'Error al guardar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallidoCliente = 'Error al guardar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
   }
@@ -285,8 +304,6 @@ export class VentasComponent {
 
   saveToLocalStorage(element: any = []) {
     console.log("datos recibidos", element)
-    const value = this.localStorageService.getItem('myKey') !== null ? "Se Suma" : "La primera Vez"
-    this.localStorageService.setItem('myKey', value);
   }
 
   retrieveFromLocalStorage() {

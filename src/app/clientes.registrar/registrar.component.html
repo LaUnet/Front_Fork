@@ -175,14 +175,14 @@
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Departamento</mat-label>
             <mat-icon matSuffix>business</mat-icon>
-            <mat-select  [(ngModel)]="nuevoCliente.departamento" name="departamento" value="ANT" [formControl]="departamentoFormControl" [errorStateMatcher]="matcher">
+            <mat-select  [(ngModel)]="nuevoCliente.departamento" name="departamento" value="ANT">
               <mat-option value="ANT">Antioquia</mat-option>
             </mat-select>
           </mat-form-field></td>
         <td><mat-form-field class="full-width"  appearance="outline">
           <mat-label>Municipcio</mat-label>
           <mat-icon matSuffix>business</mat-icon>
-          <mat-select [(ngModel)]="nuevoCliente.municipio" name="municipio" #fontSize value="MED" [formControl]="municipioFormControl" [errorStateMatcher]="matcher">
+          <mat-select [(ngModel)]="nuevoCliente.municipio" name="municipio" #fontSize value="MED">
             <mat-option value="MED">Medellin</mat-option>
             <mat-option value="BEL">Bello</mat-option>
             <mat-option value="ENV">Envigado</mat-option>
@@ -203,7 +203,7 @@
           <td><mat-form-field class="full-width"  appearance="outline">
             <mat-label>Dirección</mat-label>
             <mat-icon matSuffix>tour</mat-icon>
-            <input matInput [(ngModel)]="nuevoCliente.direccion" name="direccion" placeholder="Calle 67 #55-89" [formControl]="direccionFormControl" [errorStateMatcher]="matcher">
+            <input matInput [(ngModel)]="nuevoCliente.direccion" name="direccion" placeholder="Calle 67 #55-89">
           </mat-form-field></td>
           <td></td>
 
@@ -223,7 +223,7 @@
       </div>
         
 
-      <div *ngIf="mensajeFallido" class="alert alert-success mt-3">
+      <div *ngIf="mensajeFallido" class="alert alert-danger mt-3">
         {{ mensajeFallido }}
       </div>      
       
@@ -232,7 +232,7 @@
         <!-- <mat-slide-toggle [(ngModel)]="isChecked">Misma Dirección Facturación</mat-slide-toggle>
         <span class="spacer"></span>-->
         <button mat-icon-button  align="end" matTooltip="Guardar" 
-        [disabled]="tipoDocumentoFormControl.invalid || numeroDocumentoFormControl.invalid || nombreRazonSocialFormControl.invalid || telefonoFormControl.invalid || emailFormControl.invalid || departamentoFormControl.invalid || municipioFormControl.invalid || direccionFormControl.invalid || tipoClienteFormControl.invalid"
+        [disabled]="tipoDocumentoFormControl.invalid || numeroDocumentoFormControl.invalid || nombreRazonSocialFormControl.invalid || telefonoFormControl.invalid || emailFormControl.invalid || tipoClienteFormControl.invalid"
         (click)="guardarCliente()">
           <mat-icon>save</mat-icon>
         </button> 
