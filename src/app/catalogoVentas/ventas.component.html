@@ -445,13 +445,15 @@
         <!-- Contenido Registro/Resumen Venta centro-->
         <mat-card class="mat-card-right-center" style="background-color: aliceblue;">
             <form class="form" >
-                <table class="full-width" style="align-items: center;">
-                    <tr>
-                        <td>
-                        </td>
-                    </tr>
-                </table>
             </form>
+            <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+                {{ mensajeExitoso }}
+            </div>
+    
+    
+            <div *ngIf="mensajeFallido" class="alert alert-danger mt-3">
+                {{ mensajeFallido }}
+            </div>
         </mat-card>
         <!-- Contenido Registro/Resumen Venta abajo-->
         <mat-card class="mat-card-right-down">

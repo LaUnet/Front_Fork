@@ -26,8 +26,10 @@ export class DialogoArticuloComponent implements OnInit {
    * Control Error Textfields Articles
    */
   descripcionFormControl = new FormControl('');
+  codigoBarrasFormControl = new FormControl('');
   consultarArticulo = {
     descripcion: '',
+    codigoBarras:''
   };
 
   constructor(
@@ -51,7 +53,7 @@ export class DialogoArticuloComponent implements OnInit {
   ngOnInit() {
   }
 
-  async buscarArticulo() {
+  async buscarArticulo(tipo: number) {
     this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
@@ -62,7 +64,7 @@ export class DialogoArticuloComponent implements OnInit {
     };
 
     let httpParams = new HttpParams();
-    httpParams = httpParams.append('descripcion', this.consultarArticulo.descripcion);
+    httpParams = tipo < 1 ? httpParams.append('descripcion', this.consultarArticulo.descripcion) : httpParams.append('codigoBarras', this.consultarArticulo.codigoBarras);
     this.isLoadingResults = true;
     try {
       this.isLoadingResults = true;

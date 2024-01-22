@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { HttpClient, HttpHeaders , HttpParams} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -22,10 +22,12 @@ import { Injectable } from '@angular/core';
 })
 export class VentasComponent {
 
-  constructor(private router: Router,private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog, 
+  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog,
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
 
   columnas: string[] = ['descripcion', 'referencia', 'marca', 'ubicacion', 'stock', 'precioventa', 'accion'];
+  columnasCarItem: string[] = ['descripcion', 'cantidad', 'total', 'isEdit'];
+
   openedMenu!: boolean;
   openedCustomer!: boolean;
   dataSourceCatalogo: any = [];
@@ -59,7 +61,7 @@ export class VentasComponent {
     descripcion: '',
     unidadMedida: '',
     codigoUbicacion: '',
-    marca:'',
+    marca: '',
     referencia: ''
   };
 
@@ -88,20 +90,20 @@ export class VentasComponent {
     municipio: '',
     email: '',
     tipoCliente: '',
-    barrio:''
+    barrio: ''
   };
 
-    /**
- * Control Error Textfields Consultas
- */
-      
-    buscarDescripcionFormControl = new FormControl('', [Validators.required]);
-    buscarCodigoBarrasFormControl = new FormControl('', [Validators.required]);
-  
-    nuevaBusqueda: any = {
-      buscarDescripcion: '',
-      buscarCodigoBarras: '',
-    };
+  /**
+* Control Error Textfields Consultas
+*/
+
+  buscarDescripcionFormControl = new FormControl('', [Validators.required]);
+  buscarCodigoBarrasFormControl = new FormControl('', [Validators.required]);
+
+  nuevaBusqueda: any = {
+    buscarDescripcion: '',
+    buscarCodigoBarras: '',
+  };
 
   matcher = new MyErrorStateMatcher();
   mensajeExitoso: string = '';
@@ -109,7 +111,7 @@ export class VentasComponent {
   mensajeExitosoCliente: string = '';
   mensajeFallidoCliente: string = '';
 
-  @ViewChild(MatSort, {static: true}) sort!: MatSort;  
+  @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   ngOnInit() {
@@ -157,12 +159,12 @@ export class VentasComponent {
         });
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-      console.error('Error en la solicitud:', error); 
+      console.error('Error en la solicitud:', error);
     }
 
   }
 
-  async buscarCatalogo(tipo:number) {
+  async buscarCatalogo(tipo: number) {
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -175,46 +177,46 @@ export class VentasComponent {
     httpParams = tipo < 1 ? httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion) : httpParams.append('codigoBarras', this.nuevaBusqueda.buscarCodigoBarras);
     this.isLoadingResults = true;
     try {
-      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`,httpOptions)
-      .subscribe(response => {
-        if (response.Status) {
-          this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
-        }
-        this.isLoadingResults = false;
-      }, error => {
-        this.isLoadingResults = false;
-        if (error.status === 401) {
-          this.routerLinkLogin();
-        }
-        console.error('Error en la solicitud:', error);
-      });
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
+          }
+          this.isLoadingResults = false;
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          console.error('Error en la solicitud:', error);
+        });
     } catch (error) {
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
-      console.error('Error en la solicitud:', error); 
+      console.error('Error en la solicitud:', error);
     }
   }
 
-/**
-  async recargarCatalogo(page: PageEvent) {
-    this.dataSourceCatalogo = new MatTableDataSource;
-    const token = this.tokenService.token;
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`,
-      })
-    };
-    this.isLoadingResults = true;
-    this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions)
-      .subscribe(response => {
-        if (response.Status) {
-          this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
-          this.pageIndex = response.Data.docs.page;
-        }
-        this.isLoadingResults = false;
-      });
-  }
- */
+  /**
+    async recargarCatalogo(page: PageEvent) {
+      this.dataSourceCatalogo = new MatTableDataSource;
+      const token = this.tokenService.token;
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'x-access-token': `${token}`,
+        })
+      };
+      this.isLoadingResults = true;
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
+            this.pageIndex = response.Data.docs.page;
+          }
+          this.isLoadingResults = false;
+        });
+    }
+   */
 
   filtrar(event: Event) {
     const filtro = (event.target as HTMLInputElement).value;
@@ -222,7 +224,7 @@ export class VentasComponent {
     this.isLoadingResults = false;
   }
 
-  mostrarDialogo(message:string, process:number): void {
+  mostrarDialogo(message: string, process: number): void {
     this.dialogo
       .open(DialogoConfirmacionComponent, {
         data: message
@@ -231,12 +233,12 @@ export class VentasComponent {
       .subscribe((confirmar: Boolean) => {
         if (confirmar) {
           if (process === 1) {
-          this.routerLinkArticulo();
+            this.routerLinkArticulo();
           }
           if (process === 2) {
             this.removeFromLocalStorage();
             this.refreshPage();
-            }
+          }
         } else {
           //alert("No hacer nada");
         }
@@ -244,6 +246,7 @@ export class VentasComponent {
   }
 
   async guardarCliente() {
+    this.mensajeFallidoCliente = "";
     const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers`
     const token = this.tokenService.token;
     const httpOptions = {
@@ -253,10 +256,10 @@ export class VentasComponent {
       })
     };
     try {
-      const response = await this.http.post(url,this.nuevoCliente, httpOptions).toPromise();
+      const response = await this.http.post(url, this.nuevoCliente, httpOptions).toPromise();
       this.mensajeExitosoCliente = "Cliente guardado exitosamente"
       setTimeout(() => {
-        this.openedCustomer=false;
+        this.openedCustomer = false;
         this.setCliente();
       }, 3000);
     } catch (error) {
@@ -265,32 +268,32 @@ export class VentasComponent {
     }
   }
 
-  setCliente(){
-  this.nuevoCliente.tipoDocumento = '';
-  this.tipoDocumentoFormControl.reset();
-  this.nuevoCliente.numeroDocumento = '';
-  this.numeroDocumentoFormControl.reset();
-  this.nuevoCliente.nombreRazonSocial = '';
-  this.nombreRazonSocialFormControl.reset();
-  this.nuevoCliente.telefono = '';
-  this.telefonoFormControl.reset();
-  this.nuevoCliente.direccion = '';
-  this.direccionFormControl.reset();
-  this.nuevoCliente.departamento = '';
-  this.departamentoFormControl.reset();
-  this.nuevoCliente.municipio = '';
-  this.municipioFormControl.reset();
-  this.nuevoCliente.email = '';
-  this.emailFormControl.reset();
-  this.nuevoCliente.tipoCliente = '';
-  this.tipoClienteFormControl.reset();
-  this.nuevoCliente.barrio.reload = '';
-  this.barrioFormControl.reset();
-  this.mensajeExitosoCliente = '';
-  this.mensajeFallidoCliente = '';
+  setCliente() {
+    this.nuevoCliente.tipoDocumento = '';
+    this.tipoDocumentoFormControl.reset();
+    this.nuevoCliente.numeroDocumento = '';
+    this.numeroDocumentoFormControl.reset();
+    this.nuevoCliente.nombreRazonSocial = '';
+    this.nombreRazonSocialFormControl.reset();
+    this.nuevoCliente.telefono = '';
+    this.telefonoFormControl.reset();
+    this.nuevoCliente.direccion = '';
+    this.direccionFormControl.reset();
+    this.nuevoCliente.departamento = '';
+    this.departamentoFormControl.reset();
+    this.nuevoCliente.municipio = '';
+    this.municipioFormControl.reset();
+    this.nuevoCliente.email = '';
+    this.emailFormControl.reset();
+    this.nuevoCliente.tipoCliente = '';
+    this.tipoClienteFormControl.reset();
+    this.nuevoCliente.barrio.reload = '';
+    this.barrioFormControl.reset();
+    this.mensajeExitosoCliente = '';
+    this.mensajeFallidoCliente = '';
   };
 
-  routerLinkArticulo():void{
+  routerLinkArticulo(): void {
     this.router.navigate(['/registrarArticulo'])
   };
   routerLinkLogin(): void {
@@ -313,12 +316,17 @@ export class VentasComponent {
   removeFromLocalStorage() {
     this.localStorageService.removeItem('myKey');
   }
-  
+
 }
 
 export class Catalogo {
   constructor(public descripcion: String, public marca: string, public referencia: string,
     public ubicacion: string, public stock: string, public precioventa: string
+  ) { }
+}
+
+export class carItem {
+  constructor(public descripcion: String, public cantidad: string, public total: string, public isEdit: string
   ) { }
 }
 
