@@ -26,12 +26,13 @@ export class VentasComponent {
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
 
   columnas: string[] = ['descripcion', 'referencia', 'marca', 'ubicacion', 'stock', 'precioventa', 'accion'];
-  columnasCarItem: string[] = ['descripcion', 'cantidad', 'total', 'isEdit'];
+  columnasCarItem: string[] = ['descripcion', 'cantidad','precio', 'total', 'isEdit'];
 
   openedMenu!: boolean;
   openedCustomer!: boolean;
   dataSourceCatalogo: any = [];
   dataSourceClientes: any = [];
+  dataSourceCarItem: any = [];
   isLoadingResults: boolean = false;
   //Pagination
   pageEvent!: PageEvent;
@@ -45,6 +46,7 @@ export class VentasComponent {
   //Storage
   localStorageToken !: any;
   subscriber!: Subscription;
+  vector :number = 0;
 
 
   /**
@@ -316,6 +318,20 @@ export class VentasComponent {
   removeFromLocalStorage() {
     this.localStorageService.removeItem('myKey');
   }
+
+  addToCart(element:any = [], index:any){
+    
+    this.dataSourceCarItem = [...this.dataSourceCarItem,
+      {
+      descripcion: "Nombre articulo",
+      cantidad: 2,
+      precio: "300000",
+      total: "600000",
+      } 
+    ]
+  }
+
+changeQty(a:any, b:any, c:any){}
 
 }
 

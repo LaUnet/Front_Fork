@@ -38,10 +38,11 @@
   .mat-card-right-center {
     position:static;
     width: 35%;
-    min-height: 243px;
-    max-height: 650px;
+    min-height: 435px;
+    max-height: 575px;
     margin-left: 65%;
     opacity: 95%;
+    overflow: auto;
   }
 
   .mat-card-right-down {
@@ -90,6 +91,12 @@
     width: 30px;
     height: 30px;
   }
+
+  .buttonMatTable {
+    width: 30px;
+    height: 30px;
+  }
+
   .icon24 {
     color: blue;
   }
