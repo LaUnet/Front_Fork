@@ -534,9 +534,7 @@ export class ComprasComponent {
   }
 
   unitarioIvaIncluido(element: any, index: number) {
-    console.log("IVA", element[0].impuestoUnitario);
     this.ivaIncluido = element[0].impuestoUnitario === "019"? true : false;
-    console.log("Bandera", this.ivaIncluido)
     if(this.ivaIncluido){
       this.dataSourceCargarArticulos[index].precios[0].valorUnitario = this.utilsService.calcularUnitario(element[0].valorUnitario, parseInt(element[0].impuestoUnitario));
     }   
