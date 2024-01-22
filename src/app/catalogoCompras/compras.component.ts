@@ -541,7 +541,6 @@ export class ComprasComponent {
   }
 
   refreshPage() {
-    this.ngOnDestroy();
     window.location.reload();
   }
 
