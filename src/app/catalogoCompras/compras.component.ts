@@ -139,13 +139,13 @@ export class ComprasComponent {
     this.subscriber = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => { });
+    this.localStorageToken = this.localStorageService.getItem('access_token');
+    this.localStorageService.clear();
+    this.localStorageService.setItem('access_token', this.localStorageToken);
   }
 
   ngOnDestroy() {
     this.subscriber?.unsubscribe();
-    this.localStorageToken = this.localStorageService.getItem('access_token');
-    this.localStorageService.clear();
-    this.localStorageService.setItem('access_token', this.localStorageToken);
   }
 
   ngAfterContentChecked() {
