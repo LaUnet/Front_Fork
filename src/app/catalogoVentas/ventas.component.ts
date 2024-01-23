@@ -25,8 +25,8 @@ export class VentasComponent {
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog,
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
 
-  columnas: string[] = ['descripcion', 'referencia', 'marca', 'ubicacion', 'stock', 'precioventa', 'accion'];
-  columnasCarItem: string[] = ['descripcion', 'cantidad','precio', 'total', 'isEdit'];
+  columnas: string[] = ['descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioventa', 'accion'];
+  columnasCarItem: string[] = ['descripcion', 'cantidad', 'precio', 'iva', 'total', 'isEdit'];
 
   openedMenu!: boolean;
   openedCustomer!: boolean;
@@ -46,7 +46,19 @@ export class VentasComponent {
   //Storage
   localStorageToken !: any;
   subscriber!: Subscription;
-  vector :number = 0;
+  vector: number = 0;
+  //Calculos
+  operaciones: any = {
+    cantidadArticulos: 0,
+    subtotalCompra: 0,
+    subtotalCompraArray: [],
+    impuestoCompra: 0,
+    impuestoCompraArray: [],
+    descuentoCompra: 0,
+    descuentoCompraArray: [],
+    totalCompra: 0,
+    totalCompraArray: [],
+  }
 
 
   /**
@@ -226,7 +238,7 @@ export class VentasComponent {
     this.isLoadingResults = false;
   }
 
-  mostrarDialogo(message: string, process: number): void {
+  mostrarDialogo(message: string, process: number, element: any, i: number): void {
     this.dialogo
       .open(DialogoConfirmacionComponent, {
         data: message
@@ -238,8 +250,10 @@ export class VentasComponent {
             this.routerLinkArticulo();
           }
           if (process === 2) {
-            this.removeFromLocalStorage();
             this.refreshPage();
+          }
+          if (process === 3) {
+            this.borrarArticuloCarItem(element, i);
           }
         } else {
           //alert("No hacer nada");
@@ -257,14 +271,17 @@ export class VentasComponent {
         'x-access-token': `${token}`
       })
     };
+    this.isLoadingResults= true;
     try {
       const response = await this.http.post(url, this.nuevoCliente, httpOptions).toPromise();
+      this.isLoadingResults= false;
       this.mensajeExitosoCliente = "Cliente guardado exitosamente"
       setTimeout(() => {
         this.openedCustomer = false;
         this.setCliente();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallidoCliente = 'Error al guardar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
@@ -315,34 +332,74 @@ export class VentasComponent {
     this.localStorageService.getItem('myKey');
   }
 
-  removeFromLocalStorage() {
-    this.localStorageService.removeItem('myKey');
+  borrarArticuloCarItem(element: any = [], i: number) {
+    //this.localStorageService.removeItem(element._id);
+    this.dataSourceCarItem.splice(i, 1);
+    this.dataSourceCarItem = [...this.dataSourceCarItem];
+    this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
+
+    if (i > 0) {
+      /**
+      this.operaciones.subtotalCompraArray.splice(i, 1);
+      this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
+      this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.impuestoCompraArray.splice(i, 1);
+      this.operaciones.impuestoCompraArray = [...this.operaciones.impuestoCompraArray];
+      this.operaciones.impuestoCompra = this.operaciones.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.descuentoCompraArray.splice(i, 1);
+      this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray];
+      this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.totalCompraArray.splice(i, 1);
+      this.operaciones.totalCompraArray = [...this.operaciones.totalCompraArray];
+      this.operaciones.totalCompra = this.operaciones.totalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+       */
+    } else {
+      //this.setOperaciones();
+    }
   }
 
-  addToCart(element:any = [], index:any){
+  addToCart(element: any = [], index: any) {
+    
     
     this.dataSourceCarItem = [...this.dataSourceCarItem,
-      {
-      descripcion: "Nombre articulo",
-      cantidad: 2,
-      precio: "300000",
-      total: "600000",
-      } 
+    {
+      "_id": element._id,
+      "cantidad": 1,
+      "descripcion": element.descripcion,
+      "detalleArticulo": [
+        {
+          "codigo": element.codigo,
+          "codigoBarras": element.codigoBarras,          
+          "cantidad": 0,
+          "precioVenta": element.precios[0].precioVenta,
+          "descuento": element.precios[0].descuentoUnitario,
+          "impuestoUnitario": element.precios[0].impuestoUnitario,
+          "total": element.precios[0].precioVenta
+        }
+      ]
+    }
     ]
+    this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
   }
 
-changeQty(a:any, b:any, c:any){}
+  changeQty(a: any, b: any, c: any) { }
 
+  total(element: any [], index: number) {
+    this.dataSourceCarItem[index].detalleArticulo[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(element[index].detalleArticulo[0].precioVenta, element[index].cantidad, element[index].detalleArticulo[0].impuestoUnitario), element[index].detalleArticulo[0].descuentoUnitario);
+  }
 }
 
 export class Catalogo {
   constructor(public descripcion: String, public marca: string, public referencia: string,
-    public ubicacion: string, public stock: string, public precioventa: string
+    public ubicacion: string, public unidadMedida: string, public stock: string, public precioventa: string
   ) { }
 }
 
 export class carItem {
-  constructor(public descripcion: String, public cantidad: string, public total: string, public isEdit: string
+  constructor(public descripcion: String, public cantidad: string, public iva: string, public total: string, public isEdit: string
   ) { }
 }
 

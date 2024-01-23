@@ -117,6 +117,13 @@
   <mat-sidenav-content>
 
     <mat-card>
+      <div *ngIf="isLoadingResults" class= "loading-shade">
+        <mat-progress-spinner 
+          color="primary" 
+          mode="indeterminate">
+        </mat-progress-spinner>
+      </div>
+      
       <form class="form">
       <td></td>
         <table class="full-width" cellspacing="0"><tr>      

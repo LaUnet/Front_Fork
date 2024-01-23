@@ -116,7 +116,12 @@
 
   </mat-sidenav>
   <mat-sidenav-content>
-
+    <div *ngIf="isLoadingResults" class= "loading-shade">
+      <mat-progress-spinner 
+        color="primary" 
+        mode="indeterminate">
+      </mat-progress-spinner>
+    </div>
     <mat-card>
       <form class="form">
       <td></td>

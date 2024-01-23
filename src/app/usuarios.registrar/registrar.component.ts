@@ -36,6 +36,7 @@ export class registrarUsuarioComponent {
   opened: boolean = false;
   usuariosEncontrados!: any[];
   tittleForm: string = "REGISTRAR USUARIO"
+  isLoadingResults: boolean = false;
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
 
@@ -61,14 +62,16 @@ export class registrarUsuarioComponent {
         'x-access-token': `${token}`
       })
     };
-
+    this.isLoadingResults= true;
     try {
       const response = await this.http.post(url, body, httpOptions).toPromise();
+      this.isLoadingResults= false;
       this.mensajeExitoso = "Usuario guardado exitosamente"
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al crear. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
@@ -84,6 +87,7 @@ export class registrarUsuarioComponent {
           'x-access-token': `${token}`,
         })
       };
+      this.isLoadingResults= true;
       try {
         this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${this._id}`, httpOptions)
           .subscribe(response => {
@@ -92,7 +96,9 @@ export class registrarUsuarioComponent {
               this.email = response.Data[0].email;
               this.rol = response.Data[0].rolName[0].name;
             }
+            this.isLoadingResults= false;
           }, error => {
+            this.isLoadingResults= false;
             if (error.status === 401) {
               this.routerLinkLogin();
             }
@@ -100,6 +106,7 @@ export class registrarUsuarioComponent {
             console.error('Error en la solicitud:', error);
           });  
       } catch (error) {
+        this.isLoadingResults= false;
         this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
         console.error('Error en la solicitud:', error);
       }
@@ -121,13 +128,16 @@ export class registrarUsuarioComponent {
         'x-access-token': `${token}`
       })
     };
+    this.isLoadingResults= true;
     try {
       const response = await this.http.patch(url, body, httpOptions).toPromise();
+      this.isLoadingResults= false;
       this.mensajeExitoso = "Usuario actualizado exitosamente"
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al editar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }

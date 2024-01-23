@@ -161,19 +161,23 @@ export class ComprasComponent {
         'x-access-token': `${token}`
       })
     };
+    this.isLoadingResults= true;
     try {
       this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceubicaciones = response.Data;
           }
+          this.isLoadingResults= false;
         }, error => {
+          this.isLoadingResults= false;
           if (error.status === 401) {
             this.routerLinkLogin();
           }
           console.error('Error en la solicitud:', error);
         });
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallidoArticulo = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
@@ -265,22 +269,24 @@ export class ComprasComponent {
         'x-access-token': `${token}`
       })
     };
-
+    this.isLoadingResults = true;
     try {
       const response = await this.http.post(url, body, httpOptions).toPromise();
+      this.isLoadingResults = false;
       this.mensajeExitosoArticulo = "Artículo guardado correctamente.";
       setTimeout(() => {
         this.openedArticle = false;
         this.setArticulo();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults = false;
       this.mensajeFallidoArticulo = 'Error al guardar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
   }
 
   async guardarCompra() {
-
+    this.mensajeFallido = "";
     //Crear DataSource Purchase Articles
     for (let i = 0; i < this.dataSourceCargarArticulos.length; i++) {
       this.dataSourcePurchaseArticulo = [...this.dataSourcePurchaseArticulo,
@@ -321,14 +327,16 @@ export class ComprasComponent {
         'x-access-token': `${token}`
       })
     };
-
+    this.isLoadingResults = true;
     try {
       const response = await this.http.post(url, this.dataSourcePurchase, httpOptions).toPromise();
+      this.isLoadingResults = false;
       this.mensajeExitoso = "Compra guardada correctamente.";
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults = false;
       this.mensajeFallido = 'Error al guardar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
@@ -530,7 +538,7 @@ export class ComprasComponent {
   }
 
   total(element: any, index: number) {
-    this.dataSourceCargarArticulos[index].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(element[0].valorUnitario, element[0].cantidad, element[0].impuestoUnitario), element[0].descuentoUnitario)
+    this.dataSourceCargarArticulos[index].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(element[0].precioVenta, element[0].cantidad, 0), element[0].descuentoUnitario)
   }
 
   unitarioIvaIncluido(element: any, index: number) {

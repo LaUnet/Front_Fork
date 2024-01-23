@@ -49,4 +49,11 @@ body {
   background-attachment: fixed; /* Fija la imagen de fondo */
 }
 
+.loading-shade {
+  position: absolute;
+  display: flex;
+  margin-top: 15%;
+  margin-left: 45%;
+  margin-right: 45%;
+}
 /* ... (otros estilos previos) */

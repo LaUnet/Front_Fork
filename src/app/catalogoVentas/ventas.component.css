@@ -20,7 +20,7 @@
     margin-top: auto;
     width: 65%;
     height: auto;
-    max-height: 750px;
+    max-height: 995px;
     opacity: 95%;
     overflow: auto;
     background-color: aliceblue;
@@ -38,8 +38,8 @@
   .mat-card-right-center {
     position:static;
     width: 35%;
-    min-height: 435px;
-    max-height: 575px;
+    min-height: 400px;
+    max-height: 780px;
     margin-left: 65%;
     opacity: 95%;
     overflow: auto;

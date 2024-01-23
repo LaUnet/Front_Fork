@@ -30,6 +30,7 @@ export class registrarUbicacionComponent {
   ubicaciones: any[] = [];
   proveedores: any[] = [];
   opened: boolean = false;
+  isLoadingResults: boolean = false;
   ubicacionesEncontrados: any[] = [];
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
@@ -60,14 +61,16 @@ export class registrarUbicacionComponent {
         'x-access-token': `${token}`
       })
     };
-
+    this.isLoadingResults= true;
     try {
       const response = await this.http.post(url, body, httpOptions).toPromise();
+      this.isLoadingResults= false;
       this.mensajeExitoso = 'Ubicación guardada exitosamente';
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al crear. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
@@ -83,6 +86,7 @@ export class registrarUbicacionComponent {
           'x-access-token': `${token}`,
         })
       };
+      this.isLoadingResults= true;
       try {
         this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations/${this._id}`, httpOptions)
           .subscribe(response => {
@@ -92,7 +96,9 @@ export class registrarUbicacionComponent {
               this.nuevaUbicacion.estante = response.Data.numeroEstanteria;
               this.nuevaUbicacion.ubicacion = response.Data.numeroUbicacion;
             }
+            this.isLoadingResults= false;
           }, error => {
+            this.isLoadingResults= false;
             if (error.status === 401) {
               this.routerLinkLogin();
             }
@@ -100,6 +106,7 @@ export class registrarUbicacionComponent {
             console.error('Error en la solicitud:', error);
           }); 
       } catch (error) {
+        this.isLoadingResults= false;
         this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
         console.error('Error en la solicitud:', error);
       }
@@ -121,13 +128,16 @@ export class registrarUbicacionComponent {
         'x-access-token': `${token}`
       })
     };
+    this.isLoadingResults= true;
     try {
       const response = await this.http.patch(url, body, httpOptions).toPromise();
+      this.isLoadingResults= false;
       this.mensajeExitoso = "Ubicación actualizada exitosamente"
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al editar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }

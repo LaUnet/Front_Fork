@@ -35,3 +35,12 @@ mat-sidenav-container {
   .colorText {
     color: white;
   }
+
+  .loading-shade {
+    position: absolute;
+    display: flex;
+    margin-top: 15%;
+    margin-left: 45%;
+    margin-right: 45%;
+  
+  }

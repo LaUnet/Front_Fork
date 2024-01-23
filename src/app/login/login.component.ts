@@ -13,7 +13,7 @@ export class LoginComponent {
   password: string = '';
   isUsernameValid: boolean = true;
   isPasswordValid: boolean = true;
-
+  isLoadingResults: boolean = false;
   authenticationError: boolean = false;
 
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService) { }
@@ -57,11 +57,10 @@ export class LoginComponent {
         'Content-Type': 'application/json'
       })
     };
-
     let responseFromServer: any;
-
-
     try {
+      
+    this.isLoadingResults= true;
       responseFromServer = await new Promise((resolve, reject) => {
         this.http.post(loginUrl, body, httpOptions).subscribe(
           result => {
@@ -71,18 +70,18 @@ export class LoginComponent {
             resolve(result);
           },
           err => {
+            this.isLoadingResults= false;
             console.error("entro a error", err);
             reject(err);
           }
         );
       });
-
-
-
+      this.isLoadingResults= false;
       if (responseFromServer) {
         this.router.navigate(['/menu']);
       }
     } catch (error) {
+      this.isLoadingResults= false;
       console.error('Error en la solicitud:', error);
       this.authenticationError = true;
     }

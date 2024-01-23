@@ -104,6 +104,7 @@ export class buscarUbicacionComponent {
       console.error('Error en la solicitud:', error);
     });        
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
@@ -118,13 +119,16 @@ export class buscarUbicacionComponent {
         'x-access-token': `${token}`,
       })
     };
+    this.isLoadingResults= true;
     try {
       const response = await this.http.delete(url, httpOptions).toPromise();
+      this.isLoadingResults= false;
       this.mensajeExitoso = "Registro Eliminado exitosamente"
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al Eliminar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }

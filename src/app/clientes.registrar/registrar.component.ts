@@ -35,6 +35,7 @@ export class registrarClienteComponent {
  _id: string | null;
  tittleForm: string = "REGISTRAR CLIENTE"  
  opened: boolean = false;
+ isLoadingResults: boolean = true;
  //isChecked : boolean = true;
 
   nuevoCliente: any = {
@@ -68,13 +69,16 @@ export class registrarClienteComponent {
         'x-access-token': `${token}`
       })
     };
+    this.isLoadingResults= true;
     try {
       const response = await this.http.post(url,this.nuevoCliente, httpOptions).toPromise();
+      this.isLoadingResults= false;
       this.mensajeExitoso = "Cliente guardado exitosamente"
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al guardar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
@@ -91,6 +95,7 @@ export class registrarClienteComponent {
           'x-access-token': `${token}`,
         })
       };
+      this.isLoadingResults= true;
       try {
         this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers/${this._id}`, httpOptions)
           .subscribe(response => {
@@ -106,7 +111,9 @@ export class registrarClienteComponent {
               this.nuevoCliente.barrio = response.Data.barrio,
               this.nuevoCliente.tipoCliente = response.Data.tipoCliente
             }
+            this.isLoadingResults= false;
           }, error => {
+            this.isLoadingResults= false;
             if (error.status === 401) {
               this.routerLinkLogin();
             }
@@ -114,6 +121,7 @@ export class registrarClienteComponent {
             console.error('Error en la solicitud:', error);
           });  
       } catch (error) {
+        this.isLoadingResults= false;
         this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
         console.error('Error en la solicitud:', error);
       }
@@ -141,13 +149,16 @@ export class registrarClienteComponent {
         'x-access-token': `${token}`
       })
     };
+    this.isLoadingResults= true;
     try {
       const response = await this.http.patch(url,body, httpOptions).toPromise();
+      this.isLoadingResults= false;
       this.mensajeExitoso = "Proveedor actualizado exitosamente"
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al editar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }

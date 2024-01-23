@@ -20,6 +20,12 @@
       <div class="col-lg-6">
         <div class="card shadow">
           <div class="card-header">
+            <div *ngIf="isLoadingResults" class= "loading-shade">
+              <mat-progress-spinner 
+                color="primary" 
+                mode="indeterminate">
+              </mat-progress-spinner>
+            </div>
             <h4 class="text-center">Iniciar Sesión</h4>
           </div>
           <div class="card-body">

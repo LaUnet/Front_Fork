@@ -20,7 +20,7 @@
   width: auto;
   height: auto;
   overflow: auto;
-  max-height: 750px;
+  max-height: 745px;
   opacity: 98%;
   background-color: aliceblue;
 }
@@ -102,10 +102,6 @@ mat-sidenav {
 
   table{
       table-layout: fixed;
-  }
-
-  ::ng-deep .mat-form-field-infix {
-    width: 100% !important;
   }
   
   .form-input {

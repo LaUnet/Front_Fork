@@ -27,7 +27,7 @@ matcher = new MyErrorStateMatcher();
 
 _id: string | null;
 tittleForm: string = "REGISTRAR ARTICULO" 
-
+isLoadingResults: boolean = false;
   ubicaciones: any[] = [];
 
   articulosEncontrados: any[] = [];
@@ -62,14 +62,16 @@ tittleForm: string = "REGISTRAR ARTICULO"
         'x-access-token': `${token}`
       })
     };
-
+    this.isLoadingResults= true;
     try {
       const response = await this.http.post(url, body, httpOptions).toPromise();
+      this.isLoadingResults= false;
       this.mensajeExitoso = "Artículo guardado correctamente.";
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al guardar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
@@ -88,13 +90,16 @@ tittleForm: string = "REGISTRAR ARTICULO"
         'x-access-token': `${token}`
       })
     };
+    this.isLoadingResults= true;
     try {
       this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
       .subscribe(response => {
         if (response.Status) {
           this.ubicaciones = response.Data;
         }
+        this.isLoadingResults= false;
       }, error => {
+        this.isLoadingResults= false;
         if (error.status === 401) {
           this.routerLinkLogin();
         }
@@ -102,6 +107,7 @@ tittleForm: string = "REGISTRAR ARTICULO"
         console.error('Error en la solicitud:', error);
       }); 
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
@@ -117,6 +123,7 @@ tittleForm: string = "REGISTRAR ARTICULO"
           'x-access-token': `${token}`,
         })
       };
+      this.isLoadingResults= true;
       try {
         this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${this._id}`, httpOptions)
           .subscribe(response => {
@@ -128,7 +135,9 @@ tittleForm: string = "REGISTRAR ARTICULO"
               this.nuevoArticulo.unidadMedida = response.Data.unidadMedida,
               this.nuevoArticulo.codigoUbicacion = response.Data.codigoUbicacion
             }
+            this.isLoadingResults= false;
           }, error => {
+            this.isLoadingResults= false;
             if (error.status === 401) {
               this.routerLinkLogin();
             }
@@ -136,6 +145,7 @@ tittleForm: string = "REGISTRAR ARTICULO"
             console.error('Error en la solicitud:', error);
           }); 
       } catch (error) {
+        this.isLoadingResults= false;
         this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
         console.error('Error en la solicitud:', error);
       }
@@ -159,13 +169,16 @@ tittleForm: string = "REGISTRAR ARTICULO"
         'x-access-token': `${token}`
       })
     };
+    this.isLoadingResults= true;
     try {
       const response = await this.http.patch(url,body, httpOptions).toPromise();
+      this.isLoadingResults= false;
       this.mensajeExitoso = "Artículo actualizado exitosamente"
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al editar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }

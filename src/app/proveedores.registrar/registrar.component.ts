@@ -46,6 +46,7 @@ export class registrarProveedorComponent {
     regimenTributario: '',
   };
   
+  isLoadingResults: boolean = false;
   opened: boolean = false;
   proveedores: any[] = [];
   proveedoresEncontrados: any[] = [];
@@ -66,13 +67,16 @@ export class registrarProveedorComponent {
         'x-access-token': `${token}`
       })
     };
+    this.isLoadingResults= true;
     try {
       const response = await this.http.post(url,this.nuevoProveedor, httpOptions).toPromise();
+      this.isLoadingResults= false;
       this.mensajeExitoso = "Proveedor guardado exitosamente"
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al guardar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
@@ -88,6 +92,7 @@ export class registrarProveedorComponent {
           'x-access-token': `${token}`,
         })
       };
+      this.isLoadingResults= true;
       try {
         this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers/${this._id}`, httpOptions)
           .subscribe(response => {
@@ -103,7 +108,9 @@ export class registrarProveedorComponent {
               this.nuevoProveedor.barrio = response.Data.barrio,
               this.nuevoProveedor.regimenTributario = response.Data.regimenTributario
             }
+            this.isLoadingResults= false;
           }, error => {
+            this.isLoadingResults= false;
             if (error.status === 401) {
               this.routerLinkLogin();
             }
@@ -111,6 +118,7 @@ export class registrarProveedorComponent {
             console.error('Error en la solicitud:', error);
           });  
       } catch (error) {
+        this.isLoadingResults= false;
         this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
         console.error('Error en la solicitud:', error);
       }
@@ -138,13 +146,16 @@ export class registrarProveedorComponent {
         'x-access-token': `${token}`
       })
     };
+    this.isLoadingResults= true;
     try {
       const response = await this.http.patch(url,body, httpOptions).toPromise();
+      this.isLoadingResults= false;
       this.mensajeExitoso = "Proveedor actualizado exitosamente"
       setTimeout(() => {
         this.refreshPage();
       }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al editar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
