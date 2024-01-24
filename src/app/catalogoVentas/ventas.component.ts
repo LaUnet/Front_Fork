@@ -13,7 +13,6 @@ import { LocalStorageService } from '../local-storage.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
-import { Injectable } from '@angular/core';
 
 @Component({
   selector: 'app-ventas',
@@ -198,7 +197,7 @@ export class VentasComponent {
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
-            if(response.Data.totalDocs === 0){
+            if (response.Data.totalDocs === 0) {
               this.mensajeFallido = 'Articulo no encontrado';
             }
           }
@@ -255,17 +254,17 @@ export class VentasComponent {
         'x-access-token': `${token}`
       })
     };
-    this.isLoadingResults= true;
+    this.isLoadingResults = true;
     try {
       const response = await this.http.post(url, this.nuevoCliente, httpOptions).toPromise();
-      this.isLoadingResults= false;
+      this.isLoadingResults = false;
       this.mensajeExitosoCliente = "Cliente guardado exitosamente"
       setTimeout(() => {
         this.openedCustomer = false;
         this.setCliente();
       }, 3000);
     } catch (error) {
-      this.isLoadingResults= false;
+      this.isLoadingResults = false;
       this.mensajeFallidoCliente = 'Error al guardar. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
@@ -330,55 +329,92 @@ export class VentasComponent {
       this.operaciones.descuentoCompraArray.splice(i, 1);
       this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray];
       this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-    }else{
+    } else {
       this.setOperaciones();
     }
   }
 
   addToCart(element: any = []) {
-    const getItem = JSON.parse(this.localStorageService.getItem(element._id)!);
-    if (getItem) {
-      const addItem: number  = ++getItem.cantidad
-      console.log(element._id)
-      console.log(this.dataSourceCarItem.indexOf(element._id))
-      if(this.dataSourceCarItem.indexOf(getItem._id)){
-        console.log("Por fin?")
-      }
-        //this.localStorageService.setItem(element._id, JSON.stringify(this.dataSourceCarItem));
-    } else {
-      element = 
-        {
-          "_id": element._id,
-          "cantidad": 1,
-          "descripcion": element.descripcion,
-          "detalleArticulo": [
-            {
-              "codigo": element.codigo,
-              "codigoBarras": element.codigoBarras,          
-              "cantidad": 0,
-              "precioVenta": element.precios[0].precioVenta,
-              "descuento": element.precios[0].descuentoUnitario,
-              "impuesto": element.precios[0].impuestoUnitario,
-              "total": element.precios[0].precioVenta
-            }
-          ]
+    if (JSON.parse(this.localStorageService.getItem(element._id)!)) {
+      for (let i = 0; i < this.dataSourceCarItem.length; i++) {
+        if (this.dataSourceCarItem[i]._id === element._id) {
+          if ((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + 1) > element.inventarios[0].stock) {
+            alert(`No hay suficiente Stock ${element.inventarios[0].stock}, para la cantidad de productos solicitados ${this.dataSourceCarItem[i].detalleArticulo[0].cantidad + 1}!`)
+            break
+          }
+          this.changeQty(this.dataSourceCarItem, i, 1, '');
+          break
         }
+      }
+    } else {
+      const addItem: number = 1;
+      element =
+      {
+        "_id": element._id,
+        "stock": element.inventarios[0].stock,
+        "descripcion": element.descripcion,
+        "detalleArticulo": [
+          {
+            "codigo": element.codigo,
+            "codigoBarras": element.codigoBarras,
+            "cantidad": addItem,
+            "precioVenta": element.precios[0].precioVenta,
+            "descuento": element.precios[0].descuentoUnitario,
+            "impuesto": element.precios[0].impuestoUnitario,
+            "total": element.precios[0].precioVenta * addItem,
+          }
+        ]
+      }
       this.localStorageService.setItem(element._id, JSON.stringify(element));
       this.dataSourceCarItem = [...this.dataSourceCarItem, JSON.parse(this.localStorageService.getItem(element._id)!)]
+      this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
+
+      this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
+      this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[this.operaciones.cantidadArticulos - 1], this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].descuento)]
+      this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
     }
-    this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
-
-    //this.operaciones.subtotalCompraArray = [ (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos-1].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos-1].cantidad))];
-    this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos-1].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos-1].cantidad))]
-    this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
-    //this.operaciones.descuentoCompraArray = [ this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[this.operaciones.cantidadArticulos-1], this.dataSourceCarItem[this.operaciones.cantidadArticulos-1].detalleArticulo[0].descuento)];
-    this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[this.operaciones.cantidadArticulos-1], this.dataSourceCarItem[this.operaciones.cantidadArticulos-1].detalleArticulo[0].descuento)]
-    this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
   }
 
-  changeQty(a: any, b: any, c: any) {
+  changeQty(element: any = [], i: number, qty: any, process: any) {    
+    console.log(element);
+    if (process === 'replace') {
+      if (qty > element[i].stock) {
+        alert(`No hay suficiente Stock ${element.stock}, para la cantidad de productos solicitados ${(qty)}!`)
+        return;
+      }
+      if((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty) === 0)
+      {
+        this.borrarArticuloCarItem(this.dataSourceCarItem[i], i);
+        return;
+      }
+      this.dataSourceCarItem[i].detalleArticulo[0].cantidad = qty;
+    } else {
+      if ((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty) > element.stock) {
+        alert(`No hay suficiente Stock ${element.stock}, para la cantidad de productos solicitados ${(this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty)}!`)
+        return;
+      }
+      if((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty) === 0)
+      {
+        this.borrarArticuloCarItem(this.dataSourceCarItem[i], i);
+        return;
+      }
+      this.dataSourceCarItem[i].detalleArticulo[0].cantidad = this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty;
+    }
+    this.localStorageService.removeItem(this.dataSourceCarItem[i]._id);
+    this.dataSourceCarItem[i].detalleArticulo[0].total = this.dataSourceCarItem[i].detalleArticulo[0].precioVenta * this.dataSourceCarItem[i].detalleArticulo[0].cantidad;
+    this.localStorageService.setItem(this.dataSourceCarItem[i]._id, JSON.stringify(this.dataSourceCarItem[i]));
+    this.dataSourceCarItem.splice(i, 1, JSON.parse(this.localStorageService.getItem(this.dataSourceCarItem[i]._id)!));
+    this.dataSourceCarItem = [...this.dataSourceCarItem];
 
+    this.operaciones.subtotalCompraArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
+    this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
+    this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+    this.operaciones.descuentoCompraArray.splice(i, 1, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[i], this.dataSourceCarItem[i].detalleArticulo[0].descuento));
+    this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray];
+    this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
   }
 
   setOperaciones() {

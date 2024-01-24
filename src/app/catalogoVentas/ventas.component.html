@@ -464,23 +464,24 @@
                         <ng-container matColumnDef="cantidad">
                             <th style="font-family: Impact; background-color:gainsboro; width: 18%" mat-header-cell
                                 *matHeaderCellDef> Cantidad </th>
-                            <td mat-cell *matCellDef="let carItem">
+                            <td mat-cell *matCellDef="let carItem; let i = index">
+                                <span *ngFor="let row of carItem.detalleArticulo">
                                 <div class="input-group input-group-sm mb-3" style="margin-top: 10px;">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-info" type="button" (click)="changeQty(carItem, 1, '')">
+                                        <button class="btn btn-info" type="button" (click)="changeQty(carItem, i, 1, '')">
                                             +
                                         </button>
                                     </div>
-                                    <input type="text" class="form-control text-center" value="{{carItem.cantidad}}"
-                                        #qtyRef />
-                                    <!--(keyup)="changeQty(carItem, carItem, 'replace')"-->
+                                    <input type="text" style="background-color: white;" class="form-control text-center" value="{{row.cantidad}}" disabled/>
+                                        <!-- #qtyRef (keyup)="changeQty(carItem, i, qtyRef.value, 'replace')" -->
                                     <div class="input-group-append">
                                         <button class="btn btn-danger" type="button"
-                                            (click)="changeQty(carItem, -1, '')">
+                                            (click)="changeQty(carItem, i, -1, '')">
                                             -
                                         </button>
                                     </div>
                                 </div>
+                            </span>
                         </ng-container>
                         <ng-container matColumnDef="precio">
                             <th style="font-family: Impact; background-color:gainsboro; width: 15%" mat-header-cell
@@ -495,13 +496,12 @@
                             <th style="font-family: Impact; background-color:gainsboro; width: 5%" mat-header-cell
                                 *matHeaderCellDef> Iva </th>
                             <td mat-cell *matCellDef="let carItem">
-                                <td mat-cell *matCellDef="let carItem">
                                     <!--
                                     <span *ngFor="let row of carItem.detalleArticulo">
                                          {{this.utilsService.percent(row.iva)}} 
                                     </span>
                                     -->
-                                 </td>
+                            </td>
                         </ng-container>
                         <ng-container matColumnDef="total">
                             <th style="font-family: Impact; background-color:gainsboro; width: 15%" mat-header-cell
