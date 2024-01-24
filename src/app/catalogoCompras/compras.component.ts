@@ -53,9 +53,9 @@ export class ComprasComponent {
   //Storage
   localStorageToken !: any;
   subscriber!: Subscription;
-  //Datos para operaciones
   //IvaIncluido Valor Unitario
-  ivaIncluido : boolean = false;
+  ivaIncluido: boolean = false;
+  //Datos para operaciones
 
   operaciones: any = {
     cantidadArticulos: 0,
@@ -161,23 +161,23 @@ export class ComprasComponent {
         'x-access-token': `${token}`
       })
     };
-    this.isLoadingResults= true;
+    this.isLoadingResults = true;
     try {
       this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceubicaciones = response.Data;
           }
-          this.isLoadingResults= false;
+          this.isLoadingResults = false;
         }, error => {
-          this.isLoadingResults= false;
+          this.isLoadingResults = false;
           if (error.status === 401) {
             this.routerLinkLogin();
           }
           console.error('Error en la solicitud:', error);
         });
     } catch (error) {
-      this.isLoadingResults= false;
+      this.isLoadingResults = false;
       this.mensajeFallidoArticulo = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
@@ -414,6 +414,7 @@ export class ComprasComponent {
 
   routerLinkProveedor(): void {
     this.router.navigate(['/registrarProveedor'])
+    this.localStorageService.clear();
   };
 
   routerLinkLogin(): void {
@@ -464,7 +465,7 @@ export class ComprasComponent {
     this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos];
     this.operaciones.cantidadArticulos = this.dataSourceCargarArticulos.length
 
-    if (i > 0) {
+    if (this.operaciones.cantidadArticulos > 0) {
       this.operaciones.subtotalCompraArray.splice(i, 1);
       this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
       this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
@@ -542,10 +543,10 @@ export class ComprasComponent {
   }
 
   unitarioIvaIncluido(element: any, index: number) {
-    this.ivaIncluido = element[0].impuestoUnitario === "019"? true : false;
-    if(this.ivaIncluido){
+    this.ivaIncluido = element[0].impuestoUnitario === "019" ? true : false;
+    if (this.ivaIncluido) {
       this.dataSourceCargarArticulos[index].precios[0].valorUnitario = this.utilsService.calcularUnitario(element[0].valorUnitario, parseInt(element[0].impuestoUnitario));
-    }   
+    }
   }
 
   refreshPage() {

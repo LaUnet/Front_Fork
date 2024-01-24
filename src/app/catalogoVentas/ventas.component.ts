@@ -46,7 +46,6 @@ export class VentasComponent {
   //Storage
   localStorageToken !: any;
   subscriber!: Subscription;
-  vector: number = 0;
   //Calculos
   operaciones: any = {
     cantidadArticulos: 0,
@@ -132,6 +131,9 @@ export class VentasComponent {
     this.subscriber = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => { });
+    this.localStorageToken = this.localStorageService.getItem('access_token');
+    this.localStorageService.clear();
+    this.localStorageService.setItem('access_token', this.localStorageToken);
   }
 
   ngOnDestroy() {
@@ -179,6 +181,7 @@ export class VentasComponent {
   }
 
   async buscarCatalogo(tipo: number) {
+    this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -195,6 +198,9 @@ export class VentasComponent {
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
+            if(response.Data.totalDocs === 0){
+              this.mensajeFallido = 'Articulo no encontrado';
+            }
           }
           this.isLoadingResults = false;
         }, error => {
@@ -209,28 +215,6 @@ export class VentasComponent {
       console.error('Error en la solicitud:', error);
     }
   }
-
-  /**
-    async recargarCatalogo(page: PageEvent) {
-      this.dataSourceCatalogo = new MatTableDataSource;
-      const token = this.tokenService.token;
-      const httpOptions = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'x-access-token': `${token}`,
-        })
-      };
-      this.isLoadingResults = true;
-      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions)
-        .subscribe(response => {
-          if (response.Status) {
-            this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
-            this.pageIndex = response.Data.docs.page;
-          }
-          this.isLoadingResults = false;
-        });
-    }
-   */
 
   filtrar(event: Event) {
     const filtro = (event.target as HTMLInputElement).value;
@@ -315,6 +299,7 @@ export class VentasComponent {
   routerLinkArticulo(): void {
     this.router.navigate(['/registrarArticulo'])
   };
+
   routerLinkLogin(): void {
     this.router.navigate(['/login'])
     this.localStorageService.clear();
@@ -333,63 +318,81 @@ export class VentasComponent {
   }
 
   borrarArticuloCarItem(element: any = [], i: number) {
-    //this.localStorageService.removeItem(element._id);
+    this.localStorageService.removeItem(element._id);
     this.dataSourceCarItem.splice(i, 1);
     this.dataSourceCarItem = [...this.dataSourceCarItem];
     this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
 
-    if (i > 0) {
-      /**
+    if (this.operaciones.cantidadArticulos > 0) {
       this.operaciones.subtotalCompraArray.splice(i, 1);
       this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
       this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
-      this.operaciones.impuestoCompraArray.splice(i, 1);
-      this.operaciones.impuestoCompraArray = [...this.operaciones.impuestoCompraArray];
-      this.operaciones.impuestoCompra = this.operaciones.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
       this.operaciones.descuentoCompraArray.splice(i, 1);
       this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray];
       this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+    }else{
+      this.setOperaciones();
+    }
+  }
 
-      this.operaciones.totalCompraArray.splice(i, 1);
-      this.operaciones.totalCompraArray = [...this.operaciones.totalCompraArray];
-      this.operaciones.totalCompra = this.operaciones.totalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-       */
+  addToCart(element: any = []) {
+    const getItem = JSON.parse(this.localStorageService.getItem(element._id)!);
+    if (getItem) {
+      const addItem: number  = ++getItem.cantidad
+      console.log(element._id)
+      console.log(this.dataSourceCarItem.indexOf(element._id))
+      if(this.dataSourceCarItem.indexOf(getItem._id)){
+        console.log("Por fin?")
+      }
+        //this.localStorageService.setItem(element._id, JSON.stringify(this.dataSourceCarItem));
     } else {
-      //this.setOperaciones();
-    }
-  }
-
-  addToCart(element: any = [], index: any) {
-    
-    
-    this.dataSourceCarItem = [...this.dataSourceCarItem,
-    {
-      "_id": element._id,
-      "cantidad": 1,
-      "descripcion": element.descripcion,
-      "detalleArticulo": [
+      element = 
         {
-          "codigo": element.codigo,
-          "codigoBarras": element.codigoBarras,          
-          "cantidad": 0,
-          "precioVenta": element.precios[0].precioVenta,
-          "descuento": element.precios[0].descuentoUnitario,
-          "impuestoUnitario": element.precios[0].impuestoUnitario,
-          "total": element.precios[0].precioVenta
+          "_id": element._id,
+          "cantidad": 1,
+          "descripcion": element.descripcion,
+          "detalleArticulo": [
+            {
+              "codigo": element.codigo,
+              "codigoBarras": element.codigoBarras,          
+              "cantidad": 0,
+              "precioVenta": element.precios[0].precioVenta,
+              "descuento": element.precios[0].descuentoUnitario,
+              "impuesto": element.precios[0].impuestoUnitario,
+              "total": element.precios[0].precioVenta
+            }
+          ]
         }
-      ]
+      this.localStorageService.setItem(element._id, JSON.stringify(element));
+      this.dataSourceCarItem = [...this.dataSourceCarItem, JSON.parse(this.localStorageService.getItem(element._id)!)]
     }
-    ]
     this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
+
+    //this.operaciones.subtotalCompraArray = [ (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos-1].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos-1].cantidad))];
+    this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos-1].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos-1].cantidad))]
+    this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+    //this.operaciones.descuentoCompraArray = [ this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[this.operaciones.cantidadArticulos-1], this.dataSourceCarItem[this.operaciones.cantidadArticulos-1].detalleArticulo[0].descuento)];
+    this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[this.operaciones.cantidadArticulos-1], this.dataSourceCarItem[this.operaciones.cantidadArticulos-1].detalleArticulo[0].descuento)]
+    this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
   }
 
-  changeQty(a: any, b: any, c: any) { }
+  changeQty(a: any, b: any, c: any) {
 
-  total(element: any [], index: number) {
-    this.dataSourceCarItem[index].detalleArticulo[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(element[index].detalleArticulo[0].precioVenta, element[index].cantidad, element[index].detalleArticulo[0].impuestoUnitario), element[index].detalleArticulo[0].descuentoUnitario);
   }
+
+  setOperaciones() {
+    this.operaciones.cantidadArticulos = 0,
+      this.operaciones.subtotalCompra = 0,
+      this.operaciones.subtotalCompraArray = [],
+      this.operaciones.impuestoCompra = 0,
+      this.operaciones.impuestoCompraArray = [],
+      this.operaciones.descuentoCompra = 0,
+      this.operaciones.descuentoCompraArray = [],
+      this.operaciones.totalCompra = 0,
+      this.operaciones.totalCompraArray = []
+  };
+
 }
 
 export class Catalogo {

@@ -73,7 +73,7 @@ export class DialogoArticuloComponent implements OnInit {
           if (response.Status) {
             this.dataSourceArticulos = new MatTableDataSource(response.Data.docs)
             if(response.Data.totalDocs === 0){
-              this.mensajeFallido = 'Articulo no Existe';
+              this.mensajeFallido = 'Articulo no encontrado';
             }
           }
           this.isLoadingResults = false;

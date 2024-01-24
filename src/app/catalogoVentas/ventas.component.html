@@ -359,7 +359,7 @@
                             <th style="font-family: Impact; background-color:gainsboro; width: 10%;" mat-header-cell
                                 *matHeaderCellDef>Precio Venta</th>
                             <td mat-cell *matCellDef="let catalogo">
-                                <span *ngFor="let row of catalogo.precios">{{row.precioVenta | currency: 'USD'}}</span>
+                                <span *ngFor="let row of catalogo.precios">{{row.precioVenta | currency}}</span>
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="accion">
@@ -367,7 +367,7 @@
                                 *matHeaderCellDef> Acción </th>
                             <td mat-cell *matCellDef="let element; let i = index">
                                 <button type="button" mat-mini-fab matSuffix color="basic" matTooltip="Adicionar"
-                                    class="button24" (click)="this.addToCart(element, i)">
+                                    class="button24" (click)="this.addToCart(element)">
                                     <mat-icon class="icon24">add_shopping_cart</mat-icon>
                                 </button>
                         </ng-container>
@@ -458,9 +458,7 @@
                                 *matHeaderCellDef>
                                 Descripción </th>
                             <td mat-cell *matCellDef="let carItem"> 
-                                <span *ngFor="let row of carItem.detalleArticulo">
-                                    {{row.descripcion}}
-                                </span>
+                                    {{carItem.descripcion}}
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="cantidad">
@@ -551,14 +549,6 @@
                     -->
                 </div>
             </form>
-            <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
-                {{ mensajeExitoso }}
-            </div>
-
-
-            <div *ngIf="mensajeFallido" class="alert alert-danger mt-3">
-                {{ mensajeFallido }}
-            </div>
         </mat-card>
         <!-- Contenido Registro/Resumen Venta abajo-->
         <mat-card class="mat-card-right-down">
@@ -568,20 +558,20 @@
                         <td>
                             <div class="input-group" style="margin-top: 1%;">
                                 <span class="input-group-text"
-                                    style="background-color: white; width: 30%;">Subtotal</span>
-                                <input type="text" aria-label="subtotal" class="form-control" disabled>
+                                    style="background-color: white; width: 50%;">Subtotal</span>
+                                <input type="text" aria-label="subtotal" class="form-control" disabled value="{{this.operaciones.subtotalCompra | currency}}">
                             </div>
                             <div class="input-group">
-                                <span class="input-group-text" style="background-color: white; width: 30%">Iva</span>
-                                <input type="text" aria-label="iva" class="form-control" disabled>
+                                <span class="input-group-text" style="background-color: white; width: 50%">Iva</span>
+                                <input type="text" aria-label="iva" class="form-control" disabled value="{{ 0 | currency}}">
                             </div>
                             <div class="input-group">
-                                <span class="input-group-text" style="background-color: white; width: 30%">Descuento</span>
-                                <input type="text" aria-label="total" class="form-control" disabled>
+                                <span class="input-group-text" style="background-color: white; width: 50%">Descuento</span>
+                                <input type="text" aria-label="total" class="form-control" disabled value="{{this.operaciones.descuentoCompra | currency}}">
                             </div>
                             <div class="input-group">
-                                <span class="input-group-text" style="background-color: white; width: 30%">Total</span>
-                                <input type="text" aria-label="total" class="form-control" disabled>
+                                <span class="input-group-text" style="background-color: white; width: 50%">Total</span>
+                                <input type="text" aria-label="total" class="form-control" disabled value="{{(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra)  | currency}}">
                             </div>
                         </td>
                     </tr>
@@ -597,8 +587,8 @@
                                 </span>
                                 <button mat-button
                                     style="font-family:Impact; background-color:rgba(0, 255, 85, 0.658); width: 51%"
-                                    [disabled]="operaciones.totalCompra === 0 || numeroDocumentoFormControl.invalid" 
-                                    type="button">Venta  |  {{this.operaciones.cantidadArticulos | currency}}
+                                    [disabled]="(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) === 0 || numeroDocumentoFormControl.invalid" 
+                                    type="button">Venta  |  {{(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) | currency}}
                                 </button>
                                 <button mat-button style="background-color: gainsboro; width: 20%;" type="button"
                                     color="primary" (click)="mostrarDialogo('Seguro requieres Cancelar?', 2, '', 0)">Cancelar
