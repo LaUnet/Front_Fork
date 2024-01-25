@@ -377,7 +377,7 @@
                                     {{this.utilsService.percent(row.impuestoUnitario)}}
                                 </div>
                                 <div *ngIf="articulos.isEdit">
-                                    <div class="input-group input-group-sm ; unitarioIvaIncluido">
+                                    <div class="input-group input-group-sm">
                                         <select class="custom-select" id="impuesto" type="text" name="impuesto"
                                             matInput [(ngModel)]="row.impuestoUnitario" (change)="this.unitarioIvaIncluido(articulos.precios, i)">
                                             <option value="19">IVA 19%</option>

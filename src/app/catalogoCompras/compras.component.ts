@@ -454,7 +454,7 @@ export class ComprasComponent {
 
     this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.dataSourceCargarArticulos[i].precios[0].total, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario)];
     this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
+    
     this.operaciones.totalCompraArray = [...this.operaciones.totalCompraArray, this.utilsService.numeros(this.dataSourceCargarArticulos[i].precios[0].total)];
     this.operaciones.totalCompra = this.operaciones.totalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
   }
@@ -514,7 +514,7 @@ export class ComprasComponent {
     this.operaciones.descuentoCompraArray.splice(i, 1, this.utilsService.calcularDescuento(this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario));
     this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray];
     this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
+    
     this.operaciones.totalCompraArray.splice(i, 1, this.utilsService.numeros(this.dataSourceCargarArticulos[i].precios[0].total));
     this.operaciones.totalCompraArray = [...this.operaciones.totalCompraArray];
     this.operaciones.totalCompra = this.operaciones.totalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
@@ -539,7 +539,7 @@ export class ComprasComponent {
   }
 
   total(element: any, index: number) {
-    this.dataSourceCargarArticulos[index].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(element[0].precioVenta, element[0].cantidad, 0), element[0].descuentoUnitario)
+    this.dataSourceCargarArticulos[index].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(element[0].valorUnitario, element[0].cantidad, element[0].impuestoUnitario), element[0].descuentoUnitario)
   }
 
   unitarioIvaIncluido(element: any, index: number) {

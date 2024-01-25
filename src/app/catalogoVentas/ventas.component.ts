@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
+import { DialogoCarItemComponent } from "../dialogo.carItem/dialogo.carItem.component";
 import { MatSort } from '@angular/material/sort';
 import { NavigationEnd, Router } from '@angular/router';
 import { LocalStorageService } from '../local-storage.service';
@@ -246,6 +247,23 @@ export class VentasComponent {
       });
   }
 
+  mostrarArticuloCarItem(element: any = [], i: number): void {
+    element.isEdit = true; 
+    this.dialogo
+      .open(DialogoCarItemComponent, {
+        data: element
+      })
+      .afterClosed()
+      .subscribe(() => {
+        try {
+            //alert("No hacer nada")
+        } catch (error) {
+          //alert("No hacer nada");
+        }
+        element.isEdit = false;
+      });     
+  }
+
   async guardarCliente() {
     this.mensajeFallidoCliente = "";
     const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers`
@@ -308,14 +326,6 @@ export class VentasComponent {
 
   refreshPage() {
     window.location.reload();
-  }
-
-  saveToLocalStorage(element: any = []) {
-    console.log("datos recibidos", element)
-  }
-
-  retrieveFromLocalStorage() {
-    this.localStorageService.getItem('myKey');
   }
 
   borrarArticuloCarItem(element: any = [], i: number) {
@@ -429,6 +439,12 @@ export class VentasComponent {
     this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
   }
 
+  cancelarCambios(element: any, i: number) {
+    element.isEdit = false;
+    this.dataSourceCarItem.splice(i, 1, JSON.parse(this.localStorageService.getItem(element._id)!));
+    this.dataSourceCarItem = [...this.dataSourceCarItem];
+  }
+  
   setOperaciones() {
     this.operaciones.cantidadArticulos = 0,
       this.operaciones.subtotalCompra = 0,
@@ -438,9 +454,10 @@ export class VentasComponent {
       this.operaciones.descuentoCompra = 0,
       this.operaciones.descuentoCompraArray = [],
       this.operaciones.totalCompra = 0,
-      this.operaciones.totalCompraArray = []
+      this.operaciones.totalCompraArray = [],
+      this.operaciones.totalArticulos = 0,
+      this.operaciones.totalArticulosArray = []
   };
-
 }
 
 export class Catalogo {

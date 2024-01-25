@@ -517,9 +517,11 @@
                             <th style="font-family: Impact; background-color:gainsboro; width: 15%" mat-header-cell
                                 *matHeaderCellDef>Acción</th>
                             <td mat-cell *matCellDef="let carItem; let i = index">
+                                <span *ngFor="let row of carItem.detalleArticulo">
                                 <div *ngIf="!carItem.isEdit">
                                     <button type="button" mat-mini-fab matSuffix color="primary" matTooltip="Editar"
-                                        class="buttonMatTable">
+                                        class="buttonMatTable"
+                                        (click)="mostrarArticuloCarItem(carItem, i)">
                                         <mat-icon>edit</mat-icon>
                                     </button>
                                     <button type="button" mat-mini-fab matSuffix color="warn" matTooltip="Eliminar"
@@ -534,10 +536,12 @@
                                         <mat-icon>check_circle</mat-icon>
                                     </button>
                                     <button type="button" mat-mini-fab mat-small-icon-button matSuffix color="warn"
-                                        matTooltip="Descartar" class="buttonMatTable">
+                                        matTooltip="Descartar" class="buttonMatTable"
+                                        (click)="cancelarCambios(carItem, i)">
                                         <mat-icon>cancel</mat-icon>
                                     </button>
                                 </div>
+                                </span>
                         </ng-container>
                         <tr mat-header-row *matHeaderRowDef="columnasCarItem"></tr>
                         <tr mat-row *matRowDef="let row; columns: columnasCarItem;"></tr>
@@ -576,21 +580,21 @@
                         </td>
                     </tr>
                 </table>
-
                 <mat-card-actions>
                     <table class="full-width">
                         <tr>
                             <div align="end">
-                                <span style="font-family: Impact; position: absolute; margin-left: -27%; margin-top: 0.5%;">No Articulos</span>
-                                <span style="font-family: Impact; position: absolute; margin-left: -10%; margin-top: 0.5%;">
+                                <span style="font-family: Impact; position: absolute; margin-left: -24%; margin-top: 0.5%;">No Articulos</span>
+                                <span style="font-family: Impact; position: absolute; margin-left: -8%; margin-top: 0.5%;">
                                     {{this.operaciones.totalArticulos}}
                                 </span>
                                 <button mat-button
-                                    style="font-family:Impact; background-color:rgba(0, 255, 85, 0.658); width: 51%"
+                                    style="font-family:Impact; background-color:rgba(0, 255, 85, 0.658); width: 60%"
                                     [disabled]="(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) === 0 || numeroDocumentoFormControl.invalid" 
                                     type="button">Venta  |  {{(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) | currency}}
                                 </button>
-                                <button mat-button style="background-color: gainsboro; width: 20%;" type="button"
+
+                                <button mat-button style="background-color: gainsboro; width: 15%;" type="button"
                                     color="primary" (click)="mostrarDialogo('Seguro requieres Cancelar?', 2, '', 0)">Cancelar
                                 </button>
                             </div>

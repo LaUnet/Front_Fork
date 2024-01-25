@@ -1,0 +1,58 @@
+<section class="my-custom-container">
+    <h2 mat-dialog-title align="center">{{element.descripcion}}</h2>
+    <td></td>
+    <div mat-dialog-content>
+        <!-- <p>{{mensaje}}</p> -->
+        <div>
+            <mat-form-field class="full-width" appearance="outline" style="width: 97%;">
+                <mat-label>Cantidad</mat-label>
+                <input matInput type="text" [(ngModel)]="articuloCarItem.cantidad" name="cantidad"
+                    [formControl]="cantidadFormControl" [errorStateMatcher]="matcher">
+                    <span matTextSuffix>{{element.detalleArticulo[0].cantidad | number: '.2' }}</span>
+            </mat-form-field>
+        </div>
+        <div>
+            <tr>
+                <td>
+                    <mat-form-field class="full-width" appearance="outline">
+                        <mat-label>Precio</mat-label>
+                        <input matInput type="text" [(ngModel)]="articuloCarItem.precio" name="precio"
+                            [formControl]="precioFormControl" [errorStateMatcher]="matcher">
+                            <span matTextSuffix>{{element.detalleArticulo[0].precioVenta | currency }}</span>
+                    </mat-form-field>
+                </td>
+                <td>
+                    <mat-form-field class="full-width" appearance="outline">
+                        <mat-label>Impuesto</mat-label>
+                        <input matInput type="text" [(ngModel)]="articuloCarItem.impuesto" name="impuesto"
+                            [formControl]="impuestoFormControl" [errorStateMatcher]="matcher">
+                            <span matTextSuffix>{{this.utilsService.percent(element.detalleArticulo[0].impuesto)}}</span>
+                    </mat-form-field>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <mat-form-field class="full-width" appearance="outline">
+                        <mat-label>Descuento</mat-label>
+                        <input matInput type="text" [(ngModel)]="articuloCarItem.descuento" name="descuento"
+                            [formControl]="descuentoFormControl" [errorStateMatcher]="matcher">
+                            <span matTextSuffix>{{this.utilsService.percent(element.detalleArticulo[0].descuento) }}</span>
+                    </mat-form-field>
+                </td>
+                <td>
+                    <mat-form-field class="full-width" appearance="outline">
+                        <mat-label>Total</mat-label>
+                        <input matInput type="text" [(ngModel)]="articuloCarItem.total" name="total"
+                            [formControl]="totalFormControl" [errorStateMatcher]="matcher">
+                            <span matTextSuffix>{{element.detalleArticulo[0].total | currency }}</span>
+                    </mat-form-field>
+                </td>
+            </tr>
+        </div>
+    </div>
+
+    <div mat-dialog-actions align="end">
+        <button mat-button (click)="cerrar()" color="primary" cdkFocusInitial>CANCELAR</button>
+        <button mat-button (click)="confirmar()" color="primary" cdkFocusInitial>CONFIRMAR</button>
+    </div>
+</section>

@@ -19,6 +19,7 @@ import { VentasComponent } from './catalogoVentas/ventas.component';
 import { ComprasComponent } from './catalogoCompras/compras.component';
 import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.component';
 import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.component';
+import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.component';
 
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -74,6 +75,7 @@ import {MatNativeDateModule} from '@angular/material/core';
     DialogoConfirmacionComponent,
     VentasComponent,
     DialogoArticuloComponent,
+    DialogoCarItemComponent
   ],
   imports: [
     BrowserModule,
