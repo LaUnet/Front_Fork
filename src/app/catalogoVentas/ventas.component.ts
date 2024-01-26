@@ -26,7 +26,7 @@ export class VentasComponent {
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
 
   columnas: string[] = ['descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioventa', 'accion'];
-  columnasCarItem: string[] = ['descripcion', 'cantidad', 'precio', 'iva', 'total', 'isEdit'];
+  columnasCarItem: string[] = ['descripcion', 'cantidad', 'precio',  'iva', 'total', 'isEdit'];
 
   openedMenu!: boolean;
   openedCustomer!: boolean;
@@ -454,7 +454,7 @@ export class VentasComponent {
     }
       this.localStorageService.removeItem(this.dataSourceCarItem[i]._id);
       this.localStorageService.setItem(this.dataSourceCarItem[i]._id, JSON.stringify(this.dataSourceCarItem[i]));
-      this.dataSourceCarItem[i].detalleArticulo[0].total = this.dataSourceCarItem[i].detalleArticulo[0].precioVenta * this.dataSourceCarItem[i].detalleArticulo[0].cantidad;
+      this.dataSourceCarItem[i].detalleArticulo[0].total = element.mayoreo? this.dataSourceCarItem[i].detalleArticulo[0].precioMayoreo * this.dataSourceCarItem[i].detalleArticulo[0].cantidad :this.dataSourceCarItem[i].detalleArticulo[0].precioVenta * this.dataSourceCarItem[i].detalleArticulo[0].cantidad;
       this.dataSourceCarItem.splice(i, 1, JSON.parse(this.localStorageService.getItem(this.dataSourceCarItem[i]._id)!));
       this.dataSourceCarItem = [...this.dataSourceCarItem];
 
@@ -462,9 +462,15 @@ export class VentasComponent {
       this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray];
       this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
 
-      this.operaciones.subtotalCompraArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
-      this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
-      this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+      if(element.mayoreo){
+        this.operaciones.subtotalCompraArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].precioMayoreo) * parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
+        this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
+        this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+      }else{
+        this.operaciones.subtotalCompraArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
+        this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
+        this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+      }
       /**
       this.operaciones.subtotalCompraMayoreoArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].precioMayoreo) * parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
       this.operaciones.subtotalCompraMayoreoArray = [...this.operaciones.subtotalCompraMayoreoArray];
@@ -505,7 +511,7 @@ export class Catalogo {
 }
 
 export class carItem {
-  constructor(public descripcion: String, public cantidad: string, public iva: string, public total: string, public isEdit: string) { }
+  constructor(public descripcion: String, public cantidad: string, public precio: string, public iva: string, public total: string, public isEdit: string) { }
 }
 
 /** Error when invalid control is dirty, touched, or submitted. */

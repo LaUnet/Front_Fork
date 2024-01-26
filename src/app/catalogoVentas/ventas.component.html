@@ -457,8 +457,8 @@
                             <th style="font-family: Impact; background-color:gainsboro; width: 25%" mat-header-cell
                                 *matHeaderCellDef>
                                 Descripción </th>
-                            <td mat-cell *matCellDef="let carItem"> 
-                                    {{carItem.descripcion}}
+                            <td mat-cell *matCellDef="let carItem">
+                                {{carItem.descripcion}}
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="cantidad">
@@ -466,33 +466,35 @@
                                 *matHeaderCellDef> Cantidad </th>
                             <td mat-cell *matCellDef="let carItem; let i = index">
                                 <span *ngFor="let row of carItem.detalleArticulo">
-                                <div class="input-group input-group-sm mb-3" style="margin-top: 10px;">
-                                    <div class="input-group-prepend">
-                                        <button class="btn btn-info" type="button" (click)="changeQty(carItem, i, 1, '')">
-                                            +
-                                        </button>
-                                    </div>
-                                    <input type="text" style="background-color: white;" class="form-control text-center" value="{{row.cantidad}}" disabled/>
+                                    <div class="input-group input-group-sm mb-3" style="margin-top: 10px;">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-info" type="button"
+                                                (click)="changeQty(carItem, i, 1, '')">
+                                                +
+                                            </button>
+                                        </div>
+                                        <input type="text" style="background-color: white;"
+                                            class="form-control text-center" value="{{row.cantidad}}" disabled />
                                         <!-- #qtyRef (keyup)="changeQty(carItem, i, qtyRef.value, 'replace')" -->
-                                    <div class="input-group-append">
-                                        <button class="btn btn-danger" type="button"
-                                            (click)="changeQty(carItem, i, -1, '')">
-                                            -
-                                        </button>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-danger" type="button"
+                                                (click)="changeQty(carItem, i, -1, '')">
+                                                -
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            </span>
+                                </span>
                         </ng-container>
                         <ng-container matColumnDef="precio">
                             <th style="font-family: Impact; background-color:gainsboro; width: 15%" mat-header-cell
-                                *matHeaderCellDef> Precio </th>
+                                *matHeaderCellDef>Precio Venta</th>
                             <td mat-cell *matCellDef="let carItem">
                                 <span *ngFor="let row of carItem.detalleArticulo">
                                     <div *ngIf="!carItem.mayoreo">
-                                        {{row.precioVenta | currency}} 
+                                        {{row.precioVenta | currency}}
                                     </div>
                                     <div *ngIf="carItem.mayoreo">
-                                        {{this.utilsService.numeros(row.precioMayoreo) | currency}} 
+                                        {{this.utilsService.numeros(row.precioMayoreo) | currency}}
                                     </div>
                                 </span>
                             </td>
@@ -501,7 +503,7 @@
                             <th style="font-family: Impact; background-color:gainsboro; width: 5%" mat-header-cell
                                 *matHeaderCellDef> Iva </th>
                             <td mat-cell *matCellDef="let carItem">
-                                    <!--
+                                <!--
                                     <span *ngFor="let row of carItem.detalleArticulo">
                                          {{this.utilsService.percent(row.iva)}} 
                                     </span>
@@ -513,8 +515,8 @@
                                 *matHeaderCellDef> Total </th>
                             <td mat-cell *matCellDef="let carItem; let i = index">
                                 <span *ngFor="let row of carItem.detalleArticulo">
-                                {{row.total | currency }}
-                                <!-- {{(carItem.cantidad > 0) ? total(carItem, i) : 0 | currency}} -->
+                                    {{row.total | currency }}
+                                    <!-- {{(carItem.cantidad > 0) ? total(carItem, i) : 0 | currency}} -->
                                 </span>
                             </td>
                         </ng-container>
@@ -523,29 +525,28 @@
                                 *matHeaderCellDef>Acción</th>
                             <td mat-cell *matCellDef="let carItem; let i = index">
                                 <span *ngFor="let row of carItem.detalleArticulo">
-                                <div *ngIf="!carItem.isEdit">
-                                    <button type="button" mat-mini-fab matSuffix color="primary" matTooltip="Editar"
-                                        class="buttonMatTable"
-                                        (click)="mostrarArticuloCarItem(carItem, i)">
-                                        <mat-icon>edit</mat-icon>
-                                    </button>
-                                    <button type="button" mat-mini-fab matSuffix color="warn" matTooltip="Eliminar"
-                                        class="buttonMatTable"
-                                        (click)="mostrarDialogo('Seguro requieres Eliminar Articulo?', 3, carItem, i)">
-                                        <mat-icon>delete_forever</mat-icon>
-                                    </button>
-                                </div>
-                                <div *ngIf="carItem.isEdit">
-                                    <button type="button" mat-mini-fab mat-small-icon-button matSuffix color="primary"
-                                        matTooltip="Guardar" class="buttonMatTable">
-                                        <mat-icon>check_circle</mat-icon>
-                                    </button>
-                                    <button type="button" mat-mini-fab mat-small-icon-button matSuffix color="warn"
-                                        matTooltip="Descartar" class="buttonMatTable"
-                                        (click)="cancelarCambios(carItem, i)">
-                                        <mat-icon>cancel</mat-icon>
-                                    </button>
-                                </div>
+                                    <div *ngIf="!carItem.isEdit">
+                                        <button type="button" mat-mini-fab matSuffix color="primary" matTooltip="Editar"
+                                            class="buttonMatTable" (click)="mostrarArticuloCarItem(carItem, i)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button type="button" mat-mini-fab matSuffix color="warn" matTooltip="Eliminar"
+                                            class="buttonMatTable"
+                                            (click)="mostrarDialogo('Seguro requieres Eliminar Articulo?', 3, carItem, i)">
+                                            <mat-icon>delete_forever</mat-icon>
+                                        </button>
+                                    </div>
+                                    <div *ngIf="carItem.isEdit">
+                                        <button type="button" mat-mini-fab mat-small-icon-button matSuffix
+                                            color="primary" matTooltip="Guardar" class="buttonMatTable">
+                                            <mat-icon>check_circle</mat-icon>
+                                        </button>
+                                        <button type="button" mat-mini-fab mat-small-icon-button matSuffix color="warn"
+                                            matTooltip="Descartar" class="buttonMatTable"
+                                            (click)="cancelarCambios(carItem, i)">
+                                            <mat-icon>cancel</mat-icon>
+                                        </button>
+                                    </div>
                                 </span>
                         </ng-container>
                         <tr mat-header-row *matHeaderRowDef="columnasCarItem"></tr>
@@ -568,19 +569,24 @@
                             <div class="input-group" style="margin-top: 1%;">
                                 <span class="input-group-text"
                                     style="background-color: white; width: 50%;">Subtotal</span>
-                                <input type="text" aria-label="subtotal" class="form-control" disabled value="{{this.operaciones.subtotalCompra | currency}}">
+                                <input type="text" aria-label="subtotal" class="form-control" disabled
+                                    value="{{this.operaciones.subtotalCompra | currency}}">
                             </div>
                             <div class="input-group">
                                 <span class="input-group-text" style="background-color: white; width: 50%">Iva</span>
-                                <input type="text" aria-label="iva" class="form-control" disabled value="{{ 0 | currency}}">
+                                <input type="text" aria-label="iva" class="form-control" disabled
+                                    value="{{ 0 | currency}}">
                             </div>
                             <div class="input-group">
-                                <span class="input-group-text" style="background-color: white; width: 50%">Descuento</span>
-                                <input type="text" aria-label="total" class="form-control" disabled value="{{this.operaciones.descuentoCompra | currency}}">
+                                <span class="input-group-text"
+                                    style="background-color: white; width: 50%">Descuento</span>
+                                <input type="text" aria-label="total" class="form-control" disabled
+                                    value="{{this.operaciones.descuentoCompra | currency}}">
                             </div>
                             <div class="input-group">
                                 <span class="input-group-text" style="background-color: white; width: 50%">Total</span>
-                                <input type="text" aria-label="total" class="form-control" disabled value="{{(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra)  | currency}}">
+                                <input type="text" aria-label="total" class="form-control" disabled
+                                    value="{{(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra)  | currency}}">
                             </div>
                         </td>
                     </tr>
@@ -589,18 +595,23 @@
                     <table class="full-width">
                         <tr>
                             <div align="end">
-                                <span style="font-family: Impact; position: absolute; margin-left: -24%; margin-top: 0.5%;">No Articulos</span>
-                                <span style="font-family: Impact; position: absolute; margin-left: -8%; margin-top: 0.5%;">
+                                <span
+                                    style="font-family: Impact; position: absolute; margin-left: -24%; margin-top: 0.5%;">No
+                                    Articulos</span>
+                                <span
+                                    style="font-family: Impact; position: absolute; margin-left: -8%; margin-top: 0.5%;">
                                     {{this.operaciones.totalArticulos}}
                                 </span>
                                 <button mat-button
                                     style="font-family:Impact; background-color:rgba(0, 255, 85, 0.658); width: 60%"
-                                    [disabled]="(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) === 0 || numeroDocumentoFormControl.invalid" 
-                                    type="button">Venta  |  {{(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) | currency}}
+                                    [disabled]="(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) === 0 || numeroDocumentoFormControl.invalid"
+                                    type="button">Venta | {{(this.operaciones.subtotalCompra -
+                                    this.operaciones.descuentoCompra) | currency}}
                                 </button>
 
                                 <button mat-button style="background-color: gainsboro; width: 15%;" type="button"
-                                    color="primary" (click)="mostrarDialogo('Seguro requieres Cancelar?', 2, '', 0)">Cancelar
+                                    color="primary"
+                                    (click)="mostrarDialogo('Seguro requieres Cancelar?', 2, '', 0)">Cancelar
                                 </button>
                             </div>
                         </tr>

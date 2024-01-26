@@ -81,10 +81,10 @@ export class DialogoCarItemComponent implements OnInit {
     this.isVentaUnitaria = estado ? false : true;
     if (estado) {
       this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMayoreo)
-      this.element.mayoreo = estado;
+      this.isVentaMayoreo = estado;
     } else {
       this.toggleUnitario(this.isVentaUnitaria)
-      this.element.mayoreo = estado;
+      this.isVentaMayoreo = estado;
     }
   };
 
@@ -105,8 +105,7 @@ export class DialogoCarItemComponent implements OnInit {
       this.articuloCarItem.total = this.articuloCarItem.total;
     }
   }
-
-
+  
   ngOnInit() {
   }
 }
