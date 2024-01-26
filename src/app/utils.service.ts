@@ -19,7 +19,7 @@ export class UtilsService {
 
 
   //Formateo Monedas
-  getCurrency(value: number) {
+  getCurrency(value: any) {
     try {
       return new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(+(value));
     } catch {
@@ -32,6 +32,13 @@ export class UtilsService {
     a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
     b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
     return (a + b);
+  }
+
+  //Multiplicar valores
+  multiplicarNumero(a: number, b: number) {
+    a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
+    b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
+    return (a * b);
   }
 
   //Restar valores
@@ -50,50 +57,50 @@ export class UtilsService {
   // Percentage
   percent(a: any) {
     a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
-    if (a === 1){ a = 19}
-    return Intl.NumberFormat("en-US", {style: "percent",}).format(a / 100);
+    if (a === 1) { a = 19 }
+    return Intl.NumberFormat("en-US", { style: "percent", }).format(a / 100);
   }
 
-  calcularImpuesto(a: any, b:any, c:any){
+  calcularImpuesto(a: any, b: any, c: any) {
     a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
     b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
     c = !isNaN(c) && typeof c !== 'boolean' ? +c : 0;
-    c = c !== 0? c/100 : 1
-    let valorXcantidad = a*b;
-    let valorImpuesto = c !== 1? valorXcantidad*c : 0;
+    c = c !== 0 ? c / 100 : 1
+    let valorXcantidad = a * b;
+    let valorImpuesto = c !== 1 ? valorXcantidad * c : 0;
     return valorImpuesto;
   }
 
-  calcularDescuento(a: any, b:any){
+  calcularDescuento(a: any, b: any) {
     a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
     b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
-    let descuento = b !== 0? (a*(b/100)) : 0
-    return descuento; 
+    let descuento = b !== 0 ? (a * (b / 100)) : 0
+    return descuento;
   }
 
-  calculartotal(a: any, b:any){
+  calculartotal(a: any, b: any) {
     a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
     b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
-    let descuento = b !== 0? a*(b/100): 0
-    let total = a-descuento
-    return total; 
+    let descuento = b !== 0 ? a * (b / 100) : 0
+    let total = a - descuento
+    return total;
   }
 
-  calcularSubtotal(a: any, b:any, c:any){
+  calcularSubtotal(a: any, b: any, c: any) {
     a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
     b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
     c = !isNaN(c) && typeof c !== 'boolean' ? +c : 0;
-    c = c !== 0? c/100 : 1
-    let valorXcantidad = a*b;
-    let valorImpuesto = c !== 1? valorXcantidad*c : 0;
-    let subtotal = +valorXcantidad+valorImpuesto;
+    c = c !== 0 ? c / 100 : 1
+    let valorXcantidad = a * b;
+    let valorImpuesto = c !== 1 ? valorXcantidad * c : 0;
+    let subtotal = +valorXcantidad + valorImpuesto;
     return subtotal;
   }
 
-  calcularUnitario(a: any, b:any){
+  calcularUnitario(a: any, b: any) {
     a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
     b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
-    let descuentoIva = a/((b/100)+1);
+    let descuentoIva = a / ((b / 100) + 1);
     descuentoIva = Number(descuentoIva.toFixed(2));
     return descuentoIva;
   }

@@ -1,58 +1,71 @@
 <section class="my-custom-container">
     <h2 mat-dialog-title align="center">{{element.descripcion}}</h2>
     <td></td>
-    <div mat-dialog-content>
-        <!-- <p>{{mensaje}}</p> -->
+    <div mat-dialog-content align="center">
+        <p style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; color: blue;">
+            Resumen/Actualización Item de Venta</p>
         <div>
-            <mat-form-field class="full-width" appearance="outline" style="width: 97%;">
-                <mat-label>Cantidad</mat-label>
-                <input matInput type="text" [(ngModel)]="articuloCarItem.cantidad" name="cantidad"
-                    [formControl]="cantidadFormControl" [errorStateMatcher]="matcher">
-                    <span matTextSuffix>{{element.detalleArticulo[0].cantidad | number: '.2' }}</span>
-            </mat-form-field>
+            <tr>
+                <td>
+                    <mat-slide-toggle [(ngModel)]="isVentaUnitaria" (change)="toggleUnitario(isVentaUnitaria)">Precio Seleccionado</mat-slide-toggle>
+                </td>
+                <td>
+                    <mat-form-field class="full-width" appearance="outline" style="color: black">
+                        <mat-label style="color: black;">Precio Menudeo</mat-label>
+                        <input matInput type="text" [ngModel]="articuloCarItem.precioMenudeo | currency" name="precio"
+                            [errorStateMatcher]="matcher" disabled style="color: black;">
+                        <mat-icon matSuffix>attach_money</mat-icon>
+                        <!-- <span matTextSuffix>{{element.detalleArticulo[0].precioVenta | currency }}</span> -->
+                    </mat-form-field>
+                </td>
+            </tr>
+        </div>
+        <div>
+            <tr>
+                <td>
+                    <mat-slide-toggle [(ngModel)]="isVentaMayoreo" (change)="toggleMayoreo(isVentaMayoreo)">Precio Seleccionado</mat-slide-toggle>
+                </td>
+                <td>
+                    <mat-form-field class="full-width" appearance="outline" style="color: black;">
+                        <mat-label style="color: black;">Precio Mayoreo</mat-label>
+                        <input matInput type="text" [ngModel]="articuloCarItem.precioMayoreo | currency" name="precioMayoreo"
+                            [errorStateMatcher]="matcher" disabled style="color: black;">
+                        <mat-icon matSuffix>attach_money</mat-icon>
+                        <!-- <span matTextSuffix>{{element.detalleArticulo[0].precioVenta | currency }}</span> -->
+                    </mat-form-field>
+                </td>
+            </tr>
         </div>
         <div>
             <tr>
                 <td>
                     <mat-form-field class="full-width" appearance="outline">
-                        <mat-label>Precio</mat-label>
-                        <input matInput type="text" [(ngModel)]="articuloCarItem.precio" name="precio"
-                            [formControl]="precioFormControl" [errorStateMatcher]="matcher">
-                            <span matTextSuffix>{{element.detalleArticulo[0].precioVenta | currency }}</span>
+                        <mat-label>Cantidad</mat-label>
+                        <input matInput type="text" [ngModel]="articuloCarItem.cantidad | number" name="cantidad"
+                            [formControl]="cantidadFormControl" [errorStateMatcher]="matcher" #qtyRef (keyup)="onEnter(qtyRef.value)">
+                        <mat-icon matSuffix>change_circle</mat-icon>
+                        <!-- <span matTextSuffix>{{element.detalleArticulo[0].cantidad | number: '.2' }}</span> -->
                     </mat-form-field>
                 </td>
-                <td>
-                    <mat-form-field class="full-width" appearance="outline">
-                        <mat-label>Impuesto</mat-label>
-                        <input matInput type="text" [(ngModel)]="articuloCarItem.impuesto" name="impuesto"
-                            [formControl]="impuestoFormControl" [errorStateMatcher]="matcher">
-                            <span matTextSuffix>{{this.utilsService.percent(element.detalleArticulo[0].impuesto)}}</span>
-                    </mat-form-field>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <mat-form-field class="full-width" appearance="outline">
-                        <mat-label>Descuento</mat-label>
-                        <input matInput type="text" [(ngModel)]="articuloCarItem.descuento" name="descuento"
-                            [formControl]="descuentoFormControl" [errorStateMatcher]="matcher">
-                            <span matTextSuffix>{{this.utilsService.percent(element.detalleArticulo[0].descuento) }}</span>
-                    </mat-form-field>
-                </td>
-                <td>
-                    <mat-form-field class="full-width" appearance="outline">
-                        <mat-label>Total</mat-label>
-                        <input matInput type="text" [(ngModel)]="articuloCarItem.total" name="total"
-                            [formControl]="totalFormControl" [errorStateMatcher]="matcher">
-                            <span matTextSuffix>{{element.detalleArticulo[0].total | currency }}</span>
-                    </mat-form-field>
-                </td>
+                <div>
+                    <td>
+                        <mat-form-field class="full-width" appearance="outline">
+                            <mat-label style="color: black;">Total</mat-label>
+                            <input matInput type="text" [ngModel]="articuloCarItem.total | currency" name="total"
+                            [errorStateMatcher]="matcher" disabled style="color: black">
+                            <mat-icon matSuffix>currency_exchange</mat-icon>
+                            <!-- <span matTextSuffix>{{element.detalleArticulo[0].total | currency }}</span> -->
+                        </mat-form-field>
+                    </td>
+                </div>
             </tr>
         </div>
     </div>
-
-    <div mat-dialog-actions align="end">
+    <div *ngIf="mensajeFallido" class="alert alert-danger mt-3">
+        {{ mensajeFallido }}
+    </div>
+    <div mat-dialog-actions align="center">
         <button mat-button (click)="cerrar()" color="primary" cdkFocusInitial>CANCELAR</button>
-        <button mat-button (click)="confirmar()" color="primary" cdkFocusInitial>CONFIRMAR</button>
+        <button mat-button (click)="actualizar()" color="primary" [disabled]="disabledButton" >ACTUALIZAR</button>
     </div>
 </section>

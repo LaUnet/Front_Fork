@@ -13,8 +13,11 @@ import { UtilsService } from '../utils.service';
 })
 export class DialogoCarItemComponent implements OnInit {
 
-
   matcher = new MyErrorStateMatcher();
+  isVentaUnitaria !: boolean;
+  isVentaMayoreo !: boolean;
+  disabledButton !: boolean;
+  mensajeFallido: string = '';
   /**
    * Control Error Textfields carItem
    */
@@ -27,29 +30,75 @@ export class DialogoCarItemComponent implements OnInit {
 
   articuloCarItem = {
     descripcion: '',
-    cantidad: '',
-    precio: '',
-    impuesto: '',
-    descuento: '',
-    total: '',
+    cantidad: 0,
+    precioMenudeo: 0,
+    precioMayoreo: 0,
+    impuesto: 0,
+    descuento: 0,
+    total: 0,
   };
 
   constructor(
     public dialogo: MatDialogRef<DialogoCarItemComponent>,
     @Inject(MAT_DIALOG_DATA) public element: any = [], @Inject(MAT_DIALOG_DATA) public index: number,
-    @Inject(LocalStorageService) private localStorageService: LocalStorageService, public utilsService: UtilsService) { }
+    @Inject(LocalStorageService) private localStorageService: LocalStorageService, public utilsService: UtilsService) {
+    this.isVentaUnitaria = true;
+    this.articuloCarItem.cantidad = this.utilsService.numeros(element.detalleArticulo[0].cantidad);
+    this.articuloCarItem.precioMenudeo = this.utilsService.numeros(element.detalleArticulo[0].precioVenta);
+    this.articuloCarItem.precioMayoreo = this.utilsService.numeros(element.detalleArticulo[0].precioMayoreo);
+    this.articuloCarItem.total = this.utilsService.numeros(element.detalleArticulo[0].total);
 
-  confirmar(): void {
-    this.dialogo.close();
+  }
+
+  actualizar(): void {
+    this.element.detalleArticulo[0].cantidad = this.articuloCarItem.cantidad;
+    this.element.detalleArticulo[0].precioVenta = this.articuloCarItem.precioMenudeo;
+    this.element.detalleArticulo[0].precioMayoreo = this.articuloCarItem.precioMayoreo;
+    this.element.detalleArticulo[0].total = this.articuloCarItem.total;
+    this.dialogo.close(true);
   }
 
   cerrar(): void {
-    this.dialogo.close();
+    this.dialogo.close(false);
   }
 
-  changeCarItem(valor:any, campo:any){
-    console.log(valor, campo)
+  toggleUnitario(estado: any) {
+    this.isVentaMayoreo = estado ? false : true;
+    if (estado) {
+      this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMenudeo)
+    } else {
+      this.toggleMayoreo(this.isVentaMayoreo)
+    }
+  };
 
+  toggleMayoreo(estado: any) {
+    this.isVentaUnitaria = estado ? false : true;
+    if (estado) {
+      this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMayoreo)
+      this.element.mayoreo = estado;
+    } else {
+      this.toggleUnitario(this.isVentaUnitaria)
+      this.element.mayoreo = estado;
+    }
+  };
+
+  onEnter(valor: any) {
+    this.disabledButton = false;
+    this.mensajeFallido = "";
+    if (this.utilsService.numeros(valor) === 0){
+      this.disabledButton = true;
+      return;
+    }
+    if (this.utilsService.numeros(valor) <= this.utilsService.numeros(this.element.stock )) {
+      this.articuloCarItem.cantidad = this.utilsService.numeros(valor);
+      this.articuloCarItem.total = this.isVentaUnitaria ? this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMenudeo) : this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMayoreo);
+    } else {
+      this.disabledButton = true
+      this.mensajeFallido = "No hay suficiente Stock " + this.element.stock + " para la cantidad de productos solicitados " + valor;
+      this.articuloCarItem.cantidad = this.articuloCarItem.cantidad
+      this.articuloCarItem.total = this.articuloCarItem.total;
+
+    }
   }
 
 

@@ -59,6 +59,9 @@ export class VentasComponent {
     totalCompraArray: [],
     totalArticulos: 0,
     totalArticulosArray: [],
+    subtotalCompraMayoreo: 0,
+    subtotalCompraMayoreoArray: [],
+    
   }
 
 
@@ -254,9 +257,14 @@ export class VentasComponent {
         data: element
       })
       .afterClosed()
-      .subscribe(() => {
+      .subscribe((confirmar:boolean) => {
         try {
-            //alert("No hacer nada")
+          if(confirmar){  
+            element.isEdit = false;
+            this.changeQty(element, i, 0, 'replace');
+          }else{
+            element.isEdit = false;
+          }
         } catch (error) {
           //alert("No hacer nada");
         }
@@ -341,6 +349,8 @@ export class VentasComponent {
       this.operaciones.subtotalCompraArray.splice(i, 1);
       this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
       this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+      this.operaciones.subtotalCompraMayoreoArray = [...this.operaciones.subtotalCompraMayoreoArray];
+      this.operaciones.subtotalCompraMayoreo = this.operaciones.subtotalCompraMayoreoArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
       this.operaciones.descuentoCompraArray.splice(i, 1);
       this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray];
       this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
@@ -368,12 +378,14 @@ export class VentasComponent {
         "_id": element._id,
         "stock": element.inventarios[0].stock,
         "descripcion": element.descripcion,
+        "mayoreo": false,
         "detalleArticulo": [
           {
             "codigo": element.codigo,
             "codigoBarras": element.codigoBarras,
             "cantidad": addItem,
             "precioVenta": element.precios[0].precioVenta,
+            "precioMayoreo": element.precios[0].precioMayoreo,
             "descuento": element.precios[0].descuentoUnitario,
             "impuesto": element.precios[0].impuestoUnitario,
             "total": element.precios[0].precioVenta * addItem,
@@ -390,24 +402,37 @@ export class VentasComponent {
       this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
       this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
 
+      this.operaciones.subtotalCompraMayoreoArray = [...this.operaciones.subtotalCompraMayoreoArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioMayoreo) * parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
+      this.operaciones.subtotalCompraMayoreo = this.operaciones.subtotalCompraMayoreoArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
       this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[this.operaciones.cantidadArticulos - 1], this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].descuento)]
       this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
     }
   }
 
   changeQty(element: any = [], i: number, qty: any, process: any) {    
-    console.log(element);
-    if (process === 'replace') {
-      if (qty > element[i].stock) {
-        alert(`No hay suficiente Stock ${element.stock}, para la cantidad de productos solicitados ${(qty)}!`)
-        return;
-      }
-      if((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty) === 0)
-      {
-        this.borrarArticuloCarItem(this.dataSourceCarItem[i], i);
-        return;
-      }
-      this.dataSourceCarItem[i].detalleArticulo[0].cantidad = qty;
+    if (process === 'replace') {      
+      this.localStorageService.removeItem(element._id);
+      this.localStorageService.setItem(element._id, JSON.stringify(element));
+      this.dataSourceCarItem.splice(i, 1, JSON.parse(this.localStorageService.getItem(this.dataSourceCarItem[i]._id)!));
+      this.dataSourceCarItem = [...this.dataSourceCarItem];
+  
+      this.operaciones.totalArticulosArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
+      this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray];
+      this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+  
+      this.operaciones.subtotalCompraArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
+      this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
+      this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+      /**
+      this.operaciones.subtotalCompraMayoreoArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].precioMayoreo) * parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
+      this.operaciones.subtotalCompraMayoreoArray = [...this.operaciones.subtotalCompraMayoreoArray];
+      this.operaciones.subtotalCompraMayoreo = this.operaciones.subtotalCompraMayoreoArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+      */
+      this.operaciones.descuentoCompraArray.splice(i, 1, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[i], this.dataSourceCarItem[i].detalleArticulo[0].descuento));
+      this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray];
+      this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+      return;
     } else {
       if ((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty) > element.stock) {
         alert(`No hay suficiente Stock ${element.stock}, para la cantidad de productos solicitados ${(this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty)}!`)
@@ -420,23 +445,27 @@ export class VentasComponent {
       }
       this.dataSourceCarItem[i].detalleArticulo[0].cantidad = this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty;
     }
-    this.localStorageService.removeItem(this.dataSourceCarItem[i]._id);
-    this.dataSourceCarItem[i].detalleArticulo[0].total = this.dataSourceCarItem[i].detalleArticulo[0].precioVenta * this.dataSourceCarItem[i].detalleArticulo[0].cantidad;
-    this.localStorageService.setItem(this.dataSourceCarItem[i]._id, JSON.stringify(this.dataSourceCarItem[i]));
-    this.dataSourceCarItem.splice(i, 1, JSON.parse(this.localStorageService.getItem(this.dataSourceCarItem[i]._id)!));
-    this.dataSourceCarItem = [...this.dataSourceCarItem];
+      this.localStorageService.removeItem(this.dataSourceCarItem[i]._id);
+      //this.dataSourceCarItem[i].detalleArticulo[0].total = this.dataSourceCarItem[i].detalleArticulo[0].precioVenta * this.dataSourceCarItem[i].detalleArticulo[0].cantidad;
+      this.localStorageService.setItem(this.dataSourceCarItem[i]._id, JSON.stringify(this.dataSourceCarItem[i]));
+      this.dataSourceCarItem.splice(i, 1, JSON.parse(this.localStorageService.getItem(this.dataSourceCarItem[i]._id)!));
+      this.dataSourceCarItem = [...this.dataSourceCarItem];
 
-    this.operaciones.totalArticulosArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
-    this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray];
-    this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+      this.operaciones.totalArticulosArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
+      this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray];
+      this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
 
-    this.operaciones.subtotalCompraArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
-    this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
-    this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
-    this.operaciones.descuentoCompraArray.splice(i, 1, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[i], this.dataSourceCarItem[i].detalleArticulo[0].descuento));
-    this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray];
-    this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+      this.operaciones.subtotalCompraArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
+      this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
+      this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+      /**
+      this.operaciones.subtotalCompraMayoreoArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].precioMayoreo) * parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
+      this.operaciones.subtotalCompraMayoreoArray = [...this.operaciones.subtotalCompraMayoreoArray];
+      this.operaciones.subtotalCompraMayoreo = this.operaciones.subtotalCompraMayoreoArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+      */
+      this.operaciones.descuentoCompraArray.splice(i, 1, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[i], this.dataSourceCarItem[i].detalleArticulo[0].descuento));
+      this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray];
+      this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
   }
 
   cancelarCambios(element: any, i: number) {
@@ -456,7 +485,9 @@ export class VentasComponent {
       this.operaciones.totalCompra = 0,
       this.operaciones.totalCompraArray = [],
       this.operaciones.totalArticulos = 0,
-      this.operaciones.totalArticulosArray = []
+      this.operaciones.totalArticulosArray = [],
+      this.operaciones.subtotalCompraMayoreo = 0,
+      this.operaciones.subtotalCompraMayoreoArray = []
   };
 }
 

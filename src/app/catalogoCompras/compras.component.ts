@@ -32,7 +32,7 @@ export class ComprasComponent {
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
 
 
-  columnas: string[] = ['No', 'descripcion', 'referencia', 'marca', 'cantidad', 'valorUnitario', 'impuesto', 'subtotal', 'descuento', 'total', 'precioVenta', 'isEdit'];
+  columnas: string[] = ['No', 'descripcion', 'referencia', 'marca', 'cantidad', 'valorUnitario', 'impuesto', 'subtotal', 'descuento', 'total', 'precioVenta', 'precioMayoreo',  'isEdit'];
 
   openedMenu!: boolean;
   openedArticle!: boolean;
@@ -121,6 +121,7 @@ export class ComprasComponent {
 
   nuevoPrecio: any = {
     precioVenta: 0,
+    precioMayoreo: 0,
     impuestoUnitario: 0,
     valorUnitario: 0,
     subtotalUnitario: 0,
@@ -299,7 +300,8 @@ export class ComprasComponent {
         "cantidad": this.dataSourceCargarArticulos[i].precios[0].cantidad,
         "descuentoUnitario": this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario,
         "total": this.dataSourceCargarArticulos[i].precios[0].total,
-        "precioVenta": this.dataSourceCargarArticulos[i].precios[0].precioVenta
+        "precioVenta": this.dataSourceCargarArticulos[i].precios[0].precioVenta,
+        "precioMayoreo": this.dataSourceCargarArticulos[i].precios[0].precioMayoreo
       },
       ]
     }
@@ -558,7 +560,7 @@ export class ComprasComponent {
 export class compras {
   constructor(public No: String, public descripcion: String, public marca: string, public referencia: string,
     public valorUnitario: string, public descuento: string, public impuesto: string, public subtotal: string, public cantidad: string,
-    public precioVenta: string, public total: string, public isEdit: boolean
+    public precioVenta: string, public precioMayoreo: string, public total: string, public isEdit: boolean
   ) { }
 }
 
