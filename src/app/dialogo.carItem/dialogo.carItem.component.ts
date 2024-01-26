@@ -41,8 +41,11 @@ export class DialogoCarItemComponent implements OnInit {
   constructor(
     public dialogo: MatDialogRef<DialogoCarItemComponent>,
     @Inject(MAT_DIALOG_DATA) public element: any = [], @Inject(MAT_DIALOG_DATA) public index: number,
-    @Inject(LocalStorageService) private localStorageService: LocalStorageService, public utilsService: UtilsService) {
-    this.isVentaUnitaria = true;
+    @Inject(LocalStorageService) private localStorageService: LocalStorageService, public utilsService: UtilsService) 
+    {
+    
+    this.isVentaUnitaria = element.mayoreo? false:true;
+    this.isVentaMayoreo = element.mayoreo? true:false;
     this.articuloCarItem.cantidad = this.utilsService.numeros(element.detalleArticulo[0].cantidad);
     this.articuloCarItem.precioMenudeo = this.utilsService.numeros(element.detalleArticulo[0].precioVenta);
     this.articuloCarItem.precioMayoreo = this.utilsService.numeros(element.detalleArticulo[0].precioMayoreo);
@@ -51,6 +54,8 @@ export class DialogoCarItemComponent implements OnInit {
   }
 
   actualizar(): void {
+    alert("Pasa por Acá")
+    this.element.mayoreo = this.isVentaMayoreo? true:false
     this.element.detalleArticulo[0].cantidad = this.articuloCarItem.cantidad;
     this.element.detalleArticulo[0].precioVenta = this.articuloCarItem.precioMenudeo;
     this.element.detalleArticulo[0].precioMayoreo = this.articuloCarItem.precioMayoreo;
@@ -59,6 +64,8 @@ export class DialogoCarItemComponent implements OnInit {
   }
 
   cerrar(): void {
+    this.articuloCarItem.cantidad = this.articuloCarItem.cantidad
+    this.articuloCarItem.total = this.articuloCarItem.total;
     this.dialogo.close(false);
   }
 
@@ -97,7 +104,6 @@ export class DialogoCarItemComponent implements OnInit {
       this.mensajeFallido = "No hay suficiente Stock " + this.element.stock + " para la cantidad de productos solicitados " + valor;
       this.articuloCarItem.cantidad = this.articuloCarItem.cantidad
       this.articuloCarItem.total = this.articuloCarItem.total;
-
     }
   }
 
