@@ -54,7 +54,6 @@ export class DialogoCarItemComponent implements OnInit {
   }
 
   actualizar(): void {
-    alert("Pasa por Acá")
     this.element.mayoreo = this.isVentaMayoreo? true:false
     this.element.detalleArticulo[0].cantidad = this.articuloCarItem.cantidad;
     this.element.detalleArticulo[0].precioVenta = this.articuloCarItem.precioMenudeo;

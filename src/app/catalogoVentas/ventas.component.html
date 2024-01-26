@@ -491,8 +491,8 @@
                                     <div *ngIf="!carItem.mayoreo">
                                         {{row.precioVenta | currency}} 
                                     </div>
-                                    <div *ngIf="!carItem.mayoreo">
-                                        {{row.precioMayoreo | currency}} 
+                                    <div *ngIf="carItem.mayoreo">
+                                        {{this.utilsService.numeros(row.precioMayoreo) | currency}} 
                                     </div>
                                 </span>
                             </td>
