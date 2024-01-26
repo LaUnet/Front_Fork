@@ -78,6 +78,13 @@ export class UtilsService {
     return descuento;
   }
 
+  calcularDescuentoMayoreo(a: any, b: any) {
+    a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
+    b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
+    let descuento = a - b;
+    return descuento;
+  }
+
   calculartotal(a: any, b: any) {
     a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
     b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;

@@ -152,7 +152,6 @@
                         </mat-form-field></td>
                 </tr>
             </table>
-
             <table class="full-width">
                 <tr>
                     <td><mat-form-field class="full-width" appearance="outline">
@@ -572,11 +571,13 @@
                                 <input type="text" aria-label="subtotal" class="form-control" disabled
                                     value="{{this.operaciones.subtotalCompra | currency}}">
                             </div>
+                            <!--
                             <div class="input-group">
                                 <span class="input-group-text" style="background-color: white; width: 50%">Iva</span>
                                 <input type="text" aria-label="iva" class="form-control" disabled
                                     value="{{ 0 | currency}}">
                             </div>
+                            -->
                             <div class="input-group">
                                 <span class="input-group-text"
                                     style="background-color: white; width: 50%">Descuento</span>
@@ -605,8 +606,8 @@
                                 <button mat-button
                                     style="font-family:Impact; background-color:rgba(0, 255, 85, 0.658); width: 60%"
                                     [disabled]="(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) === 0 || numeroDocumentoFormControl.invalid"
-                                    type="button">Venta | {{(this.operaciones.subtotalCompra -
-                                    this.operaciones.descuentoCompra) | currency}}
+                                    type="button" (click)="mostrarMetodoPagoCarItem()"
+                                    >Venta | {{(this.operaciones.subtotalCompra -this.operaciones.descuentoCompra) | currency}}
                                 </button>
 
                                 <button mat-button style="background-color: gainsboro; width: 15%;" type="button"

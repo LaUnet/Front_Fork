@@ -201,7 +201,7 @@
                     </td>
                 </tr>
             </table>
-            <div *ngIf="mensajeExitosoArticulo" class="alert alert-danger mt-3">
+            <div *ngIf="mensajeExitosoArticulo" class="alert alert-success mt-3">
                 {{ mensajeExitoso }}
             </div>
             <div *ngIf="mensajeFallidoArticulo" class="alert alert-danger mt-3">
@@ -456,7 +456,7 @@
                                 <div *ngIf="articulos.isEdit">
                                     <input class="input-group input-group-sm" id="precioMayoreo" type="number"
                                         name="precioMayoreo" [errorStateMatcher]="matcher" matInput
-                                        [(ngModel)]="row.precioVenta" (ngModelChange)="row.precioMayoreo = $event"
+                                        [(ngModel)]="row.precioMayoreo" (ngModelChange)="row.precioMayoreo = $event"
                                         required>
                                 </div>
                             </span>
@@ -557,6 +557,7 @@
                                     <span matTextSuffix>{{ this.operaciones.subtotalCompra-this.operaciones.impuestoCompra | currency}}</span>
                                 </mat-form-field>
                             </td>
+                            <!--
                             <td>
                                 <mat-form-field class="full-width" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bold">Total Impuesto</mat-label>
@@ -566,6 +567,7 @@
                                     <span matTextSuffix>{{this.operaciones.impuestoCompra| currency}}</span>
                                 </mat-form-field>
                             </td>
+                            -->
                             <td>
                                 <mat-form-field class="full-width" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bold">Descuento</mat-label>
@@ -614,7 +616,7 @@
                     </td>
                 </table>
             </form>
-            <div *ngIf="mensajeExitoso" class="alert alert-danger mt-3">
+            <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
                 {{ mensajeExitoso }}
             </div>
             <div *ngIf="mensajeFallido" class="alert alert-danger mt-3">

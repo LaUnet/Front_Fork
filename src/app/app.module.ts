@@ -53,6 +53,7 @@ import {MatBadgeModule} from '@angular/material/badge';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
+import { DialogoMetodoPagoComponent } from './dialogo.metodo-pago/dialogo.metodo-pago.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import {MatNativeDateModule} from '@angular/material/core';
     DialogoConfirmacionComponent,
     VentasComponent,
     DialogoArticuloComponent,
-    DialogoCarItemComponent
+    DialogoCarItemComponent,
+    DialogoMetodoPagoComponent
   ],
   imports: [
     BrowserModule,
