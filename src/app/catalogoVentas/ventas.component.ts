@@ -417,6 +417,8 @@ export class VentasComponent {
       this.dataSourceCarItem.splice(i, 1, JSON.parse(this.localStorageService.getItem(this.dataSourceCarItem[i]._id)!));
       this.dataSourceCarItem = [...this.dataSourceCarItem];
   
+      this.dataSourceCarItem[i].detalleArticulo[0].total = this.dataSourceCarItem[i].detalleArticulo[0].precioVenta * this.dataSourceCarItem[i].detalleArticulo[0].cantidad;
+
       this.operaciones.totalArticulosArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
       this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray];
       this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
@@ -446,10 +448,11 @@ export class VentasComponent {
       this.dataSourceCarItem[i].detalleArticulo[0].cantidad = this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty;
     }
       this.localStorageService.removeItem(this.dataSourceCarItem[i]._id);
-      //this.dataSourceCarItem[i].detalleArticulo[0].total = this.dataSourceCarItem[i].detalleArticulo[0].precioVenta * this.dataSourceCarItem[i].detalleArticulo[0].cantidad;
       this.localStorageService.setItem(this.dataSourceCarItem[i]._id, JSON.stringify(this.dataSourceCarItem[i]));
       this.dataSourceCarItem.splice(i, 1, JSON.parse(this.localStorageService.getItem(this.dataSourceCarItem[i]._id)!));
       this.dataSourceCarItem = [...this.dataSourceCarItem];
+
+      this.dataSourceCarItem[i].detalleArticulo[0].total = this.dataSourceCarItem[i].detalleArticulo[0].precioVenta * this.dataSourceCarItem[i].detalleArticulo[0].cantidad;
 
       this.operaciones.totalArticulosArray.splice(i, 1, (parseInt(this.dataSourceCarItem[i].detalleArticulo[0].cantidad)));
       this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray];
