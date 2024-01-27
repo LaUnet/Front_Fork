@@ -1,1 +1,99 @@
-<p>dialogo.metodo-pago works!</p>
+<section class="my-custom-container">
+    <h2 mat-dialog-title align="center"
+        style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; color: blue;">PASARELA DE PAGO</h2>
+    <td></td>
+    <div mat-dialog-content align="center">
+        <mat-stepper #stepper>
+            <mat-step [stepControl]="firstFormGroup" errorMessage="Forma de pago es Requerido">
+                <form [formGroup]="firstFormGroup">
+                    <ng-template matStepLabel>Diligencia Metodo Pago</ng-template>
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline" style="margin-top: 10px;">
+                                <mat-label>Forma de Pago</mat-label>
+                                <mat-icon matSuffix>currency_exchange</mat-icon>
+                                <mat-select [(ngModel)]="pasarela.tipoPago" formControlName="tipoPagoFormControl"
+                                    [errorStateMatcher]="matcher" required>
+                                    <mat-option disabled selected>Selecciona una opcíon</mat-option>
+                                    <mat-option value="EFE">Efectivo</mat-option>
+                                    <mat-option value="TRA">Transferencia</mat-option>
+                                    <mat-option value="MIX">Mixto</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Efectivo</mat-label>
+                                <mat-icon matSuffix>monetization_on</mat-icon>
+                                <input matInput [(ngModel)]="pasarela.efectivo" formControlName="efectivoFormControl" [errorStateMatcher]="matcher" required>
+                            </mat-form-field>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Transferencia</mat-label>
+                                <mat-icon matSuffix>send_to_mobile</mat-icon>
+                                <input matInput [(ngModel)]="pasarela.transferencia" formControlName="transferenciaFormControl" [errorStateMatcher]="matcher" required>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <div>
+                        <button mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step [stepControl]="secondFormGroup" errorMessage="Información Requerida">
+                <form [formGroup]="secondFormGroup">
+                    <ng-template matStepLabel>Tipo Factura y Vendedor</ng-template>
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline" style="margin-top: 10px;">
+                                <mat-label>Factura Electronica</mat-label>
+                                <mat-icon matSuffix>attach_email</mat-icon>
+                                <mat-select [(ngModel)]="pasarela.facturaElectronica" formControlName="facturaElectronicaFormControl"
+                                    [errorStateMatcher]="matcher" required>
+                                    <mat-option disabled selected>Selecciona una opcíon</mat-option>
+                                    <mat-option value="SI">SI</mat-option>
+                                    <mat-option value="NO">NO</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Vendedor</mat-label>
+                                <mat-icon matSuffix>co_present</mat-icon>
+                                <mat-select [(ngModel)]="pasarela.vendedor" formControlName="vendedorFormControl"
+                                    [errorStateMatcher]="matcher">
+                                    <mat-option disabled selected>Selecciona una opcíon</mat-option>
+                                    <mat-option *ngFor="let ubicacion of dataSourceUsuarios" [value]="ubicacion.codigo" required>
+                                        {{ ubicacion.codigo }}
+                                      </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <div>
+                        <button mat-button matStepperPrevious>Atras</button>
+                        <button mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step>
+                <ng-template matStepLabel>Hecho</ng-template>
+                <p>Completado</p>
+                <div>
+                    <button mat-button matStepperPrevious>Atras</button>
+                    <button mat-button (click)="stepper.reset()">Reiniciar</button>
+                </div>
+            </mat-step>
+        </mat-stepper>
+        <div *ngIf="mensajeFallido" class="alert alert-danger mt-3">
+            {{ mensajeFallido }}
+          </div>
+    </div>
+    <div mat-dialog-actions align="center">
+        <button mat-button color="primary"
+        [disabled] = "firstFormGroup.invalid || secondFormGroup.invalid">CONFIRMAR</button>
+    </div>
+</section>

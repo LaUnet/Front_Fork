@@ -8,6 +8,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { DialogoCarItemComponent } from "../dialogo.carItem/dialogo.carItem.component";
+import { DialogoMetodoPagoComponent } from '../dialogo.metodo-pago/dialogo.metodo-pago.component';
 import { MatSort } from '@angular/material/sort';
 import { NavigationEnd, Router } from '@angular/router';
 import { LocalStorageService } from '../local-storage.service';
@@ -274,17 +275,14 @@ export class VentasComponent {
 
   mostrarMetodoPagoCarItem(): void {
     this.dialogo
-      .open(DialogoCarItemComponent, {
+      .open(DialogoMetodoPagoComponent, {
         data: this.dataSourceCarItem
       })
       .afterClosed()
       .subscribe((confirmar: boolean) => {
         try {
           if (confirmar) {
-            this.dataSourceCarItem.isEdit = false;
-            this.changeQty(this.dataSourceCarItem, 1, 0, 'replace');
-          } else {
-            this.dataSourceCarItem.isEdit = false;
+          //alert("No hacer nada");
           }
         } catch (error) {
           //alert("No hacer nada");

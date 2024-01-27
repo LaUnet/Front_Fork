@@ -20,6 +20,7 @@ import { ComprasComponent } from './catalogoCompras/compras.component';
 import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.component';
 import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.component';
 import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.component';
+import { DialogoMetodoPagoComponent } from './dialogo.metodo-pago/dialogo.metodo-pago.component';
 
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -53,7 +54,9 @@ import {MatBadgeModule} from '@angular/material/badge';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
-import { DialogoMetodoPagoComponent } from './dialogo.metodo-pago/dialogo.metodo-pago.component';
+import {MatStepperModule} from '@angular/material/stepper';
+
+
 
 @NgModule({
   declarations: [
@@ -107,6 +110,7 @@ import { DialogoMetodoPagoComponent } from './dialogo.metodo-pago/dialogo.metodo
     FlexLayoutModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatStepperModule
     ],
   providers: [],
   bootstrap: [AppComponent]
