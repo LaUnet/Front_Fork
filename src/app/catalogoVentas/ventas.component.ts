@@ -328,8 +328,7 @@ export class VentasComponent {
       .subscribe((confirmar: boolean) => {
         try {
           if (confirmar) {
-            console.log(this.dataSourceSales)
-            //this.guardarVenta();
+            this.guardarVenta();
           }
         } catch (error) {
           //alert("No hacer nada");
