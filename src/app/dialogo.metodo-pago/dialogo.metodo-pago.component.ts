@@ -1,13 +1,13 @@
 
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component } from '@angular/core';
 import { ErrorStateMatcher } from '@angular/material/core';
-import {FormBuilder, Validators, FormsModule, ReactiveFormsModule,FormControl, FormGroupDirective, NgForm,} from '@angular/forms';
-import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
+import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { LocalStorageService } from '../local-storage.service';
 import { UtilsService } from '../utils.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
+import { isEmpty } from 'rxjs';
 
 @Component({
   selector: 'app-dialogo.metodo-pago',
@@ -16,44 +16,41 @@ import { TokenService } from '../login/token';
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,
-      useValue: {showError: true},
+      useValue: { showError: true },
     },
   ],
 })
 export class DialogoMetodoPagoComponent {
 
-  firstFormGroup = this._formBuilder.group({
-    firstCtrl: ['', Validators.required],
-    tipoPagoFormControl: ['', Validators.required],
-    efectivoFormControl: ['', Validators.required],
-    transferenciaFormControl: ['', Validators.required],
-  });
-  secondFormGroup = this._formBuilder.group({
-    secondCtrl: ['', Validators.required],
-    facturaElectronicaFormControl: ['', Validators.required],
-    vendedorFormControl: ['', Validators.required],
-  });
+  constructor(private http: HttpClient, private tokenService: TokenService, public utilsService: UtilsService) { }
 
-  constructor(private _formBuilder: FormBuilder, private http: HttpClient, private tokenService: TokenService) {}
+  /**
+ * Control Error Textfields Pasarela
+ */
+  firstFormControl = new FormControl('');
+  secondFormControl = new FormControl('');
 
   dataSourceUsuarios: any = [];
-  matcher = new MyErrorStateMatcher();
+  dataSourceSellers: any = [];
+  //matcher = new MyErrorStateMatcher();
   isLoadingResults: boolean = false;
   mensajeFallido: string = '';
   pasarela = {
     tipoPago: '',
     efectivo: '',
     transferencia: '',
-    facturaElectronica: false,
-    vendedor:'',
+    facturaElectronica: '',
+    vendedor: '',
   };
 
-  
+
   ngOnInit(): void {
+    this.setState(this.firstFormControl, 1);
     this.cargarUsuarios();
   }
 
   async cargarUsuarios() {
+    const rolName = 'seller'
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -61,33 +58,55 @@ export class DialogoMetodoPagoComponent {
         'x-access-token': `${token}`
       })
     };
-    this.isLoadingResults= true;
+    this.isLoadingResults = true;
     try {
-      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
-      .subscribe(response => {
-        if (response.Status) {
-          this.dataSourceUsuarios = response.Data;
-        }
-        this.isLoadingResults= false;
-      }, error => {
-        this.isLoadingResults= false;
-        this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
-        console.error('Error en la solicitud:', error);
-      }); 
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users', httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceUsuarios = response.Data.docs;
+            for (let i = 0; i < this.dataSourceUsuarios.length; i++) {
+              if (this.dataSourceUsuarios[i].rolName[0].name === rolName) {
+                this.dataSourceSellers = [...this.dataSourceSellers, this.dataSourceUsuarios[i]]
+              }
+            }
+          }
+          this.isLoadingResults = false;
+        }, error => {
+          this.isLoadingResults = false;
+          this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nue{vamente.';
+          console.error('Error en la solicitud:', error);
+        });
     } catch (error) {
-      this.isLoadingResults= false;
+      this.isLoadingResults = false;
       this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
       console.error('Error en la solicitud:', error);
     }
   }
 
-
-}
-
-  /** Error when invalid control is dirty, touched, or submitted. */
-  export class MyErrorStateMatcher implements ErrorStateMatcher {
-    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-      const isSubmitted = form && form.submitted;
-      return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  setState(control: FormControl, process: number) {
+    control.setErrors({ 'incorrect': true })
+    if (process === 1) {
+      if (this.pasarela.tipoPago === 'EFE' && this.utilsService.numeros(this.pasarela.efectivo) > 0) {
+        control.setErrors(null)
+        this.secondFormControl.setErrors({ 'incorrect': true });
+      }
+      if (this.pasarela.tipoPago === 'TRA' && this.utilsService.numeros(this.pasarela.transferencia) > 0) {
+        control.setErrors(null)
+        this.secondFormControl.setErrors({ 'incorrect': true });
+      }
+      if (this.pasarela.tipoPago === 'MIX' && (this.utilsService.numeros(this.pasarela.efectivo) > 0 && this.utilsService.numeros(this.pasarela.transferencia) > 0)) {
+        control.setErrors(null)
+        this.secondFormControl.setErrors({ 'incorrect': true });
+      }
+    }
+    if (process === 2) {
+      if (this.pasarela.facturaElectronica !== "" && this.pasarela.vendedor !== "") {
+        control.setErrors(null)
+      }
     }
   }
+
+  confirmarVenta() {
+    alert("Ya casi HP")
+  }
+}

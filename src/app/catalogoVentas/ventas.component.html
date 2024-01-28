@@ -605,7 +605,8 @@
                                 </span>
                                 <button mat-button
                                     style="font-family:Impact; background-color:rgba(0, 255, 85, 0.658); width: 60%"
-                                    [disabled]="(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) === 0 || numeroDocumentoFormControl.invalid"
+                                    [disabled]="(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) === 0 
+                                    || numeroDocumentoFormControl.invalid || (this.nuevoCliente.tipoDocumento === '' || this.nuevoCliente.tipoDocumento === 'NO EXISTE')"
                                     type="button" (click)="mostrarMetodoPagoCarItem()"
                                     >Venta | {{(this.operaciones.subtotalCompra -this.operaciones.descuentoCompra) | currency}}
                                 </button>

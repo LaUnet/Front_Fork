@@ -206,6 +206,10 @@ export class VentasComponent {
             this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
             if (response.Data.totalDocs === 0) {
               this.mensajeFallido = 'Articulo no encontrado';
+            }else{
+              if (tipo === 1){
+                this.addToCart(response.Data.docs[0])
+              }
             }
           }
           this.isLoadingResults = false;
