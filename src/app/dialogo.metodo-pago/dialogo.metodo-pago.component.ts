@@ -1,13 +1,12 @@
 
-import { Component } from '@angular/core';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { Component,Inject, OnInit  } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl} from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { LocalStorageService } from '../local-storage.service';
 import { UtilsService } from '../utils.service';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { TokenService } from '../login/token';
-import { isEmpty } from 'rxjs';
 
 @Component({
   selector: 'app-dialogo.metodo-pago',
@@ -20,9 +19,10 @@ import { isEmpty } from 'rxjs';
     },
   ],
 })
-export class DialogoMetodoPagoComponent {
+export class DialogoMetodoPagoComponent implements OnInit{
 
-  constructor(private http: HttpClient, private tokenService: TokenService, public utilsService: UtilsService) { }
+  constructor(public dialogo: MatDialogRef<DialogoMetodoPagoComponent>, @Inject(MAT_DIALOG_DATA) public element: any = [],
+    private http: HttpClient, private tokenService: TokenService, public utilsService: UtilsService) { }
 
   /**
  * Control Error Textfields Pasarela
@@ -84,19 +84,33 @@ export class DialogoMetodoPagoComponent {
   }
 
   setState(control: FormControl, process: number) {
+    this.mensajeFallido = '';
     control.setErrors({ 'incorrect': true })
     if (process === 1) {
-      if (this.pasarela.tipoPago === 'EFE' && this.utilsService.numeros(this.pasarela.efectivo) > 0) {
-        control.setErrors(null)
-        this.secondFormControl.setErrors({ 'incorrect': true });
+      if (this.pasarela.tipoPago === 'EFECTIVO' && this.utilsService.numeros(this.pasarela.efectivo) > 0) {
+        if (this.pasarela.efectivo >= this.element.total){
+          control.setErrors(null)
+          this.secondFormControl.setErrors({ 'incorrect': true });
+        }else{
+          this.mensajeFallido = 'Valor ingresado $' +this.pasarela.efectivo+ ' menor al valor total a cobrar $'+this.element.total;
+        }
+        
       }
-      if (this.pasarela.tipoPago === 'TRA' && this.utilsService.numeros(this.pasarela.transferencia) > 0) {
-        control.setErrors(null)
-        this.secondFormControl.setErrors({ 'incorrect': true });
+      if (this.pasarela.tipoPago === 'TRANSFERENCIA' && this.utilsService.numeros(this.pasarela.transferencia) > 0) {
+        if (this.pasarela.transferencia >= this.element.total){
+          control.setErrors(null)
+          this.secondFormControl.setErrors({ 'incorrect': true });
+        }else{
+          this.mensajeFallido = 'Valor ingresado $' +this.pasarela.transferencia+ ' menor al valor total a cobrar $'+this.element.total;
+        }
       }
-      if (this.pasarela.tipoPago === 'MIX' && (this.utilsService.numeros(this.pasarela.efectivo) > 0 && this.utilsService.numeros(this.pasarela.transferencia) > 0)) {
-        control.setErrors(null)
-        this.secondFormControl.setErrors({ 'incorrect': true });
+      if (this.pasarela.tipoPago === 'MIXTO' && (this.utilsService.numeros(this.pasarela.efectivo) > 0 && this.utilsService.numeros(this.pasarela.transferencia) > 0)) {
+        if ((this.pasarela.transferencia + this.pasarela.efectivo) >= this.element.total){
+          control.setErrors(null)
+          this.secondFormControl.setErrors({ 'incorrect': true });
+        }else{
+          this.mensajeFallido = 'Valor ingresado $' +(this.pasarela.transferencia + this.pasarela.efectivo)+ ' menor al valor total a cobrar $'+this.element.total;
+        }
       }
     }
     if (process === 2) {
@@ -107,6 +121,11 @@ export class DialogoMetodoPagoComponent {
   }
 
   confirmarVenta() {
-    alert("Ya casi HP")
+    this.element.formaPago = this.pasarela.tipoPago
+    this.element.cantidadEfectivo = this.utilsService.numeros(this.pasarela.efectivo) > 0? this.utilsService.numeros(this.pasarela.efectivo) : 0;
+    this.element.cantidadTransferencia = this.utilsService.numeros(this.pasarela.transferencia) > 0? this.utilsService.numeros(this.pasarela.transferencia) : 0;
+    this.element.facturacionElectronica = this.pasarela.facturaElectronica;
+    this.element.vendedor = this.pasarela.vendedor
+    this.dialogo.close(true);
   }
 }

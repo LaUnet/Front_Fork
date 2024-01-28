@@ -18,9 +18,9 @@
                                 <mat-icon matSuffix>currency_exchange</mat-icon>
                                 <mat-select [(ngModel)]="pasarela.tipoPago" required>
                                     <mat-option disabled selected>Selecciona una opcíon</mat-option>
-                                    <mat-option value="EFE">Efectivo</mat-option>
-                                    <mat-option value="TRA">Transferencia</mat-option>
-                                    <mat-option value="MIX">Mixto</mat-option>
+                                    <mat-option value="EFECTIVO">Efectivo</mat-option>
+                                    <mat-option value="TRANSFERENCIA">Transferencia</mat-option>
+                                    <mat-option value="MIXTO">Mixto</mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </td>
@@ -32,13 +32,15 @@
 
                                 <mat-icon matSuffix>monetization_on</mat-icon>
                                 <input type="text" matInput [(ngModel)]="pasarela.efectivo" 
-                                [disabled]="pasarela.tipoPago === 'TRA'? true:false">
+                                name= "efectivo"
+                                [disabled]="pasarela.tipoPago === 'TRANSFERENCIA'? true:false">
                             </mat-form-field>
                             <mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Transferencia</mat-label>
                                 <mat-icon matSuffix>send_to_mobile</mat-icon>
                                 <input type="text" matInput [(ngModel)]="pasarela.transferencia"
-                                [disabled]="pasarela.tipoPago === 'EFE'? true:false">
+                                name= "transferencia"
+                                [disabled]="pasarela.tipoPago === 'EFECTIVO'? true:false">
                             </mat-form-field>
                         </td>
                     </tr>
