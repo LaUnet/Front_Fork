@@ -44,8 +44,8 @@ export class DialogoCarItemComponent implements OnInit {
     @Inject(LocalStorageService) private localStorageService: LocalStorageService, public utilsService: UtilsService) 
     {
     
-    this.isVentaUnitaria = element.mayoreo? false:true;
-    this.isVentaMayoreo = element.mayoreo? true:false;
+    this.isVentaUnitaria = element.detalleArticulo[0].mayoreo? false:true;
+    this.isVentaMayoreo = element.detalleArticulo[0].mayoreo? true:false;
     this.articuloCarItem.cantidad = this.utilsService.numeros(element.detalleArticulo[0].cantidad);
     this.articuloCarItem.precioMenudeo = this.utilsService.numeros(element.detalleArticulo[0].precioVenta);
     this.articuloCarItem.precioMayoreo = this.utilsService.numeros(element.detalleArticulo[0].precioMayoreo);
@@ -54,7 +54,7 @@ export class DialogoCarItemComponent implements OnInit {
   }
 
   actualizar(): void {
-    this.element.mayoreo = this.isVentaMayoreo? true:false
+    this.element.detalleArticulo[0].mayoreo = this.isVentaMayoreo? true:false
     this.element.detalleArticulo[0].cantidad = this.articuloCarItem.cantidad;
     this.element.detalleArticulo[0].precioVenta = this.articuloCarItem.precioMenudeo;
     this.element.detalleArticulo[0].precioMayoreo = this.articuloCarItem.precioMayoreo;

@@ -457,7 +457,9 @@
                                 *matHeaderCellDef>
                                 Descripción </th>
                             <td mat-cell *matCellDef="let carItem">
-                                {{carItem.descripcion}}
+                                <span *ngFor="let row of carItem.detalleArticulo">
+                                {{row.descripcion}}
+                                </span>
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="cantidad">
@@ -489,10 +491,10 @@
                                 *matHeaderCellDef>Precio Venta</th>
                             <td mat-cell *matCellDef="let carItem">
                                 <span *ngFor="let row of carItem.detalleArticulo">
-                                    <div *ngIf="!carItem.mayoreo">
+                                    <div *ngIf="!row.mayoreo">
                                         {{row.precioVenta | currency}}
                                     </div>
-                                    <div *ngIf="carItem.mayoreo">
+                                    <div *ngIf="row.mayoreo">
                                         {{this.utilsService.numeros(row.precioMayoreo) | currency}}
                                     </div>
                                 </span>
