@@ -55,6 +55,7 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatStepperModule} from '@angular/material/stepper';
+import { DialogoInvoiceComponent } from './dialogo.invoice/dialogo.invoice.component';
 
 
 
@@ -78,7 +79,8 @@ import {MatStepperModule} from '@angular/material/stepper';
     VentasComponent,
     DialogoArticuloComponent,
     DialogoCarItemComponent,
-    DialogoMetodoPagoComponent
+    DialogoMetodoPagoComponent,
+    DialogoInvoiceComponent
   ],
   imports: [
     BrowserModule,

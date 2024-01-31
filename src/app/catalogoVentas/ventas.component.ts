@@ -9,6 +9,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { DialogoCarItemComponent } from "../dialogo.carItem/dialogo.carItem.component";
 import { DialogoMetodoPagoComponent } from '../dialogo.metodo-pago/dialogo.metodo-pago.component';
+import { DialogoInvoiceComponent } from '../dialogo.invoice/dialogo.invoice.component';
 import { MatSort } from '@angular/material/sort';
 import { NavigationEnd, Router } from '@angular/router';
 import { LocalStorageService } from '../local-storage.service';
@@ -317,6 +318,26 @@ export class VentasComponent {
       });
   }
 
+  dialogoImprimirVenta(): void {
+    //Adicion datos cliente para factura
+    this.dataSourceSales.cliente = this.dataSourceClientes    
+    this.dialogo
+      .open(DialogoInvoiceComponent, {data: this.dataSourceSales})
+      .afterClosed()
+      .subscribe((confirmar: boolean) => {
+        try {
+          if (confirmar) {
+            this.mensajeExitoso = "Venta guardada correctamente.";
+            setTimeout(() => {
+              this.refreshPage();
+            }, 3000);
+          }
+        } catch (error) {
+          //alert("No hacer nada");
+        }
+      });
+  }
+
   async guardarVenta() {
     //Cargamos los articulos por iteración Principal
     this.dataSourceSalesArticle = [];
@@ -338,10 +359,7 @@ export class VentasComponent {
     try {
       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
       this.isLoadingResults = false;
-      this.mensajeExitoso = "Venta guardada correctamente.";
-      setTimeout(() => {
-        this.refreshPage();
-      }, 3000);
+      this.dialogoImprimirVenta();
     } catch (error) {
       this.isLoadingResults = false;
       this.mensajeFallido = 'Error al guardar. Por favor, inténtelo nuevamente.';
