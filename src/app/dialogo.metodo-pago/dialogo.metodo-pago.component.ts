@@ -34,6 +34,7 @@ export class DialogoMetodoPagoComponent implements OnInit{
   //matcher = new MyErrorStateMatcher();
   isLoadingResults: boolean = false;
   mensajeFallido: string = '';
+  mensajeExitoso: string = '';
   pasarela = {
     tipoPago: '',
     efectivo: 0,
@@ -84,25 +85,32 @@ export class DialogoMetodoPagoComponent implements OnInit{
 
   setState(control: FormControl, process: number) {
     this.mensajeFallido = '';
+    this.mensajeExitoso = '';
     control.setErrors({ 'incorrect': true })
     if (process === 1) {
       if (this.pasarela.tipoPago === 'EFECTIVO' && this.utilsService.numeros(this.pasarela.efectivo) > 0) {
-        this.pasarela.transferencia = 0;
         if (this.pasarela.efectivo >= this.dataSourceSales.total){
           control.setErrors(null)
           this.secondFormControl.setErrors({ 'incorrect': true });
+          if (this.pasarela.efectivo > this.dataSourceSales.total)
+          {
+            this.mensajeExitoso = 'Valor a devolver ' +this.utilsService.getCurrency(this.pasarela.efectivo-this.dataSourceSales.total)+'         por favor verificar';  
+          }
         }else{
-          this.mensajeFallido = 'Valor ingresado $' +this.pasarela.efectivo+ ' menor al valor total a cobrar $'+this.dataSourceSales.total;
+          this.mensajeFallido = 'Valor ingresado   ' +this.utilsService.getCurrency(this.pasarela.efectivo)+ '   menor al valor total a cobrar   '+this.utilsService.getCurrency(this.dataSourceSales.total);
         }
         
       }
       if (this.pasarela.tipoPago === 'TRANSFERENCIA' && this.utilsService.numeros(this.pasarela.transferencia) > 0) {
-        this.pasarela.efectivo = 0;
         if (this.pasarela.transferencia >= this.dataSourceSales.total){
           control.setErrors(null)
           this.secondFormControl.setErrors({ 'incorrect': true });
+          if (this.pasarela.transferencia > this.dataSourceSales.total)
+          {
+            this.mensajeExitoso = 'Valor a devolver ' +this.utilsService.getCurrency(this.pasarela.transferencia-this.dataSourceSales.total)+'         por favor verificar';  
+          }
         }else{
-          this.mensajeFallido = 'Valor ingresado $' +this.pasarela.transferencia+ ' menor al valor total a cobrar $'+this.dataSourceSales.total;
+          this.mensajeFallido = 'Valor ingresado   ' +this.utilsService.getCurrency(this.pasarela.transferencia)+ '   menor al valor total a cobrar   '+this.utilsService.getCurrency(this.dataSourceSales.total);
         }
       }
       if (this.pasarela.tipoPago === 'MIXTO' && (this.utilsService.numeros(this.pasarela.efectivo) > 0 && this.utilsService.numeros(this.pasarela.transferencia) > 0)) {
@@ -110,8 +118,12 @@ export class DialogoMetodoPagoComponent implements OnInit{
         if (suma >= this.dataSourceSales.total){          
           control.setErrors(null)
           this.secondFormControl.setErrors({ 'incorrect': true });
+          if (suma > this.dataSourceSales.total)
+          {
+            this.mensajeExitoso = 'Valor a devolver ' +this.utilsService.getCurrency(suma-this.dataSourceSales.total)+ '         por favor verificar';  
+          }
         }else{
-          this.mensajeFallido = 'Valor ingresado $' +suma+ ' menor al valor total a cobrar $'+this.dataSourceSales.total;
+          this.mensajeFallido = 'Valor ingresado   ' +this.utilsService.getCurrency(suma)+ '   menor al valor total a cobrar   '+this.utilsService.getCurrency(this.dataSourceSales.total);
         }
       }
     }
@@ -129,5 +141,11 @@ export class DialogoMetodoPagoComponent implements OnInit{
     this.dataSourceSales.facturacionElectronica = this.pasarela.facturaElectronica;
     this.dataSourceSales.vendedor = this.pasarela.vendedor
     this.dialogo.close(true);
+  }
+
+  changeList(value:any)
+  {
+    this.pasarela.efectivo = value === 'TRANSFERENCIA'? 0 : this.pasarela.efectivo;
+    this.pasarela.transferencia = value === 'EFECTIVO'? 0 : this.pasarela.transferencia;
   }
 }

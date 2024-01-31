@@ -21,7 +21,7 @@ import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.com
 import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.component';
 import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.component';
 import { DialogoMetodoPagoComponent } from './dialogo.metodo-pago/dialogo.metodo-pago.component';
-
+import { DialogoInvoiceComponent } from './dialogo.invoice/dialogo.invoice.component';
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
@@ -55,7 +55,7 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatStepperModule} from '@angular/material/stepper';
-import { DialogoInvoiceComponent } from './dialogo.invoice/dialogo.invoice.component';
+import { CurrencyMaskModule } from "ng2-currency-mask";
 
 
 
@@ -112,7 +112,8 @@ import { DialogoInvoiceComponent } from './dialogo.invoice/dialogo.invoice.compo
     FlexLayoutModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatStepperModule
+    MatStepperModule,
+    CurrencyMaskModule
     ],
   providers: [],
   bootstrap: [AppComponent]

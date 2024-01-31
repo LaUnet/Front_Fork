@@ -16,7 +16,7 @@
                             <mat-form-field class="full-width" appearance="outline" style="margin-top: 10px;">
                                 <mat-label>Forma de Pago</mat-label>
                                 <mat-icon matSuffix>currency_exchange</mat-icon>
-                                <mat-select [(ngModel)]="pasarela.tipoPago" required>
+                                <mat-select [(ngModel)]="pasarela.tipoPago" required (valueChange)="changeList($event)">
                                     <mat-option disabled selected>Selecciona una opcíon</mat-option>
                                     <mat-option value="EFECTIVO">Efectivo</mat-option>
                                     <mat-option value="TRANSFERENCIA">Transferencia</mat-option>
@@ -31,15 +31,15 @@
                                 <mat-label>Efectivo</mat-label>
 
                                 <mat-icon matSuffix>monetization_on</mat-icon>
-                                <input type="text" matInput [(ngModel)]="pasarela.efectivo" 
-                                name= "efectivo"
+                                <input style="font-size: 200%;"  type="text" matInput [(ngModel)]="pasarela.efectivo" 
+                                name= "efectivo" currencyMask
                                 [disabled]="pasarela.tipoPago === 'TRANSFERENCIA'? true:false">
                             </mat-form-field>
                             <mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Transferencia</mat-label>
                                 <mat-icon matSuffix>send_to_mobile</mat-icon>
-                                <input type="text" matInput [(ngModel)]="pasarela.transferencia"
-                                name= "transferencia"
+                                <input style="font-size: 200%;" type="text" matInput [(ngModel)]="pasarela.transferencia"
+                                name= "transferencia" currencyMask 
                                 [disabled]="pasarela.tipoPago === 'EFECTIVO'? true:false">
                             </mat-form-field>
                         </td>
@@ -91,9 +91,12 @@
             </mat-step>
         </mat-stepper>
     </div>
-    <div *ngIf="mensajeFallido" class="alert alert-danger mt-3">
+    <h5><div *ngIf="mensajeFallido" class="alert alert-danger mt-3">
         {{ mensajeFallido }}
-    </div>
+    </div></h5>
+    <h5><div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+        {{ mensajeExitoso }}
+    </div></h5>
     <div mat-dialog-actions align="center">
         <button mat-button color="primary"
             [disabled]="firstFormControl.invalid || secondFormControl.invalid" (click)="confirmarVenta();">CONFIRMAR</button>
