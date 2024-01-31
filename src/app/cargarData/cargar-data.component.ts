@@ -7,32 +7,17 @@ import { Component } from '@angular/core';
 })
 export class CargarDataComponent {
 
-  processing = false;
-  fileData = null;
-  error!:any;
+  fileOutput!: any;
 
-  OnFileChange(files: any) {
-    this.processing = true;
-    this.fileData = null;
-    if (files.length === 0) {
-      this.processing = false;
-      return;
-    }
-    const file = files[0];
-    this.readFile(file);
-  }
-
-  private readFile(file: File) {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (evt: any) => {
-    // this.fileData = reader.result;
-     this.fileData = evt.target.result;
-     this.processing = false;
+  onChange(event: any) {
+    var file = event.target.files?.[0] || null;
+    var reader = new FileReader();
+    reader.onload = (e: any) => {
+      // The file's text will be printed here
+      this.fileOutput = e.target.result;
     };
-    reader.onerror = evt => {
-      this.error = 'Error while reading the file, please try again';
-      this.processing = false;
-    }
+
+    reader.readAsText(file);
   }
+
 }

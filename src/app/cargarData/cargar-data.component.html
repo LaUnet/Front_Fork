@@ -1,16 +1,11 @@
 
-<p>
+  <p>
     File Upload
   </p>
-  
-  <div class="from-group">
-    <input #fileInput type="file" [disabled]="processing" (change)="OnFileChange(fileInput.files)" />
-  </div>
-  
-  <hr>
-  {{ fileData  }}
-  <hr>
-  
-  <div *ngIf="error">
-    {{ error  }}
+
+  <input type="file" (change)="onChange($event)" >
+
+  <div>
+    <h3>File Content</h3>
+    <pre>{{ fileOutput }}</pre>
   </div>
