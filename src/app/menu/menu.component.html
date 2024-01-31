@@ -10,7 +10,7 @@
   </mat-menu>
   <button mat-button routerLink="/ventasProductos">
     <mat-icon>shopping_bag</mat-icon>
-    <span>Catalogo Ventas</span>
+    <strong><span>Catalogo Ventas</span></strong>
   </button>
 
   <mat-menu #cliente="matMenu">
@@ -66,7 +66,7 @@
   </mat-menu>
   <button mat-button routerLink="/comprasProductos">
     <mat-icon>shopping_basket</mat-icon>
-    <span>Catalogo Compras</span>
+  <strong><span>Catalogo Compras</span></strong>
   </button>
 
 
@@ -168,6 +168,10 @@
       <mat-list-item routerLink="/comprasProductos" [class.mat-elevation-z0]="true">
         <mat-icon>shopping_basket</mat-icon>
         <span>Catalogo Compras</span>
+      </mat-list-item>
+      <mat-list-item routerLink="/cargarData" [class.mat-elevation-z0]="true">
+        <mat-icon>upload_file</mat-icon>
+        <span>Cargue Inicial</span>
       </mat-list-item>
     </mat-nav-list>
 

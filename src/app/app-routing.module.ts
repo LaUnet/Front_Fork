@@ -14,6 +14,7 @@ import { registrarUbicacionComponent } from './ubicaciones.registrar/registrar.c
 import { buscarUbicacionComponent } from './ubicaciones.buscar/buscar.component';
 import { VentasComponent } from './catalogoVentas/ventas.component';
 import { ComprasComponent } from './catalogoCompras/compras.component';
+import { CargarDataComponent } from './cargarData/cargar-data.component';
 
 
 const routes: Routes = [
@@ -37,7 +38,8 @@ const routes: Routes = [
   { path: 'buscarUbicacion', component: buscarUbicacionComponent },
   { path: 'ventasProductos', component: VentasComponent },
   { path: 'comprasProductos', component: ComprasComponent },
-
+  { path: 'cargarData', component: CargarDataComponent },
+  
 ];
 
 @NgModule({

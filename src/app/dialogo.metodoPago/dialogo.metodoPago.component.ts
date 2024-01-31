@@ -9,8 +9,8 @@ import { TokenService } from '../login/token';
 
 @Component({
   selector: 'app-dialogo.metodo-pago',
-  templateUrl: './dialogo.metodo-pago.component.html',
-  styleUrls: ['./dialogo.metodo-pago.component.css'],
+  templateUrl: './dialogo.metodoPago.component.html',
+  styleUrls: ['./dialogo.metodoPago.component.css'],
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,

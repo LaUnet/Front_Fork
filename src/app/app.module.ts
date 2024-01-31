@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
-import {Router} from '@angular/router';
-
+import { Router } from '@angular/router';
 import { AppComponent } from './app.component';
-import {LoginComponent} from './login/login.component'
+import {LoginComponent } from './login/login.component'
 import { AppRoutingModule } from './app-routing.module';
 import { MenuComponent } from './menu/menu.component';
 import { registrarUsuarioComponent } from './usuarios.registrar/registrar.component';
@@ -20,8 +19,9 @@ import { ComprasComponent } from './catalogoCompras/compras.component';
 import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.component';
 import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.component';
 import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.component';
-import { DialogoMetodoPagoComponent } from './dialogo.metodo-pago/dialogo.metodo-pago.component';
+import { DialogoMetodoPagoComponent } from './dialogo.metodoPago/dialogo.metodoPago.component';
 import { DialogoInvoiceComponent } from './dialogo.invoice/dialogo.invoice.component';
+
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
@@ -56,6 +56,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatStepperModule} from '@angular/material/stepper';
 import { CurrencyMaskModule } from "ng2-currency-mask";
+import { CargarDataComponent } from './cargarData/cargar-data.component';
 
 
 
@@ -80,7 +81,8 @@ import { CurrencyMaskModule } from "ng2-currency-mask";
     DialogoArticuloComponent,
     DialogoCarItemComponent,
     DialogoMetodoPagoComponent,
-    DialogoInvoiceComponent
+    DialogoInvoiceComponent,
+    CargarDataComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,16 @@
+
+<p>
+    File Upload
+  </p>
+  
+  <div class="from-group">
+    <input #fileInput type="file" [disabled]="processing" (change)="OnFileChange(fileInput.files)" />
+  </div>
+  
+  <hr>
+  {{ fileData  }}
+  <hr>
+  
+  <div *ngIf="error">
+    {{ error  }}
+  </div>

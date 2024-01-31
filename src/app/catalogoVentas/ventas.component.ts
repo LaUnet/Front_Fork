@@ -8,7 +8,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { DialogoCarItemComponent } from "../dialogo.carItem/dialogo.carItem.component";
-import { DialogoMetodoPagoComponent } from '../dialogo.metodo-pago/dialogo.metodo-pago.component';
+import { DialogoMetodoPagoComponent } from '../dialogo.metodoPago/dialogo.metodoPago.component';
 import { DialogoInvoiceComponent } from '../dialogo.invoice/dialogo.invoice.component';
 import { MatSort } from '@angular/material/sort';
 import { NavigationEnd, Router } from '@angular/router';

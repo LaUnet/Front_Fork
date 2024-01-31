@@ -75,7 +75,7 @@
                             <td class="left strong">{{ cartItems.descripcion }}</td>
                             <td class="right">{{ cartItems.precioVenta | currency }}</td>
                             <td class="right">{{ cartItems.cantidad | number  }}</td>
-                            <td class="right">{{cartItems.descuento | currency }}</td>
+                            <td class="right"> - {{cartItems.descuento | currency }}</td>
                             <td class="right">{{ cartItems.total | currency }}</td>
                         </tr>
                     </tbody>
@@ -97,7 +97,7 @@
                                 <td class="left">
                                     <strong>Descuento</strong>
                                 </td>
-                                <td class="right">{{ dataSourceSales.descuento | currency }}</td>
+                                <td class="right"> - {{ dataSourceSales.descuento | currency }}</td>
                             </tr>
                             <tr>
                                 <td class="left">
@@ -118,7 +118,7 @@
     <div class="card alert alert-primary">
         <div class="card-body">
             Antes de Terminar la compra debe elegir algunos productos!<a class="btn btn-sm btn-info float-right ml-2"
-                routerLink="/products">Seguir Comprando</a> &nbsp; &nbsp;
+            (click)="cerrar()">Seguir Comprando</a> &nbsp; &nbsp;
         </div>
     </div>
 </ng-template>
