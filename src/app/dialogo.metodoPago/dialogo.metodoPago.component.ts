@@ -78,7 +78,7 @@ export class DialogoMetodoPagoComponent implements OnInit{
         });
     } catch (error) {
       this.isLoadingResults = false;
-      this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }

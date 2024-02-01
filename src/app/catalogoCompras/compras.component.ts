@@ -179,7 +179,7 @@ export class ComprasComponent {
         });
     } catch (error) {
       this.isLoadingResults = false;
-      this.mensajeFallidoArticulo = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
+      this.mensajeFallidoArticulo = 'Error al consultar Ubicaciones. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }
@@ -215,7 +215,7 @@ export class ComprasComponent {
           console.error('Error en la solicitud:', error);
         });
     } catch (error) {
-      this.mensajeFallido = 'Error al consultar Proveedor. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al consultar Proveedor. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }
@@ -248,7 +248,7 @@ export class ComprasComponent {
           console.error('Error en la solicitud:', error);
         });
     } catch (error) {
-      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }
@@ -281,7 +281,7 @@ export class ComprasComponent {
       }, 3000);
     } catch (error) {
       this.isLoadingResults = false;
-      this.mensajeFallidoArticulo = 'Error al guardar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallidoArticulo = 'Error al guardar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }
@@ -339,7 +339,7 @@ export class ComprasComponent {
       }, 3000);
     } catch (error) {
       this.isLoadingResults = false;
-      this.mensajeFallido = 'Error al guardar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al guardar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }

@@ -181,7 +181,7 @@ export class VentasComponent {
           console.error('Error en la solicitud:', error);
         });
     } catch (error) {
-      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
 
@@ -222,7 +222,7 @@ export class VentasComponent {
           console.error('Error en la solicitud:', error);
         });
     } catch (error) {
-      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }
@@ -362,7 +362,7 @@ export class VentasComponent {
       this.dialogoImprimirVenta();
     } catch (error) {
       this.isLoadingResults = false;
-      this.mensajeFallido = 'Error al guardar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al guardar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }
@@ -388,7 +388,7 @@ export class VentasComponent {
       }, 3000);
     } catch (error) {
       this.isLoadingResults = false;
-      this.mensajeFallidoCliente = 'Error al guardar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallidoCliente = 'Error al guardar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }

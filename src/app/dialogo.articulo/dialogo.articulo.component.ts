@@ -79,11 +79,11 @@ export class DialogoArticuloComponent implements OnInit {
           this.isLoadingResults = false;
         }, error => {
           this.isLoadingResults = false;
-          this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+          this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
           console.error('Error en la solicitud:', error);
         });
     } catch (error) {
-      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }

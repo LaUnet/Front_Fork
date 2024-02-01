@@ -72,7 +72,7 @@ export class registrarUsuarioComponent {
       }, 3000);
     } catch (error) {
       this.isLoadingResults= false;
-      this.mensajeFallido = 'Error al crear. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al crear. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }
@@ -102,12 +102,12 @@ export class registrarUsuarioComponent {
             if (error.status === 401) {
               this.routerLinkLogin();
             }
-            this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+            this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
             console.error('Error en la solicitud:', error);
           });  
       } catch (error) {
         this.isLoadingResults= false;
-        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+        this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
         console.error('Error en la solicitud:', error);
       }
     }
@@ -138,7 +138,7 @@ export class registrarUsuarioComponent {
       }, 3000);
     } catch (error) {
       this.isLoadingResults= false;
-      this.mensajeFallido = 'Error al editar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al editar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }

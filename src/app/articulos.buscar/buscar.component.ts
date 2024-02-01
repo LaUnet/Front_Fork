@@ -68,11 +68,11 @@ export class buscarArticuloComponent {
         if (error.status === 401) {
           this.routerLinkLogin();
         }
-        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+        this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
         console.error('Error en la solicitud:', error);
       });      
     } catch (error) {
-      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);     
     }
   }
@@ -100,11 +100,11 @@ export class buscarArticuloComponent {
         if (error.status === 401) {
           this.routerLinkLogin();
         }
-        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+        this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
         console.error('Error en la solicitud:', error);
       });     
     } catch (error) {
-      this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);     
     }
   }
@@ -127,11 +127,11 @@ export class buscarArticuloComponent {
           if (error.status === 401) {
             this.routerLinkLogin();
           }
-          this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nuevamente.';
+          this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, revisar la consola de Errores.';
           console.error('Error en la solicitud:', error);
         });        
       } catch (error) {
-        this.mensajeFallido = 'Error al consultar. Por favor, inténtelo nuevamente.';
+        this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
         console.error('Error en la solicitud:', error);       
       }  
     }
@@ -155,7 +155,7 @@ export class buscarArticuloComponent {
         }, 3000);
       } catch (error) {
         this.isLoadingResults = false;
-        this.mensajeFallido = 'Error al Eliminar. Por favor, inténtelo nuevamente.';
+        this.mensajeFallido = 'Error al Eliminar. Por favor, revisar la consola de Errores.';
         console.error('Error en la solicitud:', error);
       }
     }
