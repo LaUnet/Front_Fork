@@ -21,6 +21,7 @@ import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.co
 import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.component';
 import { DialogoMetodoPagoComponent } from './dialogo.metodoPago/dialogo.metodoPago.component';
 import { DialogoInvoiceComponent } from './dialogo.invoice/dialogo.invoice.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -57,6 +58,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatStepperModule} from '@angular/material/stepper';
 import { CurrencyMaskModule } from "ng2-currency-mask";
 import { CargarDataComponent } from './cargarData/cargar-data.component';
+import { ReportesComponent } from './reportes/reportes.component';
 
 
 
@@ -82,7 +84,8 @@ import { CargarDataComponent } from './cargarData/cargar-data.component';
     DialogoCarItemComponent,
     DialogoMetodoPagoComponent,
     DialogoInvoiceComponent,
-    CargarDataComponent
+    CargarDataComponent,
+    ReportesComponent
   ],
   imports: [
     BrowserModule,
@@ -115,7 +118,8 @@ import { CargarDataComponent } from './cargarData/cargar-data.component';
     MatDatepickerModule,
     MatNativeDateModule,
     MatStepperModule,
-    CurrencyMaskModule
+    CurrencyMaskModule,
+    DragDropModule
     ],
   providers: [],
   bootstrap: [AppComponent]

@@ -8,8 +8,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component"
 
 
-
-
 @Component({
   selector: 'app-buscarArticulo',
   templateUrl: './buscar.component.html',
@@ -21,7 +19,7 @@ export class buscarArticuloComponent {
   constructor(private router: Router,private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
 
 
-  columnas: string[] = ['codigo', 'codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'accion'];
+  columnas: string[] = ['codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'accion'];
 
   pageEvent!: PageEvent;
   pageIndex:number = 0;

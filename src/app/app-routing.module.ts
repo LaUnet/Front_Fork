@@ -15,7 +15,7 @@ import { buscarUbicacionComponent } from './ubicaciones.buscar/buscar.component'
 import { VentasComponent } from './catalogoVentas/ventas.component';
 import { ComprasComponent } from './catalogoCompras/compras.component';
 import { CargarDataComponent } from './cargarData/cargar-data.component';
-
+import { ReportesComponent } from './reportes/reportes.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -39,6 +39,7 @@ const routes: Routes = [
   { path: 'ventasProductos', component: VentasComponent },
   { path: 'comprasProductos', component: ComprasComponent },
   { path: 'cargarData', component: CargarDataComponent },
+  { path: 'reportes', component: ReportesComponent },
   
 ];
 
