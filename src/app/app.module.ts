@@ -58,7 +58,8 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatStepperModule} from '@angular/material/stepper';
 import { CurrencyMaskModule } from "ng2-currency-mask";
 import { CargarDataComponent } from './cargarData/cargar-data.component';
-import { ReportesComponent } from './reportes/reportes.component';
+import { ReportesVentasComponent } from './reportes/reportesVentas.component';
+import { ReportesComprasComponent } from './reportes/reportesCompras.component';
 
 
 
@@ -85,7 +86,8 @@ import { ReportesComponent } from './reportes/reportes.component';
     DialogoMetodoPagoComponent,
     DialogoInvoiceComponent,
     CargarDataComponent,
-    ReportesComponent
+    ReportesVentasComponent,
+    ReportesComprasComponent
   ],
   imports: [
     BrowserModule,

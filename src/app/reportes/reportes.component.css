@@ -46,7 +46,6 @@ mat-sidenav {
   border-right: 1px solid currentColor;
   border-left: 1px solid currentColor;
   padding-right: auto;
-  text-align: center;
 }
 
 .mat-column-transferencia {
@@ -54,7 +53,6 @@ mat-sidenav {
   border-right: 1px solid currentColor;
   border-left: 1px solid currentColor;
   padding-right: auto;
-  text-align: center;
 }
 
 .mat-column-valorTransaccion {
@@ -62,7 +60,6 @@ mat-sidenav {
   border-right: 1px solid currentColor;
   border-left: 1px solid currentColor;
   padding-right: auto;
-  text-align: center;
 }
 
 .colorText {
@@ -70,11 +67,12 @@ mat-sidenav {
 }
 
 .class1 {
+  font: optional;
   color: black;
 }
 
 .class2 {
-  color: black;
+  font-weight: bold;
 }
 
 .mat-mdc-table-sticky {
