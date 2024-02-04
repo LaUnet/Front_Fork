@@ -1,13 +1,15 @@
-import { AfterViewInit, Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AfterViewInit, Component, ViewChild, ChangeDetectorRef, OnInit, Inject } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
+import { FormGroup, FormControl } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { UtilsService } from '../utils.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 
 @Component({
@@ -17,8 +19,12 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 })
 export class ReportesComprasComponent implements OnInit {
 
-  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public utilsService: UtilsService, private changeDetector: ChangeDetectorRef) { }
+  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService,
+    public utilsService: UtilsService, private changeDetector: ChangeDetectorRef,
+    private _adapter: DateAdapter<any>,
+    @Inject(MAT_DATE_LOCALE) private _locale: string,) { }
 
+    
   columnas: string[] = ['No', 'numeroFactura', 'fechaFactura', 'fechaIngreso', 'valorTransaccion', 'nombreRazonSocial', 'tipoDocumento', 'numeroDocumento'];
 
   isLoadingResults: boolean = false;
@@ -32,16 +38,20 @@ export class ReportesComprasComponent implements OnInit {
   pageSize !: number;
   length!: number;
   pageSizeOptions = [14, 40, 80, 100];
+  startDate!: any;
+  endDate!: any;
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
   ngOnInit() {
-    this.buscarCompra();
+    this.buscarCompra(null, null);
+    this._locale = 'es-CO';
+    this._adapter.setLocale(this._locale);
   }
 
 
-  async buscarCompra() {
+  async buscarCompra(startDate: any, endDate: any) {
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -50,8 +60,14 @@ export class ReportesComprasComponent implements OnInit {
       })
     };
     try {
+      let httpParams = new HttpParams();
+      if (endDate !== null)
+      {
+        httpParams.append('startDate', startDate);
+        httpParams.append('endDate', endDate);
+      }
       this.isLoadingResults = true;
-      this.http.get<any>('https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/purchases', httpOptions)
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/purchases?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceCompras = new MatTableDataSource(response.Data.docs);
@@ -84,6 +100,11 @@ export class ReportesComprasComponent implements OnInit {
 
   move(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.columnas, event.previousIndex, event.currentIndex);
+  }
+
+  addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
+    this.startDate = type === 'Start' ? event.value : this.startDate;
+    this.endDate = type === 'End' ? event.value : this.endDate;
   }
 
 }

@@ -67,8 +67,8 @@ export class ReportesVentasComponent implements OnInit {
       let httpParams = new HttpParams();
       if (endDate !== null)
       {
-        httpParams.set('startDate', startDate);
-        httpParams.set('endDate', endDate);
+        httpParams.append('startDate', startDate);
+        httpParams.append('endDate', endDate);
       }
       this.isLoadingResults = true;
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
@@ -115,18 +115,9 @@ export class ReportesVentasComponent implements OnInit {
     moveItemInArray(this.columnas, event.previousIndex, event.currentIndex);
   }
 
-  filtrar(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSourceVentas.filter = filterValue.trim().toLowerCase();
-  }
-
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
-    this.startDate = type === 'Start' ? event.value : null;
-    this.endDate = type === 'End' ? event.value : null;
-    if (type === 'end') {
-      this.startDate = this.utilsService.getDate(event.value);
-      this.buscarVenta(this.startDate, this.endDate);
-    }
+    this.startDate = type === 'Start' ? event.value : this.startDate;
+    this.endDate = type === 'End' ? event.value : this.endDate;
   }
 }
 
@@ -144,7 +135,3 @@ export interface Transaction {
   facturaElectronica: string;
   vendedor: string;
 }
-function provideMomentDateAdapter(): import("@angular/core").Provider {
-  throw new Error('Function not implemented.');
-}
-

@@ -21,6 +21,16 @@ export class UtilsService {
     }
   };
 
+    //Formateo Fechas Reportes
+    getDateReportes(date: any) {
+      try {
+        const fecha = new Date(date).toISOString
+        return fecha
+      } catch {
+        return false;
+      }
+    };
+
 
   //Formateo Monedas
   getCurrency(value: any) {
