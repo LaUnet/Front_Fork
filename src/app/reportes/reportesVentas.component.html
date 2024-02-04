@@ -129,38 +129,49 @@
                 <mat-progress-spinner color="primary" mode="indeterminate">
                 </mat-progress-spinner>
             </div>
+            <div align="start">
+                <mat-form-field class="mat-form-field" appearance="outline">
+                    <mat-label style="font-size: 125%;">Buscar Rango Fecha Factura</mat-label>
+                    <mat-date-range-input [rangePicker]="picker" style="font-size: 150%;">
+                        <input matStartDate placeholder="Start Date" (dateInput)="addEvent('Start', $event)">
+                        <input matEndDate placeholder="End Date"  (dateInput)="addEvent('End', $event)">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+            </div>
             <div class="mat-elevation-z8">
-                <table mat-table [dataSource]="dataSourceVentas" matSort
-                    cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="move($event)" aria-label="Elements">
+                <table mat-table [dataSource]="dataSourceVentas" matSort cdkDropList cdkDropListOrientation="horizontal"
+                    (cdkDropListDropped)="move($event)" aria-label="Elements">
 
                     <!-- Column -->
                     <ng-container matColumnDef="No">
-                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;" cdkDrag
-                            *matHeaderCellDef> No </th>
+                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
+                            cdkDrag *matHeaderCellDef> No </th>
                         <td mat-cell *matCellDef="let transaction; let i = index"> {{i+1}} </td>
                         <td mat-footer-cell *matFooterCellDef> Total </td>
                     </ng-container>
 
                     <!-- Column -->
                     <ng-container matColumnDef="numeroFactura">
-                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;" cdkDrag
-                            *matHeaderCellDef> Numero Factura </th>
+                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
+                            cdkDrag *matHeaderCellDef> Numero Factura </th>
                         <td mat-cell *matCellDef="let transaction"> {{transaction.numeroFactura}} </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
 
                     <!-- Column -->
                     <ng-container matColumnDef="fechaFactura">
-                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;" cdkDrag
-                            *matHeaderCellDef> Fecha Factura </th>
+                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
+                            cdkDrag *matHeaderCellDef> Fecha Factura </th>
                         <td mat-cell *matCellDef="let transaction"> {{transaction.fechaFactura }} </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
 
                     <!-- Column -->
                     <ng-container matColumnDef="efectivo">
-                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;" cdkDrag
-                            *matHeaderCellDef> Monto Efectivo </th>
+                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
+                            cdkDrag *matHeaderCellDef> Monto Efectivo </th>
                         <td mat-cell *matCellDef="let transaction"> {{transaction.cantidadEfectivo | currency}}
                         </td>
                         <td mat-footer-cell *matFooterCellDef="let transaction">{{getTotalEfectivo() | currency}}</td>
@@ -168,24 +179,27 @@
 
                     <!-- Column -->
                     <ng-container matColumnDef="transferencia">
-                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;" cdkDrag
-                            *matHeaderCellDef> Monto Transferencia </th>
-                        <td mat-cell *matCellDef="let transaction"> {{ transaction.cantidadTransferencia | currency}} </td>
-                        <td mat-footer-cell *matFooterCellDef="let transaction">{{ getTotalTransferencias() | currency }}</td>
+                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
+                            cdkDrag *matHeaderCellDef> Monto Transferencia </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.cantidadTransferencia | currency}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef="let transaction">{{ getTotalTransferencias() | currency
+                            }}</td>
                     </ng-container>
 
                     <!-- Column -->
                     <ng-container matColumnDef="valorTransaccion">
-                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;" cdkDrag
-                            *matHeaderCellDef> Valor Transacción </th>
+                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
+                            cdkDrag *matHeaderCellDef> Valor Transacción </th>
                         <td mat-cell *matCellDef="let transaction">{{ transaction.total | currency}}</td>
-                        <td mat-footer-cell *matFooterCellDef="let transaction">{{ getTotalTransactiones() | currency }}</td>
+                        <td mat-footer-cell *matFooterCellDef="let transaction">{{ getTotalTransactiones() | currency }}
+                        </td>
                     </ng-container>
                     <!--[ngClass]="{'class1': transaction.tipoTransaccion === 'Venta', 'class2': transaction.tipoTransaccion === 'Compra'}"-->
                     <!-- Column -->
                     <ng-container matColumnDef="nombreRazonSocial">
-                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;" cdkDrag
-                            *matHeaderCellDef> Nombre/RazonSocial </th>
+                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
+                            cdkDrag *matHeaderCellDef> Nombre/RazonSocial </th>
                         <td mat-cell *matCellDef="let transaction">{{ transaction.cliente.nombreRazonSocial}}
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
@@ -193,8 +207,8 @@
 
                     <!-- Column -->
                     <ng-container matColumnDef="tipoDocumento">
-                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;" cdkDrag
-                            *matHeaderCellDef> Tipo Documento </th>
+                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
+                            cdkDrag *matHeaderCellDef> Tipo Documento </th>
                         <td mat-cell *matCellDef="let transaction">{{ transaction.cliente.tipoDocumento}}
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
@@ -203,17 +217,27 @@
 
                     <!-- Column -->
                     <ng-container matColumnDef="numeroDocumento">
-                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;" cdkDrag
-                            *matHeaderCellDef> # Documento </th>
+                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
+                            cdkDrag *matHeaderCellDef> # Documento </th>
                         <td mat-cell *matCellDef="let transaction">{{ transaction.cliente.numeroDocumento}}
+                        </td>
+                        <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+
+
+                    <!-- Column -->
+                    <ng-container matColumnDef="email">
+                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
+                            cdkDrag *matHeaderCellDef> Correo Electrónico </th>
+                        <td mat-cell *matCellDef="let transaction">{{ transaction.cliente.email}}
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
 
                     <!-- Column -->
                     <ng-container matColumnDef="facturaElectronica">
-                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;" cdkDrag
-                            *matHeaderCellDef> Factura Electonica </th>
+                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
+                            cdkDrag *matHeaderCellDef> Factura Electonica </th>
                         <td mat-cell *matCellDef="let transaction">
                             {{transaction.facturacionElectronica}} </td>
                         <td mat-footer-cell *matFooterCellDef></td>
@@ -221,8 +245,8 @@
 
                     <!-- Column -->
                     <ng-container matColumnDef="vendedor">
-                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;" cdkDrag
-                            *matHeaderCellDef> Vendedor </th>
+                        <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
+                            cdkDrag *matHeaderCellDef> Vendedor </th>
                         <td mat-cell *matCellDef="let transaction">
                             {{transaction.vendedor}} </td>
                         <td mat-footer-cell *matFooterCellDef></td>

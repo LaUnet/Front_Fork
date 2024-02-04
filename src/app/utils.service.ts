@@ -9,9 +9,13 @@ export class UtilsService {
   constructor() { }
 
   //Formateo Fechas
-  getDate() {
+  getDate(date: any) {
     try {
-      return Intl.DateTimeFormat('es-CO', { dateStyle: "short", timeStyle: "short" }).format(new Date());
+      if (date !== null){
+        return Intl.DateTimeFormat('es-CO').format(date);
+      }else{
+      return Intl.DateTimeFormat('es-CO', { dateStyle: "medium", timeStyle: "short" }).format(new Date());
+      }
     } catch {
       return false;
     }

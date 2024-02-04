@@ -87,3 +87,14 @@ mat-sidenav {
 .mat-mdc-row:hover .mat-mdc-cell {
   border-color: currentColor;
 }
+
+.mat-form-field{
+  margin-top: 0.5%;
+  margin-left: 4%;
+  width: auto;
+}
+
+.full-width {
+  margin-top: 0.1%;
+  width: 100%;
+}

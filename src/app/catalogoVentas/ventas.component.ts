@@ -171,6 +171,7 @@ export class VentasComponent {
             this.nuevoCliente.nombreRazonSocial = this.dataSourceClientes !== null ? this.dataSourceClientes[0].nombreRazonSocial : "NO EXISTE"
             this.nuevoCliente.tipoDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoDocumento : "NO EXISTE"
             this.nuevoCliente.numeroDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].numeroDocumento : null
+            this.nuevoCliente.email = this.dataSourceClientes !== null ? this.dataSourceClientes[0].email : null
           }
           this.isLoadingResults = false;
         }, error => {
@@ -283,8 +284,8 @@ export class VentasComponent {
     this.dataSourceSales =
     {
       "numeroFactura": new Date().getTime(),
-      "fechaFactura": this.utilsService.getDate(),
-      "fechaVencimiento": this.utilsService.getDate(),
+      "fechaFactura": this.utilsService.getDate(null),
+      "fechaVencimiento": this.utilsService.getDate(null),
       "subtotal": this.operaciones.subtotalCompra,
       "impuesto": this.operaciones.impuestoCompra,
       "descuento": this.operaciones.descuentoCompra,
@@ -292,7 +293,8 @@ export class VentasComponent {
       "cliente": {
         "nombreRazonSocial": this.nuevoCliente.nombreRazonSocial,
         "tipoDocumento": this.nuevoCliente.tipoDocumento,
-        "numeroDocumento": this.nuevoCliente.numeroDocumento
+        "numeroDocumento": this.nuevoCliente.numeroDocumento,
+        "email": this.nuevoCliente.email,
       },
       "articulo": "",
       "formaDePago": "",

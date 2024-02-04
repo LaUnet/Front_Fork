@@ -1,25 +1,31 @@
-import { AfterViewInit, Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AfterViewInit, Component, ViewChild, ChangeDetectorRef, OnInit, Inject } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
+import { FormGroup, FormControl } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { UtilsService } from '../utils.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 
 @Component({
   selector: 'app-reportesVentas',
   templateUrl: './reportesVentas.component.html',
-  styleUrls: ['./reportes.component.css']
+  styleUrls: ['./reportes.component.css'],
+  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-CO' }],
 })
 export class ReportesVentasComponent implements OnInit {
 
-  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public utilsService: UtilsService, private changeDetector: ChangeDetectorRef) { }
+  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService,
+    public utilsService: UtilsService, private changeDetector: ChangeDetectorRef,
+    private _adapter: DateAdapter<any>,
+    @Inject(MAT_DATE_LOCALE) private _locale: string,) { }
 
-  columnas: string[] = ['No', 'numeroFactura', 'fechaFactura', 'efectivo', 'transferencia', 'valorTransaccion', 'nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'facturaElectronica', 'vendedor'];
+  columnas: string[] = ['No', 'numeroFactura', 'fechaFactura', 'efectivo', 'transferencia', 'valorTransaccion', 'nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'email', 'facturaElectronica', 'vendedor'];
 
   isLoadingResults: boolean = false;
   mensajeExitoso: string = '';
@@ -32,20 +38,24 @@ export class ReportesVentasComponent implements OnInit {
   pageSize !: number;
   length!: number;
   pageSizeOptions = [20, 40, 80, 100];
+  startDate!: any;
+  endDate!: any;
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
   ngOnInit() {
-    this.buscarVenta();
+    this.buscarVenta(null, null);
+    this._locale = 'es-CO';
+    this._adapter.setLocale(this._locale);
+
   }
 
   ngAfterContentChecked() {
     this.changeDetector.detectChanges();
-    
   }
 
-  async buscarVenta() {
+  async buscarVenta(startDate: any, endDate: any) {
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -54,8 +64,14 @@ export class ReportesVentasComponent implements OnInit {
       })
     };
     try {
+      let httpParams = new HttpParams();
+      if (endDate !== null)
+      {
+        httpParams.set('startDate', startDate);
+        httpParams.set('endDate', endDate);
+      }
       this.isLoadingResults = true;
-      this.http.get<any>('https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales', httpOptions)
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceVentas = new MatTableDataSource(response.Data.docs);
@@ -99,6 +115,19 @@ export class ReportesVentasComponent implements OnInit {
     moveItemInArray(this.columnas, event.previousIndex, event.currentIndex);
   }
 
+  filtrar(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceVentas.filter = filterValue.trim().toLowerCase();
+  }
+
+  addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
+    this.startDate = type === 'Start' ? event.value : null;
+    this.endDate = type === 'End' ? event.value : null;
+    if (type === 'end') {
+      this.startDate = this.utilsService.getDate(event.value);
+      this.buscarVenta(this.startDate, this.endDate);
+    }
+  }
 }
 
 export interface Transaction {
@@ -115,3 +144,7 @@ export interface Transaction {
   facturaElectronica: string;
   vendedor: string;
 }
+function provideMomentDateAdapter(): import("@angular/core").Provider {
+  throw new Error('Function not implemented.');
+}
+
