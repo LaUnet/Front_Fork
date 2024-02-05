@@ -55,6 +55,7 @@ export class registrarProveedorComponent {
 
 
   ngOnInit(): void {
+    this.isLoadingResults= false;
     this.cargarEditarProveedor();
   }
 
@@ -162,6 +163,7 @@ export class registrarProveedorComponent {
   }
 
   refreshPage() {
+    this.isLoadingResults= false;
     window.location.reload();
   }
   routerLinkLogin(): void {

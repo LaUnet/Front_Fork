@@ -57,6 +57,7 @@ export class registrarClienteComponent {
   mensajeFallido: string = '';
 
   ngOnInit(): void {
+    this.isLoadingResults= false;
     this.cargarEditarCliente();
   }
 
@@ -165,6 +166,7 @@ export class registrarClienteComponent {
   }
 
   refreshPage() {
+    this.isLoadingResults= false;
     window.location.reload();
   }
 
