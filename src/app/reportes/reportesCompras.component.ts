@@ -30,6 +30,8 @@ export class ReportesComprasComponent implements OnInit {
   isLoadingResults: boolean = false;
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
+  fieldStartDate: string = '';
+  fieldEndDate: string = '';
   dataSourceCompras: any;
   dataSourceMovimientos: any[] = [];
   opened: boolean = false;
@@ -52,6 +54,7 @@ export class ReportesComprasComponent implements OnInit {
 
 
   async buscarCompra(startDate: any, endDate: any) {
+    this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -61,16 +64,16 @@ export class ReportesComprasComponent implements OnInit {
     };
     try {
       let httpParams = new HttpParams();
-      if (endDate !== null)
+      if (startDate && endDate)
       {
-        httpParams.append('startDate', startDate);
-        httpParams.append('endDate', endDate);
+        httpParams = httpParams.append('startDate', startDate);
+        httpParams = httpParams.append('endDate', endDate);
       }
       this.isLoadingResults = true;
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/purchases?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceCompras = new MatTableDataSource(response.Data.docs);
+            this.dataSourceCompras = new MatTableDataSource(response.Data);
             this.dataSourceCompras.paginator = this.paginator;
             this.dataSourceCompras.sort = this.sort;
           }
@@ -80,6 +83,10 @@ export class ReportesComprasComponent implements OnInit {
           this.isLoadingResults = false;
           if (error.status === 401) {
             this.routerLinkLogin();
+          }
+          if (error.status === 404) {
+            this.mensajeFallido = 'Parametros de consulta con resultados NO encontrados';
+            return;
           }
           this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
           console.error('Error en la solicitud:', error);
@@ -104,7 +111,18 @@ export class ReportesComprasComponent implements OnInit {
 
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
     this.startDate = type === 'Start' ? event.value : this.startDate;
-    this.endDate = type === 'End' ? event.value : this.endDate;
+    this.endDate = type === 'End' ? event.value : null;
+  }
+
+  applyFilter() {
+    this.buscarCompra(this.utilsService.getDate(this.startDate), this.utilsService.getDate(this.endDate));
+  }
+
+  applyClear() {
+    this.fieldStartDate= '';
+    this.fieldEndDate= '';
+    this.buscarCompra(null, null)
+
   }
 
 }

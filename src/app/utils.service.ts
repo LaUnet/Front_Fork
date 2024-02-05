@@ -12,7 +12,7 @@ export class UtilsService {
   getDate(date: any) {
     try {
       if (date !== null){
-        return Intl.DateTimeFormat('es-CO').format(date);
+        return new Intl.DateTimeFormat("az", {year: "numeric", month: "2-digit",  day: "2-digit" }).format(new Date(date));
       }else{
       return Intl.DateTimeFormat('es-CO', { dateStyle: "medium", timeStyle: "short" }).format(new Date());
       }
@@ -20,17 +20,6 @@ export class UtilsService {
       return false;
     }
   };
-
-    //Formateo Fechas Reportes
-    getDateReportes(date: any) {
-      try {
-        const fecha = new Date(date).toISOString
-        return fecha
-      } catch {
-        return false;
-      }
-    };
-
 
   //Formateo Monedas
   getCurrency(value: any) {

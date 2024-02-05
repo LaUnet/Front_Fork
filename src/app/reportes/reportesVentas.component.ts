@@ -30,6 +30,8 @@ export class ReportesVentasComponent implements OnInit {
   isLoadingResults: boolean = false;
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
+  fieldStartDate: string = '';
+  fieldEndDate: string = '';
   dataSourceVentas: any;
   dataSourceMovimientos: any[] = [];
   opened: boolean = false;
@@ -56,6 +58,7 @@ export class ReportesVentasComponent implements OnInit {
   }
 
   async buscarVenta(startDate: any, endDate: any) {
+    this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -65,16 +68,17 @@ export class ReportesVentasComponent implements OnInit {
     };
     try {
       let httpParams = new HttpParams();
-      if (endDate !== null)
+      if (startDate && endDate)
       {
-        httpParams.append('startDate', startDate);
-        httpParams.append('endDate', endDate);
+        console.log("lo controlo?")
+        httpParams = httpParams.append('startDate', startDate);
+        httpParams = httpParams.append('endDate', endDate);
       }
       this.isLoadingResults = true;
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceVentas = new MatTableDataSource(response.Data.docs);
+            this.dataSourceVentas = new MatTableDataSource(response.Data);
             this.dataSourceVentas.paginator = this.paginator;
             this.dataSourceVentas.sort = this.sort;
           }
@@ -84,6 +88,10 @@ export class ReportesVentasComponent implements OnInit {
           this.isLoadingResults = false;
           if (error.status === 401) {
             this.routerLinkLogin();
+          }
+          if (error.status === 404) {
+            this.mensajeFallido = 'Parametros de consulta con resultados NO encontrados';
+            return;
           }
           this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
           console.error('Error en la solicitud:', error);
@@ -117,7 +125,18 @@ export class ReportesVentasComponent implements OnInit {
 
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
     this.startDate = type === 'Start' ? event.value : this.startDate;
-    this.endDate = type === 'End' ? event.value : this.endDate;
+    this.endDate = type === 'End' ? event.value : null;
+  }
+
+  applyFilter() {
+    this.buscarVenta(this.utilsService.getDate(this.startDate), this.utilsService.getDate(this.endDate))
+  }
+
+  applyClear() {
+    this.fieldStartDate= '';
+    this.fieldEndDate= '';
+    this.buscarVenta(null, null)
+
   }
 }
 
