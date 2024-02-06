@@ -292,7 +292,7 @@
                         </td>
                         <td><mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Consultar Código Barras</mat-label>
-                                <input matInput type="text" [(ngModel)]="nuevaBusqueda.buscarCodigoBarras"
+                                <input matInput type="text" #inputCode [(ngModel)]="nuevaBusqueda.buscarCodigoBarras"
                                     name="buscarCodigoBarras" [formControl]="buscarCodigoBarrasFormControl"
                                     [errorStateMatcher]="matcher" (keydown.enter)="buscarCatalogo(1)">
                                 <button type="button" mat-icon-button matSuffix color="basic"
@@ -351,14 +351,14 @@
                                 *matHeaderCellDef>Stock</th>
                             <td mat-cell *matCellDef="let catalogo">
                                 <span *ngFor="let row of catalogo.inventarios
-                             ">{{row.stock | number: '.2' }}</span>
+                             ">{{row.stock | number: '.0' }}</span>
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="precioventa">
                             <th style="font-family: Impact; background-color:gainsboro; width: 10%;" mat-header-cell
                                 *matHeaderCellDef>Precio Venta</th>
                             <td mat-cell *matCellDef="let catalogo">
-                                <span *ngFor="let row of catalogo.precios">{{row.precioVenta | currency}}</span>
+                                <span *ngFor="let row of catalogo.precios">{{row.precioVenta | currency : 'USD' : 'symbol' : '1.0-0'}}</span>
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="accion">
@@ -399,7 +399,7 @@
                         </td>
                         <mat-card-actions align="end">
                             <button type="button" mat-mini-fab matTooltip="Registrar Cliente" color="basic"
-                                (click)="openedCustomer=!openedCustomer">
+                                (click)="openedCustomer=!openedCustomer;setCliente()">
                                 <mat-icon>person_add</mat-icon>
                             </button>
                         </mat-card-actions>
@@ -469,18 +469,18 @@
                                 <span *ngFor="let row of carItem.detalleArticulo">
                                     <div class="input-group input-group-sm mb-3" style="margin-top: 10px;">
                                         <div class="input-group-prepend">
-                                            <button class="btn btn-info" type="button"
-                                                (click)="changeQty(carItem, i, 1, '')">
-                                                +
-                                            </button>
+                                            <button class="btn btn-danger" type="button"
+                                            (click)="changeQty(carItem, i, -1, '')">
+                                            -
+                                        </button>
                                         </div>
                                         <input type="text" style="background-color: white;"
                                             class="form-control text-center" value="{{row.cantidad}}" disabled />
                                         <!-- #qtyRef (keyup)="changeQty(carItem, i, qtyRef.value, 'replace')" -->
                                         <div class="input-group-append">
-                                            <button class="btn btn-danger" type="button"
-                                                (click)="changeQty(carItem, i, -1, '')">
-                                                -
+                                            <button class="btn btn-info" type="button"
+                                                (click)="changeQty(carItem, i, 1, '')">
+                                                +
                                             </button>
                                         </div>
                                     </div>
@@ -492,10 +492,10 @@
                             <td mat-cell *matCellDef="let carItem">
                                 <span *ngFor="let row of carItem.detalleArticulo">
                                     <div *ngIf="!row.mayoreo">
-                                        {{row.precioVenta | currency}}
+                                        {{row.precioVenta | currency : 'USD' : 'symbol' : '1.0-0'}}
                                     </div>
                                     <div *ngIf="row.mayoreo">
-                                        {{this.utilsService.numeros(row.precioMayoreo) | currency}}
+                                        {{this.utilsService.numeros(row.precioMayoreo) | currency : 'USD' : 'symbol' : '1.0-0'}}
                                     </div>
                                 </span>
                             </td>
@@ -516,7 +516,7 @@
                                 *matHeaderCellDef> Total </th>
                             <td mat-cell *matCellDef="let carItem; let i = index">
                                 <span *ngFor="let row of carItem.detalleArticulo">
-                                    {{row.total | currency }}
+                                    {{row.total | currency : 'USD' : 'symbol' : '1.0-0' }}
                                     <!-- {{(carItem.cantidad > 0) ? total(carItem, i) : 0 | currency}} -->
                                 </span>
                             </td>
@@ -571,7 +571,7 @@
                                 <span class="input-group-text"
                                     style="background-color: white; width: 50%;">Subtotal</span>
                                 <input type="text" aria-label="subtotal" class="form-control" disabled
-                                    value="{{this.operaciones.subtotalCompra | currency}}">
+                                    value="{{this.operaciones.subtotalCompra | currency : 'USD' : 'symbol' : '1.0-0'}}">
                             </div>
                             <!--
                             <div class="input-group">
@@ -584,12 +584,12 @@
                                 <span class="input-group-text"
                                     style="background-color: white; width: 50%">Descuento</span>
                                 <input type="text" aria-label="total" class="form-control" disabled
-                                    value="{{this.operaciones.descuentoCompra | currency}}">
+                                    value="{{this.operaciones.descuentoCompra | currency : 'USD' : 'symbol' : '1.0-0'}}">
                             </div>
                             <div class="input-group">
                                 <span class="input-group-text" style="background-color: white; width: 50%">Total</span>
                                 <input type="text" aria-label="total" class="form-control" disabled
-                                    value="{{(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra)  | currency}}">
+                                    value="{{(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra)  | currency : 'USD' : 'symbol' : '1.0-0'}}">
                             </div>
                         </td>
                     </tr>
@@ -610,7 +610,7 @@
                                     [disabled]="(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) === 0 
                                     || numeroDocumentoFormControl.invalid || (this.nuevoCliente.tipoDocumento === '' || this.nuevoCliente.tipoDocumento === 'NO EXISTE')"
                                     type="button" (click)="mostrarMetodoPagoCarItem()"
-                                    >Venta | {{(this.operaciones.subtotalCompra -this.operaciones.descuentoCompra) | currency}}
+                                    >Venta | {{(this.operaciones.subtotalCompra -this.operaciones.descuentoCompra) | currency : 'USD' : 'symbol' : '1.0-0'}}
                                 </button>
 
                                 <button mat-button style="background-color: gainsboro; width: 15%;" type="button"

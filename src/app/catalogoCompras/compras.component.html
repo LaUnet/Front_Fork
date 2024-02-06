@@ -356,7 +356,7 @@
                         <td mat-cell *matCellDef="let articulos; let i = index">
                             <span *ngFor="let row of articulos.precios">
                                 <div *ngIf="!articulos.isEdit">
-                                    {{ this.utilsService.numeros(row.valorUnitario) | currency}}
+                                    {{ this.utilsService.numeros(row.valorUnitario) | currency : 'USD' : 'symbol' : '1.0-0'}}
                                 </div>
                                 <div *ngIf="articulos.isEdit">
                                     <input class="input-group input-group-sm" id="valorUnitario" type="number"
@@ -395,7 +395,7 @@
                             Subtotal</th>
                         <td mat-cell *matCellDef="let articulos, let i = index">
                             <span *ngFor="let row of articulos.precios">
-                                {{row.subtotalUnitario | currency}}
+                                {{row.subtotalUnitario | currency : 'USD' : 'symbol' : '1.0-0'}}
                                 {{subtotal(articulos.precios, i)}}
                             </span>
                         </td>
@@ -423,7 +423,7 @@
                             Total</th>
                         <td mat-cell *matCellDef="let articulos; let i = index">
                             <span *ngFor="let row of articulos.precios">
-                                {{row.total | currency}}
+                                {{row.total | currency : 'USD' : 'symbol' : '1.0-0'}}
                                 {{total(articulos.precios, i)}}
                             </span>
                         </td>
@@ -434,7 +434,7 @@
                         <td mat-cell *matCellDef="let articulos">
                             <span *ngFor="let row of articulos.precios">
                                 <div *ngIf="!articulos.isEdit">
-                                    {{utilsService.numeros(row.precioVenta) | currency}}
+                                    {{utilsService.numeros(row.precioVenta) | currency : 'USD' : 'symbol' : '1.0-0'}}
                                 </div>
                                 <div *ngIf="articulos.isEdit">
                                     <input class="input-group input-group-sm" id="precioVenta" type="number"
@@ -451,7 +451,7 @@
                         <td mat-cell *matCellDef="let articulos">
                             <span *ngFor="let row of articulos.precios">
                                 <div *ngIf="!articulos.isEdit">
-                                    {{utilsService.numeros(row.precioMayoreo) | currency}}
+                                    {{utilsService.numeros(row.precioMayoreo) | currency : 'USD' : 'symbol' : '1.0-0'}}
                                 </div>
                                 <div *ngIf="articulos.isEdit">
                                     <input class="input-group input-group-sm" id="precioMayoreo" type="number"
@@ -554,7 +554,7 @@
                                     <mat-icon matSuffix>summarize</mat-icon>
                                     <input matInput [(ngModel)]="nuevaCompra.subtotal" id="subtotal" name="subtotal"
                                         [errorStateMatcher]="matcher" type="number" disabled>
-                                    <span matTextSuffix>{{ this.operaciones.subtotalCompra-this.operaciones.impuestoCompra | currency}}</span>
+                                    <span matTextSuffix>{{ this.operaciones.subtotalCompra-this.operaciones.impuestoCompra | currency : 'USD' : 'symbol' : '1.0-0'}}</span>
                                 </mat-form-field>
                             </td>
                             <!--
@@ -575,7 +575,7 @@
                                     <input matInput [(ngModel)]="nuevaCompra.descuento" id="descuento" name="descuento"
                                         [errorStateMatcher]="matcher" type="number" matInput
                                         [(ngModel)]="nuevaCompra.descuento" disabled>
-                                    <span matTextSuffix>{{this.operaciones.descuentoCompra| currency}}</span>
+                                    <span matTextSuffix>{{this.operaciones.descuentoCompra| currency : 'USD' : 'symbol' : '1.0-0'}}</span>
                                 </mat-form-field>
                             </td>
                         </div>
@@ -587,7 +587,7 @@
                                     <mat-icon matSuffix>monetization_on</mat-icon>
                                     <input matInput [(ngModel)]="nuevaCompra.total" id="total" name="total"
                                         [errorStateMatcher]="matcher" type="number" disabled placeholder="0">
-                                    <span matTextSuffix>{{this.operaciones.totalCompra| currency}}</span>
+                                    <span matTextSuffix>{{this.operaciones.totalCompra| currency : 'USD' : 'symbol' : '1.0-0'}}</span>
                                 </mat-form-field>
                             </div>
                         </td>

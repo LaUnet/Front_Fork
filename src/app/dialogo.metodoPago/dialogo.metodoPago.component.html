@@ -32,15 +32,17 @@
 
                                 <mat-icon matSuffix>monetization_on</mat-icon>
                                 <input style="font-size: 200%;"  type="text" matInput [(ngModel)]="pasarela.efectivo" 
-                                name= "efectivo" currencyMask
-                                [disabled]="pasarela.tipoPago === 'TRANSFERENCIA'? true:false">
+                                name= "efectivo" currencyMask [options]="{prefix: '', thousands:',', precision: 0}"
+                                [disabled]="pasarela.tipoPago !== 'EFECTIVO'? true:false"
+                                [disabled]="pasarela.tipoPago !== 'MIXTO'? true:false">
                             </mat-form-field>
                             <mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Transferencia</mat-label>
                                 <mat-icon matSuffix>send_to_mobile</mat-icon>
                                 <input style="font-size: 200%;" type="text" matInput [(ngModel)]="pasarela.transferencia"
-                                name= "transferencia" currencyMask 
-                                [disabled]="pasarela.tipoPago === 'EFECTIVO'? true:false">
+                                name= "transferencia" currencyMask  [options]="{prefix: '', thousands:',', precision: 0}"
+                                [disabled]="pasarela.tipoPago !== 'TRANSFERENCIA'? true:false"
+                                [disabled]="pasarela.tipoPago !== 'MIXTO'? true:false">
                             </mat-form-field>
                         </td>
                     </tr>
@@ -56,9 +58,9 @@
                                 <mat-label>Factura Electronica</mat-label>
                                 <mat-icon matSuffix>attach_email</mat-icon>
                                 <mat-select [(ngModel)]="pasarela.facturaElectronica" required>
-                                    <mat-option disabled selected>Selecciona una opcíon</mat-option>
+                                    <mat-option disabled>Selecciona una opcíon</mat-option>
+                                    <mat-option value="NO" selected>NO</mat-option>
                                     <mat-option value="SI">SI</mat-option>
-                                    <mat-option value="NO">NO</mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </td>

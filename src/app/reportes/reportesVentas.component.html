@@ -177,18 +177,18 @@
                     <ng-container matColumnDef="efectivo">
                         <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
                             cdkDrag *matHeaderCellDef> Monto Efectivo </th>
-                        <td mat-cell *matCellDef="let transaction"> {{transaction.cantidadEfectivo | currency}}
+                        <td mat-cell *matCellDef="let transaction"> {{transaction.cantidadEfectivo | currency : 'USD' : 'symbol' : '1.0-0'}}
                         </td>
-                        <td mat-footer-cell *matFooterCellDef="let transaction">{{getTotalEfectivo() | currency}}</td>
+                        <td mat-footer-cell *matFooterCellDef="let transaction">{{getTotalEfectivo() | currency : 'USD' : 'symbol' : '1.0-0'}}</td>
                     </ng-container>
 
                     <!-- Column -->
                     <ng-container matColumnDef="transferencia">
                         <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
                             cdkDrag *matHeaderCellDef> Monto Transferencia </th>
-                        <td mat-cell *matCellDef="let transaction"> {{ transaction.cantidadTransferencia | currency}}
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.cantidadTransferencia | currency : 'USD' : 'symbol' : '1.0-0'}}
                         </td>
-                        <td mat-footer-cell *matFooterCellDef="let transaction">{{ getTotalTransferencias() | currency
+                        <td mat-footer-cell *matFooterCellDef="let transaction">{{ getTotalTransferencias() | currency : 'USD' : 'symbol' : '1.0-0'
                             }}</td>
                     </ng-container>
 
@@ -196,8 +196,8 @@
                     <ng-container matColumnDef="valorTransaccion">
                         <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
                             cdkDrag *matHeaderCellDef> Valor Transacción </th>
-                        <td mat-cell *matCellDef="let transaction">{{ transaction.total | currency}}</td>
-                        <td mat-footer-cell *matFooterCellDef="let transaction">{{ getTotalTransactiones() | currency }}
+                        <td mat-cell *matCellDef="let transaction">{{ transaction.total | currency : 'USD' : 'symbol' : '1.0-0'}}</td>
+                        <td mat-footer-cell *matFooterCellDef="let transaction">{{ getTotalTransactiones() | currency : 'USD' : 'symbol' : '1.0-0' }}
                         </td>
                     </ng-container>
                     <!--[ngClass]="{'class1': transaction.tipoTransaccion === 'Venta', 'class2': transaction.tipoTransaccion === 'Compra'}"-->

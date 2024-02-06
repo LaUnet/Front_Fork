@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild, ElementRef  } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
@@ -101,7 +101,7 @@ export class VentasComponent {
 
   nuevoCliente: any = {
     tipoDocumento: '',
-    numeroDocumento: '',
+    numeroDocumento: '1111111111',
     nombreRazonSocial: '',
     telefono: '',
     extension: "",
@@ -133,6 +133,9 @@ export class VentasComponent {
 
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild("inputCode") InputField: any =  ElementRef;
+
+
 
   ngOnInit() {
     this.subscriber = this.router.events.pipe(
@@ -141,6 +144,7 @@ export class VentasComponent {
     this.localStorageToken = this.localStorageService.getItem('access_token');
     this.localStorageService.clear();
     this.localStorageService.setItem('access_token', this.localStorageToken);
+    this.buscarCliente();
   }
 
   ngOnDestroy() {
@@ -150,6 +154,10 @@ export class VentasComponent {
   ngAfterContentChecked() {
     this.changeDetector.detectChanges();
   }
+
+  ngAfterViewInit() {
+    this.InputField.nativeElement.focus();
+    }
 
   async buscarCliente() {
     const token = this.tokenService.token;
@@ -226,6 +234,7 @@ export class VentasComponent {
       this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
+    this.nuevaBusqueda.buscarCodigoBarras = "";
   }
 
   filtrar(event: Event) {
