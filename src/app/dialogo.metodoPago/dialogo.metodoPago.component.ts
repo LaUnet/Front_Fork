@@ -1,5 +1,5 @@
 
-import { Component,Inject, OnInit  } from '@angular/core';
+import { Component,Inject, OnInit, ElementRef, ViewChild  } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl} from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
@@ -44,6 +44,10 @@ export class DialogoMetodoPagoComponent implements OnInit{
   };
 
 
+  @ViewChild("inputEfectivo") efectivoInput: any =  ElementRef;
+  @ViewChild("inputTransferencia") tranferenciaInput: any =  ElementRef;
+
+
   ngOnInit(): void {
     this.setState(this.firstFormControl, 1);
     this.cargarUsuarios();
@@ -61,7 +65,7 @@ export class DialogoMetodoPagoComponent implements OnInit{
     this.isLoadingResults = true;
     try {
       this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users', httpOptions)
-        .subscribe(response => {
+      .subscribe(response => {
           if (response.Status) {
             this.dataSourceUsuarios = response.Data.docs;
             for (let i = 0; i < this.dataSourceUsuarios.length; i++) {
@@ -73,7 +77,7 @@ export class DialogoMetodoPagoComponent implements OnInit{
           this.isLoadingResults = false;
         }, error => {
           this.isLoadingResults = false;
-          this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, inténtelo nue{vamente.';
+          this.mensajeFallido = 'Error al consultar Vendedores. Por favor, inténtelo nuevamente.';
           console.error('Error en la solicitud:', error);
         });
     } catch (error) {

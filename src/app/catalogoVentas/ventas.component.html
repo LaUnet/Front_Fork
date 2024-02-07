@@ -280,26 +280,15 @@
                     <tr>
                         <td>
                             <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Consultar Descripción</mat-label>
+                                <mat-label>Consultar Descripción / Código Barras</mat-label>
                                 <input matInput type="text" [(ngModel)]="nuevaBusqueda.buscarDescripcion"
                                     name="buscarDescripcion" [formControl]="buscarDescripcionFormControl"
-                                    [errorStateMatcher]="matcher" (keydown.enter)="buscarCatalogo(0)">
-                                <button type="button" mat-icon-button matSuffix color="basic"
-                                    [disabled]="buscarDescripcionFormControl.invalid" (click)="buscarCatalogo(0)">
-                                    <mat-icon matSuffix color="primary">description</mat-icon>
-                                </button>
+                                    [errorStateMatcher]="matcher" #inputCode (keydown.enter)="buscarCatalogo()">
+                                    <button type="button" mat-icon-button matSuffix color="basic" (click)="buscarCatalogo()">
+                                    <mat-icon matSuffix color="primary">screen_search_desktop</mat-icon>
+                                     </button>
                             </mat-form-field>
-                        </td>
-                        <td><mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Consultar Código Barras</mat-label>
-                                <input matInput type="text" #inputCode [(ngModel)]="nuevaBusqueda.buscarCodigoBarras"
-                                    name="buscarCodigoBarras" [formControl]="buscarCodigoBarrasFormControl"
-                                    [errorStateMatcher]="matcher" (keydown.enter)="buscarCatalogo(1)">
-                                <button type="button" mat-icon-button matSuffix color="basic"
-                                    [disabled]="buscarCodigoBarrasFormControl.invalid" (click)="buscarCatalogo(1)">
-                                    <mat-icon matSuffix color="primary">view_array</mat-icon>
-                                </button>
-                            </mat-form-field></td>
+                         </td>   
                     </tr>
                 </table>
                 <table class="full-width">
@@ -307,7 +296,7 @@
                         <td>
                             <mat-form-field class="full-width" style="margin-top: -2%;" appearance="outline">
                                 <mat-label>Filtrar Resultado</mat-label>
-                                <input matInput type="search" (keyup)="filtrar($event)" placeholder="Buscar">
+                                <input matInput type="search" (keyup)="filtrar($event)">
                                 <mat-icon matSuffix color="primary">filter_list</mat-icon>
                             </mat-form-field>
                         </td>

@@ -278,7 +278,7 @@ export class ComprasComponent {
       setTimeout(() => {
         this.openedArticle = false;
         this.setArticulo();
-      }, 3000);
+      }, 100);
     } catch (error) {
       this.isLoadingResults = false;
       this.mensajeFallidoArticulo = 'Error al guardar. Por favor, revisar la consola de Errores.';
@@ -336,7 +336,7 @@ export class ComprasComponent {
       this.mensajeExitoso = "Compra guardada correctamente.";
       setTimeout(() => {
         this.refreshPage();
-      }, 3000);
+      }, 100);
     } catch (error) {
       this.isLoadingResults = false;
       this.mensajeFallido = 'Error al guardar. Por favor, revisar la consola de Errores.';

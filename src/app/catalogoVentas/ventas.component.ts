@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ViewChild, ElementRef  } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
@@ -22,7 +22,7 @@ import { UtilsService } from '../utils.service';
   templateUrl: './ventas.component.html',
   styleUrls: ['./ventas.component.css']
 })
-export class VentasComponent {
+export class VentasComponent implements AfterViewInit, OnInit{
 
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog,
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
@@ -44,9 +44,6 @@ export class VentasComponent {
   pageSize !: number;
   length!: number;
   pageSizeOptions = [20];
-  //Busquedas
-  searchDescription!: boolean;
-  searchCode!: boolean;
   //Storage
   localStorageToken !: any;
   subscriber!: Subscription;
@@ -117,12 +114,10 @@ export class VentasComponent {
 * Control Error Textfields Consultas
 */
 
-  buscarDescripcionFormControl = new FormControl('', [Validators.required]);
-  buscarCodigoBarrasFormControl = new FormControl('', [Validators.required]);
+  buscarDescripcionFormControl = new FormControl('');
 
   nuevaBusqueda: any = {
     buscarDescripcion: '',
-    buscarCodigoBarras: '',
   };
 
   matcher = new MyErrorStateMatcher();
@@ -156,7 +151,10 @@ export class VentasComponent {
   }
 
   ngAfterViewInit() {
-    this.InputField.nativeElement.focus();
+    //this.InputField.nativeElement.focus();
+    setTimeout(() => {
+      this.InputField.nativeElement.focus();
+    }, 500);
     }
 
   async buscarCliente() {
@@ -193,10 +191,9 @@ export class VentasComponent {
       this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
-
   }
 
-  async buscarCatalogo(tipo: number) {
+  async buscarCatalogo() {
     this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
@@ -207,7 +204,7 @@ export class VentasComponent {
     };
 
     let httpParams = new HttpParams();
-    httpParams = tipo < 1 ? httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion) : httpParams.append('codigoBarras', this.nuevaBusqueda.buscarCodigoBarras);
+    httpParams = httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion);
     this.isLoadingResults = true;
     try {
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
@@ -217,7 +214,7 @@ export class VentasComponent {
             if (response.Data.totalDocs === 0) {
               this.mensajeFallido = 'Articulo no encontrado';
             } else {
-              if (tipo === 1) {
+              if (response.Data.docs.length === 1) {
                 this.addToCart(response.Data.docs[0])
               }
             }
@@ -234,7 +231,8 @@ export class VentasComponent {
       this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
-    this.nuevaBusqueda.buscarCodigoBarras = "";
+    this.nuevaBusqueda.buscarDescripcion = "";
+    this.InputField.nativeElement.focus();
   }
 
   filtrar(event: Event) {
@@ -338,10 +336,7 @@ export class VentasComponent {
       .subscribe((confirmar: boolean) => {
         try {
           if (confirmar) {
-            this.mensajeExitoso = "Venta guardada correctamente.";
-            setTimeout(() => {
-              this.refreshPage();
-            }, 3000);
+          //alert("No hacer nada");            
           }
         } catch (error) {
           //alert("No hacer nada");
@@ -349,7 +344,7 @@ export class VentasComponent {
       });
   }
 
-  async guardarVenta() {
+  async guardarVenta() {   
     //Cargamos los articulos por iteración Principal
     this.dataSourceSalesArticle = [];
     for (let i = 0; i < this.dataSourceCarItem.length; i++) {
@@ -357,7 +352,6 @@ export class VentasComponent {
     }
     //Caergamos los articulos a la venta
     this.dataSourceSales.articulo = this.dataSourceSalesArticle;
-
     const url = 'https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales';
     const token = this.tokenService.token;
     const httpOptions = {
@@ -370,6 +364,7 @@ export class VentasComponent {
     try {
       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
       this.isLoadingResults = false;
+      this.mensajeExitoso = "Venta guardada correctamente.";
       this.dialogoImprimirVenta();
     } catch (error) {
       this.isLoadingResults = false;
@@ -396,7 +391,7 @@ export class VentasComponent {
       setTimeout(() => {
         this.openedCustomer = false;
         this.setCliente();
-      }, 3000);
+      }, 100);
     } catch (error) {
       this.isLoadingResults = false;
       this.mensajeFallidoCliente = 'Error al guardar. Por favor, revisar la consola de Errores.';
