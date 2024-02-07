@@ -388,7 +388,7 @@
                         </td>
                         <mat-card-actions align="end">
                             <button type="button" mat-mini-fab matTooltip="Registrar Cliente" color="basic"
-                                (click)="openedCustomer=!openedCustomer;setCliente()">
+                                (click)="openedCustomer=!openedCustomer">
                                 <mat-icon>person_add</mat-icon>
                             </button>
                         </mat-card-actions>
@@ -400,11 +400,11 @@
                         <td>
                             <mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Consultar # Documento</mat-label>
-                                <input matInput type="text" [(ngModel)]="nuevoCliente.numeroDocumento"
-                                    name="numeroDocumento" [formControl]="numeroDocumentoFormControl"
+                                <input matInput type="text" [(ngModel)]="consultaCliente.numeroDocumento"
+                                    name="numeroDocumento" [formControl]="consultaNumeroDocumentoFormControl"
                                     [errorStateMatcher]="matcher">
                                 <button type="button" mat-icon-button matSuffix color="basic"
-                                    [disabled]="numeroDocumentoFormControl.invalid" (click)="buscarCliente()">
+                                    [disabled]="consultaNumeroDocumentoFormControl.invalid" (click)="buscarCliente()">
                                     <mat-icon matSuffix color="primary">contacts</mat-icon>
                                 </button>
                             </mat-form-field>
@@ -414,7 +414,7 @@
                                 <mat-label style="font-weight:bold">Tipo Documento</mat-label>
                                 <mat-icon matSuffix>perm_identity</mat-icon>
                                 <input matInput style="font-weight:bold; color: rgb(53, 53, 134);" type="text"
-                                    [(ngModel)]="nuevoCliente.tipoDocumento" name="tipoDocumento"
+                                    [(ngModel)]="consultaCliente.tipoDocumento" name="tipoDocumento"
                                     [errorStateMatcher]="matcher" disabled>
                             </mat-form-field>
                         </td>
@@ -427,7 +427,7 @@
                                 <mat-label style="font-weight:bold">Nombre Cliente</mat-label>
                                 <mat-icon matSuffix>person</mat-icon>
                                 <input matInput style="font-weight:bold; color: rgb(53, 53, 134);" type="text"
-                                    [(ngModel)]="nuevoCliente.nombreRazonSocial" name="nombreRazonSocial"
+                                    [(ngModel)]="consultaCliente.nombreRazonSocial" name="nombreRazonSocial"
                                     [errorStateMatcher]="matcher" disabled>
                             </mat-form-field>
                         </td>
@@ -597,7 +597,7 @@
                                 <button mat-button
                                     style="font-family:Impact; background-color:rgba(0, 255, 85, 0.658); width: 60%"
                                     [disabled]="(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) === 0 
-                                    || numeroDocumentoFormControl.invalid || (this.nuevoCliente.tipoDocumento === '' || this.nuevoCliente.tipoDocumento === 'NO EXISTE')"
+                                    || consultaNumeroDocumentoFormControl.invalid || (this.consultaCliente.tipoDocumento === '' || this.consultaCliente.tipoDocumento === 'NO EXISTE')"
                                     type="button" (click)="mostrarMetodoPagoCarItem()"
                                     >Venta | {{(this.operaciones.subtotalCompra -this.operaciones.descuentoCompra) | currency : 'USD' : 'symbol' : '1.0-0'}}
                                 </button>

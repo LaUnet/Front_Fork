@@ -98,7 +98,7 @@ export class VentasComponent implements AfterViewInit, OnInit{
 
   nuevoCliente: any = {
     tipoDocumento: '',
-    numeroDocumento: '1111111111',
+    numeroDocumento: '',
     nombreRazonSocial: '',
     telefono: '',
     extension: "",
@@ -109,6 +109,18 @@ export class VentasComponent implements AfterViewInit, OnInit{
     tipoCliente: '',
     barrio: ''
   };
+
+  /**
+ * Control Error Textfields Consultar Customers
+ */
+  consultaNumeroDocumentoFormControl = new FormControl('', [Validators.required]);
+  consultaCliente: any = {
+    tipoDocumento: '',
+    numeroDocumento: '1111111111',
+    nombreRazonSocial: '',
+    email: ''
+  };
+
 
   /**
 * Control Error Textfields Consultas
@@ -167,17 +179,17 @@ export class VentasComponent implements AfterViewInit, OnInit{
     };
 
     let httpParams = new HttpParams();
-    httpParams = httpParams.append('numeroDocumento', this.nuevoCliente.numeroDocumento);
+    httpParams = httpParams.append('numeroDocumento', this.consultaCliente.numeroDocumento);
     this.isLoadingResults = true;
     try {
       this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceClientes = response.Data.docs.length > 0 ? response.Data.docs : null;
-            this.nuevoCliente.nombreRazonSocial = this.dataSourceClientes !== null ? this.dataSourceClientes[0].nombreRazonSocial : "NO EXISTE"
-            this.nuevoCliente.tipoDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoDocumento : "NO EXISTE"
-            this.nuevoCliente.numeroDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].numeroDocumento : null
-            this.nuevoCliente.email = this.dataSourceClientes !== null ? this.dataSourceClientes[0].email : null
+            this.consultaCliente.nombreRazonSocial = this.dataSourceClientes !== null ? this.dataSourceClientes[0].nombreRazonSocial : "NO EXISTE"
+            this.consultaCliente.tipoDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoDocumento : "NO EXISTE"
+            this.consultaCliente.numeroDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].numeroDocumento : null
+            this.consultaCliente.email = this.dataSourceClientes !== null ? this.dataSourceClientes[0].email : null
           }
           this.isLoadingResults = false;
         }, error => {
@@ -298,10 +310,10 @@ export class VentasComponent implements AfterViewInit, OnInit{
       "descuento": this.operaciones.descuentoCompra,
       "total": this.operaciones.subtotalCompra - this.operaciones.descuentoCompra,
       "cliente": {
-        "nombreRazonSocial": this.nuevoCliente.nombreRazonSocial,
-        "tipoDocumento": this.nuevoCliente.tipoDocumento,
-        "numeroDocumento": this.nuevoCliente.numeroDocumento,
-        "email": this.nuevoCliente.email,
+        "nombreRazonSocial": this.consultaCliente.nombreRazonSocial,
+        "tipoDocumento": this.consultaCliente.tipoDocumento,
+        "numeroDocumento": this.consultaCliente.numeroDocumento,
+        "email": this.consultaCliente.email,
       },
       "articulo": "",
       "formaDePago": "",
