@@ -336,7 +336,7 @@ export class VentasComponent implements AfterViewInit, OnInit{
       .subscribe((confirmar: boolean) => {
         try {
           if (confirmar) {
-          //alert("No hacer nada");            
+           this.refreshPage
           }
         } catch (error) {
           //alert("No hacer nada");
