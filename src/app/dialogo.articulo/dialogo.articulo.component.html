@@ -5,23 +5,13 @@
         <!-- <p>{{mensaje}}</p> -->
         <div>
             <mat-form-field class="full-width" appearance="outline">
-                <mat-label>Consultar Descripción</mat-label>
+                <mat-label>Consultar Descripción / Código Barras</mat-label>
                 <input matInput type="text" [(ngModel)]="consultarArticulo.descripcion" name="descripcion"
                     [formControl]="descripcionFormControl" [errorStateMatcher]="matcher"
-                    (keydown.enter)="buscarArticulo(0)">
+                    (keydown.enter)="buscarArticulo()">
                 <button type="button" mat-icon-button matSuffix color="basic"
-                    [disabled]="descripcionFormControl.invalid" (click)="buscarArticulo(0)">
-                    <mat-icon matSuffix color="primary">description</mat-icon>
-                </button>
-            </mat-form-field>
-            <mat-form-field class="full-width" appearance="outline">
-                <mat-label>Consultar Código Barras</mat-label>
-                <input matInput type="text" [(ngModel)]="consultarArticulo.codigoBarras" name="codigoBarras"
-                    [formControl]="codigoBarrasFormControl" [errorStateMatcher]="matcher"
-                    (keydown.enter)="buscarArticulo(1)">
-                <button type="button" mat-icon-button matSuffix color="basic"
-                    [disabled]="descripcionFormControl.invalid" (click)="buscarArticulo(1)">
-                    <mat-icon matSuffix color="primary">view_array</mat-icon>
+                    (click)="buscarArticulo()">
+                    <mat-icon matSuffix color="primary">screen_search_desktop</mat-icon>
                 </button>
             </mat-form-field>
         </div>

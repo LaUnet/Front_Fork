@@ -53,7 +53,7 @@ export class DialogoArticuloComponent implements OnInit {
   ngOnInit() {
   }
 
-  async buscarArticulo(tipo: number) {
+  async buscarArticulo() {
     this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
@@ -64,7 +64,7 @@ export class DialogoArticuloComponent implements OnInit {
     };
 
     let httpParams = new HttpParams();
-    httpParams = tipo < 1 ? httpParams.append('descripcion', this.consultarArticulo.descripcion) : httpParams.append('codigoBarras', this.consultarArticulo.codigoBarras);
+    httpParams = httpParams.append('descripcion', this.consultarArticulo.descripcion);
     this.isLoadingResults = true;
     try {
       this.isLoadingResults = true;
