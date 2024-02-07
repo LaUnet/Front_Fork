@@ -17,8 +17,8 @@
                                 <mat-label>Forma de Pago</mat-label>
                                 <mat-icon matSuffix>currency_exchange</mat-icon>
                                 <mat-select [(ngModel)]="pasarela.tipoPago" required (valueChange)="changeList($event)">
-                                    <mat-option disabled selected>Selecciona una opcíon</mat-option>
-                                    <mat-option value="EFECTIVO">Efectivo</mat-option>
+                                    <mat-option disabled>Selecciona una opcíon</mat-option>
+                                    <mat-option value="EFECTIVO" selected>Efectivo</mat-option>
                                     <mat-option value="TRANSFERENCIA">Transferencia</mat-option>
                                     <mat-option value="MIXTO">Mixto</mat-option>
                                 </mat-select>

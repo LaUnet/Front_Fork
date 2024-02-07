@@ -39,7 +39,7 @@ export class DialogoMetodoPagoComponent implements OnInit{
     tipoPago: '',
     efectivo: 0,
     transferencia: 0,
-    facturaElectronica: '',
+    facturaElectronica: 'NO',
     vendedor: '',
   };
 
