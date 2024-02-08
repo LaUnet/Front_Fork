@@ -142,8 +142,13 @@
                       </mat-date-range-picker-actions>
                     </mat-date-range-picker>
                 </mat-form-field>
+                <div align="end" style="margin-top: -75px">
+                    <button mat-icon-button (click)="exportTable()" matTooltip="Exportar">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                </div>
             </div>
-            <div class="mat-elevation-z8">
+            <div class="mat-elevation-z8" style="margin-top: 15px;">
                 <table mat-table [dataSource]="dataSourceCompras" matSort cdkDropList
                     cdkDropListOrientation="horizontal" (cdkDropListDropped)="move($event)" aria-label="Elements">
 

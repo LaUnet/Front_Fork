@@ -10,6 +10,7 @@ import { UtilsService } from '../utils.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { TableUtilsService } from '../tableUtils.service';
 
 
 @Component({
@@ -21,7 +22,7 @@ export class ReportesComprasComponent implements OnInit {
 
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService,
     public utilsService: UtilsService, private changeDetector: ChangeDetectorRef,
-    private _adapter: DateAdapter<any>,
+    private _adapter: DateAdapter<any>, public tableUtilsService: TableUtilsService,
     @Inject(MAT_DATE_LOCALE) private _locale: string,) { }
 
     
@@ -123,6 +124,10 @@ export class ReportesComprasComponent implements OnInit {
     this.fieldEndDate= '';
     this.buscarCompra(null, null)
 
+  }
+
+  exportTable(){
+    this.tableUtilsService.exportToExcel(this.dataSourceCompras.filteredData, "ReporteCompras");
   }
 
 }

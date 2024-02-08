@@ -131,7 +131,7 @@
             </div>
             <div align="start">
                 <mat-form-field class="mat-form-field" appearance="outline">
-                    <mat-label>Forma de Pago</mat-label>
+                    <mat-label>Seleccione Filtro</mat-label>
                     <mat-icon matSuffix>filter_list</mat-icon>
                     <mat-select [(ngModel)]="filtroArticulo" required (valueChange)="changeList($event)">
                         <mat-option disabled>Selecciona una opcíon</mat-option>
@@ -141,7 +141,7 @@
                     </mat-select>
                 </mat-form-field>
                 <div align="end" style="margin-top: -75px">
-                    <button mat-icon-button (click)="exportTable()">
+                    <button mat-icon-button (click)="exportTable()" matTooltip="Exportar">
                         <mat-icon>more_vert</mat-icon>
                     </button>
                 </div>
