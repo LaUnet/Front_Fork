@@ -27,7 +27,7 @@ export class VentasComponent implements AfterViewInit, OnInit{
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog,
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
 
-  columnas: string[] = ['descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioventa', 'accion'];
+  columnas: string[] = ['codigoBarras','descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioventa', 'accion'];
   columnasCarItem: string[] = ['descripcion', 'cantidad', 'precio', 'total', 'isEdit'];
 
   openedMenu!: boolean;
@@ -471,52 +471,63 @@ export class VentasComponent implements AfterViewInit, OnInit{
   }
 
   addToCart(element: any = []) {
-    if (JSON.parse(this.localStorageService.getItem(element._id)!)) {
-      for (let i = 0; i < this.dataSourceCarItem.length; i++) {
-        if (this.dataSourceCarItem[i]._id === element._id) {
-          if ((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + 1) > element.inventarios[0].stock) {
-            alert(`No hay suficiente Stock ${element.inventarios[0].stock}, para la cantidad de productos solicitados ${this.dataSourceCarItem[i].detalleArticulo[0].cantidad + 1}!`)
+    try {
+      if (JSON.parse(this.localStorageService.getItem(element._id)!)) {
+        for (let i = 0; i < this.dataSourceCarItem.length; i++) {
+          if (this.dataSourceCarItem[i]._id === element._id) {
+            if ((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + 1) > element.inventarios[0].stock) {
+              alert(`No hay suficiente Stock ${element.inventarios[0].stock}, para la cantidad de productos solicitados ${this.dataSourceCarItem[i].detalleArticulo[0].cantidad + 1}!`)
+              break
+            }
+            this.changeQty(this.dataSourceCarItem[i], i, 1, '');
             break
           }
-          this.changeQty(this.dataSourceCarItem[i], i, 1, '');
-          break
         }
+      } else {
+        const addItem: number = 1;
+        if(!element.inventarios[0] || !element.precios[0]){
+          alert(`Articulo sin configuración de Inventario y/o Precio Venta`);
+          return;
+        }
+        element =
+        {
+          "_id": element._id,
+          "stock": this.utilsService.numeros(element.inventarios[0].stock),
+          "detalleArticulo": [
+            {
+              "codigo": element.codigo,
+              "codigoBarras": element.codigoBarras,
+              "descripcion": element.descripcion,
+              "cantidad": addItem,
+              "precioVenta": this.utilsService.numeros(element.precios[0].precioVenta) > 0 ? element.precios[0].precioVenta : 0,
+              "precioMayoreo": this.utilsService.numeros(element.precios[0].precioMayoreo) > 0 ? element.precios[0].precioMayoreo : 0,
+              "descuento": this.utilsService.numeros(element.precios[0].descuentoUnitario),
+              "subtotal": this.utilsService.numeros(element.precios[0].precioVenta) * addItem,
+              "impuesto": this.utilsService.numeros(element.precios[0].impuestoUnitario) > 0 ? this.utilsService.numeros(element.precios[0].impuestoUnitario) : 0,
+              "total": this.utilsService.numeros(element.precios[0].precioVenta) * addItem,
+              "mayoreo": false,
+            }
+          ]
+        }
+        this.localStorageService.setItem(element._id, JSON.stringify(element));
+        this.dataSourceCarItem = [...this.dataSourceCarItem, JSON.parse(this.localStorageService.getItem(element._id)!)]
+        this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
+  
+        this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
+        this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+  
+        this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
+        this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+  
+        this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[this.operaciones.cantidadArticulos - 1], this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].descuento)]
+        this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
       }
-    } else {
-      const addItem: number = 1;
-      element =
-      {
-        "_id": element._id,
-        "stock": this.utilsService.numeros(element.inventarios[0].stock),
-        "detalleArticulo": [
-          {
-            "codigo": element.codigo,
-            "codigoBarras": element.codigoBarras,
-            "descripcion": element.descripcion,
-            "cantidad": addItem,
-            "precioVenta": this.utilsService.numeros(element.precios[0].precioVenta) > 0 ? element.precios[0].precioVenta : 0,
-            "precioMayoreo": this.utilsService.numeros(element.precios[0].precioMayoreo) > 0 ? element.precios[0].precioMayoreo : 0,
-            "descuento": this.utilsService.numeros(element.precios[0].descuentoUnitario),
-            "subtotal": this.utilsService.numeros(element.precios[0].precioVenta) * addItem,
-            "impuesto": this.utilsService.numeros(element.precios[0].impuestoUnitario) > 0 ? this.utilsService.numeros(element.precios[0].impuestoUnitario) : 0,
-            "total": this.utilsService.numeros(element.precios[0].precioVenta) * addItem,
-            "mayoreo": false,
-          }
-        ]
-      }
-      this.localStorageService.setItem(element._id, JSON.stringify(element));
-      this.dataSourceCarItem = [...this.dataSourceCarItem, JSON.parse(this.localStorageService.getItem(element._id)!)]
-      this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
-
-      this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
-      this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
-      this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
-      this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
-      this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[this.operaciones.cantidadArticulos - 1], this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].descuento)]
-      this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallidoCliente = 'Error al cargar el producto. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
     }
+  
   }
 
   changeQty(element: any = [], i: number, qty: any, process: any) {
@@ -601,7 +612,7 @@ export class VentasComponent implements AfterViewInit, OnInit{
 }
 
 export class Catalogo {
-  constructor(public descripcion: String, public marca: string, public referencia: string,
+  constructor(public codigoBarras: String,public descripcion: String, public marca: string, public referencia: string,
     public ubicacion: string, public unidadMedida: string, public stock: string, public precioventa: string
   ) { }
 }

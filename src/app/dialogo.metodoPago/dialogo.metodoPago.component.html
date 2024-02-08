@@ -9,8 +9,9 @@
             </mat-progress-spinner>
         </div>
         <mat-stepper #stepper>
-            <mat-step [stepControl]="firstFormControl" errorMessage="Forma de pago es Requerido">
-                    <ng-template matStepLabel>Diligencia Metodo Pago</ng-template>
+            <mat-step [stepControl]="firstFormControl" errorMessage="Información Requerida">
+                    <ng-template matStepLabel>Metodo Pago / Facturación y Vendedor</ng-template>
+                    <table>
                     <tr>
                         <td>
                             <mat-form-field class="full-width" appearance="outline" style="margin-top: 10px;">
@@ -29,27 +30,57 @@
                         <td>
                             <mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Efectivo</mat-label>
-
                                 <mat-icon matSuffix>monetization_on</mat-icon>
                                 <input style="font-size: 200%;"  type="text" matInput [(ngModel)]="pasarela.efectivo" 
                                 name= "efectivo" currencyMask [options]="{prefix: '', thousands:',', precision: 0}"
-                                [disabled]="pasarela.tipoPago !== 'EFECTIVO'? true:false"
                                 [disabled]="pasarela.tipoPago !== 'MIXTO'? true:false">
+                                <!--[disabled]="pasarela.tipoPago !== 'EFECTIVO'? true:false"-->
                             </mat-form-field>
                             <mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Transferencia</mat-label>
                                 <mat-icon matSuffix>send_to_mobile</mat-icon>
                                 <input style="font-size: 200%;" type="text" matInput [(ngModel)]="pasarela.transferencia"
                                 name= "transferencia" currencyMask  [options]="{prefix: '', thousands:',', precision: 0}"
-                                [disabled]="pasarela.tipoPago !== 'TRANSFERENCIA'? true:false"
                                 [disabled]="pasarela.tipoPago !== 'MIXTO'? true:false">
+                                <!--[disabled]="pasarela.tipoPago !== 'TRANSFERENCIA'? true:false"-->
                             </mat-form-field>
                         </td>
                     </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td>
+                                <mat-form-field class="full-width" appearance="outline" style="margin-top: 10px;">
+                                    <mat-label>Factura Electronica</mat-label>
+                                    <mat-icon matSuffix>attach_email</mat-icon>
+                                    <mat-select [(ngModel)]="pasarela.facturaElectronica" required>
+                                        <mat-option disabled>Selecciona una opcíon</mat-option>
+                                        <mat-option value="NO" selected>NO</mat-option>
+                                        <mat-option value="SI">SI</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <mat-form-field class="full-width" appearance="outline">
+                                    <mat-label>Vendedor</mat-label>
+                                    <mat-icon matSuffix>co_present</mat-icon>
+                                    <mat-select [(ngModel)]="pasarela.vendedor">
+                                        <mat-option disabled selected>Selecciona una opcíon</mat-option>
+                                        <mat-option *ngFor="let vendedor of dataSourceSellers" [value]="vendedor.username">
+                                            {{ vendedor.username }}
+                                          </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </td>
+                        </tr> 
+                    </table>
                     <div>
-                        <button mat-button matStepperNext (click)="setState(firstFormControl, 1);">Siguiente</button>
+                        <button mat-button matStepperNext (click)="setState(firstFormControl);">Siguiente</button>
                     </div>
             </mat-step>
+            <!--
             <mat-step [stepControl]="secondFormControl" errorMessage="Información Requerida">
                     <ng-template matStepLabel>Tipo Factura y Vendedor</ng-template>
                     <tr>
@@ -84,11 +115,12 @@
                         <button mat-button matStepperNext (click)="setState(secondFormControl, 2);">Siguiente</button>
                     </div>
             </mat-step>
+            -->
             <mat-step>
                 <ng-template matStepLabel>Hecho</ng-template>
                 <p>Completado</p>
                 <div>
-                    <button mat-button matStepperPrevious (click)="setState(secondFormControl, 2);">Atras</button>
+                    <button mat-button matStepperPrevious (click)="setState(firstFormControl);">Atras</button>
                 </div>
             </mat-step>
         </mat-stepper>
@@ -101,6 +133,6 @@
     </div></h5>
     <div mat-dialog-actions align="center">
         <button mat-button color="primary"
-            [disabled]="firstFormControl.invalid || secondFormControl.invalid" (click)="confirmarVenta();">CONFIRMAR</button>
+            [disabled]="firstFormControl.invalid" (click)="confirmarVenta();">CONFIRMAR</button>
     </div>
 </section>
