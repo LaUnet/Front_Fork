@@ -1,8 +1,7 @@
-import { AfterViewInit, Component, ViewChild, ChangeDetectorRef, OnInit, Inject } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef, OnInit, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormGroup, FormControl } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { Router } from '@angular/router';
@@ -14,26 +13,25 @@ import { TableUtilsService } from '../tableUtils.service';
 
 
 @Component({
-  selector: 'app-reportesVentas',
-  templateUrl: './reportesVentas.component.html',
+  selector: 'app-reportesDetalleArticulo',
+  templateUrl: './reportesDetalleArticulos.component.html',
   styleUrls: ['./reportes.component.css'],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-CO' }],
 })
-export class ReportesVentasComponent implements OnInit {
+export class ReportesDetalleArticulosComponent implements OnInit {
 
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService,
     public utilsService: UtilsService, private changeDetector: ChangeDetectorRef,
     private _adapter: DateAdapter<any>, public tableUtilsService: TableUtilsService,
     @Inject(MAT_DATE_LOCALE) private _locale: string,) { }
 
-  columnas: string[] = ['No', 'numeroFactura', 'fechaFactura', 'efectivo', 'transferencia', 'valorTransaccion', 'nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'email', 'facturaElectronica', 'vendedor'];
+  columnas: string[] = ['No', 'codigoBarras', 'descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioVenta', 'precioMayoreo'];
 
   isLoadingResults: boolean = false;
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
-  fieldStartDate: string = '';
-  fieldEndDate: string = '';
-  dataSourceVentas: any;
+  filtroArticulo: string = '';
+  dataSourceArticulos: any;
   dataSourceMovimientos: any[] = [];
   opened: boolean = false;
   pageEvent!: PageEvent;
@@ -48,7 +46,7 @@ export class ReportesVentasComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
   ngOnInit() {
-    this.buscarVenta(null, null);
+    this.buscarDetalleArticulo();
     this._locale = 'es-CO';
     this._adapter.setLocale(this._locale);
 
@@ -58,7 +56,7 @@ export class ReportesVentasComponent implements OnInit {
     this.changeDetector.detectChanges();
   }
 
-  async buscarVenta(startDate: any, endDate: any) {
+  async buscarDetalleArticulo() {
     this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
@@ -69,21 +67,17 @@ export class ReportesVentasComponent implements OnInit {
     };
     try {
       let httpParams = new HttpParams();
-      if (startDate && endDate)
-      {
-        httpParams = httpParams.append('startDate', startDate);
-        httpParams = httpParams.append('endDate', endDate);
-      }
+      httpParams = httpParams.append('descripcion', '');
       this.isLoadingResults = true;
-      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceVentas = new MatTableDataSource(response.Data);
-            this.dataSourceVentas.paginator = this.paginator;
-            this.dataSourceVentas.sort = this.sort;
+            this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
+            this.dataSourceArticulos.paginator = this.paginator;
+            this.dataSourceArticulos.sort = this.sort;
           }
           this.isLoadingResults = false;
-          this.dataSourceMovimientos = this.dataSourceVentas.filteredData;
+          this.dataSourceMovimientos = this.dataSourceArticulos.filteredData;
         }, error => {
           this.isLoadingResults = false;
           if (error.status === 401) {
@@ -106,19 +100,6 @@ export class ReportesVentasComponent implements OnInit {
     this.router.navigate(['/login'])
   };
 
-  /** Gets the total cost of all transactions. */
-  getTotalEfectivo() {
-    return this.dataSourceMovimientos.map(t => +t.cantidadEfectivo).reduce((acc, value) => acc + value, 0);
-  }
-
-  getTotalTransferencias() {
-    return this.dataSourceMovimientos.map(t => +t.cantidadTransferencia).reduce((acc, value) => acc + value, 0);
-  }
-
-  getTotalTransactiones() {
-    return this.dataSourceMovimientos.map(t => +t.total).reduce((acc, value) => acc + value, 0);
-  }
-
   move(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.columnas, event.previousIndex, event.currentIndex);
   }
@@ -129,32 +110,27 @@ export class ReportesVentasComponent implements OnInit {
   }
 
   applyFilter() {
-    this.buscarVenta(this.utilsService.getDate(this.startDate), this.utilsService.getDate(this.endDate))
+    this.buscarDetalleArticulo()
   }
 
   applyClear() {
-    this.fieldStartDate= '';
-    this.fieldEndDate= '';
-    this.buscarVenta(null, null)
+    this.buscarDetalleArticulo()
 
   }
 
-  exportTable(){
-    this.tableUtilsService.exportToExcel(this.dataSourceVentas.filteredData, "ReporteVentas");
+  exportTable() {
+    this.tableUtilsService.exportToExcel(this.dataSourceArticulos.filteredData, "ReporteDetalleArticulos");
+  }
+
+  changeList(value: any) {
+    if (value !== 'MIXTO') {
+    } else {
+    }
   }
 }
 
-export interface Transaction {
-  No: string,
-  isVenta: boolean;
-  numeroFactura: Date;
-  fechaFactura: Date;
-  efectivo: number;
-  transferencia: number;
-  valorTransaccion: number;
-  nombreRazonSocial: string;
-  tipoDocumento: string;
-  numeroDocumento: string;
-  facturaElectronica: string;
-  vendedor: string;
+export class Catalogo {
+  constructor(public No: String, public codigoBarras: String,public descripcion: String, public marca: string, public referencia: string,
+    public ubicacion: string, public unidadMedida: string, public stock: string, public precioVenta: string, public precioMayoreo: string
+  ) { }
 }

@@ -21,7 +21,11 @@ import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.co
 import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.component';
 import { DialogoMetodoPagoComponent } from './dialogo.metodoPago/dialogo.metodoPago.component';
 import { DialogoInvoiceComponent } from './dialogo.invoice/dialogo.invoice.component';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CargarDataComponent } from './cargarData/cargar-data.component';
+import { ReportesVentasComponent } from './reportes/reportesVentas.component';
+import { ReportesComprasComponent } from './reportes/reportesCompras.component';
+import { ReportesDetalleArticulosComponent } from './reportes/reportesDetalleArticulos.component'
+
 
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -57,9 +61,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatStepperModule} from '@angular/material/stepper';
 import { CurrencyMaskModule } from "ng2-currency-mask";
-import { CargarDataComponent } from './cargarData/cargar-data.component';
-import { ReportesVentasComponent } from './reportes/reportesVentas.component';
-import { ReportesComprasComponent } from './reportes/reportesCompras.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 
@@ -87,7 +89,8 @@ import { ReportesComprasComponent } from './reportes/reportesCompras.component';
     DialogoInvoiceComponent,
     CargarDataComponent,
     ReportesVentasComponent,
-    ReportesComprasComponent
+    ReportesComprasComponent,
+    ReportesDetalleArticulosComponent
   ],
   imports: [
     BrowserModule,

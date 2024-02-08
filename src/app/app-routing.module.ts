@@ -17,6 +17,7 @@ import { ComprasComponent } from './catalogoCompras/compras.component';
 import { CargarDataComponent } from './cargarData/cargar-data.component';
 import { ReportesVentasComponent } from './reportes/reportesVentas.component';
 import { ReportesComprasComponent } from './reportes/reportesCompras.component';
+import { ReportesDetalleArticulosComponent } from './reportes/reportesDetalleArticulos.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -42,6 +43,7 @@ const routes: Routes = [
   { path: 'cargarData', component: CargarDataComponent },
   { path: 'reportesVentas', component: ReportesVentasComponent },
   { path: 'reportesCompras', component: ReportesComprasComponent },
+  { path: 'reportesArticulos', component: ReportesDetalleArticulosComponent },
   
 ];
 
