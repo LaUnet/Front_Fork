@@ -280,24 +280,29 @@
                     <tr>
                         <td>
                             <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Consultar Descripción / Código Barras</mat-label>
+                                <mat-label>Consultar Descripción</mat-label>
                                 <input matInput type="text" [(ngModel)]="nuevaBusqueda.buscarDescripcion"
                                     name="buscarDescripcion" [formControl]="buscarDescripcionFormControl"
-                                    [errorStateMatcher]="matcher" #inputCode (keydown.enter)="buscarCatalogo()">
-                                    <button type="button" mat-icon-button matSuffix color="basic" (click)="buscarCatalogo()">
-                                    <mat-icon matSuffix color="primary">screen_search_desktop</mat-icon>
-                                     </button>
+                                    [errorStateMatcher]="matcher"  (keydown.enter)="buscarCatalogo(0)">
+                                <button type="button" mat-icon-button matSuffix color="basic"
+                                    (click)="buscarCatalogo(0)">
+                                    <mat-icon matSuffix color="primary">description</mat-icon>
+                                </button>
                             </mat-form-field>
-                         </td>   
                     </tr>
                 </table>
                 <table class="full-width">
                     <tr>
                         <td>
                             <mat-form-field class="full-width" style="margin-top: -2%;" appearance="outline">
-                                <mat-label>Filtrar Resultado</mat-label>
-                                <input matInput type="search" (keyup)="filtrar($event)">
-                                <mat-icon matSuffix color="primary">filter_list</mat-icon>
+                                <mat-label>Consultar Código Barras</mat-label>
+                                <input matInput type="text" #inputCode [(ngModel)]="nuevaBusqueda.buscarCodigoBarras"
+                                    name="buscarCodigoBarras" [formControl]="buscarCodigoBarrasFormControl"
+                                    [errorStateMatcher]="matcher" (keydown.enter)="buscarCatalogo(1)">
+                                <button type="button" mat-icon-button matSuffix color="basic"
+                                    [disabled]="buscarCodigoBarrasFormControl.invalid" (click)="buscarCatalogo(1)">
+                                    <mat-icon matSuffix color="primary">view_array</mat-icon>
+                                </button>
                             </mat-form-field>
                         </td>
                     </tr>
@@ -353,7 +358,8 @@
                             <th style="font-family: Impact; background-color:gainsboro; width: 8%;" mat-header-cell
                                 *matHeaderCellDef>Precio Venta</th>
                             <td mat-cell *matCellDef="let catalogo">
-                                <span *ngFor="let row of catalogo.precios">{{row.precioVenta | currency : 'USD' : 'symbol' : '1.0-0'}}</span>
+                                <span *ngFor="let row of catalogo.precios">{{row.precioVenta | currency : 'USD' :
+                                    'symbol' : '1.0-0'}}</span>
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="accion">
@@ -453,7 +459,7 @@
                                 Descripción </th>
                             <td mat-cell *matCellDef="let carItem">
                                 <span *ngFor="let row of carItem.detalleArticulo">
-                                {{row.descripcion}}
+                                    {{row.descripcion}}
                                 </span>
                             </td>
                         </ng-container>
@@ -465,9 +471,9 @@
                                     <div class="input-group input-group-sm mb-3" style="margin-top: 10px;">
                                         <div class="input-group-prepend">
                                             <button class="btn btn-danger" type="button"
-                                            (click)="changeQty(carItem, i, -1, '')">
-                                            -
-                                        </button>
+                                                (click)="changeQty(carItem, i, -1, '')">
+                                                -
+                                            </button>
                                         </div>
                                         <input type="text" style="background-color: white;"
                                             class="form-control text-center" value="{{row.cantidad}}" disabled />
@@ -490,7 +496,8 @@
                                         {{row.precioVenta | currency : 'USD' : 'symbol' : '1.0-0'}}
                                     </div>
                                     <div *ngIf="row.mayoreo">
-                                        {{this.utilsService.numeros(row.precioMayoreo) | currency : 'USD' : 'symbol' : '1.0-0'}}
+                                        {{this.utilsService.numeros(row.precioMayoreo) | currency : 'USD' : 'symbol' :
+                                        '1.0-0'}}
                                     </div>
                                 </span>
                             </td>
@@ -604,8 +611,9 @@
                                     style="font-family:Impact; background-color:rgba(0, 255, 85, 0.658); width: 60%"
                                     [disabled]="(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) === 0 
                                     || consultaNumeroDocumentoFormControl.invalid || (this.consultaCliente.tipoDocumento === '' || this.consultaCliente.tipoDocumento === 'NO EXISTE')"
-                                    type="button" (click)="mostrarMetodoPagoCarItem()"
-                                    >Venta | {{(this.operaciones.subtotalCompra -this.operaciones.descuentoCompra) | currency : 'USD' : 'symbol' : '1.0-0'}}
+                                    type="button" (click)="mostrarMetodoPagoCarItem()">Venta |
+                                    {{(this.operaciones.subtotalCompra -this.operaciones.descuentoCompra) | currency :
+                                    'USD' : 'symbol' : '1.0-0'}}
                                 </button>
 
                                 <button mat-button style="background-color: gainsboro; width: 15%;" type="button"

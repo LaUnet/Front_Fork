@@ -127,9 +127,10 @@ export class VentasComponent implements AfterViewInit, OnInit{
 */
 
   buscarDescripcionFormControl = new FormControl('');
-
+  buscarCodigoBarrasFormControl = new FormControl('');
   nuevaBusqueda: any = {
     buscarDescripcion: '',
+    buscarCodigoBarras: ''
   };
 
   matcher = new MyErrorStateMatcher();
@@ -200,12 +201,13 @@ export class VentasComponent implements AfterViewInit, OnInit{
           console.error('Error en la solicitud:', error);
         });
     } catch (error) {
+      this.isLoadingResults = false;
       this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
   }
 
-  async buscarCatalogo() {
+  async buscarCatalogo(process: number) {
     this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
@@ -216,7 +218,7 @@ export class VentasComponent implements AfterViewInit, OnInit{
     };
 
     let httpParams = new HttpParams();
-    httpParams = httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion);
+    httpParams = process === 0? httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion) : httpParams.append('codigoBarras', this.nuevaBusqueda.buscarCodigoBarras);
     this.isLoadingResults = true;
     try {
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
@@ -243,8 +245,11 @@ export class VentasComponent implements AfterViewInit, OnInit{
       this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
-    this.nuevaBusqueda.buscarDescripcion = "";
-    this.InputField.nativeElement.focus();
+    if (process > 0){
+      this.nuevaBusqueda.buscarCodigoBarras = "";
+      this.InputField.nativeElement.focus();
+    }
+
   }
 
   filtrar(event: Event) {

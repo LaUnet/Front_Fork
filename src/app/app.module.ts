@@ -21,7 +21,6 @@ import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.co
 import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.component';
 import { DialogoMetodoPagoComponent } from './dialogo.metodoPago/dialogo.metodoPago.component';
 import { DialogoInvoiceComponent } from './dialogo.invoice/dialogo.invoice.component';
-import { CargarDataComponent } from './cargarData/cargar-data.component';
 import { ReportesVentasComponent } from './reportes/reportesVentas.component';
 import { ReportesComprasComponent } from './reportes/reportesCompras.component';
 import { ReportesDetalleArticulosComponent } from './reportes/reportesDetalleArticulos.component'
@@ -87,7 +86,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     DialogoCarItemComponent,
     DialogoMetodoPagoComponent,
     DialogoInvoiceComponent,
-    CargarDataComponent,
     ReportesVentasComponent,
     ReportesComprasComponent,
     ReportesDetalleArticulosComponent
