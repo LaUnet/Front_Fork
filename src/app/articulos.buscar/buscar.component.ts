@@ -13,11 +13,8 @@ import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.co
   templateUrl: './buscar.component.html',
   styleUrls: ['./buscar.component.css']
 })
-export class buscarArticuloComponent implements OnInit{
-
-
+export class buscarArticuloComponent implements OnInit, AfterViewInit{
   constructor(private router: Router,private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
-
 
   columnas: string[] = ['codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'stock', 'precioVenta', 'accion'];
 
@@ -38,6 +35,13 @@ export class buscarArticuloComponent implements OnInit{
   ngOnInit() {
     this.buscarArticulo();
   }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.InputField.nativeElement.focus();
+    }, 3000);
+  }
+
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild("inputCode") InputField: any =  ElementRef;
@@ -75,7 +79,6 @@ export class buscarArticuloComponent implements OnInit{
       this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);     
     }
-    this.InputField.nativeElement.focus();
   }
 
   async recargarArticulo(page: PageEvent) {
