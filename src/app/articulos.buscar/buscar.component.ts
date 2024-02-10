@@ -19,13 +19,13 @@ export class buscarArticuloComponent {
   constructor(private router: Router,private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
 
 
-  columnas: string[] = ['codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'accion'];
+  columnas: string[] = ['codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'stock', 'precioVenta', 'accion'];
 
   pageEvent!: PageEvent;
   pageIndex:number = 0;
   pageSize !:number;
   length!:number;
-  pageSizeOptions = [10];
+  pageSizeOptions = [13, 30, 60, 100];
   isLoadingResults : boolean = false;
   opened: boolean = false;
   mensajeExitoso: string = '';
@@ -191,6 +191,6 @@ export class buscarArticuloComponent {
 export class Articulo {
   constructor(public codigo: string, public codigoBarras: string, public descripcion: String,
               public marca: string, public referencia: string, public unidadMedida: String,
-              public codigoUbicacion: string, public estadoActivo: boolean
+              public codigoUbicacion: string,public stock: string,public precioVenta: string, public estadoActivo: boolean
               ){}
 }

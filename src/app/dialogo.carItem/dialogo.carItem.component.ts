@@ -98,7 +98,8 @@ export class DialogoCarItemComponent implements OnInit {
     if (this.utilsService.numeros(valor) <= this.utilsService.numeros(this.element.stock )) {
       this.articuloCarItem.cantidad = this.utilsService.numeros(valor);
       this.articuloCarItem.total = this.isVentaUnitaria ? this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMenudeo) : this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMayoreo);
-    } else {
+    } 
+    if (this.utilsService.numeros(valor) > this.utilsService.numeros(this.element.stock )){
       this.disabledButton = true
       this.mensajeFallido = "No hay suficiente Stock " + this.element.stock + " para la cantidad de productos solicitados " + valor;
       this.articuloCarItem.cantidad = this.articuloCarItem.cantidad

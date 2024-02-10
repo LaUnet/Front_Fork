@@ -36,12 +36,15 @@ isLoadingResults: boolean = false;
   mensajeFallido: string = '';
 
   nuevoArticulo = {
+    codigo: '',
     codigoBarras: '',
     descripcion: '',
     unidadMedida: '',
     codigoUbicacion: '',
     marca:'',
-    referencia: ''
+    referencia: '',
+    stock:'',
+    precioVenta:''
   };
 
 
@@ -53,7 +56,9 @@ isLoadingResults: boolean = false;
       unidadMedida: this.nuevoArticulo.unidadMedida,
       codigoUbicacion: this.nuevoArticulo.codigoUbicacion,
       referencia: this.nuevoArticulo.referencia,
-      marca: this.nuevoArticulo.marca
+      marca: this.nuevoArticulo.marca,
+      stock: this.nuevoArticulo.stock,
+      precioVenta: this.nuevoArticulo.precioVenta
     };
     const token = this.tokenService.token;
     const httpOptions = {
@@ -65,16 +70,15 @@ isLoadingResults: boolean = false;
     this.isLoadingResults= true;
     try {
       const response = await this.http.post(url, body, httpOptions).toPromise();
-      this.isLoadingResults= false;
       this.mensajeExitoso = "Artículo guardado correctamente.";
       setTimeout(() => {
         this.refreshPage();
-      }, 3000);
+      }, 1000);
     } catch (error) {
-      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al guardar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
+    this.isLoadingResults= false;
   }
 
   ngOnInit(): void {
@@ -128,16 +132,15 @@ isLoadingResults: boolean = false;
         this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${this._id}`, httpOptions)
           .subscribe(response => {
             if (response.Status) {
+              this.nuevoArticulo.codigo = response.Data.codigo;
               this.nuevoArticulo.codigoBarras = response.Data.codigoBarras,
               this.nuevoArticulo.descripcion = response.Data.descripcion,
               this.nuevoArticulo.marca = response.Data.marca,
               this.nuevoArticulo.referencia = response.Data.referencia,
               this.nuevoArticulo.unidadMedida = response.Data.unidadMedida,
               this.nuevoArticulo.codigoUbicacion = response.Data.codigoUbicacion
-            }
-            this.isLoadingResults= false;
+            }            
           }, error => {
-            this.isLoadingResults= false;
             if (error.status === 401) {
               this.routerLinkLogin();
             }
@@ -145,11 +148,11 @@ isLoadingResults: boolean = false;
             console.error('Error en la solicitud:', error);
           }); 
       } catch (error) {
-        this.isLoadingResults= false;
         this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
         console.error('Error en la solicitud:', error);
       }
     }
+    this.isLoadingResults= false;
   }
 
   async editarArticulo() {
@@ -176,12 +179,13 @@ isLoadingResults: boolean = false;
       this.mensajeExitoso = "Artículo actualizado exitosamente"
       setTimeout(() => {
         this.refreshPage();
-      }, 3000);
+      }, 1000);
     } catch (error) {
-      this.isLoadingResults= false;
       this.mensajeFallido = 'Error al editar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
+
+    this.isLoadingResults= false;
   }
   
   refreshPage() {

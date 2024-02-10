@@ -247,9 +247,8 @@ export class VentasComponent implements AfterViewInit, OnInit{
     }
     if (process > 0){
       this.nuevaBusqueda.buscarCodigoBarras = "";
-      this.InputField.nativeElement.focus();
     }
-
+    this.InputField.nativeElement.focus();
   }
 
   filtrar(event: Event) {

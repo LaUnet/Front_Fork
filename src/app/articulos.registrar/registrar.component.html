@@ -187,6 +187,24 @@
             </mat-form-field>
           </td>           
         </tr></table>
+        <table class="full-width" cellspacing="0">
+          <tr>
+            <td>
+              <mat-form-field class="full-width"  appearance="outline">
+                <mat-label>Stock</mat-label>
+                <mat-icon matSuffix>inventory</mat-icon>
+                <input matInput [(ngModel)]="nuevoArticulo.stock" name="stock">
+              </mat-form-field>
+            </td>
+            <td>
+              <mat-form-field class="full-width"  appearance="outline">
+                <mat-label>Precio Venta</mat-label>
+                <mat-icon matSuffix>price_check</mat-icon>
+                <input matInput [(ngModel)]="nuevoArticulo.precioVenta"  name="precioVenta">
+              </mat-form-field>
+            </td> 
+          </tr>
+        </table>
        
         <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
           {{ mensajeExitoso }}

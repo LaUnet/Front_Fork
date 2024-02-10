@@ -40,9 +40,10 @@
                 <td>
                     <mat-form-field class="full-width" appearance="outline">
                         <mat-label>Cantidad</mat-label>
-                        <input matInput type="text" [ngModel]="articuloCarItem.cantidad | number: '.0'" name="cantidad"
+                        <input matInput type="text" [ngModel]="articuloCarItem.cantidad" name="cantidad"
                             [formControl]="cantidadFormControl" [errorStateMatcher]="matcher" #qtyRef (keyup)="onEnter(qtyRef.value)">
                         <mat-icon matSuffix>change_circle</mat-icon>
+                        <mat-hint>{{articuloCarItem.cantidad | number }}</mat-hint>
                         <!-- <span matTextSuffix>{{element.detalleArticulo[0].cantidad | number: '.2' }}</span> -->
                     </mat-form-field>
                 </td>
