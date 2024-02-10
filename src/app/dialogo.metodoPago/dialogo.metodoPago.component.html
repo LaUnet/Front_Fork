@@ -68,7 +68,7 @@
                                     <mat-icon matSuffix>co_present</mat-icon>
                                     <mat-select [(ngModel)]="pasarela.vendedor">
                                         <mat-option disabled selected>Selecciona una opcíon</mat-option>
-                                        <mat-option *ngFor="let vendedor of dataSourceSellers" [value]="vendedor.username">
+                                        <mat-option *ngFor="let vendedor of dataSourceUsuarios" [value]="vendedor.username">
                                             {{ vendedor.username }}
                                           </mat-option>
                                     </mat-select>

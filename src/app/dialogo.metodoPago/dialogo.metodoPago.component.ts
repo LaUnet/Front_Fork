@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { UtilsService } from '../utils.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 
 @Component({
@@ -54,7 +54,6 @@ export class DialogoMetodoPagoComponent implements OnInit {
   }
 
   async cargarUsuarios() {
-    const rolName = 'seller'
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -62,17 +61,14 @@ export class DialogoMetodoPagoComponent implements OnInit {
         'x-access-token': `${token}`
       })
     };
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('rolName','seller');
     this.isLoadingResults = true;
     try {
-      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users', httpOptions)
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceUsuarios = response.Data.docs;
-            for (let i = 0; i < this.dataSourceUsuarios.length; i++) {
-              if (this.dataSourceUsuarios[i].rolName[0].name === rolName) {
-                this.dataSourceSellers = [...this.dataSourceSellers, this.dataSourceUsuarios[i]]
-              }
-            }
           }
           this.isLoadingResults = false;
         }, error => {
