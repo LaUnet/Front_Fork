@@ -39,15 +39,10 @@ export class buscarArticuloComponent implements AfterViewInit, OnInit{
     this.buscarArticulo();
   }
 
-  ngAfterViewInit() {
-    //this.InputField.nativeElement.focus();
-    setTimeout(() => {
-      this.InputField.nativeElement.focus();
-    }, 500);
-    }
-
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild("inputCode") InputField: any =  ElementRef;
+
+
   async buscarArticulo() {
     const token = this.tokenService.token;
     const httpOptions = {
@@ -80,6 +75,7 @@ export class buscarArticuloComponent implements AfterViewInit, OnInit{
       this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);     
     }
+    this.InputField.nativeElement.focus();
   }
 
   async recargarArticulo(page: PageEvent) {
