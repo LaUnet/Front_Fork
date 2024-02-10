@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
@@ -13,7 +13,7 @@ import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.co
   templateUrl: './buscar.component.html',
   styleUrls: ['./buscar.component.css']
 })
-export class buscarArticuloComponent {
+export class buscarArticuloComponent implements AfterViewInit, OnInit{
 
 
   constructor(private router: Router,private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
@@ -39,8 +39,15 @@ export class buscarArticuloComponent {
     this.buscarArticulo();
   }
 
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  ngAfterViewInit() {
+    //this.InputField.nativeElement.focus();
+    setTimeout(() => {
+      this.InputField.nativeElement.focus();
+    }, 500);
+    }
 
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild("inputCode") InputField: any =  ElementRef;
   async buscarArticulo() {
     const token = this.tokenService.token;
     const httpOptions = {
