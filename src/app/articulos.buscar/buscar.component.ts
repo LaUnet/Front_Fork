@@ -39,7 +39,7 @@ export class buscarArticuloComponent implements OnInit, AfterViewInit{
   ngAfterViewInit() {
     setTimeout(() => {
       this.InputField.nativeElement.focus();
-    }, 3000);
+    }, 1000);
   }
 
 
