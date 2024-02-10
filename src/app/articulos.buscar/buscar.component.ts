@@ -13,7 +13,7 @@ import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.co
   templateUrl: './buscar.component.html',
   styleUrls: ['./buscar.component.css']
 })
-export class buscarArticuloComponent implements AfterViewInit, OnInit{
+export class buscarArticuloComponent implements OnInit{
 
 
   constructor(private router: Router,private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
