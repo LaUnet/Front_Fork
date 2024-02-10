@@ -132,13 +132,14 @@ isLoadingResults: boolean = false;
         this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${this._id}`, httpOptions)
           .subscribe(response => {
             if (response.Status) {
-              this.nuevoArticulo.codigo = response.Data.codigo;
-              this.nuevoArticulo.codigoBarras = response.Data.codigoBarras,
-              this.nuevoArticulo.descripcion = response.Data.descripcion,
-              this.nuevoArticulo.marca = response.Data.marca,
-              this.nuevoArticulo.referencia = response.Data.referencia,
-              this.nuevoArticulo.unidadMedida = response.Data.unidadMedida,
-              this.nuevoArticulo.codigoUbicacion = response.Data.codigoUbicacion
+              this.nuevoArticulo.codigoBarras = response.Data.docs[0].codigoBarras,
+              this.nuevoArticulo.descripcion = response.Data.docs[0].descripcion,
+              this.nuevoArticulo.marca = response.Data.docs[0].marca,
+              this.nuevoArticulo.referencia = response.Data.docs[0].referencia,
+              this.nuevoArticulo.unidadMedida = response.Data.docs[0].unidadMedida,
+              this.nuevoArticulo.codigoUbicacion = response.Data.docs[0].codigoUbicacion
+              this.nuevoArticulo.stock = response.Data.docs[0].inventarios[0]? response.Data.docs[0].inventarios[0].stock : 0,
+              this.nuevoArticulo.precioVenta = response.Data.docs[0].precios[0]? response.Data.docs[0].precios[0].precioVenta: 0
             }            
           }, error => {
             if (error.status === 401) {
@@ -163,7 +164,9 @@ isLoadingResults: boolean = false;
       marca: this.nuevoArticulo.marca,
       referencia:this.nuevoArticulo.referencia,
       unidadMedida:this.nuevoArticulo.unidadMedida,
-      codigoUbicacion:this.nuevoArticulo.codigoUbicacion
+      codigoUbicacion:this.nuevoArticulo.codigoUbicacion,
+      stock:this.nuevoArticulo.stock,
+      precioVenta:this.nuevoArticulo.precioVenta
     };
     const token = this.tokenService.token;
     const httpOptions = {
