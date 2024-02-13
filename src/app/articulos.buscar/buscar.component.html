@@ -190,6 +190,13 @@
                 'symbol' : '1.0-0'}}</span>
         </td>
     </ng-container>
+    <ng-container matColumnDef="precioMayoreo">
+      <th mat-header-cell *matHeaderCellDef>Precio Mayoreo</th>
+      <td mat-cell *matCellDef="let articulo">
+          <span *ngFor="let row of articulo.precios">{{row.precioMayoreo | currency : 'USD' :
+              'symbol' : '1.0-0'}}</span>
+      </td>
+  </ng-container>
   
       <!--
       <ng-container matColumnDef="estadoActivo">

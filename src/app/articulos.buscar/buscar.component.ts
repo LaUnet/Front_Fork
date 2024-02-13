@@ -16,7 +16,7 @@ import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.co
 export class buscarArticuloComponent implements OnInit, AfterViewInit{
   constructor(private router: Router,private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
 
-  columnas: string[] = ['codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'stock', 'precioVenta', 'accion'];
+  columnas: string[] = ['codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'stock', 'precioVenta', 'precioMayoreo',  'accion'];
 
   pageEvent!: PageEvent;
   pageIndex:number = 0;
@@ -197,6 +197,7 @@ export class buscarArticuloComponent implements OnInit, AfterViewInit{
 export class Articulo {
   constructor(public codigo: string, public codigoBarras: string, public descripcion: String,
               public marca: string, public referencia: string, public unidadMedida: String,
-              public codigoUbicacion: string,public stock: string,public precioVenta: string, public estadoActivo: boolean
+              public codigoUbicacion: string,public stock: string,public precioVenta: string,
+              public precioMayoreo: string, public estadoActivo: boolean
               ){}
 }
