@@ -16,7 +16,7 @@ import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.co
 export class buscarArticuloComponent implements OnInit, AfterViewInit{
   constructor(private router: Router,private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
 
-  columnas: string[] = ['codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'stock', 'precioVenta', 'precioMayoreo',  'accion'];
+  columnas: string[] = ['codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'stock', 'precioVenta', 'precioMayoreo','precioInterno', 'accion'];
 
   pageEvent!: PageEvent;
   pageIndex:number = 0;
@@ -58,6 +58,7 @@ export class buscarArticuloComponent implements OnInit, AfterViewInit{
     try {
       this.isLoadingResults = true;
       this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles', httpOptions )
+      //this.http.get<any>('http://localhost:8080/api/articles', httpOptions )
       .subscribe(response => {
         if (response.Status) {
           this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
@@ -142,6 +143,7 @@ export class buscarArticuloComponent implements OnInit, AfterViewInit{
 
     async borrar(id: string){
       const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${id}`
+      //const url = `http://localhost:8080/api/articles/${id}`
       const token = this.tokenService.token;
       const httpOptions = {
         headers: new HttpHeaders({
@@ -198,6 +200,6 @@ export class Articulo {
   constructor(public codigo: string, public codigoBarras: string, public descripcion: String,
               public marca: string, public referencia: string, public unidadMedida: String,
               public codigoUbicacion: string,public stock: string,public precioVenta: string,
-              public precioMayoreo: string, public estadoActivo: boolean
+              public precioMayoreo: string, public precioInterno: string, public estadoActivo: boolean
               ){}
 }

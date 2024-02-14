@@ -206,8 +206,15 @@
             <td>
               <mat-form-field class="full-width"  appearance="outline">
                 <mat-label>Precio Mayoreo</mat-label>
-                <mat-icon matSuffix>price_change</mat-icon>
+                <mat-icon matSuffix>price_check</mat-icon>
                 <input matInput [(ngModel)]="nuevoArticulo.precioMayoreo"  name="precioMayoreo">
+              </mat-form-field>
+            </td> 
+            <td>
+              <mat-form-field class="full-width"  appearance="outline">
+                <mat-label>Precio Interno</mat-label>
+                <mat-icon matSuffix>price_check</mat-icon>
+                <input matInput [(ngModel)]="nuevoArticulo.precioInterno"  name="precioInterno">
               </mat-form-field>
             </td> 
           </tr>

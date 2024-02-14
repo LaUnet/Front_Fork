@@ -52,6 +52,7 @@ export class TableUtilsService {
         Stock: x.inventarios.stock,
         PrecioVenta: x.precios.precioVenta,
         PrecioMayoreo: x.precios.precioMayoreo,
+        PrecioInterno: x.precios.PrecioInterno,
       })
     )
    } 

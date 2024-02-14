@@ -32,7 +32,7 @@ export class ComprasComponent {
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
 
 
-  columnas: string[] = ['No', 'descripcion', 'referencia', 'marca', 'cantidad', 'valorUnitario', 'impuesto', 'subtotal', 'descuento', 'total', 'precioVenta', 'precioMayoreo',  'isEdit'];
+  columnas: string[] = ['No', 'descripcion', 'referencia', 'marca', 'cantidad', 'valorUnitario', 'impuesto', 'subtotal', 'descuento', 'total', 'precioVenta', 'precioMayoreo','precioInterno',  'isEdit'];
 
   openedMenu!: boolean;
   openedArticle!: boolean;
@@ -122,6 +122,7 @@ export class ComprasComponent {
   nuevoPrecio: any = {
     precioVenta: 0,
     precioMayoreo: 0,
+    precioInterno: 0,
     impuestoUnitario: 0,
     valorUnitario: 0,
     subtotalUnitario: 0,
@@ -301,7 +302,8 @@ export class ComprasComponent {
         "descuentoUnitario": this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario,
         "total": this.dataSourceCargarArticulos[i].precios[0].total,
         "precioVenta": this.dataSourceCargarArticulos[i].precios[0].precioVenta,
-        "precioMayoreo": this.dataSourceCargarArticulos[i].precios[0].precioMayoreo
+        "precioMayoreo": this.dataSourceCargarArticulos[i].precios[0].precioMayoreo,
+        "precioInterno": this.dataSourceCargarArticulos[i].precios[0].precioInterno
       },
       ]
     }
@@ -322,6 +324,7 @@ export class ComprasComponent {
       "articulo": this.dataSourcePurchaseArticulo
     }
     const url = 'https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/purchases';
+    //const url = 'http://localhost:3030/api/purchases';
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -560,7 +563,7 @@ export class ComprasComponent {
 export class compras {
   constructor(public No: String, public descripcion: String, public marca: string, public referencia: string,
     public valorUnitario: string, public descuento: string, public impuesto: string, public subtotal: string, public cantidad: string,
-    public precioVenta: string, public precioMayoreo: string, public total: string, public isEdit: boolean
+    public precioVenta: string, public precioMayoreo: string, public precioInterno: string, public total: string, public isEdit: boolean
   ) { }
 }
 

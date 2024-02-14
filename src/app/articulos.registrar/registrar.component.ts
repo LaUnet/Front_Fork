@@ -45,7 +45,8 @@ isLoadingResults: boolean = false;
     referencia: '',
     stock:'',
     precioVenta:'',
-    precioMayoreo:''
+    precioMayoreo:'',
+    precioInterno:'',
   };
 
 
@@ -131,6 +132,7 @@ isLoadingResults: boolean = false;
       this.isLoadingResults= true;
       try {
         this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${this._id}`, httpOptions)
+        //this.http.get<any>(`http://localhost:8080/api/articles/${this._id}`, httpOptions)
           .subscribe(response => {
             if (response.Status) {
               this.nuevoArticulo.codigoBarras = response.Data.docs[0].codigoBarras;
@@ -142,6 +144,7 @@ isLoadingResults: boolean = false;
               this.nuevoArticulo.stock = response.Data.docs[0].inventarios[0]? response.Data.docs[0].inventarios[0].stock : 0;
               this.nuevoArticulo.precioVenta = response.Data.docs[0].precios[0]? response.Data.docs[0].precios[0].precioVenta: 0;
               this.nuevoArticulo.precioMayoreo = response.Data.docs[0].precios[0]? response.Data.docs[0].precios[0].precioMayoreo: 0;
+              this.nuevoArticulo.precioInterno = response.Data.docs[0].precios[0]? response.Data.docs[0].precios[0].precioInterno: 0;
             }            
           }, error => {
             if (error.status === 401) {
@@ -160,6 +163,7 @@ isLoadingResults: boolean = false;
 
   async editarArticulo() {
     const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${this._id}`
+    //const url = `http://localhost:8080/api/articles/${this._id}`
     const body = {
       codigoBarras: this.nuevoArticulo.codigoBarras,
       descripcion: this.nuevoArticulo.descripcion,
@@ -169,7 +173,8 @@ isLoadingResults: boolean = false;
       codigoUbicacion:this.nuevoArticulo.codigoUbicacion,
       stock:this.nuevoArticulo.stock,
       precioVenta:this.nuevoArticulo.precioVenta,
-      precioMayoreo:this.nuevoArticulo.precioMayoreo
+      precioMayoreo:this.nuevoArticulo.precioMayoreo,
+      precioInterno:this.nuevoArticulo.precioInterno
     };
     const token = this.tokenService.token;
     const httpOptions = {

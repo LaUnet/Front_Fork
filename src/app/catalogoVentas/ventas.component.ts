@@ -369,6 +369,7 @@ export class VentasComponent implements AfterViewInit, OnInit{
     //Caergamos los articulos a la venta
     this.dataSourceSales.articulo = this.dataSourceSalesArticle;
     const url = 'https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales';
+    //const url = 'http://localhost:3030/api/sales';
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -505,11 +506,13 @@ export class VentasComponent implements AfterViewInit, OnInit{
               "cantidad": addItem,
               "precioVenta": this.utilsService.numeros(element.precios[0].precioVenta) > 0 ? element.precios[0].precioVenta : 0,
               "precioMayoreo": this.utilsService.numeros(element.precios[0].precioMayoreo) > 0 ? element.precios[0].precioMayoreo : 0,
-              "descuento": this.utilsService.numeros(element.precios[0].descuentoUnitario),
-              "subtotal": this.utilsService.numeros(element.precios[0].precioVenta) * addItem,
+              "precioInterno": this.utilsService.numeros(element.precios[0].precioInterno) > 0 ? element.precios[0].precioInterno : 0,
+              "descuento": this.utilsService.numeros(element.precios[0].descuentoUnitario)> 0 ? element.precios[0].descuento : 0,
+              "subtotal": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta),addItem),
               "impuesto": this.utilsService.numeros(element.precios[0].impuestoUnitario) > 0 ? this.utilsService.numeros(element.precios[0].impuestoUnitario) : 0,
-              "total": this.utilsService.numeros(element.precios[0].precioVenta) * addItem,
+              "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta) , addItem),
               "mayoreo": false,
+              "interno": false
             }
           ]
         }
@@ -520,7 +523,7 @@ export class VentasComponent implements AfterViewInit, OnInit{
         this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
         this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
   
-        this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta) * parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
+        this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray,this.utilsService.multiplicarNumero(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta, this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad)]
         this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
   
         this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[this.operaciones.cantidadArticulos - 1], this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].descuento)]
@@ -538,8 +541,16 @@ export class VentasComponent implements AfterViewInit, OnInit{
 
     if (process === 'replace') {
       this.localStorageService.removeItem(element._id);
-      this.dataSourceCarItem[i].detalleArticulo[0].subtotal = element.detalleArticulo[0].precioVenta * element.detalleArticulo[0].cantidad;
-      this.dataSourceCarItem[i].detalleArticulo[0].descuento = element.detalleArticulo[0].mayoreo ? this.utilsService.calcularDescuentoMayoreo(element.detalleArticulo[0].subtotal, this.utilsService.multiplicarNumero(element.detalleArticulo[0].precioMayoreo, element.detalleArticulo[0].cantidad)) : 0;
+      this.dataSourceCarItem[i].detalleArticulo[0].subtotal = this.utilsService.multiplicarNumero(element.detalleArticulo[0].precioVenta,element.detalleArticulo[0].cantidad);
+      if(element.detalleArticulo[0].mayoreo){
+        this.dataSourceCarItem[i].detalleArticulo[0].descuento = this.utilsService.calcularDescuentoMayoreoInterno(element.detalleArticulo[0].subtotal, this.utilsService.multiplicarNumero(element.detalleArticulo[0].precioMayoreo, element.detalleArticulo[0].cantidad));
+      }
+      if(element.detalleArticulo[0].interno){
+        this.dataSourceCarItem[i].detalleArticulo[0].descuento = this.utilsService.calcularDescuentoMayoreoInterno(element.detalleArticulo[0].subtotal, this.utilsService.multiplicarNumero(element.detalleArticulo[0].precioInterno, element.detalleArticulo[0].cantidad));
+      }
+      if(!element.detalleArticulo[0].interno && !element.detalleArticulo[0].mayoreo){
+        this.dataSourceCarItem[i].detalleArticulo[0].descuento = 0;
+      }
       this.dataSourceCarItem[i].detalleArticulo[0].total = this.utilsService.restarNumeros(this.dataSourceCarItem[i].detalleArticulo[0].subtotal, this.dataSourceCarItem[i].detalleArticulo[0].descuento)
 
       this.localStorageService.setItem(element._id, JSON.stringify(element));
@@ -572,8 +583,16 @@ export class VentasComponent implements AfterViewInit, OnInit{
       this.dataSourceCarItem[i].detalleArticulo[0].cantidad = this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty;
     }
     this.localStorageService.removeItem(this.dataSourceCarItem[i]._id);
-    this.dataSourceCarItem[i].detalleArticulo[0].subtotal = this.dataSourceCarItem[i].detalleArticulo[0].precioVenta * this.dataSourceCarItem[i].detalleArticulo[0].cantidad;
-    this.dataSourceCarItem[i].detalleArticulo[0].descuento = this.dataSourceCarItem[i].detalleArticulo[0].mayoreo ? this.utilsService.calcularDescuentoMayoreo(this.dataSourceCarItem[i].detalleArticulo[0].subtotal, this.utilsService.multiplicarNumero(this.dataSourceCarItem[i].detalleArticulo[0].precioMayoreo, this.dataSourceCarItem[i].detalleArticulo[0].cantidad)) : 0;
+    this.dataSourceCarItem[i].detalleArticulo[0].subtotal = this.utilsService.multiplicarNumero(this.dataSourceCarItem[i].detalleArticulo[0].precioVenta,this.dataSourceCarItem[i].detalleArticulo[0].cantidad);
+    if(this.dataSourceCarItem[i].detalleArticulo[0].mayoreo){
+      this.dataSourceCarItem[i].detalleArticulo[0].descuento = this.utilsService.calcularDescuentoMayoreoInterno(this.dataSourceCarItem[i].detalleArticulo[0].subtotal, this.utilsService.multiplicarNumero(this.dataSourceCarItem[i].detalleArticulo[0].precioMayoreo, this.dataSourceCarItem[i].detalleArticulo[0].cantidad));
+    }
+    if(this.dataSourceCarItem[i].detalleArticulo[0].interno){
+      this.dataSourceCarItem[i].detalleArticulo[0].descuento = this.utilsService.calcularDescuentoMayoreoInterno(this.dataSourceCarItem[i].detalleArticulo[0].subtotal, this.utilsService.multiplicarNumero(this.dataSourceCarItem[i].detalleArticulo[0].precioInterno, this.dataSourceCarItem[i].detalleArticulo[0].cantidad));
+    }
+    if(!this.dataSourceCarItem[i].detalleArticulo[0].interno && !this.dataSourceCarItem[i].detalleArticulo[0].mayoreo){
+      this.dataSourceCarItem[i].detalleArticulo[0].descuento = 0;
+    }
     this.dataSourceCarItem[i].detalleArticulo[0].total = this.utilsService.restarNumeros(this.dataSourceCarItem[i].detalleArticulo[0].subtotal, this.dataSourceCarItem[i].detalleArticulo[0].descuento)
 
     this.localStorageService.setItem(this.dataSourceCarItem[i]._id, JSON.stringify(this.dataSourceCarItem[i]));

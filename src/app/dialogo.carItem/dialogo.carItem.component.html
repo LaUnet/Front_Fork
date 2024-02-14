@@ -6,7 +6,7 @@
         <div>
             <tr>
                 <td>
-                    <mat-slide-toggle [(ngModel)]="isVentaUnitaria" (change)="toggleUnitario(isVentaUnitaria)">Precio Seleccionado</mat-slide-toggle>
+                    <mat-slide-toggle [(ngModel)]="isVentaUnitaria" (change)="toggleUnitario(isVentaUnitaria,qtyRef.value)">Precio Seleccionado</mat-slide-toggle>
                 </td>
                 <td>
                     <mat-form-field class="full-width" appearance="outline" style="color: black">
@@ -22,12 +22,28 @@
         <div>
             <tr>
                 <td>
-                    <mat-slide-toggle [(ngModel)]="isVentaMayoreo" (change)="toggleMayoreo(isVentaMayoreo)">Precio Seleccionado</mat-slide-toggle>
+                    <mat-slide-toggle [(ngModel)]="isVentaMayoreo" (change)="toggleMayoreo(isVentaMayoreo, qtyRef.value)">Precio Seleccionado</mat-slide-toggle>
                 </td>
                 <td>
                     <mat-form-field class="full-width" appearance="outline" style="color: black;">
                         <mat-label style="color: black;">Precio Mayoreo</mat-label>
                         <input matInput type="text" [ngModel]="articuloCarItem.precioMayoreo | currency : 'USD' : 'symbol' : '1.0-0'" name="precioMayoreo"
+                            [errorStateMatcher]="matcher" disabled style="color: black;">
+                        <mat-icon matSuffix>attach_money</mat-icon>
+                        <!-- <span matTextSuffix>{{element.detalleArticulo[0].precioVenta | currency }}</span> -->
+                    </mat-form-field>
+                </td>
+            </tr>
+        </div>
+        <div>
+            <tr>
+                <td>
+                    <mat-slide-toggle [(ngModel)]="isVentaInterna" (change)="toggleInterno(isVentaInterna,qtyRef.value)">Precio Seleccionado</mat-slide-toggle>
+                </td>
+                <td>
+                    <mat-form-field class="full-width" appearance="outline" style="color: black;">
+                        <mat-label style="color: black;">Precio Interno</mat-label>
+                        <input matInput type="text" [ngModel]="articuloCarItem.precioInterno | currency : 'USD' : 'symbol' : '1.0-0'" name="precioInterno"
                             [errorStateMatcher]="matcher" disabled style="color: black;">
                         <mat-icon matSuffix>attach_money</mat-icon>
                         <!-- <span matTextSuffix>{{element.detalleArticulo[0].precioVenta | currency }}</span> -->
