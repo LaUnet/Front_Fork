@@ -77,7 +77,7 @@
                         </tr> 
                     </table>
                     <div>
-                        <button mat-button matStepperNext (click)="setState(firstFormControl);">Siguiente</button>
+                        <button mat-button matStepperNext (click)="setState(firstFormControl);">SIGUIENTE</button>
                     </div>
             </mat-step>
             <!--
@@ -120,7 +120,8 @@
                 <ng-template matStepLabel>Hecho</ng-template>
                 <p>Completado</p>
                 <div>
-                    <button mat-button matStepperPrevious (click)="setState(firstFormControl);">Atras</button>
+                    <button mat-button matStepperPrevious (click)="setState(firstFormControl);">ATRAS</button>
+                    <button mat-button color="primary" [disabled]="firstFormControl.invalid" (click)="confirmarVenta()">CONFIRMAR</button>
                 </div>
             </mat-step>
         </mat-stepper>
@@ -131,8 +132,10 @@
     <h5><div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
         {{ mensajeExitoso }}
     </div></h5>
+    <!--
     <div mat-dialog-actions align="center">
         <button mat-button color="primary"
             [disabled]="firstFormControl.invalid" (click)="confirmarVenta();">CONFIRMAR</button>
     </div>
+    -->
 </section>

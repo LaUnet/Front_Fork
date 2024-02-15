@@ -382,7 +382,8 @@ export class VentasComponent implements AfterViewInit, OnInit{
       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
       this.isLoadingResults = false;
       this.mensajeExitoso = "Venta guardada correctamente.";
-      this.dialogoImprimirVenta();
+      //this.dialogoImprimirVenta();
+      this.refreshPage();
     } catch (error) {
       this.isLoadingResults = false;
       this.mensajeFallido = 'Error al guardar. Por favor, revisar la consola de Errores.';
