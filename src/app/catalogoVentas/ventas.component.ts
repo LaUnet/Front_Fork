@@ -227,7 +227,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild("inputCode") InputField: any = ElementRef;
-  width!: "80mm";
+  width!: "58mm";
   classes = classes;
 
 
@@ -469,10 +469,12 @@ export class VentasComponent implements AfterViewInit, OnInit {
     this.isLoadingResults = true;
     try {
       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
-      this.isLoadingResults = false;
       this.mensajeExitoso = "Venta guardada correctamente.";
-      this.testPrint();
-      this.refreshPage();
+      this.isLoadingResults = false;
+      //this.testPrint();
+      setTimeout(() => {
+        this.refreshPage();
+      }, 100);
     } catch (error) {
       this.isLoadingResults = false;
       this.mensajeFallido = 'Error al guardar. Por favor, revisar la consola de Errores.';
@@ -733,14 +735,14 @@ export class VentasComponent implements AfterViewInit, OnInit {
     ps.addLineCenter(`Direccion : Calle 67 # 55 - 83`);
     ps.addLineCenter(`Telefono :  300 8002603`);
     ps.addLineCenter(`Correo :    ppuntou@hotmail.com`);
-    ps.addLine(`----------------------------------------------------`);
+    ps.addLine(`------------------------------------------`);
     ps.addLine(`Cliente :   ${this.dataSourceSales.cliente[0].nombreRazonSocial}`);
     ps.addLine(`Documento : ${this.dataSourceSales.cliente[0].numeroDocumento}`);
-    ps.addLine(`----------------------------------------------------`);
+    ps.addLine(`------------------------------------------`);
     ps.addLine(`Fecha Compra : ${this.dataSourceSales.fechaFactura}`);
     ps.addLine(`Remision # : ${this.dataSourceSales.numeroFactura}`);
-    ps.addLine(`------INICIO DETALLE PRODUCTOS-------`);
-    ps.addLine(`---------FIN DETALLE PRODUCTOS--------`);
+    ps.addLine(`---INICIO DETALLE PRODUCTOS----`);
+    ps.addLine(`-----FIN DETALLE PRODUCTOS-----`);
     ps.addEmptyLine();
     ps.addLine(`Subtotal : ${this.dataSourceSales.subtotal}`);
     ps.addLine(`Descuento : -${this.dataSourceSales.descuento}`);
@@ -780,7 +782,7 @@ class ThermalPrinterService {
   printContent = ``;
   cssStyles = ``;
 
-  constructor(private paperWidth: "80mm" | "58mm") { }
+  constructor(private paperWidth: "58mm") { }
 
   addRawHtml(htmlEl: any) {
     this.printContent += `\n${htmlEl}`;
