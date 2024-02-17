@@ -9,25 +9,110 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { DialogoCarItemComponent } from "../dialogo.carItem/dialogo.carItem.component";
 import { DialogoMetodoPagoComponent } from '../dialogo.metodoPago/dialogo.metodoPago.component';
-import { DialogoInvoiceComponent } from '../dialogo.invoice/dialogo.invoice.component';
 import { MatSort } from '@angular/material/sort';
 import { NavigationEnd, Router } from '@angular/router';
 import { LocalStorageService } from '../local-storage.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
+import { create, SheetsRegistry } from "jss";
+import preset from "jss-preset-default";
+
+/**
+ * Inicio Impresion Factura
+ */
+
+const jss = create(preset());
+const styles = {
+  singleLine: `
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    white-space: pre-wrap;
+  `,
+  printAreaContainer: `
+    padding: 8px;
+  `,
+  fontMono: {
+    fontFamily: "monospace"
+  },
+  textCenter: {
+    textAlign: "center"
+  },
+  textRight: {
+    textAlign: "right"
+  },
+  textLeft: {
+    textAlign: "left"
+  },
+  fontBold: {
+    fontWeight: "bold"
+  },
+  grid3Col: {
+    display: "grid",
+    columnGap: "5px",
+    gridTemplateColumns: "1fr auto auto"
+  },
+  gridBorderSolid: `
+    border-bottom: 1px solid;
+  `,
+  gridBorderDashed: `
+    border-bottom: 1px dashed;
+  `,
+  gridBorderDouble: `
+    border-bottom: 3px double;
+  `,
+  gridBorder: `
+    grid-column: 1 / -1;
+    margin: 4px 0;
+  `,
+  nowrap: {
+    overflow: "hidden",
+    textOverflow: "clip",
+    whiteSpace: "nowrap"
+  },
+  colSpan2: {
+    gridColumn: "span 2 / span 2"
+  },
+  maxLine2: {
+    maxHeight: "30px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    "-webkit-line-clamp": 2,
+    "-webkit-box-orient": "vertical"
+  },
+  maxLine: {
+    maxHeight: "30px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    "-webkit-line-clamp": 4,
+    "-webkit-box-orient": "vertical"
+  }
+};
+
+const sheets = new SheetsRegistry();
+const sheet = jss.createStyleSheet(styles);
+sheets.add(sheet);
+const { classes } = sheet.attach();
+
+/**
+ * Fin Impresion Factura
+ */
+
 
 @Component({
   selector: 'app-ventas',
   templateUrl: './ventas.component.html',
   styleUrls: ['./ventas.component.css']
 })
-export class VentasComponent implements AfterViewInit, OnInit{
+export class VentasComponent implements AfterViewInit, OnInit {
 
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog,
-    public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
+    public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService,
+    public elementRef: ElementRef) { }
 
-  columnas: string[] = ['codigoBarras','descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioventa', 'accion'];
+  columnas: string[] = ['codigoBarras', 'descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioventa', 'accion'];
   columnasCarItem: string[] = ['descripcion', 'cantidad', 'precio', 'total', 'isEdit'];
 
   openedMenu!: boolean;
@@ -141,7 +226,9 @@ export class VentasComponent implements AfterViewInit, OnInit{
 
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-  @ViewChild("inputCode") InputField: any =  ElementRef;
+  @ViewChild("inputCode") InputField: any = ElementRef;
+  width!: "80mm";
+  classes = classes;
 
 
 
@@ -164,11 +251,10 @@ export class VentasComponent implements AfterViewInit, OnInit{
   }
 
   ngAfterViewInit() {
-    //this.InputField.nativeElement.focus();
     setTimeout(() => {
       this.InputField.nativeElement.focus();
     }, 500);
-    }
+  }
 
   async buscarCliente() {
     const token = this.tokenService.token;
@@ -218,7 +304,7 @@ export class VentasComponent implements AfterViewInit, OnInit{
     };
 
     let httpParams = new HttpParams();
-    httpParams = process === 0? httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion) : httpParams.append('codigoBarras', this.nuevaBusqueda.buscarCodigoBarras);
+    httpParams = process === 0 ? httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion) : httpParams.append('codigoBarras', this.nuevaBusqueda.buscarCodigoBarras);
     this.isLoadingResults = true;
     try {
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
@@ -245,7 +331,7 @@ export class VentasComponent implements AfterViewInit, OnInit{
       this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
-    if (process > 0){
+    if (process > 0) {
       this.nuevaBusqueda.buscarCodigoBarras = "";
     }
     this.InputField.nativeElement.focus();
@@ -343,9 +429,11 @@ export class VentasComponent implements AfterViewInit, OnInit{
       });
   }
 
+  /**
   dialogoImprimirVenta(): void {
+
     //Adicion datos cliente para factura
-    this.dataSourceSales.cliente = this.dataSourceClientes    
+    this.dataSourceSales.cliente = this.dataSourceClientes
     this.dialogo
       .open(DialogoInvoiceComponent, {data: this.dataSourceSales})
       .afterClosed()
@@ -359,8 +447,9 @@ export class VentasComponent implements AfterViewInit, OnInit{
         }
       });
   }
+  */
 
-  async guardarVenta() {   
+  async guardarVenta() {
     //Cargamos los articulos por iteración Principal
     this.dataSourceSalesArticle = [];
     for (let i = 0; i < this.dataSourceCarItem.length; i++) {
@@ -382,7 +471,7 @@ export class VentasComponent implements AfterViewInit, OnInit{
       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
       this.isLoadingResults = false;
       this.mensajeExitoso = "Venta guardada correctamente.";
-      //this.dialogoImprimirVenta();
+      this.testPrint();
       this.refreshPage();
     } catch (error) {
       this.isLoadingResults = false;
@@ -491,7 +580,7 @@ export class VentasComponent implements AfterViewInit, OnInit{
         }
       } else {
         const addItem: number = 1;
-        if(!element.inventarios[0] || !element.precios[0]){
+        if (!element.inventarios[0] || !element.precios[0]) {
           alert(`Articulo sin configuración de Inventario y/o Precio Venta`);
           return;
         }
@@ -508,10 +597,10 @@ export class VentasComponent implements AfterViewInit, OnInit{
               "precioVenta": this.utilsService.numeros(element.precios[0].precioVenta) > 0 ? element.precios[0].precioVenta : 0,
               "precioMayoreo": this.utilsService.numeros(element.precios[0].precioMayoreo) > 0 ? element.precios[0].precioMayoreo : 0,
               "precioInterno": this.utilsService.numeros(element.precios[0].precioInterno) > 0 ? element.precios[0].precioInterno : 0,
-              "descuento": this.utilsService.numeros(element.precios[0].descuentoUnitario)> 0 ? element.precios[0].descuento : 0,
-              "subtotal": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta),addItem),
+              "descuento": this.utilsService.numeros(element.precios[0].descuentoUnitario) > 0 ? element.precios[0].descuento : 0,
+              "subtotal": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta), addItem),
               "impuesto": this.utilsService.numeros(element.precios[0].impuestoUnitario) > 0 ? this.utilsService.numeros(element.precios[0].impuestoUnitario) : 0,
-              "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta) , addItem),
+              "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta), addItem),
               "mayoreo": false,
               "interno": false
             }
@@ -520,13 +609,13 @@ export class VentasComponent implements AfterViewInit, OnInit{
         this.localStorageService.setItem(element._id, JSON.stringify(element));
         this.dataSourceCarItem = [...this.dataSourceCarItem, JSON.parse(this.localStorageService.getItem(element._id)!)]
         this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
-  
+
         this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
         this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-  
-        this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray,this.utilsService.multiplicarNumero(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta, this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad)]
+
+        this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, this.utilsService.multiplicarNumero(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta, this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad)]
         this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-  
+
         this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[this.operaciones.cantidadArticulos - 1], this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].descuento)]
         this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
       }
@@ -535,21 +624,21 @@ export class VentasComponent implements AfterViewInit, OnInit{
       this.mensajeFallidoCliente = 'Error al cargar el producto. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
-  
+
   }
 
   changeQty(element: any = [], i: number, qty: any, process: any) {
 
     if (process === 'replace') {
       this.localStorageService.removeItem(element._id);
-      this.dataSourceCarItem[i].detalleArticulo[0].subtotal = this.utilsService.multiplicarNumero(element.detalleArticulo[0].precioVenta,element.detalleArticulo[0].cantidad);
-      if(element.detalleArticulo[0].mayoreo){
+      this.dataSourceCarItem[i].detalleArticulo[0].subtotal = this.utilsService.multiplicarNumero(element.detalleArticulo[0].precioVenta, element.detalleArticulo[0].cantidad);
+      if (element.detalleArticulo[0].mayoreo) {
         this.dataSourceCarItem[i].detalleArticulo[0].descuento = this.utilsService.calcularDescuentoMayoreoInterno(element.detalleArticulo[0].subtotal, this.utilsService.multiplicarNumero(element.detalleArticulo[0].precioMayoreo, element.detalleArticulo[0].cantidad));
       }
-      if(element.detalleArticulo[0].interno){
+      if (element.detalleArticulo[0].interno) {
         this.dataSourceCarItem[i].detalleArticulo[0].descuento = this.utilsService.calcularDescuentoMayoreoInterno(element.detalleArticulo[0].subtotal, this.utilsService.multiplicarNumero(element.detalleArticulo[0].precioInterno, element.detalleArticulo[0].cantidad));
       }
-      if(!element.detalleArticulo[0].interno && !element.detalleArticulo[0].mayoreo){
+      if (!element.detalleArticulo[0].interno && !element.detalleArticulo[0].mayoreo) {
         this.dataSourceCarItem[i].detalleArticulo[0].descuento = 0;
       }
       this.dataSourceCarItem[i].detalleArticulo[0].total = this.utilsService.restarNumeros(this.dataSourceCarItem[i].detalleArticulo[0].subtotal, this.dataSourceCarItem[i].detalleArticulo[0].descuento)
@@ -584,14 +673,14 @@ export class VentasComponent implements AfterViewInit, OnInit{
       this.dataSourceCarItem[i].detalleArticulo[0].cantidad = this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty;
     }
     this.localStorageService.removeItem(this.dataSourceCarItem[i]._id);
-    this.dataSourceCarItem[i].detalleArticulo[0].subtotal = this.utilsService.multiplicarNumero(this.dataSourceCarItem[i].detalleArticulo[0].precioVenta,this.dataSourceCarItem[i].detalleArticulo[0].cantidad);
-    if(this.dataSourceCarItem[i].detalleArticulo[0].mayoreo){
+    this.dataSourceCarItem[i].detalleArticulo[0].subtotal = this.utilsService.multiplicarNumero(this.dataSourceCarItem[i].detalleArticulo[0].precioVenta, this.dataSourceCarItem[i].detalleArticulo[0].cantidad);
+    if (this.dataSourceCarItem[i].detalleArticulo[0].mayoreo) {
       this.dataSourceCarItem[i].detalleArticulo[0].descuento = this.utilsService.calcularDescuentoMayoreoInterno(this.dataSourceCarItem[i].detalleArticulo[0].subtotal, this.utilsService.multiplicarNumero(this.dataSourceCarItem[i].detalleArticulo[0].precioMayoreo, this.dataSourceCarItem[i].detalleArticulo[0].cantidad));
     }
-    if(this.dataSourceCarItem[i].detalleArticulo[0].interno){
+    if (this.dataSourceCarItem[i].detalleArticulo[0].interno) {
       this.dataSourceCarItem[i].detalleArticulo[0].descuento = this.utilsService.calcularDescuentoMayoreoInterno(this.dataSourceCarItem[i].detalleArticulo[0].subtotal, this.utilsService.multiplicarNumero(this.dataSourceCarItem[i].detalleArticulo[0].precioInterno, this.dataSourceCarItem[i].detalleArticulo[0].cantidad));
     }
-    if(!this.dataSourceCarItem[i].detalleArticulo[0].interno && !this.dataSourceCarItem[i].detalleArticulo[0].mayoreo){
+    if (!this.dataSourceCarItem[i].detalleArticulo[0].interno && !this.dataSourceCarItem[i].detalleArticulo[0].mayoreo) {
       this.dataSourceCarItem[i].detalleArticulo[0].descuento = 0;
     }
     this.dataSourceCarItem[i].detalleArticulo[0].total = this.utilsService.restarNumeros(this.dataSourceCarItem[i].detalleArticulo[0].subtotal, this.dataSourceCarItem[i].detalleArticulo[0].descuento)
@@ -633,10 +722,43 @@ export class VentasComponent implements AfterViewInit, OnInit{
       this.operaciones.totalArticulosArray = []
   };
 
+  testPrint(): void {
+    this.dataSourceSales.cliente = this.dataSourceClientes
+    const ps = new ThermalPrinterService(this.width);
+    const styles = sheets.toString();
+    ps.setStyles(styles);
+    //ps.addRawHtml(this.elementRef.nativeElement.innerHTML);
+
+    ps.addLineWithClassName(`text-center font-bold`, `PAPELERIA PUNTO U`);
+    ps.addLineCenter(`Direccion : Calle 67 # 55 - 83`);
+    ps.addLineCenter(`Telefono :  300 8002603`);
+    ps.addLineCenter(`Correo :    ppuntou@hotmail.com`);
+    ps.addLine(`----------------------------------------------------`);
+    ps.addLine(`Cliente :   ${this.dataSourceSales.cliente[0].nombreRazonSocial}`);
+    ps.addLine(`Documento : ${this.dataSourceSales.cliente[0].numeroDocumento}`);
+    ps.addLine(`----------------------------------------------------`);
+    ps.addLine(`Fecha Compra : ${this.dataSourceSales.fechaFactura}`);
+    ps.addLine(`Remision # : ${this.dataSourceSales.numeroFactura}`);
+    ps.addLine(`------INICIO DETALLE PRODUCTOS-------`);
+    ps.addLine(`---------FIN DETALLE PRODUCTOS--------`);
+    ps.addEmptyLine();
+    ps.addLine(`Subtotal : ${this.dataSourceSales.subtotal}`);
+    ps.addLine(`Descuento : -${this.dataSourceSales.descuento}`);
+    ps.addLine(`Total : ${this.dataSourceSales.total}`);
+    ps.print();
+    /**
+    const tpm = new ThermalPrinterService(this.width);
+    const styles = sheets.toString();
+    tpm.setStyles(styles);
+    tpm.addRawHtml(this.elementRef.nativeElement.innerHTML);
+    tpm.print();
+    */
+  }
+
 }
 
 export class Catalogo {
-  constructor(public codigoBarras: String,public descripcion: String, public marca: string, public referencia: string,
+  constructor(public codigoBarras: String, public descripcion: String, public marca: string, public referencia: string,
     public ubicacion: string, public unidadMedida: string, public stock: string, public precioventa: string
   ) { }
 }
@@ -652,4 +774,69 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 
+}
+
+class ThermalPrinterService {
+  printContent = ``;
+  cssStyles = ``;
+
+  constructor(private paperWidth: "80mm" | "58mm") { }
+
+  addRawHtml(htmlEl: any) {
+    this.printContent += `\n${htmlEl}`;
+  }
+
+  addLine(text: any) {
+    this.addRawHtml(`<p>${text}</p>`);
+  }
+
+  addLineWithClassName(className: any, text: any) {
+    this.addRawHtml(`<p class="${className}">${text}</p>`);
+  }
+
+  addEmptyLine() {
+    this.addLine(`&nbsp;`);
+  }
+
+  addLineCenter(text: any) {
+    this.addLineWithClassName("text-center", text);
+  }
+
+  setStyles(cssStyles: any) {
+    this.cssStyles = cssStyles;
+  }
+
+  print() {
+    const printerWindow = window.open(``, `_blank`);
+    printerWindow?.document.write(`
+      <!DOCTYPE html>
+      <html>
+      
+      <head>
+        <title>Print</title>
+        <style>
+          html { padding: 0; margin: 0; width: ${this.paperWidth}; }
+          body { margin: 0; }
+          ${this.cssStyles}
+        </style>
+        <script>
+          window.onafterprint = event => {
+            window.close();
+          };
+        </script>
+      </head>
+  
+      <body>
+        ${this.printContent}
+      </body>
+      
+      </html>
+      
+      `);
+
+    printerWindow?.document.close();
+    printerWindow?.focus();
+    printerWindow?.print();
+    window.close();
+  }
 }

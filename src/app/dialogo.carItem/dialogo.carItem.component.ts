@@ -57,7 +57,6 @@ export class DialogoCarItemComponent implements OnInit {
   }
 
   actualizar(): void {
-    console.log(this.isVentaMayoreo, this.isVentaInterna)
     this.element.detalleArticulo[0].mayoreo = this.isVentaMayoreo? true:false
     this.element.detalleArticulo[0].interno = this.isVentaInterna? true:false
     this.element.detalleArticulo[0].cantidad = this.articuloCarItem.cantidad;
