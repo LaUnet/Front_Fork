@@ -15,90 +15,7 @@ import { LocalStorageService } from '../local-storage.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
-import { create, SheetsRegistry } from "jss";
-import preset from "jss-preset-default";
-
-/**
- * Inicio Impresion Factura
- */
-
-const jss = create(preset());
-const styles = {
-  singleLine: `
-    margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
-    white-space: pre-wrap;
-  `,
-  printAreaContainer: `
-    padding: 8px;
-  `,
-  fontMono: {
-    fontFamily: "monospace"
-  },
-  textCenter: {
-    textAlign: "center"
-  },
-  textRight: {
-    textAlign: "right"
-  },
-  textLeft: {
-    textAlign: "left"
-  },
-  fontBold: {
-    fontWeight: "bold"
-  },
-  grid3Col: {
-    display: "grid",
-    columnGap: "5px",
-    gridTemplateColumns: "1fr auto auto"
-  },
-  gridBorderSolid: `
-    border-bottom: 1px solid;
-  `,
-  gridBorderDashed: `
-    border-bottom: 1px dashed;
-  `,
-  gridBorderDouble: `
-    border-bottom: 3px double;
-  `,
-  gridBorder: `
-    grid-column: 1 / -1;
-    margin: 4px 0;
-  `,
-  nowrap: {
-    overflow: "hidden",
-    textOverflow: "clip",
-    whiteSpace: "nowrap"
-  },
-  colSpan2: {
-    gridColumn: "span 2 / span 2"
-  },
-  maxLine2: {
-    maxHeight: "30px",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    "-webkit-line-clamp": 2,
-    "-webkit-box-orient": "vertical"
-  },
-  maxLine: {
-    maxHeight: "30px",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    display: "-webkit-box",
-    "-webkit-line-clamp": 4,
-    "-webkit-box-orient": "vertical"
-  }
-};
-
-const sheets = new SheetsRegistry();
-const sheet = jss.createStyleSheet(styles);
-sheets.add(sheet);
-const { classes } = sheet.attach();
-
-/**
- * Fin Impresion Factura
- */
+import ConectorPrinterPlugin from "../ConectorPrinterPlugin";
 
 
 @Component({
@@ -227,8 +144,6 @@ export class VentasComponent implements AfterViewInit, OnInit {
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild("inputCode") InputField: any = ElementRef;
-  width!: "58mm";
-  classes = classes;
 
 
 
@@ -429,26 +344,6 @@ export class VentasComponent implements AfterViewInit, OnInit {
       });
   }
 
-  /**
-  dialogoImprimirVenta(): void {
-
-    //Adicion datos cliente para factura
-    this.dataSourceSales.cliente = this.dataSourceClientes
-    this.dialogo
-      .open(DialogoInvoiceComponent, {data: this.dataSourceSales})
-      .afterClosed()
-      .subscribe((confirmar: boolean) => {
-        try {
-          if (confirmar) {
-              this.refreshPage();
-          }
-        } catch (error) {
-          //alert("No hacer nada");
-        }
-      });
-  }
-  */
-
   async guardarVenta() {
     //Cargamos los articulos por iteración Principal
     this.dataSourceSalesArticle = [];
@@ -471,7 +366,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
       this.mensajeExitoso = "Venta guardada correctamente.";
       this.isLoadingResults = false;
-      //this.testPrint();
+      this.enviarImpresion();
       setTimeout(() => {
         this.refreshPage();
       }, 100);
@@ -724,39 +619,31 @@ export class VentasComponent implements AfterViewInit, OnInit {
       this.operaciones.totalArticulosArray = []
   };
 
-  testPrint(): void {
+  async enviarImpresion() {
+  try {
     this.dataSourceSales.cliente = this.dataSourceClientes
-    const ps = new ThermalPrinterService(this.width);
-    const styles = sheets.toString();
-    ps.setStyles(styles);
-    //ps.addRawHtml(this.elementRef.nativeElement.innerHTML);
-
-    ps.addLineWithClassName(`text-center font-bold`, `PAPELERIA PUNTO U`);
-    ps.addLineCenter(`Direccion : Calle 67 # 55 - 83`);
-    ps.addLineCenter(`Telefono :  300 8002603`);
-    ps.addLineCenter(`Correo :    ppuntou@hotmail.com`);
-    ps.addLine(`------------------------------------------`);
-    ps.addLine(`Cliente :   ${this.dataSourceSales.cliente[0].nombreRazonSocial}`);
-    ps.addLine(`Documento : ${this.dataSourceSales.cliente[0].numeroDocumento}`);
-    ps.addLine(`------------------------------------------`);
-    ps.addLine(`Fecha Compra : ${this.dataSourceSales.fechaFactura}`);
-    ps.addLine(`Remision # : ${this.dataSourceSales.numeroFactura}`);
-    ps.addLine(`---INICIO DETALLE PRODUCTOS----`);
-    ps.addLine(`-----FIN DETALLE PRODUCTOS-----`);
-    ps.addEmptyLine();
-    ps.addLine(`Subtotal : ${this.dataSourceSales.subtotal}`);
-    ps.addLine(`Descuento : -${this.dataSourceSales.descuento}`);
-    ps.addLine(`Total : ${this.dataSourceSales.total}`);
-    ps.print();
-    /**
-    const tpm = new ThermalPrinterService(this.width);
-    const styles = sheets.toString();
-    tpm.setStyles(styles);
-    tpm.addRawHtml(this.elementRef.nativeElement.innerHTML);
-    tpm.print();
-    */
+    const conector = new ConectorPrinterPlugin(); 
+    conector
+      .Iniciar()
+      .EstablecerAlineacion(ConectorPrinterPlugin.ALINEACION_CENTRO)
+      .EscribirTexto("Hola Angular")
+      .Feed(1)
+      .EscribirTexto("CUALQUIER MARICADA")
+      .Feed(1)
+      .DescargarImagenDeInternetEImprimir("https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/1200px-Angular_full_color_logo.svg.png", ConectorPrinterPlugin.TAMAÑO_IMAGEN_NORMAL, 400)
+      .Iniciar()
+      .Feed(1);
+    const respuesta = await conector.imprimirEn('TM-T88V');
+    if (respuesta == true) {
+      console.log("Impresión correcta");
+    } else {
+      console.error("Error Imprimir: " + respuesta);
+    } 
+  } catch (error) {
+    this.mensajeFallidoCliente = 'Error al intentar Imprimir.';
+    console.error('Error en la solicitud:', error);
   }
-
+  };
 }
 
 export class Catalogo {
@@ -776,69 +663,4 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 
-}
-
-class ThermalPrinterService {
-  printContent = ``;
-  cssStyles = ``;
-
-  constructor(private paperWidth: "58mm") { }
-
-  addRawHtml(htmlEl: any) {
-    this.printContent += `\n${htmlEl}`;
-  }
-
-  addLine(text: any) {
-    this.addRawHtml(`<p>${text}</p>`);
-  }
-
-  addLineWithClassName(className: any, text: any) {
-    this.addRawHtml(`<p class="${className}">${text}</p>`);
-  }
-
-  addEmptyLine() {
-    this.addLine(`&nbsp;`);
-  }
-
-  addLineCenter(text: any) {
-    this.addLineWithClassName("text-center", text);
-  }
-
-  setStyles(cssStyles: any) {
-    this.cssStyles = cssStyles;
-  }
-
-  print() {
-    const printerWindow = window.open(``, `_blank`);
-    printerWindow?.document.write(`
-      <!DOCTYPE html>
-      <html>
-      
-      <head>
-        <title>Print</title>
-        <style>
-          html { padding: 0; margin: 0; width: ${this.paperWidth}; }
-          body { margin: 0; }
-          ${this.cssStyles}
-        </style>
-        <script>
-          window.onafterprint = event => {
-            window.close();
-          };
-        </script>
-      </head>
-  
-      <body>
-        ${this.printContent}
-      </body>
-      
-      </html>
-      
-      `);
-
-    printerWindow?.document.close();
-    printerWindow?.focus();
-    printerWindow?.print();
-    window.close();
-  }
 }
