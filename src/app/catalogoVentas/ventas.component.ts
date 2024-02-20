@@ -194,6 +194,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
             this.consultaCliente.email = this.dataSourceClientes !== null ? this.dataSourceClientes[0].email : null
           }
           this.isLoadingResults = false;
+          this.enviarImpresion();
         }, error => {
           this.isLoadingResults = false;
           if (error.status === 401) {
@@ -624,15 +625,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     this.dataSourceSales.cliente = this.dataSourceClientes
     const conector = new ConectorPrinterPlugin(); 
     conector
-      .Iniciar()
-      .EstablecerAlineacion(ConectorPrinterPlugin.ALINEACION_CENTRO)
-      .EscribirTexto("Hola Angular")
-      .Feed(1)
-      .EscribirTexto("CUALQUIER MARICADA")
-      .Feed(1)
-      .DescargarImagenDeInternetEImprimir("https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/1200px-Angular_full_color_logo.svg.png", ConectorPrinterPlugin.TAMAÑO_IMAGEN_NORMAL, 400)
-      .Iniciar()
-      .Feed(1);
+      .Pulso(48, 60,120)
     const respuesta = await conector.imprimirEn('TM-T88V');
     if (respuesta == true) {
       console.log("Impresión correcta");
