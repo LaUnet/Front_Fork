@@ -283,7 +283,7 @@
                                 <mat-label>Consultar Descripción</mat-label>
                                 <input matInput type="text" [(ngModel)]="nuevaBusqueda.buscarDescripcion"
                                     name="buscarDescripcion" [formControl]="buscarDescripcionFormControl"
-                                    [errorStateMatcher]="matcher"  (keydown.enter)="buscarCatalogo(0)">
+                                    [errorStateMatcher]="matcher" (keydown.enter)="buscarCatalogo(0)">
                                 <button type="button" mat-icon-button matSuffix color="basic"
                                     (click)="buscarCatalogo(0)">
                                     <mat-icon matSuffix color="primary">description</mat-icon>
@@ -399,6 +399,12 @@
                             <span style="font-family: Impact;">Facturar Pedido</span>
                         </td>
                         <mat-card-actions align="end">
+                            <button mat-button type="button" matTooltip="Abrir Caja"
+                                (click)="enviarImpresion()"
+                                style="font-family:Impact; width: 60%; margin-right: 55%; background-color: gainsboro;" color="basic">Abrir
+                                Caja
+                                <mat-icon>all_inbox</mat-icon>
+                            </button>
                             <button type="button" mat-mini-fab matTooltip="Registrar Cliente" color="basic"
                                 (click)="openedCustomer=!openedCustomer">
                                 <mat-icon>person_add</mat-icon>

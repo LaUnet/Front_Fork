@@ -194,7 +194,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
             this.consultaCliente.email = this.dataSourceClientes !== null ? this.dataSourceClientes[0].email : null
           }
           this.isLoadingResults = false;
-          this.enviarImpresion();
+          //this.enviarImpresion();
         }, error => {
           this.isLoadingResults = false;
           if (error.status === 401) {
@@ -223,7 +223,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     httpParams = process === 0 ? httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion) : httpParams.append('codigoBarras', this.nuevaBusqueda.buscarCodigoBarras);
     this.isLoadingResults = true;
     try {
-      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
@@ -495,7 +495,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
               "precioVenta": this.utilsService.numeros(element.precios[0].precioVenta) > 0 ? element.precios[0].precioVenta : 0,
               "precioMayoreo": this.utilsService.numeros(element.precios[0].precioMayoreo) > 0 ? element.precios[0].precioMayoreo : 0,
               "precioInterno": this.utilsService.numeros(element.precios[0].precioInterno) > 0 ? element.precios[0].precioInterno : 0,
-              "descuento": this.utilsService.numeros(element.precios[0].descuentoUnitario) > 0 ? element.precios[0].descuento : 0,
+              "descuento": 0,
               "subtotal": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta), addItem),
               "impuesto": this.utilsService.numeros(element.precios[0].impuestoUnitario) > 0 ? this.utilsService.numeros(element.precios[0].impuestoUnitario) : 0,
               "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta), addItem),
@@ -628,13 +628,12 @@ export class VentasComponent implements AfterViewInit, OnInit {
       .Pulso(48, 60,120)
     const respuesta = await conector.imprimirEn('TM-T88V');
     if (respuesta == true) {
-      console.log("Impresión correcta");
+      console.log("Envío Exitoso:" + respuesta);
     } else {
-      console.error("Error Imprimir: " + respuesta);
+      console.error("Error Conexión Impresora:" + respuesta);
     } 
   } catch (error) {
-    this.mensajeFallidoCliente = 'Error al intentar Imprimir.';
-    console.error('Error en la solicitud:', error);
+    console.error('Error Conexión Impresora:', error);
   }
   };
 }
