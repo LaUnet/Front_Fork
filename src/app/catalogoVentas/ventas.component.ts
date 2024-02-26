@@ -15,6 +15,7 @@ import { LocalStorageService } from '../local-storage.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
+
 @Component({
   selector: 'app-ventas',
   templateUrl: './ventas.component.html',
@@ -617,6 +618,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
   };
 
   async abrirCaja() {
+    /**
     const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -642,6 +644,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
       this.mensajeFallido = 'Error al Abrir Caja. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
+    */
   }
 };
 
