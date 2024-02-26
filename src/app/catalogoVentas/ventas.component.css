@@ -38,7 +38,7 @@
   .mat-card-right-center {
     position:static;
     width: 35%;
-    min-height: 437px;
+    min-height: 250px;
     max-height: 780px;
     margin-left: 65%;
     opacity: 95%;

@@ -15,9 +15,6 @@ import { LocalStorageService } from '../local-storage.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
-import ConectorPrinterPlugin from "../ConectorPrinterPlugin";
-
-
 @Component({
   selector: 'app-ventas',
   templateUrl: './ventas.component.html',
@@ -367,7 +364,6 @@ export class VentasComponent implements AfterViewInit, OnInit {
       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
       this.mensajeExitoso = "Venta guardada correctamente.";
       this.isLoadingResults = false;
-      this.enviarImpresion();
       setTimeout(() => {
         this.refreshPage();
       }, 100);
@@ -620,23 +616,34 @@ export class VentasComponent implements AfterViewInit, OnInit {
       this.operaciones.totalArticulosArray = []
   };
 
-  async enviarImpresion() {
-  try {
-    this.dataSourceSales.cliente = this.dataSourceClientes
-    const conector = new ConectorPrinterPlugin(); 
-    conector
-      .Pulso(48, 60,120)
-    const respuesta = await conector.imprimirEn('TM-T88V');
-    if (respuesta == true) {
-      console.log("Envío Exitoso:" + respuesta);
-    } else {
-      console.error("Error Conexión Impresora:" + respuesta);
-    } 
-  } catch (error) {
-    console.error('Error Conexión Impresora:', error);
+  async abrirCaja() {
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+
+    let httpParams = new HttpParams();
+    this.isLoadingResults = true;
+    try {
+      this.http.get<any>('https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/printer', httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.isLoadingResults = false;
+          }
+        }, error => {
+          this.isLoadingResults = false;
+          console.error('Error en la solicitud:', error);
+        });
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallido = 'Error al Abrir Caja. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
   }
-  };
-}
+};
 
 export class Catalogo {
   constructor(public codigoBarras: String, public descripcion: String, public marca: string, public referencia: string,
