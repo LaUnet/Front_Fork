@@ -30,6 +30,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
   columnas: string[] = ['codigoBarras', 'descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioventa', 'accion'];
   columnasCarItem: string[] = ['descripcion', 'cantidad', 'precio', 'total', 'isEdit'];
 
+  usbDevice: any = [];
   openedMenu!: boolean;
   openedCustomer!: boolean;
   dataSourceCatalogo: any = [];
@@ -365,6 +366,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
       this.mensajeExitoso = "Venta guardada correctamente.";
       this.isLoadingResults = false;
+      this.connectToPrinter(false);
       setTimeout(() => {
         this.refreshPage();
       }, 100);
@@ -617,35 +619,73 @@ export class VentasComponent implements AfterViewInit, OnInit {
       this.operaciones.totalArticulosArray = []
   };
 
-  async abrirCaja() {
-    /**
-    const token = this.tokenService.token;
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`,
-      })
-    };
-
-    let httpParams = new HttpParams();
-    this.isLoadingResults = true;
+  async connectToPrinter(value: boolean) {
     try {
-      this.http.get<any>('https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/printer', httpOptions)
-        .subscribe(response => {
-          if (response.Status) {
-            this.isLoadingResults = false;
-          }
-        }, error => {
-          this.isLoadingResults = false;
-          console.error('Error en la solicitud:', error);
-        });
+      //const device = new USB(0x04b8, 0x0202);
+      //this.usbDevice = await (navigator as any).usb.requestDevice({ filters: [{ VendorID: 0x1208, ProductID: 0xa514 }] });
+      //Por el momento valores de la impresora quemados en codigo
+      this.usbDevice = await (navigator as any).usb.getDevices();
+      this.usbDevice.forEach((value: any, index: number) => {
+        if (value.productId === 514 && value.vendorId === 1208) {
+          this.usbDevice = value;
+          console.log("Dispositivo encontrado");
+          return;
+        }
+      });
+      this.sendToPrinter(value);
     } catch (error) {
-      this.isLoadingResults = false;
-      this.mensajeFallido = 'Error al Abrir Caja. Por favor, revisar la consola de Errores.';
-      console.error('Error en la solicitud:', error);
+      console.error('Error conectando dispositivo USB:', error);
     }
-    */
-  }
+  };
+
+  async sendToPrinter(value: boolean) {
+    try {
+      if (this.usbDevice) {
+        const textEncoder = value ?
+          [
+            '<ESC>!R',
+            'SIZE 58 mm,25 mm',
+            'CLS',
+            `TEXT 10,10,"4",0,1,1,"Papeleria Punto U"`,
+            'TEXT 10,50,"2",0,1,1,"Calle 67 # 55 - 83"',
+            'TEXT 10,75,"2",0,1,1,"Medellin - Antioquia"',
+            'TEXT 10,100,"2",0,1,1,"Email: ppuntou@gmail.com"',
+            'TEXT 10,125,"1",0,1,1,"Telefono: 300 8002603"',
+            'PRINT 1',
+            'END',        
+          ] : [];
+
+        await this.usbDevice.open()
+          .then(() => this.usbDevice.selectConfiguration(1))
+          .then(() => this.usbDevice.claimInterface(this.usbDevice.configuration.interfaces[0]?.interfaceNumber))
+        await this.usbDevice.transferOut(
+          this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
+          new Uint8Array(
+            //new TextEncoder().encode(this.textToProint.join('\r\n'))
+            new TextEncoder().encode(textEncoder.join('\r\n'))
+          )
+        );
+        await this.usbDevice.releaseInterface(0);
+        await this.usbDevice.close();
+        console.log("Mensaje enviado a la impresora");
+      }
+
+    } catch (error) {
+      console.error("Error enviando a la impresora:", error);
+    }
+  };
+
+  async disconnectToDevice() {
+    try {
+      if (this.usbDevice) {
+        await this.usbDevice.close();
+        console.log('Disconnected from USB device.');
+      }
+    } catch (error) {
+      console.error('Error disconnecting from USB device:', error);
+    }
+  };
+
 };
 
 export class Catalogo {
