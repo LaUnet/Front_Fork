@@ -664,15 +664,10 @@ export class VentasComponent implements AfterViewInit, OnInit {
             'TEXT 10,100,"2",0,1,1,"Email: ppuntou@gmail.com"',
             'TEXT 10,125,"1",0,1,1,"Telefono: 300 8002603"',
             'PRINT 1',
-            'END',
+            'END'
           ] :
           [
-            '<ESC>!R',
-            'SIZE 58 mm,25 mm',
-            'CLS',
-            '27,112,48,55,121',
-            'PRINT 1',
-            'END',
+            '27,112,48,55,121'
           ];
         await this.usbDevice.open()
           .then(() => this.usbDevice.selectConfiguration(1))
