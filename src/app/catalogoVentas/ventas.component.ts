@@ -677,7 +677,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
         await this.usbDevice.transferOut(
           this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
           new Uint8Array(
-            new TextEncoder().encode()
+            new TextEncoder().encode('CONEXION\n')
             //new TextEncoder().encode(textEncoder.join('\r\n'))
           )
         );
