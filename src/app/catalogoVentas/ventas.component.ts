@@ -620,23 +620,31 @@ export class VentasComponent implements AfterViewInit, OnInit {
   };
 
   async connectToPrinter(value: boolean) {
-    try { 
+    try {
       this.usbDevice = await (navigator as any).usb.getDevices()
-      if (this.usbDevice.length < 1) {
-        this.usbDevice = await (navigator as any).usb.requestDevice({ filters: [] })
-        console.log(this.usbDevice)
-      }
-      if (this.usbDevice.length > 1) {
+      if (this.usbDevice.length > 0) {
         this.usbDevice.forEach((value: any, index: number) => {
           //Por el momento nombre de la impresora quemados en codigo si tiene mas de 1 dispositivo vinculado
-          if (value.productName === "ThermalPrinter") {
+          if (value.productName === "TM-T88V") {
             this.usbDevice = value;
+            return;
           }
         });
       };
+      if (this.usbDevice.length !== undefined) {
+        this.usbDevice = await (navigator as any).usb.requestDevice({ filters: [{ productName: 'TM-T88V' }] })
+        if (this.usbDevice.length > 1) {
+          this.usbDevice.forEach((value: any, index: number) => {
+            //Por el momento nombre de la impresora quemados en codigo si tiene mas de 1 dispositivo vinculado
+            if (value.productName === "TM-T88V") {
+              this.usbDevice = value;
+              return;
+            }
+          });
+        };
+      };
       this.sendToPrinter(value);
     } catch (error) {
-      console.log(this.usbDevice)
       console.error('Error conectando dispositivo USB:', error);
     }
   };
@@ -657,24 +665,33 @@ export class VentasComponent implements AfterViewInit, OnInit {
             'TEXT 10,125,"1",0,1,1,"Telefono: 300 8002603"',
             'PRINT 1',
             'END',
-          ] : [];
-
+          ] :
+          [
+            '<ESC>!R',
+            'SIZE 58 mm,25 mm',
+            'CLS',
+            '27,112,48,55,121',
+            'PRINT 1',
+            'END',
+          ];
         await this.usbDevice.open()
           .then(() => this.usbDevice.selectConfiguration(1))
+
           .then(() => this.usbDevice.claimInterface(this.usbDevice.configuration.interfaces[0]?.interfaceNumber))
+
         await this.usbDevice.transferOut(
           this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
           new Uint8Array(
-            //new TextEncoder().encode(this.textToProint.join('\r\n'))
-            new TextEncoder().encode(textEncoder.join('\r\n'))
+            new TextEncoder().encode()
+            //new TextEncoder().encode(textEncoder.join('\r\n'))
           )
         );
+
         await this.usbDevice.releaseInterface(0);
         await this.usbDevice.close();
       }
-
     } catch (error) {
-      console.log("Dispositivo", this.usbDevice)
+      console.log("Dispositivo", this.usbDevice);
       console.error("Error enviando a la impresora:", error);
     }
   };
