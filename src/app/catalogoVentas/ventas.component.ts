@@ -366,7 +366,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
       this.mensajeExitoso = "Venta guardada correctamente.";
       this.isLoadingResults = false;
-      this.connectToPrinter(false);
+      //this.connectToPrinter(false);
       setTimeout(() => {
         this.refreshPage();
       }, 100);
@@ -620,20 +620,23 @@ export class VentasComponent implements AfterViewInit, OnInit {
   };
 
   async connectToPrinter(value: boolean) {
-    try {
-      //const device = new USB(0x04b8, 0x0202);
-      //this.usbDevice = await (navigator as any).usb.requestDevice({ filters: [{ VendorID: 0x1208, ProductID: 0xa514 }] });
-      //Por el momento valores de la impresora quemados en codigo
-      this.usbDevice = await (navigator as any).usb.getDevices();
-      this.usbDevice.forEach((value: any, index: number) => {
-        if (value.productId === 514 && value.vendorId === 1208) {
-          this.usbDevice = value;
-          console.log("Dispositivo encontrado");
-          return;
-        }
-      });
+    try { 
+      this.usbDevice = await (navigator as any).usb.getDevices()
+      if (this.usbDevice.length < 1) {
+        this.usbDevice = await (navigator as any).usb.requestDevice({ filters: [] })
+        console.log(this.usbDevice)
+      }
+      if (this.usbDevice.length > 1) {
+        this.usbDevice.forEach((value: any, index: number) => {
+          //Por el momento nombre de la impresora quemados en codigo si tiene mas de 1 dispositivo vinculado
+          if (value.productName === "ThermalPrinter") {
+            this.usbDevice = value;
+          }
+        });
+      };
       this.sendToPrinter(value);
     } catch (error) {
+      console.log(this.usbDevice)
       console.error('Error conectando dispositivo USB:', error);
     }
   };
@@ -641,6 +644,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
   async sendToPrinter(value: boolean) {
     try {
       if (this.usbDevice) {
+        //Configuración del TSPL
         const textEncoder = value ?
           [
             '<ESC>!R',
@@ -652,7 +656,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
             'TEXT 10,100,"2",0,1,1,"Email: ppuntou@gmail.com"',
             'TEXT 10,125,"1",0,1,1,"Telefono: 300 8002603"',
             'PRINT 1',
-            'END',        
+            'END',
           ] : [];
 
         await this.usbDevice.open()
@@ -667,10 +671,10 @@ export class VentasComponent implements AfterViewInit, OnInit {
         );
         await this.usbDevice.releaseInterface(0);
         await this.usbDevice.close();
-        console.log("Mensaje enviado a la impresora");
       }
 
     } catch (error) {
+      console.log("Dispositivo", this.usbDevice)
       console.error("Error enviando a la impresora:", error);
     }
   };
