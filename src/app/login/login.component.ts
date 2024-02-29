@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {TokenService} from './token'
+import { ErrorStateMatcher } from '@angular/material/core';
+import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -9,46 +11,22 @@ import {TokenService} from './token'
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  username: string = '';
+  matcher = new MyErrorStateMatcher();
+  hide = true;
+  email: string = '';
   password: string = '';
-  isUsernameValid: boolean = true;
-  isPasswordValid: boolean = true;
   isLoadingResults: boolean = false;
   authenticationError: boolean = false;
+  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+  passwordFormControl = new FormControl('', [Validators.required, Validators.pattern('(?=\\D*\\d)(?=[^a-z]*[a-z])(?=[^A-Z]*[A-Z]).{8,30}')]);
 
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService) { }
-
-
-  onSubmit() {
-
-    this.validateForm();
-
-    if (this.isFormValid()) {
-      this.login();
-    } else {
-      window.location.reload();
-    }
-  }
-
-  validateForm() {
-    this.isUsernameValid = this.isValidEmail(this.username);
-    this.isPasswordValid = this.password !== '';
-  }
-
-  isValidEmail(email: string): boolean {
-    const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
-    return emailPattern.test(email.toLowerCase());
-  }
-
-  isFormValid(): boolean {
-    return this.isUsernameValid && this.isPasswordValid;
-  }
 
   async login() {
     const loginUrl = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/auth/login';
 
     const body = {
-      email: this.username,
+      email: this.email,
       password: this.password
     };
 
@@ -88,3 +66,10 @@ export class LoginComponent {
   }
 }
 
+/** Error when invalid control is dirty, touched, or submitted. */
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}

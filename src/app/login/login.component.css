@@ -56,4 +56,9 @@ body {
   margin-left: 45%;
   margin-right: 45%;
 }
+
+.full-width {
+  width: 100%;
+}
+
 /* ... (otros estilos previos) */

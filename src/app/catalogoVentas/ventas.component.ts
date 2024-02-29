@@ -667,17 +667,18 @@ export class VentasComponent implements AfterViewInit, OnInit {
             'END'
           ] :
           [
-            '27,112,48,55,121'
-          ];
+            '<esc>!r',
+            'size 58 mm,25 mm',
+            `text 10,10,"4",0,1,1,"Papeleria Punto U"`,
+          ];  
         await this.usbDevice.open()
           .then(() => this.usbDevice.selectConfiguration(1))
-
           .then(() => this.usbDevice.claimInterface(this.usbDevice.configuration.interfaces[0]?.interfaceNumber))
 
         await this.usbDevice.transferOut(
           this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
           new Uint8Array(
-            new TextEncoder().encode('CONEXION\n')
+            new TextEncoder().encode('Hola Mundo\n')
             //new TextEncoder().encode(textEncoder.join('\r\n'))
           )
         );
@@ -685,6 +686,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
         await this.usbDevice.releaseInterface(0);
         await this.usbDevice.close();
       }
+      console.log("Dispositivo Vinculado", this.usbDevice);
     } catch (error) {
       console.log("Dispositivo", this.usbDevice);
       console.error("Error enviando a la impresora:", error);
