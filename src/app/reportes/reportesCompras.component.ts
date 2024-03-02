@@ -12,6 +12,12 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TableUtilsService } from '../tableUtils.service';
 
+/** Setear fechas */
+const today = new Date();
+const month = today.getMonth();
+const year = today.getFullYear();
+const day = today.getDate();
+
 
 @Component({
   selector: 'app-reportesVentas',
@@ -47,8 +53,13 @@ export class ReportesComprasComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
+  fechaInicial = new FormGroup({
+    start: new FormControl(new Date(year, month, day)),
+    end: new FormControl(new Date(year, month, day+1)),
+  }); 
+
   ngOnInit() {
-    this.buscarCompra(null, null);
+    this.buscarCompra(this.fechaInicial.value.start, this.fechaInicial.value.end);
     this._locale = 'es-CO';
     this._adapter.setLocale(this._locale);
   }

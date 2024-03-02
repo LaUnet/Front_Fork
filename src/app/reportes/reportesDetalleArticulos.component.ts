@@ -46,7 +46,7 @@ export class ReportesDetalleArticulosComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
   ngOnInit() {
-    this.buscarDetalleArticulo();
+    this.buscarDetalleArticulo("20");
     this._locale = 'es-CO';
     this._adapter.setLocale(this._locale);
 
@@ -56,7 +56,7 @@ export class ReportesDetalleArticulosComponent implements OnInit {
     this.changeDetector.detectChanges();
   }
 
-  async buscarDetalleArticulo() {
+  async buscarDetalleArticulo(process: any) {
     this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
@@ -65,9 +65,13 @@ export class ReportesDetalleArticulosComponent implements OnInit {
         'x-access-token': `${token}`,
       })
     };
+
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('stock', process);
+    this.isLoadingResults = true;
     try {
       this.isLoadingResults = true;
-      this.http.get<any>('https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle', httpOptions)
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/inventories?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
@@ -102,28 +106,12 @@ export class ReportesDetalleArticulosComponent implements OnInit {
     moveItemInArray(this.columnas, event.previousIndex, event.currentIndex);
   }
 
-  addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
-    this.startDate = type === 'Start' ? event.value : this.startDate;
-    this.endDate = type === 'End' ? event.value : null;
-  }
-
-  applyFilter() {
-    this.buscarDetalleArticulo()
-  }
-
-  applyClear() {
-    this.buscarDetalleArticulo()
-
-  }
-
   exportTable() {
     this.tableUtilsService.exportToExcel(this.dataSourceArticulos.filteredData, "ReporteDetalleArticulos");
   }
 
   changeList(value: any) {
-    if (value !== 'MIXTO') {
-    } else {
-    }
+    this.buscarDetalleArticulo(value)
   }
 }
 

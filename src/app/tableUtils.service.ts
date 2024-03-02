@@ -45,11 +45,11 @@ export class TableUtilsService {
     if (name === 'ReporteDetalleArticulos') {
       filter = arr.map(
         x => ({
-          CodigoBarras: x.codigoBarras,
-          Descripcion: x.descripcion,
-          Marca: x.marca,
+          CodigoBarras: x.articulo.codigoBarras,
+          Descripcion: x.articulo.descripcion,
+          Marca: x.articulo.marca,
           Ubicacion: x.codigoUbicacion,
-          Stock: +x.inventarios.stock,
+          Stock: +x.stock,
           PrecioVenta: +x.precios.precioVenta,
           PrecioMayoreo: +x.precios.precioMayoreo,
           PrecioInterno: +x.precios.PrecioInterno,

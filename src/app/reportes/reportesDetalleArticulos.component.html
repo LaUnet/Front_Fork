@@ -18,7 +18,7 @@
     <span class="spacer"></span>
 
     <button mat-fab extended disabled class="colorText">
-        REPORTES DETALLE ARTICULOS
+        REPORTES INVENTARIO ARTICULOS
     </button>
     <span class="spacer"></span>
     <span class="spacer"></span>
@@ -135,9 +135,9 @@
                     <mat-icon matSuffix>filter_list</mat-icon>
                     <mat-select [(ngModel)]="filtroArticulo" required (valueChange)="changeList($event)">
                         <mat-option disabled>Selecciona una opcíon</mat-option>
-                        <mat-option value="OP1">Filtro 1</mat-option>
-                        <mat-option value="OP2">Filtro 2</mat-option>
-                        <mat-option value="OP3">Filtro 3</mat-option>
+                        <mat-option value="20">Menor a 20</mat-option>
+                        <mat-option value="50">Menor a 50</mat-option>
+                        <mat-option value="100">menor a 100</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <div align="end" style="margin-top: -75px">
@@ -151,48 +151,63 @@
                     cdkDropListOrientation="horizontal" (cdkDropListDropped)="move($event)" id="ReporteDetalleArticulos">
                     <!-- Column -->
                     <ng-container matColumnDef="No">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell mat-sort-header
+                        <th style="font-family: Impact; background-color:gainsboro; width: 2%;" mat-header-cell mat-sort-header
                             cdkDrag *matHeaderCellDef> No </th>
                         <td mat-cell *matCellDef="let catalogo; let i = index"> {{i+1}} </td>
                     </ng-container>
                     <ng-container matColumnDef="codigoBarras">
                         <th style="font-family: Impact; background-color:gainsboro; width: 10%;" mat-header-cell mat-sort-header
-                            cdkDrag *matHeaderCellDef class="mat-header-cell mat-sort-header">
-                            Código Barras </th>
-                        <td mat-cell *matCellDef="let catalogo"> {{catalogo.codigoBarras}} </td>
+                            cdkDrag *matHeaderCellDef>Codigo Barras</th>
+                        <td mat-cell *matCellDef="let catalogo">
+                            <span *ngFor="let row of catalogo.articulo
+                         ">{{row.codigoBarras}}</span>
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="descripcion">
-                        <th style="font-family: Impact; background-color:gainsboro; width: 15%;" mat-header-cell mat-sort-header
-                            cdkDrag *matHeaderCellDef class="mat-header-cell mat-sort-header">
-                            Descripción </th>
-                        <td mat-cell *matCellDef="let catalogo"> {{catalogo.descripcion}} </td>
+                        <th style="font-family: Impact; background-color:gainsboro; width: 20%;" mat-header-cell mat-sort-header
+                            cdkDrag *matHeaderCellDef>Descripción</th>
+                        <td mat-cell *matCellDef="let catalogo">
+                            <span *ngFor="let row of catalogo.articulo
+                         ">{{row.descripcion}}</span>
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="marca">
                         <th style="font-family: Impact; background-color:gainsboro; width: 10%;" mat-header-cell mat-sort-header
-                            cdkDrag *matHeaderCellDef> Marca </th>
-                        <td mat-cell *matCellDef="let catalogo"> {{catalogo.marca}} </td>
+                            cdkDrag *matHeaderCellDef>Marca</th>
+                        <td mat-cell *matCellDef="let catalogo">
+                            <span *ngFor="let row of catalogo.articulo
+                         ">{{row.marca}}</span>
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="referencia">
                         <th style="font-family: Impact; background-color:gainsboro; width: 10%;" mat-header-cell mat-sort-header
-                            cdkDrag *matHeaderCellDef> Referencia </th>
-                        <td mat-cell *matCellDef="let catalogo"> {{catalogo.referencia}} </td>
-                    </ng-container>
-                    <ng-container matColumnDef="unidadMedida">
-                        <th style="font-family: Impact; background-color:gainsboro; width: 10%;" mat-header-cell mat-sort-header
-                            cdkDrag *matHeaderCellDef> Unidad Medida </th>
-                        <td mat-cell *matCellDef="let catalogo"> {{catalogo.unidadMedida}} </td>
+                            cdkDrag *matHeaderCellDef>Referencia</th>
+                        <td mat-cell *matCellDef="let catalogo">
+                            <span *ngFor="let row of catalogo.articulo
+                         ">{{row.referencia}}</span>
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="ubicacion">
                         <th style="font-family: Impact; background-color:gainsboro; width: 10%;" mat-header-cell mat-sort-header
-                            cdkDrag *matHeaderCellDef> Ubicación </th>
-                        <td mat-cell *matCellDef="let catalogo"> {{catalogo.codigoUbicacion}} </td>
+                            cdkDrag *matHeaderCellDef>Ubicación</th>
+                        <td mat-cell *matCellDef="let catalogo">
+                            <span *ngFor="let row of catalogo.articulo
+                         ">{{row.codigoUbicacion}}</span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="unidadMedida">
+                        <th style="font-family: Impact; background-color:gainsboro; width: 10%;" mat-header-cell mat-sort-header
+                            cdkDrag *matHeaderCellDef>UnidadMedida</th>
+                        <td mat-cell *matCellDef="let catalogo">
+                            <span *ngFor="let row of catalogo.articulo
+                         ">{{row.unidadMedida}}</span>
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="stock">
-                        <th style="font-family: Impact; background-color:gainsboro; width: 10%;" mat-header-cell mat-sort-header
-                            cdkDrag *matHeaderCellDef>Stock</th>
-                        <td mat-cell *matCellDef="let catalogo">
-                            <span *ngFor="let row of catalogo.inventarios
-                         ">{{row.stock | number: '.0' }}</span>
+                        <th style="font-family: Impact; background-color:gainsboro ; width: 10%;" mat-header-cell mat-sort-header
+                            cdkDrag *matHeaderCellDef> Stock </th>
+                        <td mat-cell *matCellDef="let catalogo"> 
+                            {{catalogo.stock | number: '.0'}} 
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="precioVenta">
