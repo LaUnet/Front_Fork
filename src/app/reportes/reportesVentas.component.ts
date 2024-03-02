@@ -12,6 +12,12 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TableUtilsService } from '../tableUtils.service';
 
+/** Setear fechas */
+const today = new Date();
+const month = today.getMonth();
+const year = today.getFullYear();
+const day = today.getDate();
+
 
 @Component({
   selector: 'app-reportesVentas',
@@ -44,11 +50,18 @@ export class ReportesVentasComponent implements OnInit {
   startDate!: any;
   endDate!: any;
 
+
+
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
+  fechaInicial = new FormGroup({
+    start: new FormControl(new Date(year, month, day)),
+    end: new FormControl(new Date(year, month, day+1)),
+  }); 
+
   ngOnInit() {
-    this.buscarVenta(null, null);
+    this.buscarVenta(this.fechaInicial.value.start, this.fechaInicial.value.end);
     this._locale = 'es-CO';
     this._adapter.setLocale(this._locale);
 
@@ -74,6 +87,7 @@ export class ReportesVentasComponent implements OnInit {
         httpParams = httpParams.append('startDate', startDate);
         httpParams = httpParams.append('endDate', endDate);
       }
+      console.log(startDate, endDate, new Date())
       this.isLoadingResults = true;
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
@@ -126,6 +140,7 @@ export class ReportesVentasComponent implements OnInit {
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
     this.startDate = type === 'Start' ? event.value : this.startDate;
     this.endDate = type === 'End' ? event.value : null;
+    console.log(this.startDate, this.endDate)
   }
 
   applyFilter() {

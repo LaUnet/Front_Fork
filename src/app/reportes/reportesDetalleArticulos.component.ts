@@ -66,10 +66,8 @@ export class ReportesDetalleArticulosComponent implements OnInit {
       })
     };
     try {
-      let httpParams = new HttpParams();
-      httpParams = httpParams.append('descripcion', '');
       this.isLoadingResults = true;
-      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
+      this.http.get<any>('https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle', httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);

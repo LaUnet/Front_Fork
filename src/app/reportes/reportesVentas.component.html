@@ -132,10 +132,15 @@
             <div align="start">
                 <mat-form-field class="mat-form-field" appearance="outline">
                     <mat-label style="font-size: 125%;">Rango Fecha Factura</mat-label>
-                    <mat-date-range-input [rangePicker]="rangePicker" style="font-size: 150%;">
-                        <input matStartDate placeholder="Start Date" (dateInput)="addEvent('Start', $event)"
+                    <mat-date-range-input 
+                    [formGroup]="fechaInicial"
+                    [rangePicker]="rangePicker"
+                    [comparisonStart]="fechaInicial.value.start"
+                    [comparisonEnd]="fechaInicial.value.end"
+                     style="font-size: 150%;">
+                        <input matStartDate placeholder="Start Date" formControlName="start" (dateInput)="addEvent('Start', $event)"
                             [(ngModel)]="fieldStartDate">
-                        <input matEndDate placeholder="End Date" (dateInput)="addEvent('End', $event)"
+                        <input matEndDate placeholder="End Date" formControlName="end" (dateInput)="addEvent('End', $event)"
                             [(ngModel)]="fieldEndDate">
                     </mat-date-range-input>
                     <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
@@ -168,7 +173,7 @@
                     <!-- Column -->
                     <ng-container matColumnDef="numeroFactura">
                         <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
-                            cdkDrag *matHeaderCellDef> Numero Factura </th>
+                            cdkDrag *matHeaderCellDef> # Factura </th>
                         <td mat-cell *matCellDef="let transaction"> {{transaction.numeroFactura}} </td>
                         <td mat-footer-cell *matFooterCellDef></td>
                     </ng-container>
@@ -184,7 +189,7 @@
                     <!-- Column -->
                     <ng-container matColumnDef="efectivo">
                         <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
-                            cdkDrag *matHeaderCellDef> Monto Efectivo </th>
+                            cdkDrag *matHeaderCellDef> Pago Efectivo </th>
                         <td mat-cell *matCellDef="let transaction"> {{transaction.cantidadEfectivo | currency : 'USD' :
                             'symbol' : '1.0-0'}}
                         </td>
@@ -195,7 +200,7 @@
                     <!-- Column -->
                     <ng-container matColumnDef="transferencia">
                         <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
-                            cdkDrag *matHeaderCellDef> Monto Transferencia </th>
+                            cdkDrag *matHeaderCellDef> Pago Transf </th>
                         <td mat-cell *matCellDef="let transaction"> {{ transaction.cantidadTransferencia | currency :
                             'USD' : 'symbol' : '1.0-0'}}
                         </td>
@@ -207,7 +212,7 @@
                     <!-- Column -->
                     <ng-container matColumnDef="valorTransaccion">
                         <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
-                            cdkDrag *matHeaderCellDef> Valor Transacción </th>
+                            cdkDrag *matHeaderCellDef> Pago Total </th>
                         <td mat-cell *matCellDef="let transaction">{{ transaction.total | currency : 'USD' : 'symbol' :
                             '1.0-0'}}</td>
                         <td mat-footer-cell *matFooterCellDef="let transaction">{{ getTotalTransactiones() | currency :
@@ -227,7 +232,7 @@
                     <!-- Column -->
                     <ng-container matColumnDef="tipoDocumento">
                         <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
-                            cdkDrag *matHeaderCellDef> Tipo Documento </th>
+                            cdkDrag *matHeaderCellDef> Tipo Doc </th>
                         <td mat-cell *matCellDef="let transaction">{{ transaction.cliente.tipoDocumento}}
                         </td>
                         <td mat-footer-cell *matFooterCellDef></td>
@@ -256,7 +261,7 @@
                     <!-- Column -->
                     <ng-container matColumnDef="facturaElectronica">
                         <th mat-header-cell mat-sort-header style="font-family: Impact; background-color:gainsboro;"
-                            cdkDrag *matHeaderCellDef> Factura Electonica </th>
+                            cdkDrag *matHeaderCellDef> Fac Electonica </th>
                         <td mat-cell *matCellDef="let transaction">
                             {{transaction.facturacionElectronica}} </td>
                         <td mat-footer-cell *matFooterCellDef></td>

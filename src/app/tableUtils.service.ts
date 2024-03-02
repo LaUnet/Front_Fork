@@ -49,7 +49,7 @@ export class TableUtilsService {
           Descripcion: x.descripcion,
           Marca: x.marca,
           Ubicacion: x.codigoUbicacion,
-          Stock: x.inventarios.stock,
+          Stock: +x.inventarios.stock,
           PrecioVenta: +x.precios.precioVenta,
           PrecioMayoreo: +x.precios.precioMayoreo,
           PrecioInterno: +x.precios.PrecioInterno,
