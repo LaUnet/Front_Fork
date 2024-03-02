@@ -87,7 +87,6 @@ export class ReportesVentasComponent implements OnInit {
         httpParams = httpParams.append('startDate', startDate);
         httpParams = httpParams.append('endDate', endDate);
       }
-      console.log(startDate, endDate, new Date())
       this.isLoadingResults = true;
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
