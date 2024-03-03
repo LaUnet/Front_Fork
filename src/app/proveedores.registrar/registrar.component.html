@@ -112,6 +112,24 @@
         <mat-icon>shopping_basket</mat-icon>
         <span>Catalogo Compras</span>
       </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-expansion-panel [class.mat-elevation-z0]="true">
+        <mat-expansion-panel-header>
+          <mat-icon>table_chart</mat-icon>
+          <span> Reportes</span>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a mat-list-item routerLink="/reportesVentas">
+            <span>Ventas</span>
+          </a>
+          <a mat-list-item routerLink="/reportesCompras">
+            <span>Compras</span>
+          </a>
+          <a mat-list-item routerLink="/reportesArticulos">
+            <span>Stock Articulos</span>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
     </mat-nav-list>
 
 
