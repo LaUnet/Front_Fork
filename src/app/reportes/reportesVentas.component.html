@@ -279,8 +279,10 @@
                     <tr mat-header-row *matHeaderRowDef="columnas"></tr>
                     <tr mat-row *matRowDef="let row; columns: columnas;">
                     </tr>
+                    <div>
                     <tr mat-footer-row *matFooterRowDef="columnas; sticky: true"></tr>
                     <!-- Row shown when there is no matching data. -->
+                    </div>
                 </table>
                 <mat-paginator #paginator [length]="length" [pageIndex]="pageIndex" [pageSize]="pageSize"
                     [showFirstLastButtons]="true" [pageSizeOptions]="pageSizeOptions">

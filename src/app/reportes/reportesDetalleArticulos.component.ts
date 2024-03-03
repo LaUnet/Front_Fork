@@ -23,7 +23,7 @@ export class ReportesDetalleArticulosComponent implements OnInit {
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService,
     public utilsService: UtilsService, private changeDetector: ChangeDetectorRef,
     private _adapter: DateAdapter<any>, public tableUtilsService: TableUtilsService,
-    @Inject(MAT_DATE_LOCALE) private _locale: string,) { }
+    @Inject(MAT_DATE_LOCALE) private _locale: string ) { }
 
   columnas: string[] = ['No', 'codigoBarras', 'descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioVenta', 'precioMayoreo'];
 

@@ -52,6 +52,7 @@ export class ComprasComponent {
   pageSizeOptions = [20];
   //Storage
   localStorageToken !: any;
+  localStorageUser !: any;
   subscriber!: Subscription;
   //IvaIncluido Valor Unitario
   ivaIncluido: boolean = false;
@@ -142,8 +143,10 @@ export class ComprasComponent {
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => { });
     this.localStorageToken = this.localStorageService.getItem('access_token');
+    this.localStorageUser = this.localStorageService.getItem('user_key');
     this.localStorageService.clear();
     this.localStorageService.setItem('access_token', this.localStorageToken);
+    this.localStorageService.setItem('user_key', this.localStorageUser);
   }
 
   ngOnDestroy() {

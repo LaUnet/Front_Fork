@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {TokenService} from './token'
@@ -10,7 +10,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
   matcher = new MyErrorStateMatcher();
   hide = true;
   email: string = '';
@@ -22,14 +22,19 @@ export class LoginComponent {
 
   constructor(private router: Router, private http: HttpClient, private tokenService: TokenService) { }
 
+  ngOnInit() {
+
+    this.tokenService.token = null;
+    this.tokenService.user = null;
+
+  }
+  
   async login() {
     const loginUrl = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/auth/login';
-
     const body = {
       email: this.email,
       password: this.password
     };
-
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -37,14 +42,14 @@ export class LoginComponent {
     };
     let responseFromServer: any;
     try {
-      
     this.isLoadingResults= true;
       responseFromServer = await new Promise((resolve, reject) => {
         this.http.post(loginUrl, body, httpOptions).subscribe(
           result => {
             const jsonResponse = result as any; 
-            const token = jsonResponse?.Data;
+            const token = jsonResponse?.Data[0].token;
             this.tokenService.token = token;
+            this.tokenService.user = jsonResponse?.Data;
             resolve(result);
           },
           err => {

@@ -47,6 +47,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
   pageSizeOptions = [20];
   //Storage
   localStorageToken !: any;
+  localStorageUser !: any;
   subscriber!: Subscription;
   //Calculos
   operaciones: any = {
@@ -151,8 +152,10 @@ export class VentasComponent implements AfterViewInit, OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => { });
     this.localStorageToken = this.localStorageService.getItem('access_token');
+    this.localStorageUser = this.localStorageService.getItem('user_key');
     this.localStorageService.clear();
     this.localStorageService.setItem('access_token', this.localStorageToken);
+    this.localStorageService.setItem('user_key', this.localStorageUser);
     this.buscarCliente();
   }
 

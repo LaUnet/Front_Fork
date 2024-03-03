@@ -121,7 +121,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatNativeDateModule,
     MatStepperModule,
     CurrencyMaskModule,
-    DragDropModule
+    DragDropModule,
     ],
   providers: [],
   bootstrap: [AppComponent]
