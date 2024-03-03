@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit{
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
   passwordFormControl = new FormControl('', [Validators.required, Validators.pattern('(?=\\D*\\d)(?=[^a-z]*[a-z])(?=[^A-Z]*[A-Z]).{8,30}')]);
 
-  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService) { }
+  constructor(private router: Router, private http: HttpClient, public tokenService: TokenService) { }
 
   ngOnInit() {
 

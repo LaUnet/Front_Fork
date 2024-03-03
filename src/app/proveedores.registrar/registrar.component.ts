@@ -13,7 +13,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 })
 export class registrarProveedorComponent {
 
-  constructor(private router: Router,private http: HttpClient, private tokenService: TokenService, private route: ActivatedRoute) 
+  constructor(private router: Router,private http: HttpClient, public tokenService: TokenService, private route: ActivatedRoute) 
   { this._id = this.route.snapshot.paramMap.get('id'); }
 
    /**

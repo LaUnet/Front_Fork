@@ -31,4 +31,18 @@ export class TokenService {
     }
   }
 
+  get userName(): string | null {
+    const username = JSON.parse(localStorage.getItem(this.USER_KEY)!);
+    return username[0].email
+  }
+
+  get rolName(): string | null {
+    let rolname = JSON.parse(localStorage.getItem(this.USER_KEY)!);
+    for (let i = 0; i < rolname[0].roles.length; i++) {
+      if (rolname[0].roles[i].name === "admin"){
+        return rolname[0].roles[i].name;
+      }
+    }
+    return null
+  }
 }

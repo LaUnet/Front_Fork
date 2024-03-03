@@ -14,7 +14,7 @@ import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.co
   styleUrls: ['./buscar.component.css']
 })
 export class buscarArticuloComponent implements OnInit, AfterViewInit{
-  constructor(private router: Router,private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
+  constructor(private router: Router,private http: HttpClient,  public tokenService: TokenService, public dialogo:MatDialog) { }
 
   columnas: string[] = ['codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'stock', 'precioVenta', 'precioMayoreo','precioInterno', 'accion'];
 

@@ -14,7 +14,7 @@ import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.co
 })
 export class buscarUsuarioComponent {
 
-  constructor(private router: Router,private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
+  constructor(private router: Router,private http: HttpClient, public tokenService: TokenService, public dialogo: MatDialog) { }
 
 
   columnas: string[] = ['username', 'email', 'roles', 'accion'];

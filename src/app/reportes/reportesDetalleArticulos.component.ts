@@ -20,7 +20,7 @@ import { TableUtilsService } from '../tableUtils.service';
 })
 export class ReportesDetalleArticulosComponent implements OnInit {
 
-  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService,
+  constructor(private router: Router, private http: HttpClient, public tokenService: TokenService,
     public utilsService: UtilsService, private changeDetector: ChangeDetectorRef,
     private _adapter: DateAdapter<any>, public tableUtilsService: TableUtilsService,
     @Inject(MAT_DATE_LOCALE) private _locale: string ) { }

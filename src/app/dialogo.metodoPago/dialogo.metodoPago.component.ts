@@ -21,7 +21,7 @@ import { TokenService } from '../login/token';
 export class DialogoMetodoPagoComponent implements OnInit {
 
   constructor(public dialogo: MatDialogRef<DialogoMetodoPagoComponent>, @Inject(MAT_DIALOG_DATA) public dataSourceSales: any = [],
-    private http: HttpClient, private tokenService: TokenService, public utilsService: UtilsService) { }
+    private http: HttpClient, public tokenService: TokenService, public utilsService: UtilsService) { }
 
   /**
  * Control Error Textfields Pasarela

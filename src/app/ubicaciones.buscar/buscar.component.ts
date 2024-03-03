@@ -17,7 +17,7 @@ import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.co
 export class buscarUbicacionComponent {
 
 
-  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog) { }
+  constructor(private router: Router, private http: HttpClient, public tokenService: TokenService, public dialogo: MatDialog) { }
 
 
   columnas: string[] = ['codigo', 'nombreZona', 'numeroZona', 'numeroEstanteria', 'numeroUbicacion' , 'estadoActivo', 'accion'];

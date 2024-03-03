@@ -13,7 +13,7 @@ import { TokenService } from '../login/token';
 export class DialogoInvoiceComponent implements OnInit{
 
   constructor(public dialogo: MatDialogRef<DialogoInvoiceComponent>, @Inject(MAT_DIALOG_DATA) public dataSourceSales: any = [],
-    private http: HttpClient, private tokenService: TokenService, public utilsService: UtilsService )
+    private http: HttpClient, public tokenService: TokenService, public utilsService: UtilsService )
     {
       dialogo.disableClose = true
     }

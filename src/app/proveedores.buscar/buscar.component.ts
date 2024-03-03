@@ -15,7 +15,7 @@ import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.co
 export class buscarProveedorComponent {
 
 
-  constructor(private router: Router, private http: HttpClient,  private tokenService: TokenService, public dialogo:MatDialog) { }
+  constructor(private router: Router, private http: HttpClient,  public tokenService: TokenService, public dialogo:MatDialog) { }
 
 
   columnas: string[] = ['nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'telefono', 'email', 'direccion' , 'departamento' , 'municipio','barrio', 'regimenTributario', 'accion'];

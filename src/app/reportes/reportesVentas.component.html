@@ -37,7 +37,7 @@
     <button mat-icon-button matTooltip="Ajustes">
         <mat-icon>settings</mat-icon>
     </button>
-    <button mat-icon-button matTooltip="Usuario Logueado">
+    <button mat-icon-button matTooltip={{this.tokenService.userName}}>
         <mat-icon>assignment_ind</mat-icon>
     </button>
     <button mat-icon-button routerLink="/login" matTooltip="Salir">
@@ -279,7 +279,7 @@
                     <tr mat-header-row *matHeaderRowDef="columnas"></tr>
                     <tr mat-row *matRowDef="let row; columns: columnas;">
                     </tr>
-                    <div>
+                    <div *ngIf="this.tokenService.rolName">
                     <tr mat-footer-row *matFooterRowDef="columnas; sticky: true"></tr>
                     <!-- Row shown when there is no matching data. -->
                     </div>

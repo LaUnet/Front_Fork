@@ -32,7 +32,7 @@
     <button type="button" mat-icon-button matTooltip="Ajustes">
         <mat-icon>settings</mat-icon>
     </button>
-    <button type="button" mat-icon-button matTooltip="Usuario Logueado">
+    <button type="button" mat-icon-button matTooltip={{this.tokenService.userName}}>
         <mat-icon>assignment_ind</mat-icon>
     </button>
     <button type="button" mat-icon-button routerLink="/login" matTooltip="Salir">

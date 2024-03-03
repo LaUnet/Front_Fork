@@ -28,7 +28,7 @@ import { UtilsService } from '../utils.service';
 
 export class ComprasComponent {
 
-  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService, public dialogo: MatDialog,
+  constructor(private router: Router, private http: HttpClient, public tokenService: TokenService, public dialogo: MatDialog,
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
 
 

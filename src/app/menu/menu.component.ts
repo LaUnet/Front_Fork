@@ -19,7 +19,7 @@ export class MenuComponent {
   mostrarFormularioRegistrarUsuario: boolean = false;
   mostrarFormularioBuscarUsuario: boolean = false;
 
-  constructor(private http: HttpClient, private tokenService: TokenService) {
+  constructor(private http: HttpClient, public tokenService: TokenService) {
    }
 
    registrarUsuario() {

@@ -34,7 +34,7 @@ export class DialogoArticuloComponent implements OnInit {
 
   constructor(
     public dialogo: MatDialogRef<DialogoArticuloComponent>,
-    @Inject(MAT_DIALOG_DATA) public mensaje: string, @Inject(TokenService) private tokenService: TokenService, @Inject(HttpClient) private http: HttpClient,
+    @Inject(MAT_DIALOG_DATA) public mensaje: string, @Inject(TokenService) public tokenService: TokenService, @Inject(HttpClient) private http: HttpClient,
     @Inject(LocalStorageService) private localStorageService: LocalStorageService) { }
 
   seleccionar(element: any): void {
