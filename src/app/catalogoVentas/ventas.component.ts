@@ -656,42 +656,31 @@ export class VentasComponent implements AfterViewInit, OnInit {
     try {
       if (this.usbDevice) {
         //Configuración del TSPL
-        const textEncoder = value ?
-          [
-            '<ESC>!R',
-            'SIZE 58 mm,25 mm',
-            'CLS',
-            `TEXT 10,10,"4",0,1,1,"Papeleria Punto U"`,
-            'TEXT 10,50,"2",0,1,1,"Calle 67 # 55 - 83"',
-            'TEXT 10,75,"2",0,1,1,"Medellin - Antioquia"',
-            'TEXT 10,100,"2",0,1,1,"Email: ppuntou@gmail.com"',
-            'TEXT 10,125,"1",0,1,1,"Telefono: 300 8002603"',
-            'PRINT 1',
-            'END'
-          ] :
-          [
-            '<esc>!r',
-            'size 58 mm,25 mm',
-            `text 10,10,"4",0,1,1,"Papeleria Punto U"`,
-          ];  
-        await this.usbDevice.open()
-          .then(() => this.usbDevice.selectConfiguration(1))
-          .then(() => this.usbDevice.claimInterface(this.usbDevice.configuration.interfaces[0]?.interfaceNumber))
-
-        await this.usbDevice.transferOut(
-          this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
-          new Uint8Array(
-            new TextEncoder().encode('Hola Mundo\n')
-            //new TextEncoder().encode(textEncoder.join('\r\n'))
-          )
-        );
-
+        if (!value) {
+          const cmd = new Uint8Array([27, 112, 0, 60, 255]);
+          await this.usbDevice.open()
+            .then(() => this.usbDevice.selectConfiguration(1))
+            .then(() => this.usbDevice.claimInterface(this.usbDevice.configuration.interfaces[0]?.interfaceNumber))
+            await this.usbDevice.transferOut(
+              this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
+              cmd
+              );
+        } else {
+          const cmd = ['TEXT 400,200, "3",0,1,1, "DIRECTION 0"'];
+          await this.usbDevice.open()
+            .then(() => this.usbDevice.selectConfiguration(1))
+            .then(() => this.usbDevice.claimInterface(this.usbDevice.configuration.interfaces[0]?.interfaceNumber))
+          await this.usbDevice.transferOut(
+            this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
+            new Uint8Array(
+              new TextEncoder().encode(cmd.join('\r\n'))
+            )
+          );
+        }
         await this.usbDevice.releaseInterface(0);
         await this.usbDevice.close();
       }
-      console.log("Dispositivo Vinculado", this.usbDevice);
     } catch (error) {
-      console.log("Dispositivo", this.usbDevice);
       console.error("Error enviando a la impresora:", error);
     }
   };
