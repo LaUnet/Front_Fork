@@ -50,7 +50,7 @@ export class registrarUsuarioComponent {
 
     const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users';
     const body = {
-      roles: [this.rol],
+      roles: this.rol,
       username: this.username,
       email: this.email,
       password: this.password
@@ -116,7 +116,7 @@ export class registrarUsuarioComponent {
   async onSubmitEditarUsuario() {
     const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${this._id}`
     const body = {
-      roles: [this.rol],
+      roles: this.rol,
       username: this.username,
       email: this.email,
       password: this.password

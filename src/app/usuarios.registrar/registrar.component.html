@@ -167,11 +167,11 @@
             <td><mat-form-field class="full-width" appearance="outline">
                 <mat-label>Rol</mat-label>
                 <mat-icon matSuffix>list</mat-icon>
-                <mat-select [(ngModel)]="rol" name="rol" #fontSize value="admin" [formControl]="rolFormControl"
+                <mat-select multiple [(ngModel)]="rol" name="rol" #fontSize [formControl]="rolFormControl"
                   [errorStateMatcher]="matcher">
                   <mat-option value="admin">Administrador</mat-option>
                   <mat-option value="seller">Vendedor</mat-option>
-                  <mat-option value="client">Cliente</mat-option>
+                  <mat-option value="client" disabled>Cliente</mat-option>
                 </mat-select>
               </mat-form-field></td>
           </tr>
