@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { UtilsService } from '../utils.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TableUtilsService } from '../tableUtils.service';
 
 
@@ -25,14 +24,14 @@ export class ReportesDetalleArticulosComponent implements OnInit {
     private _adapter: DateAdapter<any>, public tableUtilsService: TableUtilsService,
     @Inject(MAT_DATE_LOCALE) private _locale: string ) { }
 
-  columnas: string[] = ['No', 'codigoBarras', 'descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioVenta', 'precioMayoreo'];
+  columnas: string[] = ['No', 'CodigoBarras', 'Descripcion', 'Referencia', 'Marca', 'Ubicacion', 'UnidadMedida', 'Stock', 'PrecioVenta', 'PrecioMayoreo'];
 
   isLoadingResults: boolean = false;
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
   filtroArticulo: string = '';
   dataSourceArticulos: any;
-  dataSourceMovimientos: any[] = [];
+  dataSourceMovimientos: any;
   opened: boolean = false;
   pageEvent!: PageEvent;
   pageIndex: number = 0;
@@ -46,7 +45,7 @@ export class ReportesDetalleArticulosComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
   ngOnInit() {
-    this.buscarDetalleArticulo("20");
+    this.buscarDetalleArticulo();
     this._locale = 'es-CO';
     this._adapter.setLocale(this._locale);
 
@@ -56,7 +55,7 @@ export class ReportesDetalleArticulosComponent implements OnInit {
     this.changeDetector.detectChanges();
   }
 
-  async buscarDetalleArticulo(process: any) {
+  async buscarDetalleArticulo() {
     this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
@@ -66,20 +65,22 @@ export class ReportesDetalleArticulosComponent implements OnInit {
       })
     };
 
-    let httpParams = new HttpParams();
-    httpParams = httpParams.append('stock', process);
+    //let httpParams = new HttpParams();
+    //httpParams = httpParams.append('stock', process);
     this.isLoadingResults = true;
     try {
       this.isLoadingResults = true;
-      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/inventories?${httpParams}`, httpOptions)
+      //this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/inventories?${httpParams}`, httpOptions)
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/inventories', httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
+            this.dataSourceArticulos = new MatTableDataSource(this.tableUtilsService.mapDetalleArticulos(response.Data.docs));
+            this.dataSourceMovimientos = new MatTableDataSource(this.tableUtilsService.mapDetalleArticulos(response.Data.docs));
             this.dataSourceArticulos.paginator = this.paginator;
             this.dataSourceArticulos.sort = this.sort;
           }
           this.isLoadingResults = false;
-          this.dataSourceMovimientos = this.dataSourceArticulos.filteredData;
+          //this.dataSourceMovimientos = this.dataSourceArticulos.filteredData;
         }, error => {
           this.isLoadingResults = false;
           if (error.status === 401) {
@@ -111,12 +112,13 @@ export class ReportesDetalleArticulosComponent implements OnInit {
   }
 
   changeList(value: any) {
-    this.buscarDetalleArticulo(value)
+    const filtro = this.dataSourceMovimientos.filteredData.filter((stock: { Stock: number; }) => stock.Stock <= value);
+    console.log(filtro)
   }
 }
 
 export class Catalogo {
-  constructor(public No: String, public codigoBarras: String,public descripcion: String, public marca: string, public referencia: string,
-    public ubicacion: string, public unidadMedida: string, public stock: string, public precioVenta: string, public precioMayoreo: string
-  ) { }
+  constructor(public No: String, public CodigoBarras: String,public Descripcion: String, public Marca: string, public Referencia: string,
+    public Ubicacion: string, public UnidadMedida: string, public Stock: string, public PrecioVenta: string, public PrecioMayoreo: string
+    ) { }
 }

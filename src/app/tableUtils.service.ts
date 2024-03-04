@@ -40,7 +40,10 @@ export class TableUtilsService {
         }
       })
     };
+
     if (name === 'ReporteDetalleArticulos') {
+      filter = arr;
+      /**
       filter = arr.map((x) => {
         const filter1 = {
           CodigoBarras: x.articulo[0].codigoBarras,
@@ -56,7 +59,9 @@ export class TableUtilsService {
         }
         return filter1;
       })
+      */
     }
+
     if (name === 'ReporteCompras') {
       arr.map((x) => {
         for (let i = 0; i < x.articulo.length; i++) {
@@ -101,22 +106,21 @@ export class TableUtilsService {
     return fileName
   }
 
-  filtrarDatos(arr: any[], name?: string) {
+  mapDetalleArticulos(arr: any[], name?: string) {
     const filter = arr.map((x) => {
-        const filter1 = {
-          CodigoBarras: x.articulo[0].codigoBarras,
-          Descripcion: x.articulo[0].descripcion,
-          Marca: x.articulo[0].marca,
-          Referencia: x.articulo[0].referencia,
-          Ubicacion: x.articulo[0].codigoUbicacion,
-          UnidadMedida: x.articulo[0].unidadMedida,
-          Stock: +x.stock,
-          PrecioVenta: +x.precios[0].precioVenta,
-          PrecioMayoreo: +x.precios[0].precioMayoreo,
-          PrecioInterno: +x.precios[0].PrecioInterno,
-        }
-        return filter1;
-      })
-      return filter;
+      const filter1 = {
+        CodigoBarras: x.articulo[0].codigoBarras,
+        Descripcion: x.articulo[0].descripcion,
+        Marca: x.articulo[0].marca,
+        Referencia: x.articulo[0].referencia,
+        Ubicacion: x.articulo[0].codigoUbicacion,
+        UnidadMedida: x.articulo[0].unidadMedida,
+        Stock: +x.stock,
+        PrecioVenta: +x.precios[0].precioVenta,
+        PrecioMayoreo: +x.precios[0].precioMayoreo
+      }
+      return filter1;
+    })
+    return filter;
   }
 }
