@@ -1,5 +1,5 @@
 
-import { Injectable } from '@angular/core';
+import { Injectable, Component } from '@angular/core';
 import * as XLSX from "xlsx";
 
 @Injectable({
@@ -7,55 +7,85 @@ import * as XLSX from "xlsx";
 })
 export class TableUtilsService {
 
-  /** 
-  exportToExcel(tableId: string, name?: string) {
-    let timeStamp = new Date().toISOString();
-    let prefix = name || "ExportResult";
-    let fileName = `${prefix}-${timeStamp}`;
-    let targetTableElm = document.getElementById(tableId);
-    let wb = XLSX.utils.table_to_book(targetTableElm, <XLSX.Table2SheetOpts>{ sheet: prefix });
-    XLSX.writeFile(wb, `${fileName}.xlsx`);
-  }
-  */
-
   exportToExcel(arr: any[], name?: string) {
-    let filter: any = arr;
-    let i = 0;
-    if (name === 'ReporteVentas') {      
-      filter = arr.map(
-          x => ({
-          NumeroFactura: x.numeroFactura,
-          FechaFactura: x.fechaFactura,
-          FormaDePago: x.formaDePago,
-          CantidadEfectivo: +x.cantidadEfectivo,
-          CantidadTransferencia: +x.cantidadTransferencia,
-          Subtotal: +x.subtotal,
-          Descuento: +x.descuento,
-          Total: +x.total,
-          FacturacionElectronica: x.facturacionElectronica,
-          Vendedor: x.vendedor,
-          NombreCliente: x.cliente.nombreRazonSocial,
-          TipoDocumento: x.cliente.tipoDocumento,
-          NumeroDocumento: x.cliente.numeroDocumento,
-          CorreoElectronico: x.cliente.email
-        })
-        )
-      }
-
+    let filter: any = [];
+    if (name === 'ReporteVentas') {
+      arr.map((x) => {
+        for (let i = 0; i < x.articulo.length; i++) {
+          const filter1 = {
+            NumeroFactura: x.numeroFactura,
+            FechaFactura: x.fechaFactura,
+            NombreCliente: x.cliente.nombreRazonSocial,
+            TipoDocumento: x.cliente.tipoDocumento,
+            NumeroDocumento: x.cliente.numeroDocumento,
+            CorreoElectronico: x.cliente.email,
+            FormaDePago: x.formaDePago,
+            CantidadEfectivo: +x.cantidadEfectivo,
+            CantidadTransferencia: +x.cantidadTransferencia,
+            SubtotalFactura: +x.subtotal,
+            DescuentoFactura: +x.descuento,
+            TotalFactura: +x.total,
+            FacturacionElectronica: x.facturacionElectronica,
+            Vendedor: x.vendedor,
+            Articulo: x.articulo[i].descripcion,
+            CodigoBarras: x.articulo[i].codigoBarras,
+            ImpuestoArticulo: +x.articulo[i].impuesto,
+            DescuentoArticulo: +x.articulo[i].descuento,
+            PrecioVenta: +x.articulo[i].precioVenta,
+            TotalArticulo: +x.articulo[i].total,
+            Interno: x.articulo[i].interno,
+            Mayoreo: x.articulo[i].mayoreo,
+          }
+          filter.push(filter1)
+        }
+      })
+    };
     if (name === 'ReporteDetalleArticulos') {
-      filter = arr.map(
-        x => ({
-          CodigoBarras: x.articulo.codigoBarras,
-          Descripcion: x.articulo.descripcion,
-          Marca: x.articulo.marca,
-          Ubicacion: x.codigoUbicacion,
+      filter = arr.map((x) => {
+        const filter1 = {
+          CodigoBarras: x.articulo[0].codigoBarras,
+          Descripcion: x.articulo[0].descripcion,
+          Marca: x.articulo[0].marca,
+          Referencia: x.articulo[0].referencia,
+          Ubicacion: x.articulo[0].codigoUbicacion,
+          UnidadMedida: x.articulo[0].unidadMedida,
           Stock: +x.stock,
-          PrecioVenta: +x.precios.precioVenta,
-          PrecioMayoreo: +x.precios.precioMayoreo,
-          PrecioInterno: +x.precios.PrecioInterno,
-        })
-      )
+          PrecioVenta: +x.precios[0].precioVenta,
+          PrecioMayoreo: +x.precios[0].precioMayoreo,
+          PrecioInterno: +x.precios[0].PrecioInterno,
+        }
+        return filter1;
+      })
     }
+    if (name === 'ReporteCompras') {
+      arr.map((x) => {
+        for (let i = 0; i < x.articulo.length; i++) {
+          const filter1 = {
+            NumeroFactura: x.numeroFactura,
+            FechaFactura: x.fechaFactura,
+            FechaIngreso: x.fechaIngreso,
+            NombreProveedor: x.proveedor.nombreRazonSocial,
+            TipoDocumento: x.proveedor.tipoDocumento,
+            NumeroDocumento: x.proveedor.numeroDocumento,
+            Impuestofactura: +x.impuesto,
+            SubtotalFactura: +x.subtotal,
+            DescuentoFactura: +x.descuento,
+            TotalFactura: +x.total,
+            CodigoArticulo: x.articulo[i].codigo,
+            CodigoBarras: x.articulo[i].codigoBarras,
+            cantidad: +x.articulo[i].cantidad,
+            ImpuestoArticulo: +x.articulo[i].impuestoUnitario,
+            DescuentoArticulo: +x.articulo[i].descuentoUnitario,
+            PrecioInterno: +x.articulo[i].precioInterno,
+            PrecioMayoreo: +x.articulo[i].precioMayoreo,
+            PrecioVenta: +x.articulo[i].precioVenta,
+            SubtotalArticulo: +x.articulo[i].subtotalUnitario,
+            TotalArticulo: +x.articulo[i].total,
+          }
+          filter.push(filter1)
+        }
+      })
+    };
 
     let fileName = this.getFileName(name);
     var wb = XLSX.utils.book_new();
@@ -71,4 +101,22 @@ export class TableUtilsService {
     return fileName
   }
 
+  filtrarDatos(arr: any[], name?: string) {
+    const filter = arr.map((x) => {
+        const filter1 = {
+          CodigoBarras: x.articulo[0].codigoBarras,
+          Descripcion: x.articulo[0].descripcion,
+          Marca: x.articulo[0].marca,
+          Referencia: x.articulo[0].referencia,
+          Ubicacion: x.articulo[0].codigoUbicacion,
+          UnidadMedida: x.articulo[0].unidadMedida,
+          Stock: +x.stock,
+          PrecioVenta: +x.precios[0].precioVenta,
+          PrecioMayoreo: +x.precios[0].precioMayoreo,
+          PrecioInterno: +x.precios[0].PrecioInterno,
+        }
+        return filter1;
+      })
+      return filter;
+  }
 }

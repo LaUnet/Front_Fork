@@ -139,7 +139,6 @@ export class ReportesVentasComponent implements OnInit {
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
     this.startDate = type === 'Start' ? event.value : this.startDate;
     this.endDate = type === 'End' ? event.value : null;
-    console.log(this.startDate, this.endDate)
   }
 
   applyFilter() {
