@@ -422,7 +422,6 @@ export class ComprasComponent {
 
   routerLinkProveedor(): void {
     this.router.navigate(['/registrarProveedor'])
-    this.localStorageService.clear();
   };
 
   routerLinkLogin(): void {
