@@ -657,23 +657,35 @@ export class VentasComponent implements AfterViewInit, OnInit {
       if (this.usbDevice) {
         //Configuración del TSPL
         if (!value) {
-          const cmd = new Uint8Array([27, 112, 0, 60, 255]);
+          const cmd = ['\x10' + '\x14' + '\x01' + '\x00' + '\x05'];
           await this.usbDevice.open()
             .then(() => this.usbDevice.selectConfiguration(1))
             .then(() => this.usbDevice.claimInterface(this.usbDevice.configuration.interfaces[0]?.interfaceNumber))
             await this.usbDevice.transferOut(
               this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
-              cmd
+              new Uint8Array(
+                new TextEncoder().encode(cmd.join())
+              )
               );
         } else {
-          const cmd = ['TEXT 400,200, "3",0,1,1, "DIRECTION 0"'];
+          //'DIRECTION 0\r\nCLS\r\nTEXT 56,24,"3",0,1,1,"ABC"\r\nPRINT 1\r\n',
+          //{ type: 'raw', format: 'image', flavor: 'file', data: 'assets/img/image_sample_bw.png', options: { language: "ESCPOS", dotDensity: 'double' } },
+          const cmd = [        
+            '\x1B' + '\x40'+          // init
+            //'\x1D' + '\x56'  + '\x31'+ // Cut
+            '\x0A'+                   // line break
+            '\x1B' + '\x61' + '\x31'+ // center align
+            'PAPELERIA PUNTO U' + '\x0A'+
+            '\x0A'+                   // line break
+            '\x10' + '\x14' + '\x01' + '\x00' + '\x05' // Cash Drawer
+            ];
           await this.usbDevice.open()
             .then(() => this.usbDevice.selectConfiguration(1))
             .then(() => this.usbDevice.claimInterface(this.usbDevice.configuration.interfaces[0]?.interfaceNumber))
           await this.usbDevice.transferOut(
             this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
             new Uint8Array(
-              new TextEncoder().encode(cmd.join('\r\n'))
+              new TextEncoder().encode(cmd.join())
             )
           );
         }
