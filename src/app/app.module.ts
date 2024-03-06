@@ -1,23 +1,29 @@
 import { NgModule } from '@angular/core';
-import {Router} from '@angular/router';
-
+import { Router } from '@angular/router';
 import { AppComponent } from './app.component';
-import {LoginComponent} from './login/login.component'
+import {LoginComponent } from './login/login.component'
 import { AppRoutingModule } from './app-routing.module';
 import { MenuComponent } from './menu/menu.component';
-import { AdministracionComponent } from './administracion/administracion.component';
-import { ProveedorComponent } from './proveedor/proveedor.component';
-import { ArticuloComponent } from './articulo/articulo.component';
 import { registrarUsuarioComponent } from './usuarios.registrar/registrar.component';
 import { buscarUsuarioComponent } from './usuarios.buscar/buscar.component';
-import {registrarArticuloComponent} from './articulos.registrar/registrar.component';
-import {buscarArticuloComponent} from './articulos.buscar/buscar.component';
-import {registrarProveedorComponent} from './proveedores.registrar/registrar.component';
-import {buscarProveedorComponent} from './proveedores.buscar/buscar.component';
-import {registrarClienteComponent} from './clientes.registrar/registrar.component';
-import {buscarClienteComponent} from './clientes.buscar/buscar.component';
-import {registrarUbicacionComponent} from './ubicaciones.registrar/registrar.component';
-import {buscarUbicacionComponent} from './ubicaciones.buscar/buscar.component';
+import { registrarArticuloComponent} from './articulos.registrar/registrar.component';
+import { buscarArticuloComponent} from './articulos.buscar/buscar.component';
+import { registrarProveedorComponent} from './proveedores.registrar/registrar.component';
+import { buscarProveedorComponent} from './proveedores.buscar/buscar.component';
+import { registrarClienteComponent} from './clientes.registrar/registrar.component';
+import { buscarClienteComponent} from './clientes.buscar/buscar.component';
+import { registrarUbicacionComponent} from './ubicaciones.registrar/registrar.component';
+import { buscarUbicacionComponent} from './ubicaciones.buscar/buscar.component';
+import { VentasComponent } from './catalogoVentas/ventas.component';
+import { ComprasComponent } from './catalogoCompras/compras.component';
+import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.component';
+import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.component';
+import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.component';
+import { DialogoMetodoPagoComponent } from './dialogo.metodoPago/dialogo.metodoPago.component';
+//import { DialogoInvoiceComponent } from './dialogo.invoice/dialogo.invoice.component';
+import { ReportesVentasComponent } from './reportes/reportesVentas.component';
+import { ReportesComprasComponent } from './reportes/reportesCompras.component';
+import { ReportesDetalleArticulosComponent } from './reportes/reportesDetalleArticulos.component'
 
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -39,8 +45,21 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
-import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatTableModule} from '@angular/material/table';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatSortModule} from '@angular/material/sort';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatBadgeModule} from '@angular/material/badge';
+import {FlexLayoutModule} from '@angular/flex-layout';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatStepperModule} from '@angular/material/stepper';
+import { CurrencyMaskModule } from "ng2-currency-mask";
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 
@@ -49,9 +68,6 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     AppComponent,
     LoginComponent,
     MenuComponent,
-    ProveedorComponent,
-    ArticuloComponent,
-    AdministracionComponent,
     registrarUsuarioComponent,
     buscarUsuarioComponent,
     registrarArticuloComponent,
@@ -61,8 +77,17 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     registrarClienteComponent,
     buscarClienteComponent,
     registrarUbicacionComponent,
-    buscarUbicacionComponent
-
+    buscarUbicacionComponent,
+    ComprasComponent,
+    DialogoConfirmacionComponent,
+    VentasComponent,
+    DialogoArticuloComponent,
+    DialogoCarItemComponent,
+    DialogoMetodoPagoComponent,
+    //DialogoInvoiceComponent,
+    ReportesVentasComponent,
+    ReportesComprasComponent,
+    ReportesDetalleArticulosComponent,
   ],
   imports: [
     BrowserModule,
@@ -82,8 +107,22 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatCardModule,
     MatInputModule,
     MatSelectModule,
-    MatSlideToggleModule
-  ],
+    MatSlideToggleModule,
+    MatTableModule,
+    BrowserAnimationsModule,
+    MatSortModule,
+    MatProgressSpinnerModule,
+    MatSidenavModule,
+    MatExpansionModule,
+    MatDialogModule,
+    MatBadgeModule,
+    FlexLayoutModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatStepperModule,
+    CurrencyMaskModule,
+    DragDropModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

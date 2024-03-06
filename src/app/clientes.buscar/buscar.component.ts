@@ -1,10 +1,11 @@
-import {Component, NgZone, ViewChild} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
-import {take} from 'rxjs/operators';
-import {ErrorStateMatcher} from '@angular/material/core';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component"
 
 @Component({
   selector: 'app-buscarCliente',
@@ -13,210 +14,162 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 })
 export class buscarClienteComponent {
 
-  constructor(private http: HttpClient, private tokenService: TokenService, private _ngZone: NgZone) {}
 
-    /**
-   * Control Error Email
-   */
-    emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-    matcher = new MyErrorStateMatcher();
-
-    isChecked = true;
+  constructor(private router: Router, private http: HttpClient,  public tokenService: TokenService, public dialogo:MatDialog) { }
 
 
-  nuevoProveedor: any = {
-    tipoDocumento: '',
-    numeroDocumento: '',
-    nombreRazonSocial: '',
-    telefono: '',
-    direccion: '',
-    departamento: '',
-    municipio: '',
-    email: '',
-    regimenTributario: '',
-    estadoActivo: false
-  };
-  
-  mostrarFormulario1: boolean = false;
-  mostrarBotonCrearProveedor = true;
+  columnas: string[] = ['nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'telefono','email', 'direccion' , 'departamento' , 'municipio','barrio', 'tipoCliente', 'accion'];
 
-  error: string | null = null;
-
-  proveedores: any[] = [];
-  mostrarListaProveedores = false;
-  mostrarBotonBuscarProveedor = false;
-
-  filtro: string = '';
-  proveedoresFiltrados: any[] = [];
-
+  pageEvent!: PageEvent;
+  pageIndex:number = 0;
+  pageSize !:number;
+  length!:number;
+  pageSizeOptions = [14];
+  isLoadingResults : boolean = false;
+  opened: boolean = false;
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
 
-  modoEdicion: boolean = false;
-  proveedorEditado: any = {};
 
-  errorMensaje: string | null = null;
-
+  ubicaciones: any[] = [];
+  dataSourceClientes:any;
 
 
-
-
-  mostrarFormulario() {
-    this.mostrarFormulario1 = true;
-    this.mostrarBotonCrearProveedor = false; 
+  ngOnInit() {
+    this.buscarCliente();
   }
 
-  volverAFormulario() {
-    this.mostrarBotonCrearProveedor = true;
-    this.mostrarFormulario1 = false;
-  }
-  get email() {
-    return this.nuevoProveedor.email;
-  }
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
-  guardarProveedor() {
-
+  async buscarCliente() {
     const token = this.tokenService.token;
-
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': `${token}`
+        'x-access-token': `${token}`,
       })
     };
-
-    this.http.post('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers', this.nuevoProveedor, httpOptions)
-      .subscribe(
-        (response) => {
-          console.log('Proveedor guardado exitosamente', response);
-        },
-        (errorResponse) => {
-          console.error('Error al guardar el proveedor', errorResponse);
-          if (errorResponse.error && errorResponse.error.Message) {
-            this.error = errorResponse.error.Message;
-          } else {
-            this.error = 'Error desconocido al guardar el proveedor.';
-          }
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers', httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          this.dataSourceClientes = new MatTableDataSource(response.Data.docs);
+          this.dataSourceClientes.paginator = this.paginator;
+          this.pageSize=response.Data.docs.limit;
+          this.pageIndex=response.Data.docs.page;
+          this.length = response.Data.totalDocs;
         }
-      );
-  }
-
-  buscarProveedores() {
-    const token = this.tokenService.token;
-  
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`
-      })
-    };
-  
-    this.http.get('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers', httpOptions)
-      .subscribe(
-        (response: any) => {
-          console.log('Proveedores obtenidos exitosamente', response);
-          this.proveedores = response.Data;
-          this.mostrarListaProveedores = true;
-          this.mostrarBotonCrearProveedor = false;
-          this.mostrarBotonBuscarProveedor = false;
-        },
-        (errorResponse) => {
-          console.error('Error al obtener los proveedores', errorResponse);
+        this.isLoadingResults = false;
+      }, error => {
+        this.isLoadingResults = false;
+        if (error.status === 401) {
+          this.routerLinkLogin();
         }
-      );
+        this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+        console.error('Error en la solicitud:', error);
+      });      
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);     
+    }
+
   }
-  
-  eliminarProveedor(proveedor: any) {
+
+  async recargarCliente(page: PageEvent) {
+    this.dataSourceClientes = new MatTableDataSource;
     const token = this.tokenService.token;
-  
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': `${token}`
+        'x-access-token': `${token}`,
       })
     };
-  
-    this.http.delete(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers/${proveedor._id}`, httpOptions).subscribe(
-      (response) => {
-        console.log('Artículo borrado exitosamente');
-        this.mensajeExitoso = 'Operación exitosa: El artículo se ha eliminado correctamente.';
-        setTimeout(() => {
-          this.refreshPage();
-        }, 3000);
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          this.dataSourceClientes = new MatTableDataSource(response.Data.docs);
+          this.pageIndex=response.Data.docs.page;
+        }
+        this.isLoadingResults = false;
+      }, error => {
+        this.isLoadingResults = false;
+        if (error.status === 401) {
+          this.routerLinkLogin();
+        }
+        this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+        console.error('Error en la solicitud:', error);
+      });      
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);   
+    }
 
-
-        setTimeout(() => {
-          this.mensajeExitoso = '';
-        }, 5000);
-      },
-      (error) => {
-        console.error('Error al borrar el artículo', error);
-        this.mensajeFallido = 'Error: El artículo no se ha podido eliminar ';
-      }
-    );
   }
 
-  filtrarProveedores() {
-    this.proveedoresFiltrados = this.proveedores.filter((proveedor: any) => {
-      return proveedor.nombreRazonSocial.toLowerCase().includes(this.filtro.toLowerCase());
-    });
+
+  async borrar(id: string){
+    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/customers/${id}`
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    this.isLoadingResults= true;
+    try {
+      const response = await this.http.delete(url, httpOptions).toPromise();
+      this.isLoadingResults= false;
+      this.mensajeExitoso = "Registro Eliminado exitosamente"
+      setTimeout(() => {
+        this.refreshPage();
+      }, 3000);
+    } catch (error) {
+      this.isLoadingResults= false;
+      this.mensajeFallido = 'Error al Eliminar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
   }
 
-  ngOnInit() {  
-    this.filtrarProveedores();
-  }
-  
-  ngDoCheck() {
-    this.filtrarProveedores();
+
+  filtrar(event: Event) {
+      const filtro = (event.target as HTMLInputElement).value;
+      this.dataSourceClientes.filter = filtro.trim().toLowerCase();
+  } 
+
+  mostrarDialogo(id:string): void {
+    this.dialogo
+      .open(DialogoConfirmacionComponent, {
+        data: `Seguro deseas ELIMINARLO?`
+      })
+      .afterClosed()
+      .subscribe((confirmar: Boolean) => {
+        if (confirmar) {
+          this.borrar(id)
+        } else {
+          //alert("No hacer nada");
+        }
+      });
   }
 
   refreshPage() {
     window.location.reload();
   }
-
-  editarProveedor(proveedor: any) {
-    // Copia los valores del proveedor seleccionado a proveedorEditado
-    this.proveedorEditado = { ...proveedor };
-    this.modoEdicion = true; // Mostrar el formulario de edición
-  }
-
-  guardarEdicion() {
-    // Realiza una solicitud HTTP PUT para guardar los cambios en el servidor
-    const token = this.tokenService.token;
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`
-      })
-    };
-
-    this.http.patch(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/providers/${this.proveedorEditado._id}`, this.proveedorEditado, httpOptions).subscribe(
-      (response) => {
-        console.log('Proveedor editado exitosamente', response);
-        // Actualiza el proveedor original con los valores editados
-        Object.assign(this.proveedores.find(p => p._id === this.proveedorEditado._id), this.proveedorEditado);
-        this.modoEdicion = false; // Vuelve al modo de visualización
-      },
-      (errorResponse) => {
-        console.error('Error al editar el proveedor', errorResponse);
-        if (errorResponse.error && errorResponse.error.Message) {
-          this.errorMensaje = errorResponse.error.Message;
-        } else {
-          this.errorMensaje = 'Error desconocido al editar el proveedor.';
-        }
-      }
-    );
-  }
-
-  cancelarEdicion() {
-    this.modoEdicion = false; // Cancela la edición y vuelve al modo de visualización
-  }  
+  routerLinkLogin(): void {
+    this.router.navigate(['/login'])
+  };
+  
 }
 
-  /** Error when invalid control is dirty, touched, or submitted. */
-  export class MyErrorStateMatcher implements ErrorStateMatcher {
-    isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-      const isSubmitted = form && form.submitted;
-      return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-    }
-  }
+
+
+export class Cliente {
+  constructor(public nombreRazonSocial: string, public tipoDocumento: string, public numeroDocumento: String,
+              public telefono: string, public extension: string, public email: string,public tipoCliente: String, 
+              public direccion: String, public departamento: String,public municipio: String,public barrio: String,
+              public estadoActivo: boolean
+              ){}
+}

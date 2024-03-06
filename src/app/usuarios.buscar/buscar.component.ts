@@ -1,6 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component"
 
 @Component({
   selector: 'app-buscarUsuario',
@@ -8,162 +13,157 @@ import { TokenService } from '../login/token';
   styleUrls: ['./buscar.component.css']
 })
 export class buscarUsuarioComponent {
-  rol: string = '';
-  username: string = '';
-  email: string = '';
-  password: string = '';
 
-  _id: string = '';
+  constructor(private router: Router,private http: HttpClient, public tokenService: TokenService, public dialogo: MatDialog) { }
 
-  editingItem: any = null;
-  isEditing: boolean = false;
 
-  resultadoBusqueda: any = null;
+  columnas: string[] = ['username', 'email', 'roles', 'accion'];
 
-  errorMessage: string = '';
-  successMesssage: String = '';
+  pageEvent!: PageEvent;
+  pageIndex: number = 0;
+  pageSize !: number;
+  length!: number;
+  pageSizeOptions = [14];
+  isLoadingResults: boolean = false;
+  dataSourceUsuarios: any;
+  opened: boolean = false;
+  mensajeExitoso: string = '';
+  mensajeFallido: string = '';
 
-  mostrarFormularioCrearUsuario: boolean = false;
-  mostrarFormularioBuscarUsuario: boolean = false;
-
-  constructor(private http: HttpClient, private tokenService: TokenService) {
-   }
-
-  toggleFormularioCrearUsuario() {
-    this.mostrarFormularioCrearUsuario = !this.mostrarFormularioCrearUsuario;
-    this.mostrarFormularioBuscarUsuario = false;
+  ngOnInit() {
+    this.buscarUsuario();
   }
 
-  toggleFormularioBuscarUsuario() {
-    this.mostrarFormularioBuscarUsuario = !this.mostrarFormularioBuscarUsuario;
-    this.mostrarFormularioCrearUsuario = false;
-  }
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
-
-  async onSubmitCrearUsuario() {
-
-    const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users';
-
-    const body = {
-      docs:[{
-          roles: [this.rol],
-          username: this.username,
-          email: this.email,
-          password: this.password
-        }]
-    };
-
+  async buscarUsuario() {
     const token = this.tokenService.token;
-    console.log("el body es ", body);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': `${token}`
+        'x-access-token': `${token}`,
       })
     };
-
     try {
-      const response = await this.http.post(url, body, httpOptions).toPromise();
-      this.successMesssage = 'Usuario creado correctamente';
-      console.log('Respuesta del servidor:', response);
+      this.isLoadingResults = true;
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users', httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceUsuarios = new MatTableDataSource(response.Data.docs);
+            this.dataSourceUsuarios.paginator = this.paginator;
+            this.pageSize = response.Data.docs.limit;
+            this.pageIndex = response.Data.docs.page;
+            this.length = response.Data.totalDocs;
+          }
+          this.isLoadingResults = false; 
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+          console.error('Error en la solicitud:', error);
+        });  
     } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
-      this.errorMessage = 'Error al crear el usuario. Por favor, inténtelo nuevamente.';
-    }
-  }
-
-  async onSubmitBuscarUsuario() {
-    
-    console.log("entro a buscar");
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users`;
-
-    const token = this.tokenService.token;
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`
-      })
-    };
-
-    try {
-      console.log("entro a buscar2");
-      const response = await this.http.get(url, httpOptions).toPromise();
-      const jsonResponse = response as any; 
-      console.log("entro a buscar3 ", jsonResponse);
-      this.resultadoBusqueda = jsonResponse?.Data; 
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-      this.resultadoBusqueda = null; 
     }
 
   }
 
-
-  editarRol(item: any) {
-    this.editingItem = { ...item };
-    this.isEditing = true;
-  }
-
-  cancelarEdicion() {
-    this.isEditing = false;
-  }
-
-  async guardarCambios(id: string) {
-
-
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${id}`;
-
-    const body = {
-      username: this.username,
-      email: this.email
-    };
-
+  async recargarUsuario(page: PageEvent) {
+    this.dataSourceUsuarios = new MatTableDataSource;
     const token = this.tokenService.token;
-    console.log("el body es ", token);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': `${token}`
+        'x-access-token': `${token}`,
       })
     };
 
     try {
-      const response = await this.http.put(url, httpOptions).toPromise();
+      this.isLoadingResults = true;
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceUsuarios = new MatTableDataSource(response.Data.docs);
+            this.pageIndex = response.Data.docs.page;
+          }
+          this.isLoadingResults = false; 
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+          console.error('Error en la solicitud:', error);
+        });   
     } catch (error) {
+      this.isLoadingResults= false;
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
-      this.resultadoBusqueda = null; 
     }
 
-    this.isEditing = false;
-    this.editingItem = null;
   }
-  
-  async borrarRol(id: string) {
 
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${id}`;
-
+  async borrar(id: string){
+    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/users/${id}`
     const token = this.tokenService.token;
-
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'x-access-token': `${token}`
+        'x-access-token': `${token}`,
       })
     };
-
-
-    
-
+    this.isLoadingResults= true;
     try {
       const response = await this.http.delete(url, httpOptions).toPromise();
-      this.successMesssage = 'Usuario borrado correctamente';
-      this.onSubmitBuscarUsuario();
+      this.isLoadingResults= false;
+      this.mensajeExitoso = "Registro Eliminado exitosamente"
+      setTimeout(() => {
+        this.refreshPage();
+      }, 3000);
     } catch (error) {
+      this.isLoadingResults= false;
+      this.mensajeFallido = 'Error al Eliminar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
-      this.errorMessage = 'Error al eliminar el usuario. Por favor, inténtelo nuevamente.';
     }
-
   }
-  
+
+  filtrar(event: Event) {
+    const filtro = (event.target as HTMLInputElement).value;
+    this.dataSourceUsuarios.filter = filtro.trim().toLowerCase();
+  }
+
+
+  mostrarDialogo(id:string): void {
+    this.dialogo
+      .open(DialogoConfirmacionComponent, {
+        data: `Seguro deseas ELIMINARLO?`
+      })
+      .afterClosed()
+      .subscribe((confirmar: Boolean) => {
+        if (confirmar) {
+          this.borrar(id)
+        } else {
+          //alert("No hacer nada");
+        }
+      });
+  }
+
+  refreshPage() {
+    window.location.reload();
+  }
+
+  routerLinkLogin(): void {
+    this.router.navigate(['/login'])
+  };
+}
+
+
+export class Usuario {
+  constructor(public username: string, public email: String,
+    public password: string, public roles: string
+  ) { }
 }

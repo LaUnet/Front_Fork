@@ -1,7 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../login/token';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component"
 
 
 @Component({
@@ -9,214 +13,193 @@ import { TokenService } from '../login/token';
   templateUrl: './buscar.component.html',
   styleUrls: ['./buscar.component.css']
 })
-export class buscarArticuloComponent {
-  constructor(private router: Router, private http: HttpClient, private tokenService: TokenService) { }
-  ubicaciones: any[] = [];
-  proveedores: any[] = [];
+export class buscarArticuloComponent implements OnInit, AfterViewInit{
+  constructor(private router: Router,private http: HttpClient,  public tokenService: TokenService, public dialogo:MatDialog) { }
 
-  codigoArticuloBusqueda: string = '';
-  articulosEncontrados: any[] = [];
-  mostrarResultados: boolean = false;
+  columnas: string[] = ['codigoBarras', 'descripcion', 'marca', 'referencia', 'unidadMedida', 'codigoUbicacion', 'stock', 'precioVenta', 'precioMayoreo','precioInterno', 'accion'];
 
-  errorMessage: string = '';
-  successMesssage: String = '';
-
-  articuloEditando: any = null;
-
+  pageEvent!: PageEvent;
+  pageIndex:number = 0;
+  pageSize !:number;
+  length!:number;
+  pageSizeOptions = [13, 30, 60, 100];
+  isLoadingResults : boolean = false;
+  opened: boolean = false;
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
 
-  filtroDescripcion: string = '';
+  ubicaciones: any[] = [];
+  dataSourceArticulos:any;
+  dataSourceUbicaciones:any; 
 
-  mostrarCampoFiltrar: boolean = false;
-  manualToken: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MTYxMmRiZTI3MzI1MjZiYjYzMmQ4YyIsImlhdCI6MTY5OTkyMzE1MiwiZXhwIjoxNzAwMDA5NTUyfQ.rwRiN0DoyGLjEJNTRAxpeGK0pONqBX-bn9Z57JBLu_M"
-
-  mostrarFormulario = false;
-  mostrarFormularioBuscar = false;
-  nuevoArticulo = {
-    codigo: '',
-    descripcion: '',
-    unidadMedida: '',
-    documentoProveedor: [],
-    codigoUbicacion: '',
-    estadoActivo: false
-  };
-
-  mostrarFormularioCrearArticulo(event: Event) {
-    event.preventDefault();
-    this.mostrarFormulario = true;
-    this.mostrarFormularioBuscar = false;
-    this.mostrarResultados = false;
+  ngOnInit() {
+    this.buscarArticulo();
   }
 
-  mostrarFormularioBuscarArticulo(event: Event) {
-    event.preventDefault();
-    this.mostrarFormulario = false;
-    this.mostrarFormularioBuscar = true;
-    
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.InputField.nativeElement.focus();
+    }, 1000);
   }
 
-  limitarLongitudCodigo(event: any) {
-    const maxCaracteres = 10;
-    const inputElement = event.target;
-    if (inputElement.value.length > maxCaracteres) {
-      inputElement.value = inputElement.value.slice(0, maxCaracteres);
-    }
-  }
 
-  ngOnInit(): void {
-    this.cargarUbicaciones();
-  }
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild("inputCode") InputField: any =  ElementRef;
 
-  cargarUbicaciones() {
-    //const token = this.tokenService.token;
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        //'x-access-token': `${token}`
-        'x-access-token': this.manualToken
-      })
-    };
-
-    this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
-      .subscribe(response => {
-        if (response.Status) {
-          this.ubicaciones = response.Data.docs;
-        }
-      });
-  }
 
   async buscarArticulo() {
-
-    //const token = this.tokenService.token;
-
+    const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        //'x-access-token': `${token}`
-        'x-access-token': this.manualToken
+        'x-access-token': `${token}`,
       })
     };
-
-    if (!this.codigoArticuloBusqueda) {
-      this.mostrarResultados = true;
-      const response = await this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles', httpOptions).toPromise();
-      this.articulosEncontrados = response.Data.docs;
-      console.log("encontro articulos ", this.articulosEncontrados);
-      this.mensajeExitoso = 'Búsqueda exitosa';
-      this.mostrarCampoFiltrar = true;
-
-    if (this.filtroDescripcion) {
-      console.log("entre a filtro descripcion")
-      this.articulosEncontrados = this.articulosEncontrados.filter((articulo) => {
-        return articulo.descripcion.toLowerCase().includes(this.filtroDescripcion.toLowerCase());
-      });
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles', httpOptions )
+      //this.http.get<any>('http://localhost:8080/api/articles', httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
+          this.dataSourceArticulos.paginator = this.paginator;
+          this.pageSize=response.Data.docs.limit;
+          this.pageIndex=response.Data.docs.page;
+          this.length = response.Data.totalDocs;
+        }
+        this.isLoadingResults = false; 
+      }, error => {
+        this.isLoadingResults = false;
+        if (error.status === 401) {
+          this.routerLinkLogin();
+        }
+        this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+        console.error('Error en la solicitud:', error);
+      });      
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);     
     }
-
-      setTimeout(() => {
-        this.mensajeExitoso = '';
-      }, 5000);
-    } else {
-      this.mostrarResultados = true;
-      const response = await this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${this.codigoArticuloBusqueda}`, httpOptions).toPromise();
-      this.articulosEncontrados = response.Data.docs;
-      console.log("encontro articulo ", this.articulosEncontrados);
-    }
-    
   }
 
-
-  borrarArticulo(articuloId: string) {
-
-    //const token = this.tokenService.token;
-
+  async recargarArticulo(page: PageEvent) {
+    this.dataSourceArticulos = new MatTableDataSource;
+    const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        //'x-access-token': `${token}`
-        'x-access-token': this.manualToken
+        'x-access-token': `${token}`,
       })
     };
+    try {
+      this.isLoadingResults = true;
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?page=${this.paginator.pageIndex + 1}&limit=${this.paginator.pageSize}`, httpOptions )
+      .subscribe(response => {
+        if (response.Status) {
+          this.dataSourceArticulos = new MatTableDataSource(response.Data.docs);
+          this.pageIndex=response.Data.docs.page;
+        } 
+        this.isLoadingResults = false; 
+      }, error => {
+        this.isLoadingResults = false;
+        if (error.status === 401) {
+          this.routerLinkLogin();
+        }
+        this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+        console.error('Error en la solicitud:', error);
+      });     
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);     
+    }
+  }
+ 
+    cargarUbicaciones() {
+      const token = this.tokenService.token;
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'x-access-token': `${token}`
+        })
+      };
+      try {
+        this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceUbicaciones = response.Data.docs;
+          }
+        }, error => {
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          this.mensajeFallido = 'Error al consultar Ubicaciones. Por favor, revisar la consola de Errores.';
+          console.error('Error en la solicitud:', error);
+        });        
+      } catch (error) {
+        this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+        console.error('Error en la solicitud:', error);       
+      }  
+    }
 
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${articuloId}`;
-
-    this.http.delete(url, httpOptions).subscribe(
-      (response) => {
-        console.log('Artículo borrado exitosamente');
-        this.mensajeExitoso = 'Operación exitosa: El artículo se ha eliminado correctamente.';
+    async borrar(id: string){
+      const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${id}`
+      //const url = `http://localhost:8080/api/articles/${id}`
+      const token = this.tokenService.token;
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'x-access-token': `${token}`,
+        })
+      };
+      this.isLoadingResults = true;
+      try {
+        const response = await this.http.delete(url, httpOptions).toPromise();
+        this.isLoadingResults = false;
+        this.mensajeExitoso = "Registro Eliminado exitosamente"
         setTimeout(() => {
           this.refreshPage();
         }, 3000);
-
-
-        setTimeout(() => {
-          this.mensajeExitoso = '';
-        }, 5000);
-      },
-      (error) => {
-        console.error('Error al borrar el artículo', error);
-        this.mensajeFallido = 'Error: El artículo no se ha podido eliminar ';
+      } catch (error) {
+        this.isLoadingResults = false;
+        this.mensajeFallido = 'Error al Eliminar. Por favor, revisar la consola de Errores.';
+        console.error('Error en la solicitud:', error);
       }
-    );
-  }
-
-  editarArticulo(articulo: any) {
-    this.articuloEditando = { ...articulo };
-  }
-
-  cancelarEdicion() {
-    this.articuloEditando = null;
-  }
-
-
-
-
-  guardarEdicionArticulo() {
-
-    //const token = this.tokenService.token;
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        //'x-access-token': `${token}`
-        'x-access-token': this.manualToken
-      })
-    };
-
-    const url = `https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles/${this.articuloEditando._id}`;
-    const payload = {
-      descripcion: this.articuloEditando.descripcion,
-      unidadMedida: this.articuloEditando.unidadMedida,
-      documentoProveedor: this.articuloEditando.documentoProveedor,
-      codigoUbicacion: this.articuloEditando.codigoUbicacion,
-      estadoActivo: this.articuloEditando.estadoActivo,
-    };
-
-    console.log("el body es ", payload);
-
-    this.http.patch(url, payload, httpOptions).subscribe(
-      (response) => {
-        console.log('Artículo editado exitosamente');
-        this.mensajeExitoso = 'Operación exitosa: El artículo se ha actualizado correctamente.';
-        setTimeout(() => {
-          this.refreshPage();
-        }, 3000);
-
-
-        setTimeout(() => {
-          this.mensajeExitoso = '';
-        }, 5000);
-
-      },
-      (error) => {
-        this.mensajeFallido = 'Error: El artículo no se ha podido actualizar ';
-        console.error('Error al editar el artículo', error);
-      }
-    );
-  }
+    }
+  
+    filtrar(event: Event) {
+        const filtro = (event.target as HTMLInputElement).value;
+        this.dataSourceArticulos.filter = filtro.trim().toLowerCase();
+    } 
+  
+    mostrarDialogo(id:string): void {
+      this.dialogo
+        .open(DialogoConfirmacionComponent, {
+          data: `Seguro deseas ELIMINARLO?`
+        })
+        .afterClosed()
+        .subscribe((confirmar: Boolean) => {
+          if (confirmar) {
+            this.borrar(id)
+          } else {
+            //alert("No hacer nada");
+          }
+        });
+    }
 
   refreshPage() {
     window.location.reload();
   }
+  routerLinkLogin(): void {
+    this.router.navigate(['/login'])
+  };
   
+}
+
+
+export class Articulo {
+  constructor(public codigo: string, public codigoBarras: string, public descripcion: String,
+              public marca: string, public referencia: string, public unidadMedida: String,
+              public codigoUbicacion: string,public stock: string,public precioVenta: string,
+              public precioMayoreo: string, public precioInterno: string, public estadoActivo: boolean
+              ){}
 }

@@ -9,7 +9,7 @@ import { TokenService } from '../login/token';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent {
-
+  opened: boolean = false;
   editingItem: any = null;
   isEditing: boolean = false;
 
@@ -19,7 +19,7 @@ export class MenuComponent {
   mostrarFormularioRegistrarUsuario: boolean = false;
   mostrarFormularioBuscarUsuario: boolean = false;
 
-  constructor(private http: HttpClient, private tokenService: TokenService) {
+  constructor(private http: HttpClient, public tokenService: TokenService) {
    }
 
    registrarUsuario() {
@@ -28,11 +28,5 @@ export class MenuComponent {
 
   buscarUsuario() {
     this.mostrarFormularioBuscarUsuario = !this.mostrarFormularioBuscarUsuario;
-  }
-
-
-
-  printHello() {
-    console.log('Hola Mundo');
   }
 }
