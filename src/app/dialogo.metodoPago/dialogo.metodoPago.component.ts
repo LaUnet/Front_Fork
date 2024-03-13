@@ -40,6 +40,7 @@ export class DialogoMetodoPagoComponent implements OnInit {
     efectivo: 0,
     transferencia: 0,
     facturaElectronica: 'NO',
+    imprimirFactura: 'false',
     vendedor: '',
   };
 
@@ -147,6 +148,7 @@ export class DialogoMetodoPagoComponent implements OnInit {
     this.dataSourceSales.cantidadTransferencia = this.utilsService.numeros(this.pasarela.transferencia) > 0 ? this.utilsService.numeros(this.pasarela.transferencia) : 0;
     this.dataSourceSales.facturacionElectronica = this.pasarela.facturaElectronica;
     this.dataSourceSales.vendedor = this.pasarela.vendedor
+    this.dataSourceSales.imprimirFactura = this.pasarela.imprimirFactura === 'true'? true:false;
     this.dialogo.close(true);
   }
 

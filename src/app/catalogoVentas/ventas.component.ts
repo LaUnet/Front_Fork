@@ -15,6 +15,8 @@ import { LocalStorageService } from '../local-storage.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
+import { PrinterUtilsService } from '../printerUtils.service';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-ventas',
@@ -25,12 +27,11 @@ export class VentasComponent implements AfterViewInit, OnInit {
 
   constructor(private router: Router, private http: HttpClient, public tokenService: TokenService, public dialogo: MatDialog,
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService,
-    public elementRef: ElementRef) { }
+    public elementRef: ElementRef, private currencyPipe: CurrencyPipe, public printerUtilsService: PrinterUtilsService) { }
 
   columnas: string[] = ['codigoBarras', 'descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioventa', 'accion'];
   columnasCarItem: string[] = ['descripcion', 'cantidad', 'precio', 'total', 'isEdit'];
 
-  usbDevice: any = [];
   openedMenu!: boolean;
   openedCustomer!: boolean;
   dataSourceCatalogo: any = [];
@@ -329,6 +330,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
       "cantidadTransferencia": "",
       "facturacionElectronica": "",
       "vendedor": "",
+      "imprimirFactura": "",
     }
 
     this.dialogo
@@ -353,7 +355,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     for (let i = 0; i < this.dataSourceCarItem.length; i++) {
       this.dataSourceSalesArticle = [...this.dataSourceSalesArticle, this.dataSourceCarItem[i].detalleArticulo[0]]
     }
-    //Caergamos los articulos a la venta
+    //Cargamos los articulos a la venta
     this.dataSourceSales.articulo = this.dataSourceSalesArticle;
     const url = 'https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales';
     //const url = 'http://localhost:3030/api/sales';
@@ -369,7 +371,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
       this.mensajeExitoso = "Venta guardada correctamente.";
       this.isLoadingResults = false;
-      //this.connectToPrinter(false);
+      this.printerUtilsService.connectToPrinter(this.dataSourceSales.imprimirFactura, this.dataSourceSales);
       setTimeout(() => {
         this.refreshPage();
       }, 100);
@@ -620,92 +622,6 @@ export class VentasComponent implements AfterViewInit, OnInit {
       this.operaciones.totalCompraArray = [],
       this.operaciones.totalArticulos = 0,
       this.operaciones.totalArticulosArray = []
-  };
-
-  async connectToPrinter(value: boolean) {
-    try {
-      this.usbDevice = await (navigator as any).usb.getDevices()
-      if (this.usbDevice.length > 0) {
-        this.usbDevice.forEach((value: any, index: number) => {
-          //Por el momento nombre de la impresora quemados en codigo si tiene mas de 1 dispositivo vinculado
-          if (value.productName === "TM-T88V") {
-            this.usbDevice = value;
-            return;
-          }
-        });
-      };
-      if (this.usbDevice.length !== undefined) {
-        this.usbDevice = await (navigator as any).usb.requestDevice({ filters: [{ productName: 'TM-T88V' }] })
-        if (this.usbDevice.length > 1) {
-          this.usbDevice.forEach((value: any, index: number) => {
-            //Por el momento nombre de la impresora quemados en codigo si tiene mas de 1 dispositivo vinculado
-            if (value.productName === "TM-T88V") {
-              this.usbDevice = value;
-              return;
-            }
-          });
-        };
-      };
-      this.sendToPrinter(value);
-    } catch (error) {
-      console.error('Error conectando dispositivo USB:', error);
-    }
-  };
-
-  async sendToPrinter(value: boolean) {
-    try {
-      if (this.usbDevice) {
-        //Configuración del TSPL
-        if (!value) {
-          const cmd = ['\x10' + '\x14' + '\x01' + '\x00' + '\x05'];
-          await this.usbDevice.open()
-            .then(() => this.usbDevice.selectConfiguration(1))
-            .then(() => this.usbDevice.claimInterface(this.usbDevice.configuration.interfaces[0]?.interfaceNumber))
-            await this.usbDevice.transferOut(
-              this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
-              new Uint8Array(
-                new TextEncoder().encode(cmd.join())
-              )
-              );
-        } else {
-          //'DIRECTION 0\r\nCLS\r\nTEXT 56,24,"3",0,1,1,"ABC"\r\nPRINT 1\r\n',
-          //{ type: 'raw', format: 'image', flavor: 'file', data: 'assets/img/image_sample_bw.png', options: { language: "ESCPOS", dotDensity: 'double' } },
-          const cmd = [        
-            '\x1B' + '\x40'+          // init
-            //'\x1D' + '\x56'  + '\x31'+ // Cut
-            '\x0A'+                   // line break
-            '\x1B' + '\x61' + '\x31'+ // center align
-            'PAPELERIA PUNTO U' + '\x0A'+
-            '\x0A'+                   // line break
-            '\x10' + '\x14' + '\x01' + '\x00' + '\x05' // Cash Drawer
-            ];
-          await this.usbDevice.open()
-            .then(() => this.usbDevice.selectConfiguration(1))
-            .then(() => this.usbDevice.claimInterface(this.usbDevice.configuration.interfaces[0]?.interfaceNumber))
-          await this.usbDevice.transferOut(
-            this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
-            new Uint8Array(
-              new TextEncoder().encode(cmd.join())
-            )
-          );
-        }
-        await this.usbDevice.releaseInterface(0);
-        await this.usbDevice.close();
-      }
-    } catch (error) {
-      console.error("Error enviando a la impresora:", error);
-    }
-  };
-
-  async disconnectToDevice() {
-    try {
-      if (this.usbDevice) {
-        await this.usbDevice.close();
-        console.log('Disconnected from USB device.');
-      }
-    } catch (error) {
-      console.error('Error disconnecting from USB device:', error);
-    }
   };
 
 };

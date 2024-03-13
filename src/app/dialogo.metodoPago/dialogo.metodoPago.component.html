@@ -119,6 +119,19 @@
             <mat-step>
                 <ng-template matStepLabel>Hecho</ng-template>
                 <p>Completado</p>
+                <tr>
+                    <td>
+                        <mat-form-field class="full-width" appearance="outline" style="margin-top: 10px;">
+                            <mat-label>Imprimir Factura?</mat-label>
+                            <mat-icon matSuffix>print</mat-icon>
+                            <mat-select [(ngModel)]="pasarela.imprimirFactura" required>
+                                <mat-option disabled>Selecciona una opcíon</mat-option>
+                                <mat-option value='false' selected>NO</mat-option>
+                                <mat-option value='true'>SI</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </tr>
                 <div>
                     <button mat-button matStepperPrevious (click)="setState(firstFormControl);">ATRAS</button>
                     <button mat-button color="primary" [disabled]="firstFormControl.invalid" (click)="confirmarVenta()">CONFIRMAR</button>
