@@ -139,3 +139,28 @@
       justify-content: center;
     }
   }
+
+  .verifyProducts {
+    display: none;
+  }
+
+
+  .showProducts {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 1;
+    position: absolute;
+    background-color: white;
+    border-radius: 0.5rem;
+    border: 1px solid;
+    right: 35%;
+    top: 1px;
+    min-width: 35%;
+    max-width: 35%;
+    mat-card-verifyProducts{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }

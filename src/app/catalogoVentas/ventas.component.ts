@@ -33,7 +33,11 @@ export class VentasComponent implements AfterViewInit, OnInit {
   columnas: string[] = ['codigoBarras', 'descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioventa', 'accion'];
   columnasCarItem: string[] = ['descripcion', 'cantidad', 'precio', 'total', 'isEdit'];
   columnasViewVerifyItems: string[] = ['numeroFactura', 'fechaFactura', 'total', 'vendedor', 'isVerified'];
+  columnasProducts: string[] = ['descripcion', 'cantidad', 'precio', 'total'];
 
+  //Habuilitadores + DataSources
+  viewVerifyProducts: boolean = false;
+  viewProducts: boolean = false;
   viewVerify: boolean = false;
   openedMenu!: boolean;
   openedCustomer!: boolean;
@@ -43,6 +47,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
   dataSourceSales: any = [];
   dataSourceSalesArticle: any = [];
   dataSourceViewVerify: any = [];
+  dataSourceViewVerifyProducts: any = [];
   isLoadingResults: boolean = false;
   //Pagination
   pageEvent!: PageEvent;
@@ -633,6 +638,17 @@ export class VentasComponent implements AfterViewInit, OnInit {
   onToggleVerify() {
     this.viewVerify = !this.viewVerify
     this.buscarVentaVerificada(false);
+  }
+
+  onToggleVerifyProducts(element: any = []) {
+    this.viewVerifyProducts = !this.viewVerifyProducts
+    if(this.viewVerifyProducts){
+      this.dataSourceViewVerifyProducts = element.articulo;
+    }
+  }
+
+  getTotalVenta() {
+    return this.dataSourceViewVerifyProducts.map((t: { total: string | number; }) => +t.total).reduce((acc: any, value: any) => acc + value, 0);
   }
 
   buscarVentaVerificada(value: boolean) {
