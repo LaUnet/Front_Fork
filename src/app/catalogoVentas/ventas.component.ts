@@ -17,6 +17,7 @@ import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
 import { PrinterUtilsService } from '../printerUtils.service';
 import { CurrencyPipe } from '@angular/common';
+import { DataSource } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-ventas',
@@ -31,7 +32,9 @@ export class VentasComponent implements AfterViewInit, OnInit {
 
   columnas: string[] = ['codigoBarras', 'descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioventa', 'accion'];
   columnasCarItem: string[] = ['descripcion', 'cantidad', 'precio', 'total', 'isEdit'];
+  columnasViewVerifyItems: string[] = ['numeroFactura', 'fechaFactura', 'total', 'vendedor', 'isVerified'];
 
+  viewVerify: boolean = false;
   openedMenu!: boolean;
   openedCustomer!: boolean;
   dataSourceCatalogo: any = [];
@@ -39,6 +42,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
   dataSourceCarItem: any = [];
   dataSourceSales: any = [];
   dataSourceSalesArticle: any = [];
+  dataSourceViewVerify: any = [];
   isLoadingResults: boolean = false;
   //Pagination
   pageEvent!: PageEvent;
@@ -51,6 +55,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
   localStorageUser !: any;
   subscriber!: Subscription;
   //Calculos
+  badge!: number;
   operaciones: any = {
     cantidadArticulos: 0,
     subtotalCompra: 0,
@@ -158,6 +163,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     this.localStorageService.setItem('access_token', this.localStorageToken);
     this.localStorageService.setItem('user_key', this.localStorageUser);
     this.buscarCliente();
+    this.buscarVentaVerificada(false);
   }
 
   ngOnDestroy() {
@@ -331,8 +337,8 @@ export class VentasComponent implements AfterViewInit, OnInit {
       "facturacionElectronica": "",
       "vendedor": "",
       "imprimirFactura": "",
+      "ventaVerificada": this.tokenService.rolName? true:false
     }
-
     this.dialogo
       .open(DialogoMetodoPagoComponent, {
         data: this.dataSourceSales
@@ -368,13 +374,13 @@ export class VentasComponent implements AfterViewInit, OnInit {
     };
     this.isLoadingResults = true;
     try {
-      const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
-      this.mensajeExitoso = "Venta guardada correctamente.";
-      this.isLoadingResults = false;
-      this.printerUtilsService.connectToPrinter(this.dataSourceSales.imprimirFactura, this.dataSourceSales);
-      setTimeout(() => {
-        this.refreshPage();
-      }, 100);
+       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
+       this.mensajeExitoso = "Venta guardada correctamente.";
+       this.isLoadingResults = false;
+       this.printerUtilsService.connectToPrinter(this.dataSourceSales.imprimirFactura, this.dataSourceSales);
+       setTimeout(() => {
+         this.refreshPage();
+       }, 100);
     } catch (error) {
       this.isLoadingResults = false;
       this.mensajeFallido = 'Error al guardar. Por favor, revisar la consola de Errores.';
@@ -624,6 +630,75 @@ export class VentasComponent implements AfterViewInit, OnInit {
       this.operaciones.totalArticulosArray = []
   };
 
+  onToggleVerify() {
+    this.viewVerify = !this.viewVerify
+    this.buscarVentaVerificada(false);
+  }
+
+  buscarVentaVerificada(value: boolean) {
+    this.mensajeFallido = "";
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    try {
+      let httpParams = new HttpParams();
+      httpParams = httpParams.append('ventaVerificada', value);
+      this.isLoadingResults = true;
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceViewVerify = new MatTableDataSource(response.Data);
+          }
+          this.isLoadingResults = false;
+          this.dataSourceViewVerify = this.dataSourceViewVerify.filteredData;
+          this.badge = this.dataSourceViewVerify.length
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          if (error.status === 404) {
+            this.badge = 0;
+            return;
+          }
+          this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+          console.error('Error en la solicitud:', error);
+        });
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+  }
+
+ async actualizarVentaVerificada(value: boolean, element?: any) {
+    const url = `https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales/${element._id}`
+    const body = {
+      ventaVerificada: value
+    };
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`
+      })
+    };
+    this.isLoadingResults = true;
+    try {
+      const response = await this.http.patch(url, body, httpOptions).toPromise();
+      this.isLoadingResults = false;
+      this.onToggleVerify()
+    } catch (error) {
+      this.mensajeFallido = 'Error al editar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+
+    this.isLoadingResults = false;
+  } 
+
 };
 
 export class Catalogo {
@@ -634,6 +709,10 @@ export class Catalogo {
 
 export class carItem {
   constructor(public descripcion: String, public cantidad: string, public precio: string, public iva: string, public total: string, public isEdit: string) { }
+}
+
+export class viewVerify {
+  constructor(public numeroFactura: String, public fechaFactura: string, public total: string, public vendedor: string, public isVerified: string) { }
 }
 
 /** Error when invalid control is dirty, touched, or submitted. */

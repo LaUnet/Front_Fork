@@ -115,3 +115,27 @@
   .colorText {
     color: white;
   }
+
+  .verify {
+    display: none;
+  }
+
+  .show {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 1;
+    position: absolute;
+    background-color: white;
+    border-radius: 0.5rem;
+    border: 1px solid;
+    right: 0px;
+    top: 1px;
+    min-width: 35%;
+    max-width: 35%;
+    mat-card-verify{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }

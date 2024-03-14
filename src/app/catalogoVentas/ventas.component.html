@@ -29,6 +29,16 @@
             </ng-template>
         </mat-menu>
     </button>
+    <div *ngIf="this.tokenService.rolName">
+        <button type="button" mat-icon-button matTooltip="Revisar Ventas" (click)="onToggleVerify()">
+            <div *ngIf="badge > 0">
+                <mat-icon matBadge={{badge}} matBadgeColor="warn">fact_check</mat-icon>
+            </div>
+            <div *ngIf="badge == 0">
+                <mat-icon>fact_check</mat-icon>
+            </div>
+        </button>
+    </div>
     <button type="button" mat-icon-button matTooltip="Ajustes">
         <mat-icon>settings</mat-icon>
     </button>
@@ -117,23 +127,23 @@
             </mat-list-item>
             <mat-divider></mat-divider>
             <mat-expansion-panel [class.mat-elevation-z0]="true">
-              <mat-expansion-panel-header>
-                <mat-icon>table_chart</mat-icon>
-                <span> Reportes</span>
-              </mat-expansion-panel-header>
-              <mat-nav-list>
-                <a mat-list-item routerLink="/reportesVentas">
-                  <span>Ventas</span>
-                </a>
-                <a mat-list-item routerLink="/reportesCompras">
-                  <span>Compras</span>
-                </a>
-                <a mat-list-item routerLink="/reportesArticulos">
-                  <span>Stock Articulos</span>
-                </a>
-              </mat-nav-list>
+                <mat-expansion-panel-header>
+                    <mat-icon>table_chart</mat-icon>
+                    <span> Reportes</span>
+                </mat-expansion-panel-header>
+                <mat-nav-list>
+                    <a mat-list-item routerLink="/reportesVentas">
+                        <span>Ventas</span>
+                    </a>
+                    <a mat-list-item routerLink="/reportesCompras">
+                        <span>Compras</span>
+                    </a>
+                    <a mat-list-item routerLink="/reportesArticulos">
+                        <span>Stock Articulos</span>
+                    </a>
+                </mat-nav-list>
             </mat-expansion-panel>
-            
+
         </mat-nav-list>
     </mat-sidenav>
     <!-- Contenido Registrar Cliente-->
@@ -420,7 +430,8 @@
                         <mat-card-actions align="end">
                             <button mat-button type="button" matTooltip="Abrir Caja"
                                 (click)="printerUtilsService.connectToPrinter(false, dataSourceSales)"
-                                style="font-family:Impact; width: 80%; margin-right: 45%; background-color: gainsboro;" color="basic">Abrir
+                                style="font-family:Impact; width: 80%; margin-right: 45%; background-color: gainsboro;"
+                                color="basic">Abrir
                                 Caja
                                 <mat-icon>all_inbox</mat-icon>
                             </button>
@@ -655,6 +666,61 @@
                 </mat-card-actions>
             </form>
         </mat-card>
+        <!-- Contenido Ventas por revisar-->
+        <div class="verify" [ngClass]="{show:viewVerify}">
+            <mat-card class="mat-card-verify">
+                <form class="form" class="full-width">
+                    <div class="mat-elevation-z8">
+                        <table mat-table [dataSource]="dataSourceViewVerify" cellspacing="0">
+                            <ng-container matColumnDef="numeroFactura">
+                                <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
+                                    *matHeaderCellDef>
+                                    # Factura </th>
+                                <td mat-cell *matCellDef="let viewItem">
+                                    {{viewItem.numeroFactura}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="fechaFactura">
+                                <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
+                                    *matHeaderCellDef> Fecha </th>
+                                <td mat-cell *matCellDef="let viewItem">
+                                    {{viewItem.fechaFactura}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="total">
+                                <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
+                                    *matHeaderCellDef>Total Venta</th>
+                                <td mat-cell *matCellDef="let viewItem">
+                                    {{viewItem.total | currency : 'USD' : 'symbol' : '1.0-0'}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="vendedor">
+                                <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
+                                    *matHeaderCellDef> Vendedor </th>
+                                <td mat-cell *matCellDef="let viewItem">
+                                    {{viewItem.vendedor}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="isVerified">
+                                <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
+                                    *matHeaderCellDef>Acción</th>
+                                <td mat-cell *matCellDef="let viewItem; let i = index">
+                                    <button type="button" mat-mini-fab matSuffix color="primary"
+                                        matTooltip="Imprimir Recibo" class="buttonMatTable" (click)="printerUtilsService.connectToPrinter(true, viewItem); actualizarVentaVerificada(true, viewItem)">
+                                        <mat-icon>receipt</mat-icon>
+                                    </button>
+                                    <button type="button" mat-mini-fab matSuffix color="accent"
+                                        matTooltip="Confirmar Venta" class="buttonMatTable" (click)="printerUtilsService.connectToPrinter(false, viewItem); actualizarVentaVerificada(true, viewItem)">
+                                        <mat-icon>library_add_check</mat-icon>
+                                    </button>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="columnasViewVerifyItems"></tr>
+                            <tr mat-row *matRowDef="let row; columns: columnasViewVerifyItems;"></tr>
+                        </table>
+                    </div>
+                </form>
+            </mat-card>
+        </div>
         <img src="../../assets/PuntoU.jpg" class="img-fluid"
             style="position: absolute; top: 0; z-index: -100; width: 100%; min-height:min-content; max-height: max-content;">
     </mat-sidenav-content>
