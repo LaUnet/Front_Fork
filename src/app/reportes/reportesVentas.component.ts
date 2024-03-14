@@ -11,6 +11,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TableUtilsService } from '../tableUtils.service';
+import { PrinterUtilsService } from '../printerUtils.service';
 
 /** Setear fechas */
 const today = new Date();
@@ -30,9 +31,9 @@ export class ReportesVentasComponent implements OnInit {
   constructor(private router: Router, private http: HttpClient, public tokenService: TokenService,
     public utilsService: UtilsService, private changeDetector: ChangeDetectorRef,
     private _adapter: DateAdapter<any>, public tableUtilsService: TableUtilsService,
-    @Inject(MAT_DATE_LOCALE) private _locale: string,) { }
+    @Inject(MAT_DATE_LOCALE) private _locale: string,public printerUtilsService: PrinterUtilsService) { }
 
-  columnas: string[] = ['No', 'numeroFactura', 'fechaFactura', 'efectivo', 'transferencia', 'valorTransaccion', 'nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'email', 'facturaElectronica', 'vendedor'];
+  columnas: string[] = ['No', 'numeroFactura', 'fechaFactura', 'efectivo', 'transferencia', 'valorTransaccion', 'nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'email', 'facturaElectronica', 'vendedor', 'isPrinter'];
 
   isLoadingResults: boolean = false;
   mensajeExitoso: string = '';
@@ -170,4 +171,5 @@ export interface Transaction {
   numeroDocumento: string;
   facturaElectronica: string;
   vendedor: string;
+  isPrinter: string;
 }
