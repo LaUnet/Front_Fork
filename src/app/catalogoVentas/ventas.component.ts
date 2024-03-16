@@ -176,11 +176,6 @@ export class VentasComponent implements AfterViewInit, OnInit {
 
   ngAfterContentChecked() {
     this.changeDetector.detectChanges();
-    if(this.tokenService.userName){
-    setTimeout(() => {
-      this.buscarVentaVerificada(false);
-    }, 60000);
-    }
   }
 
   ngAfterViewInit() {
