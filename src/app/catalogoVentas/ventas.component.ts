@@ -178,7 +178,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     this.changeDetector.detectChanges();
     if(this.tokenService.userName){
     setTimeout(() => {
-      this.InputField.nativeElement.focus();
+      this.buscarVentaVerificada(false);
     }, 60000);
     }
   }
