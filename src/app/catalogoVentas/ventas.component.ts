@@ -16,8 +16,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
 import { PrinterUtilsService } from '../printerUtils.service';
-import { CurrencyPipe } from '@angular/common';
-import { DataSource } from '@angular/cdk/collections';
+import { CurrencyPipe } from '@angular/common'; 
 
 @Component({
   selector: 'app-ventas',
@@ -177,6 +176,11 @@ export class VentasComponent implements AfterViewInit, OnInit {
 
   ngAfterContentChecked() {
     this.changeDetector.detectChanges();
+    if(this.tokenService.userName){
+    setTimeout(() => {
+      this.InputField.nativeElement.focus();
+    }, 60000);
+    }
   }
 
   ngAfterViewInit() {
@@ -672,6 +676,9 @@ export class VentasComponent implements AfterViewInit, OnInit {
           this.isLoadingResults = false;
           this.dataSourceViewVerify = this.dataSourceViewVerify.filteredData;
           this.badge = this.dataSourceViewVerify.length
+          if (this.badge === 0){
+            this.viewVerify = false
+          }
         }, error => {
           this.isLoadingResults = false;
           if (error.status === 401) {
@@ -706,7 +713,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     try {
       const response = await this.http.patch(url, body, httpOptions).toPromise();
       this.isLoadingResults = false;
-      this.onToggleVerify()
+      this.buscarVentaVerificada(false);
     } catch (error) {
       this.mensajeFallido = 'Error al editar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
