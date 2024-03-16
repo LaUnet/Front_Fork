@@ -668,7 +668,7 @@
         </mat-card>
         <!-- Contenido Ventas por revisar-->
         <div class="verify" [ngClass]="{show:viewVerify}">
-            <mat-card class="mat-card-verify">
+            <mat-card> <!--class="mat-card-verify"-->
                 <form class="form" class="full-width">
                     <div class="mat-elevation-z8">
                         <table mat-table [dataSource]="dataSourceViewVerify" cellspacing="0">
@@ -736,7 +736,7 @@
         </div>
         <!-- Contenido Productos por confirmar-->
         <div class="verifyProducts" [ngClass]="{showProducts:viewVerifyProducts}">
-            <mat-card class="mat-card-verifyProducts">
+            <mat-card> <!--class="mat-card-verifyProducts"-->
                 <form class="form" class="full-width">
                     <div class="mat-elevation-z8">
                         <table mat-table [dataSource]="dataSourceViewVerifyProducts" cellspacing="0">
