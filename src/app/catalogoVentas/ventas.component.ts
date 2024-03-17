@@ -18,6 +18,7 @@ import { UtilsService } from '../utils.service';
 import { PrinterUtilsService } from '../printerUtils.service';
 import { CurrencyPipe } from '@angular/common'; 
 
+
 @Component({
   selector: 'app-ventas',
   templateUrl: './ventas.component.html',
@@ -150,6 +151,8 @@ export class VentasComponent implements AfterViewInit, OnInit {
   mensajeFallido: string = '';
   mensajeExitosoCliente: string = '';
   mensajeFallidoCliente: string = '';
+
+
 
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
@@ -671,15 +674,14 @@ export class VentasComponent implements AfterViewInit, OnInit {
           this.isLoadingResults = false;
           this.dataSourceViewVerify = this.dataSourceViewVerify.filteredData;
           this.badge = this.dataSourceViewVerify.length
-          if (this.badge === 0){
-            this.viewVerify = false
-          }
         }, error => {
           this.isLoadingResults = false;
           if (error.status === 401) {
             this.routerLinkLogin();
           }
           if (error.status === 404) {
+            this.viewVerify = false
+            this.dataSourceViewVerify = [];
             this.badge = 0;
             return;
           }
@@ -716,7 +718,6 @@ export class VentasComponent implements AfterViewInit, OnInit {
 
     this.isLoadingResults = false;
   } 
-
 };
 
 export class Catalogo {
