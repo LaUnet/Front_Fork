@@ -16,6 +16,9 @@ import { VentasComponent } from './catalogoVentas/ventas.component';
 import { ComprasComponent } from './catalogoCompras/compras.component';
 import { ReportesVentasComponent } from './reportes/reportesVentas.component';
 import { ReportesComprasComponent } from './reportes/reportesCompras.component';
+import { BuscarCajaComponent } from './cajas/buscar.component';
+import { RegistrarCajaComponent } from './cajas/registrar.component';
+import { AdministrarCajaComponent } from './cajas/administrar.component';
 import { ReportesDetalleArticulosComponent } from './reportes/reportesDetalleArticulos.component';
 
 const routes: Routes = [
@@ -42,7 +45,10 @@ const routes: Routes = [
   { path: 'reportesVentas', component: ReportesVentasComponent },
   { path: 'reportesCompras', component: ReportesComprasComponent },
   { path: 'reportesArticulos', component: ReportesDetalleArticulosComponent },
-  
+  { path: 'buscarCaja', component: BuscarCajaComponent },
+  { path: 'registrarCaja', component: RegistrarCajaComponent },
+  { path: 'editarCaja/:id', component: RegistrarCajaComponent },
+  { path: 'administrarCaja', component: AdministrarCajaComponent },
 ];
 
 @NgModule({

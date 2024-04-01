@@ -16,8 +16,13 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
 import { PrinterUtilsService } from '../printerUtils.service';
-import { CurrencyPipe } from '@angular/common'; 
+import { CurrencyPipe } from '@angular/common';
 
+/** Setear fechas */
+const today = new Date();
+const month = today.getMonth();
+const year = today.getFullYear();
+const day = today.getDate();
 
 @Component({
   selector: 'app-ventas',
@@ -48,6 +53,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
   dataSourceSalesArticle: any = [];
   dataSourceViewVerify: any = [];
   dataSourceViewVerifyProducts: any = [];
+  dataSourceCajas: any = [];
   isLoadingResults: boolean = false;
   //Pagination
   pageEvent!: PageEvent;
@@ -58,9 +64,12 @@ export class VentasComponent implements AfterViewInit, OnInit {
   //Storage
   localStorageToken !: any;
   localStorageUser !: any;
+  localStorageCashier !: any;
   subscriber!: Subscription;
   //Calculos
   badge!: number;
+  startDate!: any;
+  endDate!: any;
   operaciones: any = {
     cantidadArticulos: 0,
     subtotalCompra: 0,
@@ -131,7 +140,8 @@ export class VentasComponent implements AfterViewInit, OnInit {
     tipoDocumento: '',
     numeroDocumento: '1111111111',
     nombreRazonSocial: '',
-    email: ''
+    email: '',
+    tipoCliente: ''
   };
 
 
@@ -164,11 +174,18 @@ export class VentasComponent implements AfterViewInit, OnInit {
     this.subscriber = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => { });
-    this.localStorageToken = this.localStorageService.getItem('access_token');
     this.localStorageUser = this.localStorageService.getItem('user_key');
+    this.localStorageCashier = this.localStorageService.getItem('cashier');
     this.localStorageService.clear();
-    this.localStorageService.setItem('access_token', this.localStorageToken);
-    this.localStorageService.setItem('user_key', this.localStorageUser);
+    if (this.localStorageUser) {
+      this.localStorageService.setItem('user_key', this.localStorageUser);
+    }else{
+      this.routerLinkLogin();
+    }
+    if (this.localStorageCashier) {
+      this.localStorageService.setItem('cashier', this.localStorageCashier);
+      this.buscarCaja();
+    }
     this.buscarCliente();
     this.buscarVentaVerificada(false);
   }
@@ -185,6 +202,57 @@ export class VentasComponent implements AfterViewInit, OnInit {
     setTimeout(() => {
       this.InputField.nativeElement.focus();
     }, 500);
+  }
+
+  async buscarCaja() {
+    this.startDate = new Date(year, month, day);
+    this.endDate = new Date(year, month, day + 1);
+    //const token = this.tokenService.token;
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMTc1MTk5NywiZXhwIjoxNzExODM4Mzk3fQ.ofi_91n-PGP50bUAoXUWga26suD97WX9W9Uyy24u3Vc"
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    this.isLoadingResults = true;
+    try {
+      let httpParams = new HttpParams();
+      httpParams = httpParams.append('startDate', this.startDate);
+      httpParams = httpParams.append('endDate', this.endDate);
+      this.http.get<any>(`http://localhost:3030/api/cashierMovements?${httpParams}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceCajas = response.Data.filter(((arr: { estadoActivo: any; }) => arr.estadoActivo === true))
+          }
+          this.isLoadingResults = false;
+          switch (this.dataSourceCajas.length) {
+            case 0:
+              alert("No Existe Caja Abierta")
+              return;
+            case 1:
+              this.localStorageService.setItem('cashier', this.dataSourceCajas[0].idCaja);
+              return;
+            default:
+              alert("Seleccione Caja")
+              return;
+          }
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          if (error.status === 404) {
+            alert("No Existe Caja Abierta")
+            return;
+          }
+          console.error('Error en la solicitud:', error);
+        });
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
   }
 
   async buscarCliente() {
@@ -242,7 +310,6 @@ export class VentasComponent implements AfterViewInit, OnInit {
       this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
             if (response.Data.totalDocs === 0) {
               this.mensajeFallido = 'Articulo no encontrado';
             } else {
@@ -250,6 +317,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
                 this.addToCart(response.Data.docs[0])
               }
             }
+            this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
           }
           this.isLoadingResults = false;
         }, error => {
@@ -336,6 +404,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
         "tipoDocumento": this.consultaCliente.tipoDocumento,
         "numeroDocumento": this.consultaCliente.numeroDocumento,
         "email": this.consultaCliente.email,
+        "tipoCliente": this.consultaCliente.tipoCliente
       },
       "articulo": "",
       "formaDePago": "",
@@ -344,7 +413,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
       "facturacionElectronica": "",
       "vendedor": "",
       "imprimirFactura": "",
-      "ventaVerificada": this.tokenService.rolName? true:false
+      "ventaVerificada": this.tokenService.rolName ? true : false
     }
     this.dialogo
       .open(DialogoMetodoPagoComponent, {
@@ -381,13 +450,13 @@ export class VentasComponent implements AfterViewInit, OnInit {
     };
     this.isLoadingResults = true;
     try {
-       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
-       this.mensajeExitoso = "Venta guardada correctamente.";
-       this.isLoadingResults = false;
-       this.printerUtilsService.connectToPrinter(this.dataSourceSales.imprimirFactura, this.dataSourceSales);
-       setTimeout(() => {
-         this.refreshPage();
-       }, 100);
+      const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
+      this.mensajeExitoso = "Venta guardada correctamente.";
+      this.isLoadingResults = false;
+      this.printerUtilsService.connectToPrinter(this.dataSourceSales.imprimirFactura, this.dataSourceSales);
+      setTimeout(() => {
+        this.refreshPage();
+      }, 100);
     } catch (error) {
       this.isLoadingResults = false;
       this.mensajeFallido = 'Error al guardar. Por favor, revisar la consola de Errores.';
@@ -644,7 +713,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
 
   onToggleVerifyProducts(element: any = []) {
     this.viewVerifyProducts = !this.viewVerifyProducts
-    if(this.viewVerifyProducts){
+    if (this.viewVerifyProducts) {
       this.dataSourceViewVerifyProducts = element.articulo;
     }
   }
@@ -653,7 +722,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     return this.dataSourceViewVerifyProducts.map((t: { total: string | number; }) => +t.total).reduce((acc: any, value: any) => acc + value, 0);
   }
 
-  buscarVentaVerificada(value: boolean) {
+  async buscarVentaVerificada(value: boolean) {
     this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
@@ -694,7 +763,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     }
   }
 
- async actualizarVentaVerificada(value: boolean, element?: any) {
+  async actualizarVentaVerificada(value: boolean, element?: any) {
     const url = `https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales/${element._id}`
     const body = {
       ventaVerificada: value
@@ -717,7 +786,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     }
 
     this.isLoadingResults = false;
-  } 
+  }
 };
 
 export class Catalogo {

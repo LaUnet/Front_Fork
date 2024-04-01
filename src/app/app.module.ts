@@ -24,6 +24,9 @@ import { DialogoMetodoPagoComponent } from './dialogo.metodoPago/dialogo.metodoP
 import { ReportesVentasComponent } from './reportes/reportesVentas.component';
 import { ReportesComprasComponent } from './reportes/reportesCompras.component';
 import { ReportesDetalleArticulosComponent } from './reportes/reportesDetalleArticulos.component';
+import { BuscarCajaComponent } from './cajas/buscar.component';
+import { RegistrarCajaComponent } from './cajas/registrar.component';
+import { AdministrarCajaComponent } from './cajas/administrar.component';
 import { PrinterUtilsService } from '../app/printerUtils.service'
 
 
@@ -90,6 +93,9 @@ import { CurrencyPipe } from '@angular/common';
     ReportesVentasComponent,
     ReportesComprasComponent,
     ReportesDetalleArticulosComponent,
+    BuscarCajaComponent,
+    RegistrarCajaComponent,
+    AdministrarCajaComponent,
   ],
   imports: [
     BrowserModule,

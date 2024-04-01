@@ -24,9 +24,22 @@
     </mat-menu>
   </button>
 
-  <button mat-icon-button matTooltip="Ajustes">
+  
+  <button mat-icon-button [matMenuTriggerFor]="config" matTooltip="Ajustes">
     <mat-icon>settings</mat-icon>
+    <mat-menu #config="matMenu">
+      <button mat-menu-item [matMenuTriggerFor]="caja">
+        <mat-icon>all_inbox</mat-icon>
+        <span>Caja</span>
+      </button>
+    </mat-menu>   
+    <mat-menu #caja="matMenu">
+      <button mat-menu-item routerLink="/registrarCaja">Registrar</button>
+      <button mat-menu-item routerLink="/buscarCaja">Buscar</button>
+      <button mat-menu-item routerLink="/administrarCaja">Administrar</button>
+    </mat-menu>
   </button>
+  
   <button mat-icon-button matTooltip={{this.tokenService.userName}}>
     <mat-icon>assignment_ind</mat-icon>
   </button>
@@ -78,7 +91,7 @@
       <mat-divider></mat-divider>
       <mat-expansion-panel [class.mat-elevation-z0]="true">
         <mat-expansion-panel-header>
-          <mat-icon>location_searching</mat-icon>
+          <mat-icon>location_on</mat-icon>
           <span> Ubicaciones</span>
         </mat-expansion-panel-header>
         <mat-nav-list>
@@ -211,45 +224,48 @@
             </td>
           </tr>
         </table>
-        <div *ngIf="this._id !== null" >
+        <div *ngIf="this._id !== null">
           <table class="full-width" cellspacing="0">
             <tr>
               <td>
                 <mat-form-field class="full-width" appearance="outline">
                   <mat-label>Stock</mat-label>
                   <mat-icon matSuffix>inventory</mat-icon>
-                  <input matInput [(ngModel)]="nuevoArticulo.stock" name="stock">
+                  <input matInput [(ngModel)]="nuevoArticulo.stock" name="stock"
+                  [formControl]="stockFormControl" [errorStateMatcher]="matcher">
                 </mat-form-field>
               </td>
               <td>
                 <mat-form-field class="full-width" appearance="outline">
                   <mat-label>Precio Venta</mat-label>
                   <mat-icon matSuffix>price_check</mat-icon>
-                  <input matInput [(ngModel)]="nuevoArticulo.precioVenta" name="precioVenta">
+                  <input matInput [(ngModel)]="nuevoArticulo.precioVenta" name="precioVenta"
+                  [formControl]="precioVentaFormControl" [errorStateMatcher]="matcher">
                 </mat-form-field>
               </td>
               <td>
                 <mat-form-field class="full-width" appearance="outline">
                   <mat-label>Precio Mayoreo</mat-label>
                   <mat-icon matSuffix>price_check</mat-icon>
-                  <input matInput [(ngModel)]="nuevoArticulo.precioMayoreo" name="precioMayoreo">
+                  <input matInput [(ngModel)]="nuevoArticulo.precioMayoreo" name="precioMayoreo"
+                  [formControl]="precioMayoreoFormControl" [errorStateMatcher]="matcher">
                 </mat-form-field>
               </td>
               <td>
                 <mat-form-field class="full-width" appearance="outline">
                   <mat-label>Precio Interno</mat-label>
                   <mat-icon matSuffix>price_check</mat-icon>
-                  <input matInput [(ngModel)]="nuevoArticulo.precioInterno" name="precioInterno">
+                  <input matInput [(ngModel)]="nuevoArticulo.precioInterno" name="precioInterno"
+                  [formControl]="precioInternoFormControl" [errorStateMatcher]="matcher">
                 </mat-form-field>
               </td>
             </tr>
           </table>
         </div>
+        
         <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
           {{ mensajeExitoso }}
         </div>
-
-
         <div *ngIf="mensajeFallido" class="alert alert-danger mt-3">
           {{ mensajeFallido }}
         </div>
@@ -269,7 +285,8 @@
         <div *ngIf="this._id !== null">
           <mat-card-actions align="end">
             <button mat-icon-button matTooltip="Editar"
-              [disabled]="descripcionFormControl.invalid || marcaFormControl.invalid || referenciaFormControl.invalid || unidadMedidaFormControl.invalid || codigoUbicacionFormControl.invalid"
+              [disabled]="descripcionFormControl.invalid || marcaFormControl.invalid || referenciaFormControl.invalid || unidadMedidaFormControl.invalid || codigoUbicacionFormControl.invalid
+                        || stockFormControl.invalid || precioVentaFormControl.invalid || precioMayoreoFormControl.invalid || precioInternoFormControl.invalid"
               (click)="editarArticulo()">
               <mat-icon>save</mat-icon>
             </button>

@@ -34,9 +34,20 @@
         </mat-menu>
     </button>
 
-    <button mat-icon-button matTooltip="Ajustes">
-        <mat-icon>settings</mat-icon>
-    </button>
+  <button mat-icon-button [matMenuTriggerFor]="config" matTooltip="Ajustes">
+    <mat-icon>settings</mat-icon>
+    <mat-menu #config="matMenu">
+      <button mat-menu-item [matMenuTriggerFor]="caja">
+        <mat-icon>all_inbox</mat-icon>
+        <span>Caja</span>
+      </button>
+    </mat-menu>   
+    <mat-menu #caja="matMenu">
+      <button mat-menu-item routerLink="/registrarCaja">Registrar</button>
+      <button mat-menu-item routerLink="/buscarCaja">Buscar</button>
+      <button mat-menu-item routerLink="/administrarCaja">Administrar</button>
+    </mat-menu>
+  </button>
     <button mat-icon-button matTooltip={{this.tokenService.userName}}>
         <mat-icon>assignment_ind</mat-icon>
     </button>
@@ -89,7 +100,7 @@
             <mat-divider></mat-divider>
             <mat-expansion-panel [class.mat-elevation-z0]="true">
                 <mat-expansion-panel-header>
-                    <mat-icon>location_searching</mat-icon>
+                    <mat-icon>location_on</mat-icon>
                     <span> Ubicaciones</span>
                 </mat-expansion-panel-header>
                 <mat-nav-list>
