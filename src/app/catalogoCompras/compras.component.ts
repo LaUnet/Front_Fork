@@ -173,7 +173,7 @@ export class ComprasComponent {
       this.http.get<any>('https://p02--node-launet--m5lw8pzgzy2k.code.run/api/locations', httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceubicaciones = response.Data;
+            this.dataSourceubicaciones = response.Data.docs;
           }
           this.isLoadingResults = false;
         }, error => {
