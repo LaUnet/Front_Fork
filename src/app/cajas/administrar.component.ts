@@ -269,7 +269,7 @@ export class AdministrarCajaComponent {
               this.dataSourceMovimientos = response.Data[0].movimientos
               this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { tipo: any; }) => arr.tipo === this.salida))
               this.nuevaCaja.totalRetiros = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0);
-              this.dataSourceMovimientos = this.dataSourceCajas[0].movimientos
+              this.dataSourceMovimientos = response.Data[0].movimientos
 
             }
           }
