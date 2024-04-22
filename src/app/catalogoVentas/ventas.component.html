@@ -438,14 +438,14 @@
                         <td>
                             <span style="font-family: Impact;">Facturar Pedido</span>
                         </td>
-                        <mat-card-actions>
-                            <button mat-button type="button" matTooltip="Abrir Caja"
+                        <mat-card-actions align="end">
+                            <button *ngIf="this.tokenService.rolName" mat-button type="button" matTooltip="Abrir Caja"
                                 (click)="printerUtilsService.connectToPrinter(false, dataSourceSales)"
                                 style="font-family:Impact; width: 80%; margin-right: 15%; background-color: gainsboro;"
                                 color="basic">Abrir Caja
                                 <mat-icon>all_inbox</mat-icon>
-                            </button>
-                            <button mat-button type="button" matTooltip="Vaciar Ventas"
+                            </button>                      
+                            <button *ngIf="this.tokenService.rolName" mat-button type="button" matTooltip="Vaciar Ventas"
                                 (click)="cleanVentaVerificada()"
                                 style="font-family:Impact; width: 80%; margin-right: 15%; background-color: gainsboro;"
                                 color="basic">Vaciar Ventas 
