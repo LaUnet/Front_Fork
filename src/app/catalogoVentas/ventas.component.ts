@@ -277,6 +277,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
             this.consultaCliente.tipoDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoDocumento : "NO EXISTE"
             this.consultaCliente.numeroDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].numeroDocumento : null
             this.consultaCliente.email = this.dataSourceClientes !== null ? this.dataSourceClientes[0].email : null
+            this.consultaCliente.tipoCliente = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoCliente : null
           }
           this.isLoadingResults = false;
           //this.enviarImpresion();
