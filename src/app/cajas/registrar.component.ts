@@ -51,10 +51,10 @@ export class RegistrarCajaComponent {
   }
 
   async guardarCaja() {
-    //const url = `https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashiers`
-    const url = `http://localhost:3030/api/cashiers`
-    //const token = this.tokenService.token;
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMTkxMjk5NCwiZXhwIjoxNzExOTk5Mzk0fQ.eRKyw3ja99dvDJ_ibT4kBllNFK0ejnpnGy32rICYA_s";
+    const url = `https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashiers`
+    //const url = `http://localhost:3030/api/cashiers`
+    const token = this.tokenService.token;
+    //const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMjUwNTYxMCwiZXhwIjoxNzEyNTkyMDEwfQ.qdlwQKUZJ81BKpfGWEpBNnm2N_5l4g0yZo9GedqwJ7s";
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -110,8 +110,8 @@ export class RegistrarCajaComponent {
   async cargarEditarCaja() {
     if (this._id !== null) {
       this.tittleForm = "EDITAR CAJA";
-      //const token = this.tokenService.token;
-      const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMTkxMjk5NCwiZXhwIjoxNzExOTk5Mzk0fQ.eRKyw3ja99dvDJ_ibT4kBllNFK0ejnpnGy32rICYA_s";
+      const token = this.tokenService.token;
+      //const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMjUwNTYxMCwiZXhwIjoxNzEyNTkyMDEwfQ.qdlwQKUZJ81BKpfGWEpBNnm2N_5l4g0yZo9GedqwJ7s";
       const httpOptions = {
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
@@ -120,8 +120,8 @@ export class RegistrarCajaComponent {
       };
       this.isLoadingResults= true;
       try {
-        //this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashiers/${this._id}`, httpOptions)
-        this.http.get<any>(`http://localhost:3030/api/cashiers/${this._id}`, httpOptions)
+        this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashiers/${this._id}`, httpOptions)
+        //this.http.get<any>(`http://localhost:3030/api/cashiers/${this._id}`, httpOptions)
           .subscribe(response => {
             if (response.Status) {
               this.nuevaCaja.nombre = response.Data[0].nombre,
@@ -147,16 +147,16 @@ export class RegistrarCajaComponent {
   }
 
   async editarCaja() {
-    //const url = `https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashiers/${this._id}`
-    const url = `http://localhost:3030/api/cashiers/${this._id}`
+    const url = `https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashiers/${this._id}`
+    //const url = `http://localhost:3030/api/cashiers/${this._id}`
     const body = {
       nombre: this.nuevaCaja.nombre,
       ubicacion: this.nuevaCaja.ubicacion,
       tipoCaja: this.nuevaCaja.tipoCaja,
       estadoActivo: this.nuevaCaja.estadoActivo,
     };
-    //const token = this.tokenService.token;
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMTkxMjk5NCwiZXhwIjoxNzExOTk5Mzk0fQ.eRKyw3ja99dvDJ_ibT4kBllNFK0ejnpnGy32rICYA_s";
+    const token = this.tokenService.token;
+    //const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMjUwNTYxMCwiZXhwIjoxNzEyNTkyMDEwfQ.qdlwQKUZJ81BKpfGWEpBNnm2N_5l4g0yZo9GedqwJ7s";
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -169,7 +169,7 @@ export class RegistrarCajaComponent {
       this.isLoadingResults= false;
       this.mensajeExitoso = "Proveedor actualizado exitosamente"
       setTimeout(() => {
-        this.routerLinkBuscarCaja();
+        this.routerLinkBuscarCajaAbierta();
       }, 3000);
     } catch (error) {
       this.isLoadingResults= false;
@@ -191,7 +191,7 @@ export class RegistrarCajaComponent {
     this.router.navigate(['/login'])
   };
 
-  routerLinkBuscarCaja(): void {
+  routerLinkBuscarCajaAbierta(): void {
     this.router.navigate(['/buscarCaja'])
   };
 }

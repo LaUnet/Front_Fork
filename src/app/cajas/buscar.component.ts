@@ -31,14 +31,14 @@ export class BuscarCajaComponent {
 
 
   ngOnInit() {
-    this.buscarCaja();
+    this.buscarCajaAbierta();
   }
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
-  async buscarCaja() {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMTkxMjk5NCwiZXhwIjoxNzExOTk5Mzk0fQ.eRKyw3ja99dvDJ_ibT4kBllNFK0ejnpnGy32rICYA_s"
-    // const token = this.tokenService.token;
+  async buscarCajaAbierta() {
+    //const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMjUwNTYxMCwiZXhwIjoxNzEyNTkyMDEwfQ.qdlwQKUZJ81BKpfGWEpBNnm2N_5l4g0yZo9GedqwJ7s"
+    const token = this.tokenService.token;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -47,8 +47,8 @@ export class BuscarCajaComponent {
     };
     try {
       this.isLoadingResults = true;
-      //this.http.get<any>('https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashiers', httpOptions )
-      this.http.get<any>('http://localhost:3030/api/cashiers', httpOptions )
+      this.http.get<any>('https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashiers', httpOptions )
+      //this.http.get<any>('http://localhost:3030/api/cashiers', httpOptions )
       .subscribe(response => {
         if (response.Status) {
           this.dataSourceCajas = new MatTableDataSource(response.Data);
@@ -70,10 +70,10 @@ export class BuscarCajaComponent {
   }
 
   async borrar(id: string){
-    const url = `http://localhost:3030/api/cashiers/${id}`
-    //const url = `https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashiers/${id}`
-    //const token = this.tokenService.token;
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMTkxMjk5NCwiZXhwIjoxNzExOTk5Mzk0fQ.eRKyw3ja99dvDJ_ibT4kBllNFK0ejnpnGy32rICYA_s"
+    //const url = `http://localhost:3030/api/cashiers/${id}`
+    const url = `https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashiers/${id}`
+    const token = this.tokenService.token;
+    //const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMjUwNTYxMCwiZXhwIjoxNzEyNTkyMDEwfQ.qdlwQKUZJ81BKpfGWEpBNnm2N_5l4g0yZo9GedqwJ7s"
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',

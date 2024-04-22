@@ -58,27 +58,49 @@ mat-sidenav-container {
   }
 
   .mat-card-top {
-    width: 75%;
-    height: 240px;
+    margin-top: -40px;
+    width: auto;
+    height: 140px;
     opacity: 95%;
     background-color: white;
   }
+
+  .mat-card-left {
+    margin-top: 1px;
+    position: absolute;
+    width: 30%;
+    height: 682px;
+    margin-left: 0;
+    opacity: 95%;
+    background-color:aliceblue;
+  }
+  .mat-card-top-center {
+    margin-top: -25px;
+    width: 70%;
+    height: 140px;
+    margin-right: 0;
+    opacity: 95%;
+    background-color: white;
+  }
+
   
   .mat-card-center {
     margin-top: auto;
     position: relative;
-    width: 75%;
+    width: 70%;
     height: auto;
     overflow: auto;
-    max-height: 370px;
+    max-height: 375px;
+    margin-right: 0;
     opacity: 98%;
     background-color: aliceblue;
   }
   
   .mat-card-down {
     margin-top: -30px;
-    width: 75%;
+    width: 70%;
     height: auto;
+    margin-right: 0;
     opacity: 95%;
     background-color: white;
   }
@@ -93,11 +115,27 @@ mat-sidenav-container {
   }
 
   .buttonMatTable {
-    width: 30px;
-    height: 30px;
+    width: 540px;
+    height: 60px;
+  }
+
+  .textMatTable {
+    width: 540px;
   }
 
   .textArea {
     width: 150px;
     height: 20px;
+  }
+
+  .colorRowSal {
+    color: red;
+  }
+
+  .colorRowInt {
+    color: blue;
+  }
+
+  .colorRowEnt {
+    color: black;
   }

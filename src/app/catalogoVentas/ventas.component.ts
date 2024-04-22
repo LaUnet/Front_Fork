@@ -184,7 +184,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     }
     if (this.localStorageCashier) {
       this.localStorageService.setItem('cashier', this.localStorageCashier);
-      this.buscarCaja();
+      this.buscarCajaAbierta();
     }
     this.buscarCliente();
     this.buscarVentaVerificada(false);
@@ -204,11 +204,11 @@ export class VentasComponent implements AfterViewInit, OnInit {
     }, 500);
   }
 
-  async buscarCaja() {
+  async buscarCajaAbierta() {
     this.startDate = new Date(year, month, day);
     this.endDate = new Date(year, month, day + 1);
-    //const token = this.tokenService.token;
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMTc1MTk5NywiZXhwIjoxNzExODM4Mzk3fQ.ofi_91n-PGP50bUAoXUWga26suD97WX9W9Uyy24u3Vc"
+    const token = this.tokenService.token;
+    //const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMTc1MTk5NywiZXhwIjoxNzExODM4Mzk3fQ.ofi_91n-PGP50bUAoXUWga26suD97WX9W9Uyy24u3Vc"
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -220,7 +220,8 @@ export class VentasComponent implements AfterViewInit, OnInit {
       let httpParams = new HttpParams();
       httpParams = httpParams.append('startDate', this.startDate);
       httpParams = httpParams.append('endDate', this.endDate);
-      this.http.get<any>(`http://localhost:3030/api/cashierMovements?${httpParams}`, httpOptions)
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashierMovements?${httpParams}`, httpOptions)
+      //this.http.get<any>(`http://localhost:3030/api/cashierMovements?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceCajas = response.Data.filter(((arr: { estadoActivo: any; }) => arr.estadoActivo === true))

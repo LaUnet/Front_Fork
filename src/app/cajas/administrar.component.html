@@ -148,13 +148,13 @@
             <mat-progress-spinner color="primary" mode="indeterminate">
             </mat-progress-spinner>
         </div>
-        <!-- Contenido Registrar Compra-->
+        <!-- Campos Consulta-->
         <mat-card class="mat-card-top">
             <form class="form">
                 <table class="full-width" cellspacing="0">
                     <tr>
                         <td>
-                            <span style="font-family: Impact">Detalle y Operaciones Cajas Abiertas</span>
+                            <span style="font-family: Impact">Seleccionar Caja</span>
                         </td>
                         <mat-card-actions align="end">
                             <button type="button" mat-mini-fab matTooltip="Registrar Caja" color="basic"
@@ -169,6 +169,12 @@
                     <tr>
                         <div align="start">
                             <td>
+                                <button mat-raised-button color="primary" class="buttonMatTable" type="button"
+                                    [disabled]="openDisabled">
+                                    Abrir Caja
+                                </button>
+                            </td>
+                            <td>
                                 <mat-form-field class="full-width" appearance="outline">
                                     <mat-label>Nombre Caja</mat-label>
                                     <mat-icon matSuffix color="primary">all_inbox</mat-icon>
@@ -180,6 +186,15 @@
                                     </mat-select>
                                 </mat-form-field>
                             </td>
+                            <td><mat-form-field class="full-width" appearance="outline">
+                                    <mat-label>Ubicación Caja</mat-label>
+                                    <mat-icon matSuffix>screen_search_desktop</mat-icon>
+                                    <mat-select [(ngModel)]="nuevaCaja.ubicacionCaja" name="ubicacionCaja" disabled>
+                                        <mat-option *ngFor="let ubicacion of ubicaciones" [value]="ubicacion.codigo">
+                                            {{ ubicacion.codigo }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field></td>
                             <td> <mat-form-field class="full-width" appearance="outline">
                                     <mat-label>Tipo Caja</mat-label>
                                     <mat-icon matSuffix>list</mat-icon>
@@ -191,70 +206,204 @@
                                     </mat-select>
                                 </mat-form-field></td>
                             <td>
-                                <mat-form-field class="full-width" appearance="outline">
-                                    <mat-label>Rango Movimientos</mat-label>
-                                    <mat-date-range-input [formGroup]="fechaInicial" [rangePicker]="rangePicker"
-                                        [comparisonStart]="fechaInicial.value.start"
-                                        [comparisonEnd]="fechaInicial.value.end" style="font-size: 100%;">
-                                        <input matStartDate placeholder="Start Date" formControlName="start"
-                                            (dateInput)="addEvent('Start', $event)" [(ngModel)]="fieldStartDate">
-                                        <input matEndDate placeholder="End Date" formControlName="end"
-                                            (dateInput)="addEvent('End', $event)" [(ngModel)]="fieldEndDate">
-                                    </mat-date-range-input>
-                                    <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
-                                    <mat-date-range-picker #rangePicker>
-                                        <mat-date-range-picker-actions>
-                                            <button mat-button matDateRangePickerCancel
-                                                (click)="applyClear()">Cancel</button>
-                                            <button mat-raised-button color="primary" matDateRangePickerApply
-                                                (click)="applyFilter()">Apply</button>
-                                        </mat-date-range-picker-actions>
-                                    </mat-date-range-picker>
-                                </mat-form-field>
+                                <button mat-raised-button color="primary" class="buttonMatTable" type="button"
+                                    [disabled]="!openDisabled"
+                                    (click)="mostrarDialogo('Seguro requieres Cerrar Caja?', 3, '', 0)">
+                                    Cerrar Caja
+                                </button>
                             </td>
                         </div>
                     </tr>
                 </table>
-                <table class="full-width" cellspacing="0" style="margin-top: 10px;">
-                    <tr>
-                        <div align="start">
-                            <td>
-                                <mat-form-field class="full-width" appearance="outline">
-                                    <mat-label>Tipo Movimiento</mat-label>
-                                    <mat-icon matSuffix color="primary">import_export</mat-icon>
-                                    <mat-select [(ngModel)]="nuevaCaja.tipoMovimiento" name="tipoMovimiento">
-                                        <mat-option style="color: blue;" value="ENT">Ingreso</mat-option>
-                                        <mat-option style="color: red;" value="SAL">Egreso</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </td>
-                            <td> <mat-form-field class="full-width" appearance="outline">
-                                    <mat-label>Razon Movimiento</mat-label>
-                                    <mat-icon matSuffix>list</mat-icon>
-                                    <mat-select [(ngModel)]="nuevaCaja.razonMovimiento" name="razonMovimiento">
-                                        <mat-option value="ADM">Administrativo</mat-option>
-                                    </mat-select>
-                                </mat-form-field></td>
-                            <td>
-                                <mat-form-field class="full-width" appearance="outline">
-                                    <mat-label>Valor Movimiento</mat-label>
-                                    <mat-icon matSuffix>attach_money</mat-icon>
-                                    <input matInput [(ngModel)]="nuevaCaja.valorMovimiento"
-                                    name="valorMovimiento" [errorStateMatcher]="matcher">
-                                </mat-form-field></td>
-                                <td>
-                                <mat-form-field class="full-width" appearance="outline">
-                                    <mat-label>Observacion</mat-label>
-                                    <mat-icon matSuffix>speaker_notes</mat-icon>
-                                    <input matInput [(ngModel)]="nuevaCaja.observacionMovimiento"
-                                    name="observacionMovimiento" [errorStateMatcher]="matcher">
-                                </mat-form-field></td>
-                        </div>
-                    </tr>
-                </table>
+
             </form>
         </mat-card>
-        <!-- Contenido Ingresar movimientos a la compra-->
+        <!-- Realizar movimientos -->
+        <mat-card class="mat-card-left">
+            <form class="form">
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <span style="font-family: Impact">Realizar Operaciones</span>
+                        </td>
+                    </tr>
+                </table>
+                <!-- 
+                <mat-divider style="color:blueviolet; size: 2cap;"></mat-divider>
+                -->
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Tipo Movimiento</mat-label>
+                                <mat-icon matSuffix color="primary">import_export</mat-icon>
+                                <mat-select [(ngModel)]="nuevaCaja.tipoMovimiento" name="tipoMovimiento"
+                                    [formControl]="tipoMovimientoFormControl" [errorStateMatcher]="matcher">
+                                    <mat-option style="color: blue;" value="ENT">ENTRADA</mat-option>
+                                    <mat-option style="color: red;" value="SAL">SALIDA</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                        <td> <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Razon Movimiento</mat-label>
+                                <mat-icon matSuffix>list</mat-icon>
+                                <mat-select [(ngModel)]="nuevaCaja.razonMovimiento" name="razonMovimiento"
+                                    [formControl]="razonMovimientoFormControl" [errorStateMatcher]="matcher">
+                                    <mat-option value="ADM">Administrativo</mat-option>
+                                </mat-select>
+                            </mat-form-field></td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <mat-form-field class="textMatTable" appearance="outline">
+                            <mat-label>Metodo Movimiento</mat-label>
+                            <mat-icon matSuffix>currency_exchange</mat-icon>
+                            <mat-select [(ngModel)]="nuevaCaja.metodoPagoMovimiento" name="metodoPagoMovimiento"
+                            [formControl]="metodoPagoMovimientoFormControl" [errorStateMatcher]="matcher"
+                            (valueChange)="changeList($event)">
+                                <mat-option disabled>Selecciona una opcíon</mat-option>
+                                <mat-option value="EFECTIVO" selected>Efectivo</mat-option>
+                                <mat-option value="TRANSFERENCIA">Transferencia</mat-option>
+                                <mat-option value="MIXTO">Mixto</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </tr>
+                </table>
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Efectivo</mat-label>
+                                <mat-icon matSuffix>monetization_on</mat-icon>
+                                <input type="text" matInput style="font-weight:bold" [(ngModel)]="nuevaCaja.efectivoMovimiento"
+                                    name="efectivoMovimiento" currencyMask [options]="{prefix: '', thousands:',', precision: 0}"
+                                    #valor (keyup)="onEnter()"
+                                    [disabled]="nuevaCaja.metodoPagoMovimiento === 'TRANSFERENCIA'? true:false">
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Transferencia</mat-label>
+                                <mat-icon matSuffix>send_to_mobile</mat-icon>
+                                <input type="text" matInput style="font-weight:bold"
+                                    [(ngModel)]="nuevaCaja.transferenciaMovimiento" name="transferenciaMovimiento" currencyMask
+                                    [options]="{prefix: '', thousands:',', precision: 0}"
+                                    #valor (keyup)="onEnter()"
+                                    [disabled]="nuevaCaja.metodoPagoMovimiento === 'EFECTIVO'? true:false">
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <mat-form-field class="textMatTable" appearance="outline">
+                                <mat-label>Total Movimiento</mat-label>
+                                <mat-icon matSuffix>attach_money</mat-icon>
+                                <input matInput style="font-weight:bold" [(ngModel)]="nuevaCaja.valorMovimiento" 
+                                [formControl]="valorMovimientoFormControl" name="valorMovimiento" currencyMask
+                                [options]="{prefix: '', thousands:',', precision: 0}"
+                                [errorStateMatcher]="matcher" readonly="true">
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+                <table class="full-width" cellspacing="0">
+                    <tr> 
+                        <td>
+                            <mat-form-field class="textMatTable" appearance="outline">
+                                <mat-label>Observacion</mat-label>
+                                <mat-icon matSuffix>speaker_notes</mat-icon>
+                                <input matInput [(ngModel)]="nuevaCaja.observacionMovimiento"
+                                    name="observacionMovimiento" [formControl]="observacionFormControl"
+                                    [errorStateMatcher]="matcher">
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <button mat-raised-button color="primary" class="buttonMatTable" type="button" (click)="applyMovement()"
+                            [disabled]="tipoMovimientoFormControl.invalid || razonMovimientoFormControl.invalid || metodoPagoMovimientoFormControl.invalid 
+                            || valorMovimientoFormControl.invalid || observacionFormControl.invalid">
+                            Realizar Movimiento
+                        </button>
+                    </tr>
+                </table>
+                <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
+                    {{ mensajeExitoso }}
+                </div>
+                <div *ngIf="mensajeFallido" class="alert alert-danger mt-3">
+                    {{ mensajeFallido }}
+                </div>
+            </form>
+        </mat-card>
+        <!-- Campos Consulta-->
+        <mat-card class="mat-card-top-center">
+            <form class="form">
+                <table class="full-width" cellspacing="0">
+                    <tr>
+                        <td>
+                            <span class="mat-card-titulo" style="font-family: Impact">Detalle Movimientos</span>
+                        </td>
+                        <mat-card-actions align="end">
+                            <button type="button" mat-mini-fab matTooltip="Registrar Caja" color="basic" disabled
+                                style="opacity: 0%;">
+                                <mat-icon>all_inbox</mat-icon>
+                            </button>
+                        </mat-card-actions>
+                    </tr>
+                </table>
+                <!--
+                <mat-divider style="color:blueviolet; size: 2cap;"></mat-divider>
+                -->
+                <table class="full-width" cellspacing="0" style="margin-top: -10px;">
+                    <tr>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Nombre Caja</mat-label>
+                                <mat-icon matSuffix color="primary">all_inbox</mat-icon>
+                                <mat-select [(ngModel)]="nuevaCaja.nombre" name="nombre"
+                                    [formControl]="nombreFormControl" [errorStateMatcher]="matcher">
+                                    <mat-option *ngFor="let cajas of dataSourceCajas" [value]="nuevaCaja.nombre">
+                                        {{ cajas.nombreCaja }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                        <td> <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Tipo Caja</mat-label>
+                                <mat-icon matSuffix>list</mat-icon>
+                                <mat-select [(ngModel)]="nuevaCaja.tipoCaja" name="tipoCaja" #fontSize
+                                    [value]="nuevaCaja.tipoCaja" disabled>
+                                    <mat-option value="PDV">Punto de Venta</mat-option>
+                                    <mat-option value="ADM">Administrativa</mat-option>
+                                    <mat-option value="OTR">OTRA</mat-option>
+                                </mat-select>
+                            </mat-form-field></td>
+                        <td>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label>Rango Movimientos</mat-label>
+                                <input matInput [matDatepicker]="datepicker" [formControl]="fieldStartDateFormControl"
+                                    (dateInput)="addEvent($event)">
+                                <mat-hint>MM/DD/YYYY</mat-hint>
+                                <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+                                <mat-datepicker #datepicker>
+                                    <mat-datepicker-actions>
+                                        <button mat-button matDatepickerCancel (click)="applyClear()">Reset</button>
+                                        <button mat-raised-button color="primary" matDatepickerApply
+                                            (click)="applyFilter()">Apply</button>
+                                    </mat-datepicker-actions>
+                                </mat-datepicker>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </table>
+
+            </form>
+        </mat-card>
+        <!-- Detalle Movimientos-->
         <mat-card class="mat-card-center">
             <div class="mat-elevation-z8">
                 <table mat-table #myTable [dataSource]="dataSourceMovimientos" cellspacing="0">
@@ -262,53 +411,176 @@
                         <th style="font-family: Impact; background-color:gainsboro; width: 0%; " mat-header-cell
                             *matHeaderCellDef>
                             No </th>
-                        <td mat-cell *matCellDef="let movimientos;let i = index"> {{i+1}} </td>
+                        <td mat-cell *matCellDef="let movimientos;let i = index">
+                            <div *ngIf="movimientos.tipo === salida" class="colorRowSal">
+                                {{i+1}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon === ventaInterna"
+                                class="colorRowInt">
+                                {{i+1}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon !== ventaInterna"
+                                class="colorRowEnt">
+                                {{i+1}}
+                            </div>
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="tipo">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell
+                        <th style="font-family: Impact; background-color:gainsboro; width: 10%;" mat-header-cell
                             *matHeaderCellDef>
-                            Tipo Movimiento </th>
-                        <td mat-cell *matCellDef="let movimientos"> {{movimientos.tipo}} </td>
+                            Tipo Mov </th>
+                        <td mat-cell *matCellDef="let movimientos">
+                            <div *ngIf="movimientos.tipo === salida" class="colorRowSal">
+                                {{movimientos.tipo}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon === ventaInterna"
+                                class="colorRowInt">
+                                {{movimientos.tipo}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon !== ventaInterna"
+                                class="colorRowEnt">
+                                {{movimientos.tipo}}
+                            </div>
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="razon">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell
+                        <th style="font-family: Impact; background-color:gainsboro; width: 10%;" mat-header-cell
                             *matHeaderCellDef>
-                            Razon Movimiento </th>
+                            Razon Mov </th>
                         <td mat-cell *matCellDef="let movimientos">
-                            {{movimientos.razon}}
+                            <div *ngIf="movimientos.tipo === salida" class="colorRowSal">
+                                {{movimientos.razon}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon === ventaInterna"
+                                class="colorRowInt">
+                                {{movimientos.razon}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon !== ventaInterna"
+                                class="colorRowEnt">
+                                {{movimientos.razon}}
+                            </div>
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="fecha">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell
+                        <th style="font-family: Impact; background-color:gainsboro; width: 12%;" mat-header-cell
                             *matHeaderCellDef>
                             Fecha Movimiento</th>
-                        <td mat-cell *matCellDef="let movimientos"> {{movimientos.fecha}}</td>
+                        <td mat-cell *matCellDef="let movimientos">
+                            <div *ngIf="movimientos.tipo === salida" class="colorRowSal">
+                                {{movimientos.fecha | date}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon === ventaInterna"
+                                class="colorRowInt">
+                                {{movimientos.fecha | date}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon !== ventaInterna"
+                                class="colorRowEnt">
+                                {{movimientos.fecha | date}}
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="efectivo">
+                        <th style="font-family: Impact; background-color:gainsboro; width: 12%;" mat-header-cell
+                            *matHeaderCellDef>
+                            V Efectivo</th>
+                        <td mat-cell *matCellDef="let movimientos">
+                            <div *ngIf="movimientos.tipo === salida" class="colorRowSal">
+                                {{movimientos.valorEfectivo | currency :
+                                'USD' : 'symbol' : '1.0-0'}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon === ventaInterna"
+                                class="colorRowInt">
+                                {{movimientos.valorEfectivo | currency :
+                                'USD' : 'symbol' : '1.0-0'}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon !== ventaInterna"
+                                class="colorRowEnt">
+                                {{movimientos.valorEfectivo | currency :
+                                'USD' : 'symbol' : '1.0-0'}}
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="transferencia">
+                        <th style="font-family: Impact; background-color:gainsboro; width: 12%;" mat-header-cell
+                            *matHeaderCellDef>
+                            V Transferencia</th>
+                        <td mat-cell *matCellDef="let movimientos">
+                            <div *ngIf="movimientos.tipo === salida" class="colorRowSal">
+                                {{movimientos.valorTransferencia | currency :
+                                'USD' : 'symbol' : '1.0-0'}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon === ventaInterna"
+                                class="colorRowInt">
+                                {{movimientos.valorTransferencia | currency :
+                                'USD' : 'symbol' : '1.0-0'}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon !== ventaInterna"
+                                class="colorRowEnt">
+                                {{movimientos.valorTransferencia | currency :
+                                'USD' : 'symbol' : '1.0-0'}}
+                            </div>
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="valor">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell
+                        <th style="font-family: Impact; background-color:gainsboro; width: 12%;" mat-header-cell
                             *matHeaderCellDef>
-                            Valor </th>
-                        <td mat-cell *matCellDef="let movimientos"> {{movimientos.valor | currency :
-                            'USD' : 'symbol' : '1.0-0'}} </td>
+                            Valor Total</th>
+                        <td mat-cell *matCellDef="let movimientos">
+                            <div *ngIf="movimientos.tipo === salida" class="colorRowSal">
+                                {{movimientos.valorTotal | currency :'USD' : 'symbol' : '1.0-0'}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon === ventaInterna"
+                                class="colorRowInt">
+                                {{movimientos.valorTotal | currency :'USD' : 'symbol' : '1.0-0'}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon !== ventaInterna"
+                                class="colorRowEnt">
+                                {{movimientos.valorTotal | currency :'USD' : 'symbol' : '1.0-0'}}
+                            </div>
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="user">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell
+                        <th style="font-family: Impact; background-color:gainsboro; width: 12%;" mat-header-cell
                             *matHeaderCellDef>
                             Usuario </th>
-                        <td mat-cell *matCellDef="let movimientos"> {{movimientos.user}} </td>
+                        <td mat-cell *matCellDef="let movimientos">
+                            <div *ngIf="movimientos.tipo === salida" class="colorRowSal">
+                                {{movimientos.user}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon === ventaInterna"
+                                class="colorRowInt">
+                                {{movimientos.user}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon !== ventaInterna"
+                                class="colorRowEnt">
+                                {{movimientos.user}}
+                            </div>
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="observacion">
-                        <th style="font-family: Impact; background-color:gainsboro" mat-header-cell
+                        <th style="font-family: Impact; background-color:gainsboro; width: 20%;" mat-header-cell
                             *matHeaderCellDef>
                             Observacion </th>
-                        <td mat-cell *matCellDef="let movimientos"> {{movimientos.observacion}} </td>
+                        <td mat-cell *matCellDef="let movimientos">
+                            <div *ngIf="movimientos.tipo === salida" class="colorRowSal">
+                                {{movimientos.observacion}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon === ventaInterna"
+                                class="colorRowInt">
+                                {{movimientos.observacion}}
+                            </div>
+                            <div *ngIf="movimientos.tipo === entrada && movimientos.razon !== ventaInterna"
+                                class="colorRowEnt">
+                                {{movimientos.observacion}}
+                            </div>
+                        </td>
                     </ng-container>
                     <tr mat-header-row *matHeaderRowDef="columnas"></tr>
                     <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
                 </table>
             </div>
         </mat-card>
-        <!-- Contenido resumen de la compra-->
+        <!-- Contenido resumen Movimientos-->
         <mat-card class="mat-card-down">
             <form class="form">
                 <table class="full-width" cellspacing="0">
@@ -332,44 +604,51 @@
                                 <mat-form-field class="full-width" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bold">Base Apertura</mat-label>
                                     <mat-icon matSuffix>monetization_on</mat-icon>
-                                    <input matInput name="baseApertura" [errorStateMatcher]="matcher" type="number"
-                                        disabled>
-                                    <span matTextSuffix>{{
-                                        nuevaCaja.baseApertura | currency :
-                                        'USD' : 'symbol' : '1.0-0'}}</span>
+                                    <input matInput name="baseApertura" [errorStateMatcher]="matcher" type="text"
+                                        [ngModel]="nuevaCaja.baseApertura | currency : 'USD' : 'symbol' : '1.0-0'"
+                                        disabled style="font-weight:bold">
                                 </mat-form-field>
                             </td>
                             <td>
                                 <mat-form-field class="full-width" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bold">Consumo Interno</mat-label>
                                     <mat-icon matSuffix>money_off</mat-icon>
-                                    <input matInput name="consumoInterno" [errorStateMatcher]="matcher" type="number"
-                                        matInput disabled>
-                                    <span matTextSuffix>{{nuevaCaja.consumoInterno | currency : 'USD' : 'symbol'
-                                        : '1.0-0'}}</span>
+                                    <input matInput name="consumoInterno" [errorStateMatcher]="matcher" type="text"
+                                        [ngModel]="nuevaCaja.consumoInterno | currency : 'USD' : 'symbol' : '1.0-0'"
+                                        disabled style="font-weight:bold">
                                 </mat-form-field>
                             </td>
                             <td>
-                                <mat-form-field class="full-width" appearance="outline"
-                                    cellspacing="0">
+                                <mat-form-field class="full-width" appearance="outline" cellspacing="0">
+                                    <mat-label style="font-weight:bold">Efectivo</mat-label>
+                                    <mat-icon matSuffix>money</mat-icon>
+                                    <input matInput name="totalEfectivo" [errorStateMatcher]="matcher" type="text"
+                                        [ngModel]="nuevaCaja.totalEfectivo | currency : 'USD' : 'symbol' : '1.0-0'"
+                                        disabled style="font-weight:bold">
+                                </mat-form-field>
+                            </td>
+                            <td>
+                                <mat-form-field class="full-width" appearance="outline" cellspacing="0">
+                                    <mat-label style="font-weight:bold">Transferencia</mat-label>
+                                    <mat-icon matSuffix>mobile_screen_share</mat-icon>
+                                    <input matInput name="totalTransferencia" [errorStateMatcher]="matcher" type="text"
+                                        [ngModel]="nuevaCaja.totalTransferencia | currency : 'USD' : 'symbol' : '1.0-0'"
+                                        disabled style="font-weight:bold">
+                                </mat-form-field>
+                            </td>
+                            <td>
+                                <mat-form-field class="full-width" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bolder; color: rgb(39, 39, 110);">Total</mat-label>
                                     <mat-icon matSuffix>summarize</mat-icon>
-                                    <input matInput name="total" [errorStateMatcher]="matcher" type="number"
-                                        matInput disabled>
-                                    <span matTextSuffix>{{nuevaCaja.total | currency : 'USD' : 'symbol'
-                                        : '1.0-0'}}</span>
+                                    <input matInput name="total" [errorStateMatcher]="matcher" type="text"
+                                        [ngModel]="nuevaCaja.total | currency : 'USD' : 'symbol' : '1.0-0'" disabled
+                                        style="font-weight:bold">
                                 </mat-form-field>
                             </td>
                         </div>
                     </tr>
                 </table>
             </form>
-            <div *ngIf="mensajeExitoso" class="alert alert-success mt-3">
-                {{ mensajeExitoso }}
-            </div>
-            <div *ngIf="mensajeFallido" class="alert alert-danger mt-3">
-                {{ mensajeFallido }}
-            </div>
         </mat-card>
         <img src="../../assets/PuntoU.jpg" class="img-fluid"
             style="position: absolute; top: 0; z-index: -100; width: 100%; min-height:min-content; max-height: max-content;">
