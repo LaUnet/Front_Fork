@@ -19,10 +19,9 @@ import { PrinterUtilsService } from '../printerUtils.service';
 import { CurrencyPipe } from '@angular/common';
 
 /** Setear fechas */
-const today = new Date();
-const month = today.getMonth();
-const year = today.getFullYear();
-const day = today.getDate();
+const month = new Date().getMonth();
+const year = new Date().getFullYear();
+const day = new Date().getDate();
 
 @Component({
   selector: 'app-ventas',
@@ -184,6 +183,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     }
     if (this.localStorageCashier) {
       this.localStorageService.setItem('cashier', this.localStorageCashier);
+    }else{
       this.buscarCajaAbierta();
     }
     this.buscarCliente();
@@ -391,6 +391,11 @@ export class VentasComponent implements AfterViewInit, OnInit {
 
   mostrarMetodoPagoCarItem(element: any = []): void {
     //Cargamos el Json Principal sin detalle Articulos
+    this.localStorageCashier = this.localStorageService.getItem('cashier');
+    if (!this.localStorageCashier) {
+      this.buscarCajaAbierta();
+    }
+    
     this.dataSourceSales =
     {
       "numeroFactura": new Date().getTime(),
@@ -414,6 +419,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
       "facturacionElectronica": "",
       "vendedor": "",
       "imprimirFactura": "",
+      "idCaja": this.localStorageService.getItem('cashier'),
       "ventaVerificada": this.tokenService.rolName ? true : false
     }
     this.dialogo
