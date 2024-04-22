@@ -13,8 +13,10 @@ import { LocalStorageService } from '../local-storage.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
+import { PrinterUtilsService } from '../printerUtils.service';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { TableUtilsService } from '../tableUtils.service';
 
 /** Setear fechas */
 //const today = new Date();
@@ -33,7 +35,7 @@ export class AdministrarCajaComponent {
 
   constructor(private router: Router, private http: HttpClient, public tokenService: TokenService, public dialogo: MatDialog,
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService,
-    @Inject(MAT_DATE_LOCALE) private _locale: string,) { }
+    @Inject(MAT_DATE_LOCALE) private _locale: string, public printerUtilsService: PrinterUtilsService, public tableUtilsService: TableUtilsService) { }
 
 
   columnas: string[] = ['No', 'tipo', 'razon', 'fecha', 'efectivo', 'transferencia', 'valor', 'user', 'observacion'];
@@ -92,6 +94,7 @@ export class AdministrarCajaComponent {
     consumoInterno: '',
     totalEFectivo: '',
     totalTransferencia: '',
+    totalRetiros:'',
     total: '',
     tipo: '',
     razon: '',
@@ -175,6 +178,10 @@ export class AdministrarCajaComponent {
                 this.nuevaCaja.totalEfectivo = this.dataSourceMovimientos.map((t: { valorEfectivo: string | number; }) => +t.valorEfectivo).reduce((acc: any, value: any) => acc + value, 0) ;
                 this.nuevaCaja.totalTransferencia = this.dataSourceMovimientos.map((t: { valorTransferencia: string | number; }) => +t.valorTransferencia).reduce((acc: any, value: any) => acc + value, 0);
                 this.dataSourceMovimientos = this.dataSourceCajas[0].movimientos
+                this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { tipo: any; }) => arr.tipo === this.salida))
+                this.nuevaCaja.totalRetiros = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0);
+                this.dataSourceMovimientos = this.dataSourceCajas[0].movimientos
+
               }
               return;
             default:
@@ -260,6 +267,10 @@ export class AdministrarCajaComponent {
               this.nuevaCaja.totalEfectivo = this.dataSourceMovimientos.map((t: { valorEfectivo: string | number; }) => +t.valorEfectivo).reduce((acc: any, value: any) => acc + value, 0);
               this.nuevaCaja.totalTransferencia = this.dataSourceMovimientos.map((t: { valorTransferencia: string | number; }) => +t.valorTransferencia).reduce((acc: any, value: any) => acc + value, 0);
               this.dataSourceMovimientos = response.Data[0].movimientos
+              this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { tipo: any; }) => arr.tipo === this.salida))
+              this.nuevaCaja.totalRetiros = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0);
+              this.dataSourceMovimientos = this.dataSourceCajas[0].movimientos
+
             }
           }
           this.isLoadingResults = false;
@@ -388,6 +399,7 @@ export class AdministrarCajaComponent {
       const response = await this.http.patch(url, body, httpOptions).toPromise();
       this.isLoadingResults = false;
       this.mensajeExitoso = "Movimiento registrado exitosamente"
+      this.printerUtilsService.connectToPrinter(false, body)
       setTimeout(() => {
         this.applyClear();
       }, 500);

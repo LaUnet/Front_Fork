@@ -41,7 +41,7 @@ export class TableUtilsService {
       })
     };
 
-    if (name === 'ReporteDetalleArticulos') {
+    if (name === 'ReporteDetalleArticulos' || name === 'ReporteCaja') {
       filter = arr;
       /**
       filter = arr.map((x) => {

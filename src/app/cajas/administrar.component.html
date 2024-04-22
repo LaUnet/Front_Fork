@@ -589,7 +589,7 @@
                             <span style="font-family: Impact">Resumen Movimientos</span>
                         </td>
                         <mat-card-actions align="end">
-                            <button type="button" mat-mini-fab matTooltip="Exportar" color="basic">
+                            <button type="button" mat-mini-fab matTooltip="Exportar" color="basic" (click)="tableUtilsService.exportToExcel(dataSourceMovimientos,'ReporteCaja')">
                                 <mat-icon>import_export</mat-icon>
                             </button>
                         </mat-card-actions>
@@ -601,48 +601,57 @@
                     <tr>
                         <div align="start">
                             <td>
-                                <mat-form-field class="full-width" appearance="outline" cellspacing="0">
+                                <mat-form-field class="textSummary" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bold">Base Apertura</mat-label>
                                     <mat-icon matSuffix>monetization_on</mat-icon>
                                     <input matInput name="baseApertura" [errorStateMatcher]="matcher" type="text"
                                         [ngModel]="nuevaCaja.baseApertura | currency : 'USD' : 'symbol' : '1.0-0'"
-                                        disabled style="font-weight:bold">
+                                        disabled style="font-weight:bold; color: black;">
                                 </mat-form-field>
                             </td>
                             <td>
-                                <mat-form-field class="full-width" appearance="outline" cellspacing="0">
+                                <mat-form-field class="textSummary" appearance="outline" cellspacing="0">
+                                    <mat-label style="font-weight:bold">Total Retiros</mat-label>
+                                    <mat-icon matSuffix>money_off</mat-icon>
+                                    <input matInput name="totalRetiros" [errorStateMatcher]="matcher" type="text"
+                                        [ngModel]="nuevaCaja.totalRetiros | currency : 'USD' : 'symbol' : '1.0-0'"
+                                        disabled style="font-weight:bold; color: red;">
+                                </mat-form-field>
+                            </td>
+                            <td>
+                                <mat-form-field class="textSummary" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bold">Consumo Interno</mat-label>
                                     <mat-icon matSuffix>money_off</mat-icon>
                                     <input matInput name="consumoInterno" [errorStateMatcher]="matcher" type="text"
                                         [ngModel]="nuevaCaja.consumoInterno | currency : 'USD' : 'symbol' : '1.0-0'"
-                                        disabled style="font-weight:bold">
+                                        disabled style="font-weight:bold; color: blue;">
                                 </mat-form-field>
                             </td>
                             <td>
-                                <mat-form-field class="full-width" appearance="outline" cellspacing="0">
+                                <mat-form-field class="textSummary" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bold">Efectivo</mat-label>
                                     <mat-icon matSuffix>money</mat-icon>
                                     <input matInput name="totalEfectivo" [errorStateMatcher]="matcher" type="text"
                                         [ngModel]="nuevaCaja.totalEfectivo | currency : 'USD' : 'symbol' : '1.0-0'"
-                                        disabled style="font-weight:bold">
+                                        disabled style="font-weight:bold; color: black;">
                                 </mat-form-field>
                             </td>
                             <td>
-                                <mat-form-field class="full-width" appearance="outline" cellspacing="0">
+                                <mat-form-field class="textSummary" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bold">Transferencia</mat-label>
                                     <mat-icon matSuffix>mobile_screen_share</mat-icon>
                                     <input matInput name="totalTransferencia" [errorStateMatcher]="matcher" type="text"
                                         [ngModel]="nuevaCaja.totalTransferencia | currency : 'USD' : 'symbol' : '1.0-0'"
-                                        disabled style="font-weight:bold">
+                                        disabled style="font-weight:bold; color: black;">
                                 </mat-form-field>
                             </td>
                             <td>
-                                <mat-form-field class="full-width" appearance="outline" cellspacing="0">
+                                <mat-form-field class="textSummary" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bolder; color: rgb(39, 39, 110);">Total</mat-label>
                                     <mat-icon matSuffix>summarize</mat-icon>
                                     <input matInput name="total" [errorStateMatcher]="matcher" type="text"
                                         [ngModel]="nuevaCaja.total | currency : 'USD' : 'symbol' : '1.0-0'" disabled
-                                        style="font-weight:bold">
+                                        style="font-weight:bold; color: black;">
                                 </mat-form-field>
                             </td>
                         </div>
