@@ -395,7 +395,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     if (!this.localStorageCashier) {
       this.buscarCajaAbierta();
     }
-    
+
     this.dataSourceSales =
     {
       "numeroFactura": new Date().getTime(),
@@ -791,8 +791,32 @@ export class VentasComponent implements AfterViewInit, OnInit {
       this.mensajeFallido = 'Error al editar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
-
     this.isLoadingResults = false;
+  }
+
+  async cleanVentaVerificada() {
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`
+      })
+    };
+    this.isLoadingResults = true;
+    for (let i = 0; i < this.dataSourceViewVerify.length; i++) {
+        try {
+          const body = {
+            ventaVerificada: true
+          };
+          const url = `https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales/${this.dataSourceViewVerify[i]._id}`
+          const response = await this.http.patch(url, body, httpOptions).toPromise();
+        } catch (error) {
+          this.mensajeFallido = 'Error al editar. Por favor, revisar la consola de Errores.';
+          console.error('Error en la solicitud:', error);
+        }
+    }
+    this.isLoadingResults = false;
+    this.buscarVentaVerificada(false);
   }
 };
 

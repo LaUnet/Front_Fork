@@ -39,20 +39,20 @@
             </div>
         </button>
     </div>
-  <button mat-icon-button [matMenuTriggerFor]="config" matTooltip="Ajustes">
-    <mat-icon>settings</mat-icon>
-    <mat-menu #config="matMenu">
-      <button mat-menu-item [matMenuTriggerFor]="caja">
-        <mat-icon>all_inbox</mat-icon>
-        <span>Caja</span>
-      </button>
-    </mat-menu>   
-    <mat-menu #caja="matMenu">
-      <button mat-menu-item routerLink="/registrarCaja">Registrar</button>
-      <button mat-menu-item routerLink="/buscarCaja">Buscar</button>
-      <button mat-menu-item routerLink="/administrarCaja">Administrar</button>
-    </mat-menu>
-  </button>
+    <button mat-icon-button [matMenuTriggerFor]="config" matTooltip="Ajustes">
+        <mat-icon>settings</mat-icon>
+        <mat-menu #config="matMenu">
+            <button mat-menu-item [matMenuTriggerFor]="caja">
+                <mat-icon>all_inbox</mat-icon>
+                <span>Caja</span>
+            </button>
+        </mat-menu>
+        <mat-menu #caja="matMenu">
+            <button mat-menu-item routerLink="/registrarCaja">Registrar</button>
+            <button mat-menu-item routerLink="/buscarCaja">Buscar</button>
+            <button mat-menu-item routerLink="/administrarCaja">Administrar</button>
+        </mat-menu>
+    </button>
     <button type="button" mat-icon-button matTooltip={{this.tokenService.userName}}>
         <mat-icon>assignment_ind</mat-icon>
     </button>
@@ -438,13 +438,18 @@
                         <td>
                             <span style="font-family: Impact;">Facturar Pedido</span>
                         </td>
-                        <mat-card-actions align="end">
+                        <mat-card-actions>
                             <button mat-button type="button" matTooltip="Abrir Caja"
                                 (click)="printerUtilsService.connectToPrinter(false, dataSourceSales)"
-                                style="font-family:Impact; width: 80%; margin-right: 45%; background-color: gainsboro;"
-                                color="basic">Abrir
-                                Caja
+                                style="font-family:Impact; width: 80%; margin-right: 15%; background-color: gainsboro;"
+                                color="basic">Abrir Caja
                                 <mat-icon>all_inbox</mat-icon>
+                            </button>
+                            <button mat-button type="button" matTooltip="Vaciar Ventas"
+                                (click)="cleanVentaVerificada()"
+                                style="font-family:Impact; width: 80%; margin-right: 15%; background-color: gainsboro;"
+                                color="basic">Vaciar Ventas 
+                                <mat-icon>clear_all</mat-icon>
                             </button>
                             <button type="button" mat-mini-fab matTooltip="Registrar Cliente" color="basic"
                                 (click)="openedCustomer=!openedCustomer">
@@ -692,13 +697,13 @@
                                         <span *ngIf="!viewProducts">
                                             {{viewItem.numeroFactura}}
                                         </span>
-                                            <span *ngIf="viewProducts">
-                                                <button type="button" mat-icon-button matTooltip="Revisar Productos"
-                                                (mouseover)="onToggleVerifyProducts(viewItem)" 
+                                        <span *ngIf="viewProducts">
+                                            <button type="button" mat-icon-button matTooltip="Revisar Productos"
+                                                (mouseover)="onToggleVerifyProducts(viewItem)"
                                                 (mouseout)="onToggleVerifyProducts()">
-                                                    <mat-icon>playlist_add_check</mat-icon>
-                                                </button>
-                                            </span>
+                                                <mat-icon>playlist_add_check</mat-icon>
+                                            </button>
+                                        </span>
                                     </div>
                                 </td>
                             </ng-container>
@@ -756,7 +761,7 @@
                                     *matHeaderCellDef>
                                     Descripción </th>
                                 <td mat-cell *matCellDef="let carItem">
-                                        {{carItem.descripcion}}
+                                    {{carItem.descripcion}}
                                 </td>
                                 <td mat-footer-cell *matFooterCellDef style="font-family: Impact;">Total</td>
                             </ng-container>
@@ -764,7 +769,7 @@
                                 <th style="font-family: Impact; background-color:gainsboro; width: 18%" mat-header-cell
                                     *matHeaderCellDef> Cantidad </th>
                                 <td mat-cell *matCellDef="let carItem; let i = index">
-                                        {{carItem.cantidad | number: '.0'}}
+                                    {{carItem.cantidad | number: '.0'}}
                                 </td>
                                 <td mat-footer-cell *matFooterCellDef></td>
                             </ng-container>
@@ -772,7 +777,7 @@
                                 <th style="font-family: Impact; background-color:gainsboro; width: 15%" mat-header-cell
                                     *matHeaderCellDef>Precio Venta</th>
                                 <td mat-cell *matCellDef="let carItem">
-                                        {{carItem.precioVenta | currency : 'USD' : 'symbol' : '1.0-0'}}
+                                    {{carItem.precioVenta | currency : 'USD' : 'symbol' : '1.0-0'}}
                                 </td>
                                 <td mat-footer-cell *matFooterCellDef></td>
                             </ng-container>
@@ -780,12 +785,13 @@
                                 <th style="font-family: Impact; background-color:gainsboro; width: 15%" mat-header-cell
                                     *matHeaderCellDef> Total </th>
                                 <td mat-cell *matCellDef="let carItem; let i = index">
-                                        {{carItem.total | currency : 'USD' : 'symbol' : '1.0-0' }}
+                                    {{carItem.total | currency : 'USD' : 'symbol' : '1.0-0' }}
                                 </td>
                                 <strong>
-                                <td mat-footer-cell *matFooterCellDef="let transaction" style="font-family: Impact;">{{ getTotalVenta() | currency :
-                                    'USD' : 'symbol' : '1.0-0' }}
-                                </td>
+                                    <td mat-footer-cell *matFooterCellDef="let transaction"
+                                        style="font-family: Impact;">{{ getTotalVenta() | currency :
+                                        'USD' : 'symbol' : '1.0-0' }}
+                                    </td>
                                 </strong>
                             </ng-container>
                             <tr mat-header-row *matHeaderRowDef="columnasProducts"></tr>
