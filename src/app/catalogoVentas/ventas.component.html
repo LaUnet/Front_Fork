@@ -50,7 +50,7 @@
         <mat-menu #caja="matMenu">
             <button mat-menu-item routerLink="/registrarCaja">Registrar</button>
             <button mat-menu-item routerLink="/buscarCaja">Buscar</button>
-            <button mat-menu-item routerLink="/administrarCaja">Administrar</button>
+            <button *ngIf="this.tokenService.rolName" mat-menu-item routerLink="/administrarCaja">Administrar</button>
         </mat-menu>
     </button>
     <button type="button" mat-icon-button matTooltip={{this.tokenService.userName}}>
