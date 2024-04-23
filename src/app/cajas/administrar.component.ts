@@ -342,6 +342,7 @@ export class AdministrarCajaComponent {
     this.startDate = new Date(year, month, day);
     this.endDate = new Date(year, month, day + 1);
     this.fieldStartDateFormControl.setValue(this.startDate);
+    this.setResumenMovimientos();
     this.buscarMovimientos();
   }
 
@@ -427,6 +428,15 @@ export class AdministrarCajaComponent {
     this.metodoPagoMovimientoFormControl.reset();
     this.nuevaCaja.efectivoMovimiento = '',
     this.nuevaCaja.transferenciaMovimiento = ''
+  };
+
+  setResumenMovimientos() {
+    this.nuevaCaja.baseApertura = '',
+    this.nuevaCaja.consumoInterno = '',
+    this.nuevaCaja.totalEFectivo = '',
+    this.nuevaCaja.totalTransferencia = '',
+    this.nuevaCaja.totalRetiros = '',
+    this.nuevaCaja.total = '',
   };
 }
 
