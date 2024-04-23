@@ -51,6 +51,7 @@ body {
 
 .loading-shade {
   position: absolute;
+  z-index: 999;
   display: flex;
   margin-top: 15%;
   margin-left: 45%;

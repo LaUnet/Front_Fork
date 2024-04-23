@@ -77,7 +77,7 @@
             <mat-expansion-panel [class.mat-elevation-z0]="true">
                 <mat-expansion-panel-header>
                     <mat-icon>article</mat-icon>
-                    <span> movimientos</span>
+                    <span> Articulos</span>
                 </mat-expansion-panel-header>
                 <mat-nav-list>
                     <a mat-list-item routerLink="/registrarArticulo">
@@ -107,7 +107,7 @@
             <mat-expansion-panel [class.mat-elevation-z0]="true">
                 <mat-expansion-panel-header>
                     <mat-icon>supervisor_account</mat-icon>
-                    <span> Cajaes</span>
+                    <span> Proveedores</span>
                 </mat-expansion-panel-header>
                 <mat-nav-list>
                     <a mat-list-item routerLink="/registrarCaja">
@@ -260,8 +260,8 @@
                             <mat-label>Metodo Movimiento</mat-label>
                             <mat-icon matSuffix>currency_exchange</mat-icon>
                             <mat-select [(ngModel)]="nuevaCaja.metodoPagoMovimiento" name="metodoPagoMovimiento"
-                            [formControl]="metodoPagoMovimientoFormControl" [errorStateMatcher]="matcher"
-                            (valueChange)="changeList($event)">
+                                [formControl]="metodoPagoMovimientoFormControl" [errorStateMatcher]="matcher"
+                                (valueChange)="changeList($event)">
                                 <mat-option disabled>Selecciona una opcíon</mat-option>
                                 <mat-option value="EFECTIVO" selected>Efectivo</mat-option>
                                 <mat-option value="TRANSFERENCIA">Transferencia</mat-option>
@@ -276,9 +276,9 @@
                             <mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Efectivo</mat-label>
                                 <mat-icon matSuffix>monetization_on</mat-icon>
-                                <input type="text" matInput style="font-weight:bold" [(ngModel)]="nuevaCaja.efectivoMovimiento"
-                                    name="efectivoMovimiento" currencyMask [options]="{prefix: '', thousands:',', precision: 0}"
-                                    #valor (keyup)="onEnter()"
+                                <input type="text" matInput style="font-weight:bold"
+                                    [(ngModel)]="nuevaCaja.efectivoMovimiento" name="efectivoMovimiento" currencyMask
+                                    [options]="{prefix: '', thousands:',', precision: 0}" #valor (keyup)="onEnter()"
                                     [disabled]="nuevaCaja.metodoPagoMovimiento === 'TRANSFERENCIA'? true:false">
                             </mat-form-field>
                         </td>
@@ -287,9 +287,9 @@
                                 <mat-label>Transferencia</mat-label>
                                 <mat-icon matSuffix>send_to_mobile</mat-icon>
                                 <input type="text" matInput style="font-weight:bold"
-                                    [(ngModel)]="nuevaCaja.transferenciaMovimiento" name="transferenciaMovimiento" currencyMask
-                                    [options]="{prefix: '', thousands:',', precision: 0}"
-                                    #valor (keyup)="onEnter()"
+                                    [(ngModel)]="nuevaCaja.transferenciaMovimiento" name="transferenciaMovimiento"
+                                    currencyMask [options]="{prefix: '', thousands:',', precision: 0}" #valor
+                                    (keyup)="onEnter()"
                                     [disabled]="nuevaCaja.metodoPagoMovimiento === 'EFECTIVO'? true:false">
                             </mat-form-field>
                         </td>
@@ -301,16 +301,16 @@
                             <mat-form-field class="textMatTable" appearance="outline">
                                 <mat-label>Total Movimiento</mat-label>
                                 <mat-icon matSuffix>attach_money</mat-icon>
-                                <input matInput style="font-weight:bold" [(ngModel)]="nuevaCaja.valorMovimiento" 
-                                [formControl]="valorMovimientoFormControl" name="valorMovimiento" currencyMask
-                                [options]="{prefix: '', thousands:',', precision: 0}"
-                                [errorStateMatcher]="matcher" readonly="true">
+                                <input matInput style="font-weight:bold" [(ngModel)]="nuevaCaja.valorMovimiento"
+                                    [formControl]="valorMovimientoFormControl" name="valorMovimiento" currencyMask
+                                    [options]="{prefix: '', thousands:',', precision: 0}" [errorStateMatcher]="matcher"
+                                    readonly="true">
                             </mat-form-field>
                         </td>
                     </tr>
                 </table>
                 <table class="full-width" cellspacing="0">
-                    <tr> 
+                    <tr>
                         <td>
                             <mat-form-field class="textMatTable" appearance="outline">
                                 <mat-label>Observacion</mat-label>
@@ -324,8 +324,8 @@
                 </table>
                 <table class="full-width" cellspacing="0">
                     <tr>
-                        <button mat-raised-button color="primary" class="buttonMatTable" type="button" (click)="applyMovement()"
-                            [disabled]="tipoMovimientoFormControl.invalid || razonMovimientoFormControl.invalid || metodoPagoMovimientoFormControl.invalid 
+                        <button mat-raised-button color="primary" class="buttonMatTable" type="button"
+                            (click)="applyMovement()" [disabled]="tipoMovimientoFormControl.invalid || razonMovimientoFormControl.invalid || metodoPagoMovimientoFormControl.invalid 
                             || valorMovimientoFormControl.invalid || observacionFormControl.invalid">
                             Realizar Movimiento
                         </button>
@@ -362,26 +362,10 @@
                     <tr>
                         <td>
                             <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Nombre Caja</mat-label>
-                                <mat-icon matSuffix color="primary">all_inbox</mat-icon>
-                                <mat-select [(ngModel)]="nuevaCaja.nombre" name="nombre"
-                                    [formControl]="nombreFormControl" [errorStateMatcher]="matcher">
-                                    <mat-option *ngFor="let cajas of dataSourceCajas" [value]="nuevaCaja.nombre">
-                                        {{ cajas.nombreCaja }}
-                                    </mat-option>
-                                </mat-select>
+                                <mat-label>Filtrar Movimiento</mat-label>
+                                <mat-icon matSuffix color="primary">sort</mat-icon>
+                                <input matInput (keyup)="filtrar($event)" placeholder="buscar" #inputCode>
                             </mat-form-field>
-                        </td>
-                        <td> <mat-form-field class="full-width" appearance="outline">
-                                <mat-label>Tipo Caja</mat-label>
-                                <mat-icon matSuffix>list</mat-icon>
-                                <mat-select [(ngModel)]="nuevaCaja.tipoCaja" name="tipoCaja" #fontSize
-                                    [value]="nuevaCaja.tipoCaja" disabled>
-                                    <mat-option value="PDV">Punto de Venta</mat-option>
-                                    <mat-option value="ADM">Administrativa</mat-option>
-                                    <mat-option value="OTR">OTRA</mat-option>
-                                </mat-select>
-                            </mat-form-field></td>
                         <td>
                             <mat-form-field class="full-width" appearance="outline">
                                 <mat-label>Rango Movimientos</mat-label>
@@ -406,7 +390,7 @@
         <!-- Detalle Movimientos-->
         <mat-card class="mat-card-center">
             <div class="mat-elevation-z8">
-                <table mat-table #myTable [dataSource]="dataSourceMovimientos" cellspacing="0">
+                <table mat-table [dataSource]="dataSourceMovimientos" cellspacing="0">
                     <ng-container matColumnDef="No">
                         <th style="font-family: Impact; background-color:gainsboro; width: 0%; " mat-header-cell
                             *matHeaderCellDef>
@@ -589,7 +573,8 @@
                             <span style="font-family: Impact">Resumen Movimientos</span>
                         </td>
                         <mat-card-actions align="end">
-                            <button type="button" mat-mini-fab matTooltip="Exportar" color="basic" (click)="tableUtilsService.exportToExcel(dataSourceMovimientos,'ReporteCaja')">
+                            <button type="button" mat-mini-fab matTooltip="Exportar" color="basic"
+                                (click)="tableUtilsService.exportToExcel(dataSourceMovimientos,'ReporteCaja')">
                                 <mat-icon>import_export</mat-icon>
                             </button>
                         </mat-card-actions>
@@ -645,16 +630,32 @@
                                         disabled style="font-weight:bold; color: black;">
                                 </mat-form-field>
                             </td>
-                            <td>
-                                <mat-form-field class="textSummary" appearance="outline" cellspacing="0">
-                                    <mat-label style="font-weight:bolder; color: rgb(39, 39, 110);">Total</mat-label>
-                                    <mat-icon matSuffix>summarize</mat-icon>
-                                    <input matInput name="total" [errorStateMatcher]="matcher" type="text"
-                                        [ngModel]="nuevaCaja.total | currency : 'USD' : 'symbol' : '1.0-0'" disabled
-                                        style="font-weight:bold; color: black;">
-                                </mat-form-field>
-                            </td>
                         </div>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td>
+                            <mat-form-field class="textSummaryTotal" appearance="outline" cellspacing="0">
+                                <mat-label style="font-weight:bolder; color: rgb(39, 39, 110);">Total Efectivo
+                                    Caja</mat-label>
+                                <mat-icon matSuffix>summarize</mat-icon>
+                                <input matInput name="totalBaseEfectivo" [errorStateMatcher]="matcher" type="text"
+                                    [ngModel]="nuevaCaja.totalBaseEfectivo | currency : 'USD' : 'symbol' : '1.0-0'"
+                                    disabled style="font-weight:bold; color: black;">
+                            </mat-form-field>
+                        </td>
+                        <td></td>
+                        <td>
+                            <mat-form-field class="textSummaryTotal" appearance="outline" cellspacing="0">
+                                <mat-label style="font-weight:bolder; color: rgb(39, 39, 110);">Total Ventas
+                                    Caja</mat-label>
+                                <mat-icon matSuffix>summarize</mat-icon>
+                                <input matInput name="total" [errorStateMatcher]="matcher" type="text"
+                                    [ngModel]="nuevaCaja.total | currency : 'USD' : 'symbol' : '1.0-0'" disabled
+                                    style="font-weight:bold; color: black;">
+                            </mat-form-field>
+                        </td>
                     </tr>
                 </table>
             </form>

@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, ViewChild, ElementRef} from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
+import { FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { NavigationEnd, Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
 import { PrinterUtilsService } from '../printerUtils.service';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TableUtilsService } from '../tableUtils.service';
 
@@ -96,6 +96,7 @@ export class AdministrarCajaComponent {
     totalEFectivo: '',
     totalTransferencia: '',
     totalRetiros:'',
+    totalBaseEfectivo:'',
     total: '',
     tipo: '',
     razon: '',
@@ -135,6 +136,8 @@ export class AdministrarCajaComponent {
   ngAfterContentChecked() {
     this.changeDetector.detectChanges();
   }
+
+  @ViewChild("inputCode") InputField: any =  ElementRef;
 
   async buscarCajaAbierta() {
     this.startDate = new Date(year, month, day);
@@ -182,8 +185,9 @@ export class AdministrarCajaComponent {
                 this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { tipo: any; }) => arr.tipo === this.salida))
                 this.nuevaCaja.totalRetiros = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0);
                 this.dataSourceMovimientos = this.dataSourceCajas[0].movimientos
-
               }
+              this.nuevaCaja.totalBaseEfectivo = this.nuevaCaja.baseApertura+this.nuevaCaja.totalRetiros+this.nuevaCaja.totalEfectivo
+              this.dataSourceMovimientos = new MatTableDataSource( this.dataSourceMovimientos)
               return;
             default:
               alert("Mas de una caja abierta");
@@ -258,6 +262,7 @@ export class AdministrarCajaComponent {
       //this.http.get<any>(`http://localhost:3030/api/cashierMovements?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
+            this.nuevaCaja.baseApertura = response.Data[0].baseApertura
             this.dataSourceMovimientos = response.Data[0].movimientos;
             if (this.dataSourceMovimientos.length > 0) {
               this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { razon: any; }) => arr.razon === this.ventaInterna))
@@ -273,6 +278,8 @@ export class AdministrarCajaComponent {
               this.dataSourceMovimientos = response.Data[0].movimientos
             }
           }
+          this.nuevaCaja.totalBaseEfectivo = this.nuevaCaja.baseApertura+this.nuevaCaja.totalRetiros+this.nuevaCaja.totalEfectivo
+          this.dataSourceMovimientos = new MatTableDataSource( this.dataSourceMovimientos)
           this.isLoadingResults = false;
 
         }, error => {
@@ -436,8 +443,14 @@ export class AdministrarCajaComponent {
     this.nuevaCaja.totalEFectivo = '',
     this.nuevaCaja.totalTransferencia = '',
     this.nuevaCaja.totalRetiros = '',
-    this.nuevaCaja.total = ''
+    this.nuevaCaja.total = '',
+    this.nuevaCaja.totalBaseEfectivo =''
   };
+
+  filtrar(event: Event) {
+    const filtro = (event.target as HTMLInputElement).value;
+    this.dataSourceMovimientos.filter = filtro.trim().toLowerCase();
+} 
 }
 
 export class compras {
