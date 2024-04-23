@@ -436,7 +436,7 @@ export class AdministrarCajaComponent {
     this.nuevaCaja.totalEFectivo = '',
     this.nuevaCaja.totalTransferencia = '',
     this.nuevaCaja.totalRetiros = '',
-    this.nuevaCaja.total = '',
+    this.nuevaCaja.total = ''
   };
 }
 
