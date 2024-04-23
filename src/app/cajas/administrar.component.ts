@@ -58,6 +58,7 @@ export class AdministrarCajaComponent {
   ventaInterna: String = "INT";
   entrada: String = "ENT";
   salida: String = "SAL";
+  puntoVenta: String = "PDV"
   openDisabled: Boolean = false;
 
   //Datos para operaciones
@@ -173,7 +174,7 @@ export class AdministrarCajaComponent {
                 this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { razon: any; }) => arr.razon === this.ventaInterna))
                 this.nuevaCaja.consumoInterno = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0);
                 this.dataSourceMovimientos = this.dataSourceCajas[0].movimientos
-                this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { razon: any; }) => arr.razon !== this.ventaInterna))
+                this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { razon: any; tipo: any }) => arr.razon !== this.ventaInterna && arr.tipo === this.entrada))
                 this.nuevaCaja.total = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0) + this.nuevaCaja.baseApertura;
                 this.nuevaCaja.totalEfectivo = this.dataSourceMovimientos.map((t: { valorEfectivo: string | number; }) => +t.valorEfectivo).reduce((acc: any, value: any) => acc + value, 0) ;
                 this.nuevaCaja.totalTransferencia = this.dataSourceMovimientos.map((t: { valorTransferencia: string | number; }) => +t.valorTransferencia).reduce((acc: any, value: any) => acc + value, 0);
@@ -262,15 +263,14 @@ export class AdministrarCajaComponent {
               this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { razon: any; }) => arr.razon === this.ventaInterna))
               this.nuevaCaja.consumoInterno = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0);
               this.dataSourceMovimientos = response.Data[0].movimientos
-              this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { razon: any; }) => arr.razon !== this.ventaInterna))
+              this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { tipo: any; }) => arr.tipo === this.salida))
+              this.nuevaCaja.totalRetiros = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0);
+              this.dataSourceMovimientos = response.Data[0].movimientos
+              this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { razon: any; tipo: any}) => arr.razon !== this.ventaInterna && arr.tipo === this.entrada))
               this.nuevaCaja.total = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0) + this.nuevaCaja.baseApertura;
               this.nuevaCaja.totalEfectivo = this.dataSourceMovimientos.map((t: { valorEfectivo: string | number; }) => +t.valorEfectivo).reduce((acc: any, value: any) => acc + value, 0);
               this.nuevaCaja.totalTransferencia = this.dataSourceMovimientos.map((t: { valorTransferencia: string | number; }) => +t.valorTransferencia).reduce((acc: any, value: any) => acc + value, 0);
               this.dataSourceMovimientos = response.Data[0].movimientos
-              this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { tipo: any; }) => arr.tipo === this.salida))
-              this.nuevaCaja.totalRetiros = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0);
-              this.dataSourceMovimientos = response.Data[0].movimientos
-
             }
           }
           this.isLoadingResults = false;
