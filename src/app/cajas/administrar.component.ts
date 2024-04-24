@@ -128,19 +128,7 @@ export class AdministrarCajaComponent {
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => { });
     this.cargarUbicaciones();
-    this.localStorageUser = this.localStorageService.getItem('user_key');
-    this.localStorageCashier = this.localStorageService.getItem('cashier');
-    this.localStorageService.clear();
-    if (this.localStorageUser) {
-      this.localStorageService.setItem('user_key', this.localStorageUser);
-    }else{
-      this.routerLinkLogin();
-    }
-    if (this.localStorageCashier) {
-      this.localStorageService.setItem('cashier', this.localStorageCashier);
-    }else{
-      this.buscarCajaAbierta();
-    }
+    this.buscarCajaAbierta();
   }
 
   ngOnDestroy() {
