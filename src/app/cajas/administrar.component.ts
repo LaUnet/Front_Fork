@@ -9,7 +9,6 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { NavigationEnd, Router } from '@angular/router';
 import { Target } from '@angular/compiler';
-import { LocalStorageService } from '../local-storage.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
@@ -17,6 +16,7 @@ import { PrinterUtilsService } from '../printerUtils.service';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TableUtilsService } from '../tableUtils.service';
+import { LocalStorageService } from '../local-storage.service';
 
 /** Setear fechas */
 //const today = new Date();
@@ -65,7 +65,9 @@ export class AdministrarCajaComponent {
   startDate!: any;
   endDate!: any;
   id!: any; 
-
+  localStorageUser !: any;
+  localStorageCashier !: any;
+  
   /**
    * Control Error Textfields Providers
    */
@@ -126,7 +128,19 @@ export class AdministrarCajaComponent {
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => { });
     this.cargarUbicaciones();
-    this.buscarCajaAbierta();
+    this.localStorageUser = this.localStorageService.getItem('user_key');
+    this.localStorageCashier = this.localStorageService.getItem('cashier');
+    this.localStorageService.clear();
+    if (this.localStorageUser) {
+      this.localStorageService.setItem('user_key', this.localStorageUser);
+    }else{
+      this.routerLinkLogin();
+    }
+    if (this.localStorageCashier) {
+      this.localStorageService.setItem('cashier', this.localStorageCashier);
+    }else{
+      this.buscarCajaAbierta();
+    }
   }
 
   ngOnDestroy() {
