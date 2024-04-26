@@ -230,6 +230,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
           switch (this.dataSourceCajas.length) {
             case 0:
               alert("No Existe Caja Abierta")
+              this.routerLinkLogin();
               return;
             case 1:
               this.localStorageService.setItem('cashier', this.dataSourceCajas[0].idCaja);
