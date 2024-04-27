@@ -448,18 +448,18 @@
                     <ng-container matColumnDef="fecha">
                         <th style="font-family: Impact; background-color:gainsboro; width: 12%;" mat-header-cell
                             *matHeaderCellDef>
-                            Fecha Movimiento</th>
+                            Hora Movimiento</th>
                         <td mat-cell *matCellDef="let movimientos">
                             <div *ngIf="movimientos.tipo === salida" class="colorRowSal">
-                                {{movimientos.fecha | date}}
+                                {{ (movimientos.fecha) |  date:'mediumTime':'+0000'}}
                             </div>
                             <div *ngIf="movimientos.tipo === entrada && movimientos.razon === ventaInterna"
                                 class="colorRowInt">
-                                {{movimientos.fecha | date}}
+                                {{movimientos.fecha | date:'mediumTime':'+0000'}}
                             </div>
                             <div *ngIf="movimientos.tipo === entrada && movimientos.razon !== ventaInterna"
                                 class="colorRowEnt">
-                                {{movimientos.fecha | date}}
+                                {{movimientos.fecha | date:'mediumTime':'+0000'}}
                             </div>
                         </td>
                     </ng-container>

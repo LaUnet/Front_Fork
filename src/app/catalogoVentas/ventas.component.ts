@@ -246,6 +246,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
           }
           if (error.status === 404) {
             alert("No Existe Caja Abierta")
+            this.routerLinkLogin();
             return;
           }
           console.error('Error en la solicitud:', error);
