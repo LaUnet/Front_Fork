@@ -116,6 +116,7 @@ export class TableUtilsService {
         Ubicacion: x.articulo[0].codigoUbicacion,
         UnidadMedida: x.articulo[0].unidadMedida,
         Stock: +x.stock,
+        PrecioCompra: +x.precios[0].valorUnitario+(x.precios[0].valorUnitario*(x.precios[0].impuestoUnitario/100)),
         PrecioVenta: +x.precios[0].precioVenta,
         PrecioMayoreo: +x.precios[0].precioMayoreo
       }

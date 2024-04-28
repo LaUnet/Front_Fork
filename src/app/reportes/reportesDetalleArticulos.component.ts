@@ -78,6 +78,7 @@ export class ReportesDetalleArticulosComponent implements OnInit {
             this.dataSourceMovimientos = new MatTableDataSource(this.tableUtilsService.mapDetalleArticulos(response.Data.docs));
             this.dataSourceArticulos.paginator = this.paginator;
             this.dataSourceArticulos.sort = this.sort;
+            console.log(response.Data.docs)
           }
           this.isLoadingResults = false;
           //this.dataSourceMovimientos = this.dataSourceArticulos.filteredData;
