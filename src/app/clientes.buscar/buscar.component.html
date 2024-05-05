@@ -63,10 +63,14 @@
       <mat-list-item routerLink="/menu" matTooltip="Punto U" (click)="opened=!opened">
         <mat-icon>home</mat-icon>
       </mat-list-item>
-      <mat-list-item routerLink="/ventasProductos" [class.mat-elevation-z0]="true" style="cursor: pointer">
+      <mat-list-item routerLink="/ventasProductos" [class.mat-elevation-z0]="true">
         <mat-icon>shopping_bag</mat-icon>
         <span>Catalogo Ventas</span>
       </mat-list-item>
+    <mat-list-item routerLink="/cotizacionesProductos" [class.mat-elevation-z0]="true">
+        <mat-icon>addchart</mat-icon>
+        <span>Cotizaciones Ventas</span>
+    </mat-list-item>
       <mat-divider></mat-divider>
       <mat-expansion-panel [class.mat-elevation-z0]="true">
         <mat-expansion-panel-header>

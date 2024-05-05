@@ -20,15 +20,15 @@ import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.com
 import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.component';
 import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.component';
 import { DialogoMetodoPagoComponent } from './dialogo.metodoPago/dialogo.metodoPago.component';
-//import { DialogoInvoiceComponent } from './dialogo.invoice/dialogo.invoice.component';
+import { DialogoCotizacionComponent } from './dialogo.cotizacion/dialogo.cotizacion.component';
 import { ReportesVentasComponent } from './reportes/reportesVentas.component';
 import { ReportesComprasComponent } from './reportes/reportesCompras.component';
 import { ReportesDetalleArticulosComponent } from './reportes/reportesDetalleArticulos.component';
 import { BuscarCajaComponent } from './cajas/buscar.component';
 import { RegistrarCajaComponent } from './cajas/registrar.component';
 import { AdministrarCajaComponent } from './cajas/administrar.component';
-import { PrinterUtilsService } from '../app/printerUtils.service'
-
+import { PrinterUtilsService } from '../app/printerUtils.service';
+import { CotizacionesComponent } from './catalogoVentas/cotizaciones.component';
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -89,13 +89,14 @@ import { CurrencyPipe } from '@angular/common';
     DialogoArticuloComponent,
     DialogoCarItemComponent,
     DialogoMetodoPagoComponent,
-    //DialogoInvoiceComponent,
     ReportesVentasComponent,
     ReportesComprasComponent,
     ReportesDetalleArticulosComponent,
     BuscarCajaComponent,
     RegistrarCajaComponent,
     AdministrarCajaComponent,
+    CotizacionesComponent,
+    DialogoCotizacionComponent
   ],
   imports: [
     BrowserModule,

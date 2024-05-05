@@ -20,6 +20,8 @@ import { BuscarCajaComponent } from './cajas/buscar.component';
 import { RegistrarCajaComponent } from './cajas/registrar.component';
 import { AdministrarCajaComponent } from './cajas/administrar.component';
 import { ReportesDetalleArticulosComponent } from './reportes/reportesDetalleArticulos.component';
+import { CotizacionesComponent } from './catalogoVentas/cotizaciones.component';
+
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -49,6 +51,7 @@ const routes: Routes = [
   { path: 'registrarCaja', component: RegistrarCajaComponent },
   { path: 'editarCaja/:id', component: RegistrarCajaComponent },
   { path: 'administrarCaja', component: AdministrarCajaComponent },
+  { path: 'cotizacionesProductos', component: CotizacionesComponent },
 ];
 
 @NgModule({
