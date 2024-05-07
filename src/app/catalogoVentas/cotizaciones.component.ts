@@ -481,7 +481,8 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
               "impuesto": this.utilsService.numeros(element.precios[0].impuestoUnitario) > 0 ? this.utilsService.numeros(element.precios[0].impuestoUnitario) : 0,
               "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta), addItem),
               "mayoreo": false,
-              "interno": false
+              "interno": false,
+              "cotizacion": true
             }
           ]
         }

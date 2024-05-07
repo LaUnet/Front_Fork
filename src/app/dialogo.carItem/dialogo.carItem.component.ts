@@ -17,6 +17,7 @@ export class DialogoCarItemComponent implements OnInit {
   isVentaUnitaria !: boolean;
   isVentaMayoreo !: boolean;
   isVentaInterna !: boolean;
+  isCotizacion !: boolean;
   disabledButton !: boolean;
   mensajeFallido: string = '';
   /**
@@ -48,6 +49,7 @@ export class DialogoCarItemComponent implements OnInit {
     this.isVentaUnitaria = element.detalleArticulo[0].mayoreo || element.detalleArticulo[0].interno? false:true;
     this.isVentaMayoreo = element.detalleArticulo[0].mayoreo? true:false;
     this.isVentaInterna = element.detalleArticulo[0].interno? true:false;
+    this.isCotizacion = element.detalleArticulo[0].cotizacion? true:false;
     this.articuloCarItem.cantidad = this.utilsService.numeros(element.detalleArticulo[0].cantidad);
     this.articuloCarItem.precioMenudeo = this.utilsService.numeros(element.detalleArticulo[0].precioVenta);
     this.articuloCarItem.precioMayoreo = this.utilsService.numeros(element.detalleArticulo[0].precioMayoreo);
@@ -147,7 +149,7 @@ export class DialogoCarItemComponent implements OnInit {
         this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioInterno);        
       }
     } 
-    if (this.utilsService.numeros(cantidad) > this.utilsService.numeros(this.element.stock )){
+    if ((this.utilsService.numeros(cantidad) > this.utilsService.numeros(this.element.stock )) && !this.isCotizacion) {
       this.disabledButton = true
       this.mensajeFallido = "No hay suficiente Stock " + this.element.stock + " para la cantidad de productos solicitados " + cantidad;
       this.articuloCarItem.cantidad = this.articuloCarItem.cantidad

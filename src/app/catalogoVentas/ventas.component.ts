@@ -573,11 +573,16 @@ export class VentasComponent implements AfterViewInit, OnInit {
           }
         }
       } else {
-        const addItem: number = 1;
         if (!element.inventarios[0] || !element.precios[0]) {
           alert(`Articulo sin configuración de Inventario y/o Precio Venta`);
           return;
         }
+        console.log(element.inventarios[0].stock)
+        if ( this.utilsService.numeros(element.inventarios[0].stock) === 0) {
+          alert(`No hay suficiente Stock ${element.inventarios[0].stock}, para la cantidad de productos solicitados ${this.utilsService.numeros(element.inventarios[0].stock) + 1}!`)
+          return;
+        }
+        const addItem: number = 1;
         element =
         {
           "_id": element._id,
@@ -596,7 +601,8 @@ export class VentasComponent implements AfterViewInit, OnInit {
               "impuesto": this.utilsService.numeros(element.precios[0].impuestoUnitario) > 0 ? this.utilsService.numeros(element.precios[0].impuestoUnitario) : 0,
               "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta), addItem),
               "mayoreo": false,
-              "interno": false
+              "interno": false,
+              "cotizacion": false
             }
           ]
         }
