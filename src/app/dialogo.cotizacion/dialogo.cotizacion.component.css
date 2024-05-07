@@ -1,10 +1,40 @@
+section {
+  height: 100%;
+  overflow: visible;
+}
+
+.card-body {
+  height: 100%;
+  overflow: visible;
+}
+
 .card-header {
-    padding: 0.75rem 1.25rem;
-    margin-bottom: 0;
-    background-color: #cce5ff;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0;
+  background-color: #cce5ff;
+  /**
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  */
+  height: 90%;
+  overflow: visible;
+}
+
+.logo {
+  height: 100px;
+  width: auto;
+}
+
+@media print {
+  body * {
+    visibility:hidden;
   }
-  .logo {
-    height: 100px;
-    width: auto;
+  #printable, #printable * {
+    visibility:visible;
   }
+  #printable {
+    position:fixed;
+    margin-top: 0%;
+    left: 0;
+    top: 0;
+  }
+}

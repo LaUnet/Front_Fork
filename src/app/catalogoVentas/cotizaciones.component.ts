@@ -447,10 +447,12 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       if (JSON.parse(this.localStorageService.getItem(element._id)!)) {
         for (let i = 0; i < this.dataSourceCarItem.length; i++) {
           if (this.dataSourceCarItem[i]._id === element._id) {
+            /**
             if ((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + 1) > element.inventarios[0].stock) {
               alert(`No hay suficiente Stock ${element.inventarios[0].stock}, para la cantidad de productos solicitados ${this.dataSourceCarItem[i].detalleArticulo[0].cantidad + 1}!`)
               break
             }
+             */
             this.changeQty(this.dataSourceCarItem[i], i, 1, '');
             break
           }
@@ -538,6 +540,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
       return;
     } else {
+      /** 
       if ((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty) > element.stock) {
         alert(`No hay suficiente Stock ${element.stock}, para la cantidad de productos solicitados ${(this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty)}!`)
         return;
@@ -546,7 +549,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
         this.borrarArticuloCarItem(this.dataSourceCarItem[i], i);
         return;
       }
-
+      */
       this.dataSourceCarItem[i].detalleArticulo[0].cantidad = this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty;
     }
     this.localStorageService.removeItem(this.dataSourceCarItem[i]._id);

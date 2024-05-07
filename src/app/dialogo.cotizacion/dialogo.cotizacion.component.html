@@ -3,26 +3,31 @@
         <div class="alert alert-success d-print-none" role="alert">
             Gracias por su visita!
             <strong>{{ dataSourceSales.cliente.nombreRazonSocial }}</strong>. Su cotizacion fue realizada correctamente
-            <button class="btn btn-sm btn-info ml-2 mr-1" (click)="print()">
+            <button class="btn btn-sm btn-info ml-1 mr-1" (click)="print()">
                 Imprimir Cotización</button>
-            <button class="btn btn-sm btn-info ml-1" (click)="cerrar()">
+            <button class="btn btn-sm btn-info ml-2" (click)="cerrar()">
                 Realizar una nueva orden
             </button>
+            <button class="btn btn-sm btn-info ml-3" (click)="continuar()">
+                Continuar Cotizando
+            </button>
         </div>
-        <div class="card">
+        <div class="card"  id="printable">
             <div class="card-header">
                 Fecha Cotización:
                 <strong>{{ dataSourceSales.fechaFactura}}</strong>
-                <!--  <span class="float-right"> <strong>Estado:</strong> Pendiente</span> -->
+                <span class="float-right"> <strong> Cotización # {{ dataSourceSales.numeroFactura }} </strong></span>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6 text-left">
                     <img src="assets/IconoPestana.jpeg" alt="" class="logo mr-2 mb-4 float-left"/>
                     </div>
+                    <!--
                     <div class="col-md-6 text-right">
-                        <h4>Cotización #{{ dataSourceSales.numeroFactura }}</h4>
+                        <h4>    Cotización # {{ dataSourceSales.numeroFactura }}</h4>
                     </div>
+                    -->
                 </div>
                 <div class="row mb-4">
                     <div class="col-sm-6">
@@ -63,7 +68,7 @@
                             <tr>
                                 <th class="center">#</th>
                                 <th>Item</th>
-                                <th class="right">Costo Unitario</th>
+                                <th class="right">V.Unitario</th>
                                 <th class="right">Cantidad</th>
                                 <th class="right">Descuento</th>
                                 <th class="right">Total</th>
