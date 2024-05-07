@@ -44,12 +44,11 @@ export class DialogoCarItemComponent implements OnInit {
   constructor(
     public dialogo: MatDialogRef<DialogoCarItemComponent>,
     @Inject(MAT_DIALOG_DATA) public element: any = [], @Inject(MAT_DIALOG_DATA) public index: number,
-    @Inject(LocalStorageService) private localStorageService: LocalStorageService, public utilsService: UtilsService) 
-    {   
-    this.isVentaUnitaria = element.detalleArticulo[0].mayoreo || element.detalleArticulo[0].interno? false:true;
-    this.isVentaMayoreo = element.detalleArticulo[0].mayoreo? true:false;
-    this.isVentaInterna = element.detalleArticulo[0].interno? true:false;
-    this.isCotizacion = element.detalleArticulo[0].cotizacion? true:false;
+    @Inject(LocalStorageService) private localStorageService: LocalStorageService, public utilsService: UtilsService) {
+    this.isVentaUnitaria = element.detalleArticulo[0].mayoreo || element.detalleArticulo[0].interno ? false : true;
+    this.isVentaMayoreo = element.detalleArticulo[0].mayoreo ? true : false;
+    this.isVentaInterna = element.detalleArticulo[0].interno ? true : false;
+    this.isCotizacion = element.detalleArticulo[0].cotizacion ? true : false;
     this.articuloCarItem.cantidad = this.utilsService.numeros(element.detalleArticulo[0].cantidad);
     this.articuloCarItem.precioMenudeo = this.utilsService.numeros(element.detalleArticulo[0].precioVenta);
     this.articuloCarItem.precioMayoreo = this.utilsService.numeros(element.detalleArticulo[0].precioMayoreo);
@@ -59,22 +58,22 @@ export class DialogoCarItemComponent implements OnInit {
   }
 
   actualizar(): void {
-    this.element.detalleArticulo[0].mayoreo = this.isVentaMayoreo? true:false
-    this.element.detalleArticulo[0].interno = this.isVentaInterna? true:false
+    this.element.detalleArticulo[0].mayoreo = this.isVentaMayoreo ? true : false
+    this.element.detalleArticulo[0].interno = this.isVentaInterna ? true : false
     this.element.detalleArticulo[0].cantidad = this.articuloCarItem.cantidad;
     this.element.detalleArticulo[0].precioVenta = this.articuloCarItem.precioMenudeo;
     this.element.detalleArticulo[0].precioMayoreo = this.articuloCarItem.precioMayoreo;
     this.element.detalleArticulo[0].precioInterno = this.articuloCarItem.precioInterno;
     this.element.detalleArticulo[0].total = this.articuloCarItem.total;
-    if(this.isVentaMayoreo){
+    if (this.isVentaMayoreo) {
       this.element.detalleArticulo[0].descuento = this.utilsService.calcularDescuentoMayoreoInterno(this.articuloCarItem.total, this.utilsService.multiplicarNumero(this.articuloCarItem.precioMayoreo, this.articuloCarItem.cantidad));
     }
-    if(this.isVentaInterna){
+    if (this.isVentaInterna) {
       this.element.detalleArticulo[0].descuento = this.utilsService.calcularDescuentoMayoreoInterno(this.articuloCarItem.total, this.utilsService.multiplicarNumero(this.articuloCarItem.precioInterno, this.articuloCarItem.cantidad));
-    }  
-    if(this.isVentaUnitaria){
+    }
+    if (this.isVentaUnitaria) {
       this.element.detalleArticulo[0].descuento = 0;
-    }   
+    }
     this.dialogo.close(true);
   }
 
@@ -87,14 +86,14 @@ export class DialogoCarItemComponent implements OnInit {
   toggleUnitario(estado: any, cantidad: any) {
 
     if (estado) {
-      this.disabledButton = this.articuloCarItem.cantidad > 0? false: true;
+      this.disabledButton = this.articuloCarItem.cantidad > 0 ? false : true;
       this.isVentaMayoreo = false;
       this.isVentaInterna = false;
       this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMenudeo)
       this.isVentaUnitaria = estado;
       this.onEnter(cantidad);
     } else {
-      if(!this.isVentaMayoreo && !this.isVentaInterna){
+      if (!this.isVentaMayoreo && !this.isVentaInterna) {
         this.disabledButton = true;
       }
     }
@@ -102,14 +101,14 @@ export class DialogoCarItemComponent implements OnInit {
 
   toggleMayoreo(estado: any, cantidad: any) {
     if (estado) {
-      this.disabledButton = this.articuloCarItem.cantidad > 0? false: true;
+      this.disabledButton = this.articuloCarItem.cantidad > 0 ? false : true;
       this.isVentaUnitaria = false;
       this.isVentaInterna = false;
       this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMayoreo)
       this.isVentaMayoreo = estado;
       this.onEnter(cantidad);
     } else {
-      if(!this.isVentaUnitaria && !this.isVentaInterna){
+      if (!this.isVentaUnitaria && !this.isVentaInterna) {
         this.disabledButton = true;
       }
     }
@@ -117,14 +116,14 @@ export class DialogoCarItemComponent implements OnInit {
 
   toggleInterno(estado: any, cantidad: any) {
     if (estado) {
-      this.disabledButton = this.articuloCarItem.cantidad > 0? false: true;
+      this.disabledButton = this.articuloCarItem.cantidad > 0 ? false : true;
       this.isVentaUnitaria = false;
       this.isVentaMayoreo = false;
       this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioInterno)
       this.isVentaInterna = estado;
       this.onEnter(cantidad);
     } else {
-      if(!this.isVentaMayoreo && !this.isVentaUnitaria){
+      if (!this.isVentaMayoreo && !this.isVentaUnitaria) {
         this.disabledButton = true;
       }
     }
@@ -133,30 +132,44 @@ export class DialogoCarItemComponent implements OnInit {
   onEnter(cantidad: any) {
     this.disabledButton = false;
     this.mensajeFallido = "";
-    if (this.utilsService.numeros(cantidad) === 0){
+    if (this.utilsService.numeros(cantidad) === 0) {
       this.disabledButton = true;
       return;
     }
-    if (this.utilsService.numeros(cantidad) <= this.utilsService.numeros(this.element.stock )) {
-      this.articuloCarItem.cantidad = this.utilsService.numeros(cantidad);      
-      if(this.isVentaUnitaria){
+    if (this.isCotizacion) {
+      this.articuloCarItem.cantidad = this.utilsService.numeros(cantidad);
+      if (this.isVentaUnitaria) {
         this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMenudeo)
       }
-      if(this.isVentaMayoreo){
+      if (this.isVentaMayoreo) {
         this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMayoreo);
       }
-      if(this.isVentaInterna){
-        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioInterno);        
+      if (this.isVentaInterna) {
+        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioInterno);
       }
-    } 
-    if ((this.utilsService.numeros(cantidad) > this.utilsService.numeros(this.element.stock )) && !this.isCotizacion) {
+      return;
+    }
+
+    if (this.utilsService.numeros(cantidad) <= this.utilsService.numeros(this.element.stock)) {
+      this.articuloCarItem.cantidad = this.utilsService.numeros(cantidad);
+      if (this.isVentaUnitaria) {
+        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMenudeo)
+      }
+      if (this.isVentaMayoreo) {
+        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMayoreo);
+      }
+      if (this.isVentaInterna) {
+        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioInterno);
+      }
+    }
+    if (this.utilsService.numeros(cantidad) > this.utilsService.numeros(this.element.stock)) {
       this.disabledButton = true
       this.mensajeFallido = "No hay suficiente Stock " + this.element.stock + " para la cantidad de productos solicitados " + cantidad;
       this.articuloCarItem.cantidad = this.articuloCarItem.cantidad
       this.articuloCarItem.total = this.articuloCarItem.total;
     }
   }
-  
+
   ngOnInit() {
   }
 }

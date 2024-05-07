@@ -577,7 +577,6 @@ export class VentasComponent implements AfterViewInit, OnInit {
           alert(`Articulo sin configuración de Inventario y/o Precio Venta`);
           return;
         }
-        console.log(element.inventarios[0].stock)
         if ( this.utilsService.numeros(element.inventarios[0].stock) === 0) {
           alert(`No hay suficiente Stock ${element.inventarios[0].stock}, para la cantidad de productos solicitados ${this.utilsService.numeros(element.inventarios[0].stock) + 1}!`)
           return;
