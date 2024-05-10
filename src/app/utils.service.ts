@@ -115,4 +115,12 @@ export class UtilsService {
     return descuentoIva;
   }
 
+  calcularInterno(a: any, b: any) {
+    a = !isNaN(a) && typeof a !== 'boolean' ? +a : 0;
+    b = !isNaN(b) && typeof b !== 'boolean' ? +b : 0;
+    let precioInterno = a + ((b / 100)* a);
+    precioInterno = Number(precioInterno.toFixed(2));
+    return precioInterno;
+  }
+
 }

@@ -581,6 +581,9 @@ export class VentasComponent implements AfterViewInit, OnInit {
           alert(`No hay suficiente Stock ${element.inventarios[0].stock}, para la cantidad de productos solicitados ${this.utilsService.numeros(element.inventarios[0].stock) + 1}!`)
           return;
         }
+        if ( this.utilsService.calcularInterno(element.precios[0].valorUnitario, element.precios[0].impuestoUnitario) !== this.utilsService.numeros(element.precios[0].precioInterno)) {
+          element.precios[0].precioInterno = this.utilsService.calcularInterno(element.precios[0].valorUnitario, element.precios[0].impuestoUnitario)
+        }
         const addItem: number = 1;
         element =
         {

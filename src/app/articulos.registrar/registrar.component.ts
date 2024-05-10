@@ -4,6 +4,7 @@ import { TokenService } from '../login/token';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { UtilsService } from '../utils.service';
 
 @Component({
   selector: 'app-registrarArticulo',
@@ -11,7 +12,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
   styleUrls: ['./registrar.component.css']
 })
 export class registrarArticuloComponent {
-  constructor(private router: Router, private http: HttpClient, public tokenService: TokenService, private route: ActivatedRoute) { this._id = this.route.snapshot.paramMap.get('id'); }
+  constructor(private router: Router, private http: HttpClient, public tokenService: TokenService, private route: ActivatedRoute, public utilsService: UtilsService) { this._id = this.route.snapshot.paramMap.get('id'); }
 
   /**
    * Control Error Textfields
@@ -50,6 +51,8 @@ export class registrarArticuloComponent {
     precioVenta: '',
     precioMayoreo: '',
     precioInterno: '',
+    valorUnitario: '',
+    impuestoUnitario: ''
   };
 
 
@@ -148,6 +151,11 @@ export class registrarArticuloComponent {
               this.nuevoArticulo.precioVenta = response.Data.docs[0].precios[0] ? response.Data.docs[0].precios[0].precioVenta : 0;
               this.nuevoArticulo.precioMayoreo = response.Data.docs[0].precios[0] ? response.Data.docs[0].precios[0].precioMayoreo : 0;
               this.nuevoArticulo.precioInterno = response.Data.docs[0].precios[0] ? response.Data.docs[0].precios[0].precioInterno : 0;
+              this.nuevoArticulo.valorUnitario = response.Data.docs[0].precios[0] ? response.Data.docs[0].precios[0].valorUnitario : 0;
+              this.nuevoArticulo.impuestoUnitario = response.Data.docs[0].precios[0] ? response.Data.docs[0].precios[0].impuestoUnitario : 0;
+              if ( this.utilsService.calcularInterno(this.nuevoArticulo.valorUnitario, this.nuevoArticulo.impuestoUnitario) !== this.utilsService.numeros(this.nuevoArticulo.precioInterno)) {
+                this.nuevoArticulo.precioInterno = this.utilsService.calcularInterno(this.nuevoArticulo.valorUnitario, this.nuevoArticulo.impuestoUnitario)
+              }
             }
           }, error => {
             if (error.status === 401) {
