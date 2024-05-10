@@ -377,7 +377,7 @@
                                 <div *ngIf="articulos.isEdit">
                                     <input class="input-group input-group-sm" id="cantidad" type="number"
                                         name="cantidad" [errorStateMatcher]="matcher" matInput
-                                        [(ngModel)]="nuevoPrecio.limpiar" (ngModelChange)="row.cantidad = $event" required>
+                                        (ngModel)="reset.cantidad" (ngModelChange)="row.cantidad = $event" required>
                                 </div>
                             </span>
                         </td>

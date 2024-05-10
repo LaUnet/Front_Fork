@@ -130,7 +130,10 @@ export class ComprasComponent {
     total: 0,
     cantidad: 0,
     descuentoUnitario: 0,
-    limpiar: 0
+  }
+
+  reset: any = {
+    cantidad: 0,
   }
 
   matcher = new MyErrorStateMatcher();
