@@ -722,13 +722,18 @@
                                 <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
                                     *matHeaderCellDef>Total Venta</th>
                                 <td mat-cell *matCellDef="let viewItem; let i = index" style="font-family: Impact">
-                                    {{viewItem.total | currency : 'USD' : 'symbol' : '1.0-0'}}
+                                    <div *ngIf="viewItem.cantidadEfectivo == 0" class="colorRowTransferencia">
+                                        {{viewItem.total | currency : 'USD' : 'symbol' : '1.0-0'}}
+                                    </div>
+                                    <div *ngIf="viewItem.cantidadEfectivo > 0" class="colorRowEfectivo">
+                                        {{viewItem.total | currency : 'USD' : 'symbol' : '1.0-0'}}
+                                    </div>
                                 </td>
                             </ng-container>
                             <ng-container matColumnDef="vendedor">
                                 <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
                                     *matHeaderCellDef> Vendedor </th>
-                                <td mat-cell *matCellDef="let viewItem">
+                                <td mat-cell *matCellDef="let viewItem">           
                                     {{viewItem.vendedor}}
                                 </td>
                             </ng-container>

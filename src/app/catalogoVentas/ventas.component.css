@@ -154,3 +154,12 @@
     min-width: 35%;
     max-width: 35%;
   }
+
+.colorRowEfectivo {
+  background-color:rgba(0, 255, 85, 0.658)
+  } 
+
+  .colorRowTransferencia {
+    color:black;
+    
+  }
