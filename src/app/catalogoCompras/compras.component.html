@@ -629,7 +629,7 @@
                                     <mat-icon style="font-weight:bolder;" matSuffix>gavel</mat-icon>
                                     <input matInput [(ngModel)]="nuevaCompra.impuesto" id="impuesto" name="impuesto"
                                         [errorStateMatcher]="matcher" type="number" disabled>
-                                    <span matTextSuffix>{{this.operaciones.impuestoCompra| currency}}</span>
+                                    <span matTextSuffix>{{this.operaciones.impuestoCompra| currency : 'USD' : 'symbol' : '1.0-0'}}</span>
                                 </mat-form-field>
                             </td>
                         </div>
