@@ -32,7 +32,7 @@ export class ComprasComponent {
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService) { }
 
 
-  columnas: string[] = ['No', 'descripcion', 'referencia', 'marca', 'cantidad', 'valorUnitario', 'impuesto', 'subtotal', 'descuento', 'total', 'precioVenta', 'precioMayoreo', 'precioInterno', 'isEdit'];
+  columnas: string[] = ['No', 'descripcion', 'referencia', 'marca', 'cantidad', 'valorUnitario', 'descuento', 'subtotal', 'impuesto', 'total', 'precioVenta', 'precioMayoreo', 'precioInterno', 'isEdit'];
 
   openedMenu!: boolean;
   openedArticle!: boolean;
@@ -321,7 +321,7 @@ export class ComprasComponent {
     {
       "numeroFactura": this.nuevaCompra.numeroFactura,
       "fechaFactura": this.nuevaCompra.fechaFactura,
-      "subtotal": this.operaciones.subtotalCompra - this.operaciones.impuestoCompra,
+      "subtotal": this.operaciones.subtotalCompra,
       "impuesto": this.operaciones.impuestoCompra,
       "descuento": this.operaciones.descuentoCompra,
       "total": this.operaciones.totalCompra,
@@ -447,8 +447,8 @@ export class ComprasComponent {
 
     let i = this.dataSourceCargarArticulos.length - 1;
 
-    this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario = this.utilsService.calcularSubtotal(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario);
-    this.dataSourceCargarArticulos[i].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario), this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario);
+    this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario = this.utilsService.calcularSubtotal(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario);
+    this.dataSourceCargarArticulos[i].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario), this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario);
     this.dataSourceCargarArticulos[i].precios[0].precioInterno = this.utilsService.calcularInterno(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario);
 
 
@@ -463,10 +463,10 @@ export class ComprasComponent {
     this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, this.utilsService.numeros(this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario)];
     this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
 
-    this.operaciones.impuestoCompraArray = [...this.operaciones.impuestoCompraArray, this.utilsService.calcularImpuesto(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario)];
+    this.operaciones.impuestoCompraArray = [...this.operaciones.impuestoCompraArray, this.utilsService.calcularImpuesto(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario)];
     this.operaciones.impuestoCompra = this.operaciones.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
 
-    this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.dataSourceCargarArticulos[i].precios[0].total, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario)];
+    this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario)];
     this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
 
     this.operaciones.totalCompraArray = [...this.operaciones.totalCompraArray, this.utilsService.numeros(this.dataSourceCargarArticulos[i].precios[0].total)];
@@ -511,8 +511,8 @@ export class ComprasComponent {
     this.dataSourceCargarArticulos.splice(i, 1, JSON.parse(this.localStorageService.getItem(element._id)!));
     this.dataSourceCargarArticulos = [...this.dataSourceCargarArticulos];
 
-    this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario = this.utilsService.calcularSubtotal(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario);
-    this.dataSourceCargarArticulos[i].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario), this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario);
+    this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario = this.utilsService.calcularSubtotal(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario);
+    this.dataSourceCargarArticulos[i].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario), this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario);
 
     this.localStorageService.removeItem(this.dataSourceCargarArticulos[i]._id);
     this.localStorageService.setItem(this.dataSourceCargarArticulos[i]._id, JSON.stringify(this.dataSourceCargarArticulos[i]));
@@ -521,11 +521,11 @@ export class ComprasComponent {
     this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray];
     this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
 
-    this.operaciones.impuestoCompraArray.splice(i, 1, this.utilsService.calcularImpuesto(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario));
+    this.operaciones.impuestoCompraArray.splice(i, 1, this.utilsService.calcularImpuesto(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario, this.dataSourceCargarArticulos[i].precios[0].impuestoUnitario));
     this.operaciones.impuestoCompraArray = [...this.operaciones.impuestoCompraArray];
     this.operaciones.impuestoCompra = this.operaciones.impuestoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
 
-    this.operaciones.descuentoCompraArray.splice(i, 1, this.utilsService.calcularDescuento(this.dataSourceCargarArticulos[i].precios[0].subtotalUnitario, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario));
+    this.operaciones.descuentoCompraArray.splice(i, 1, this.utilsService.calcularDescuento(this.dataSourceCargarArticulos[i].precios[0].valorUnitario, this.dataSourceCargarArticulos[i].precios[0].cantidad, this.dataSourceCargarArticulos[i].precios[0].descuentoUnitario));
     this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray];
     this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
 
@@ -549,7 +549,7 @@ export class ComprasComponent {
   }
 
   subtotal(element: any, index: number) {
-    this.dataSourceCargarArticulos[index].precios[0].subtotalUnitario = this.utilsService.calcularSubtotal(element[0].valorUnitario, element[0].cantidad, element[0].impuestoUnitario)
+    this.dataSourceCargarArticulos[index].precios[0].subtotalUnitario = this.utilsService.calcularSubtotal(element[0].valorUnitario, element[0].cantidad, element[0].descuentoUnitario)
   }
 
   interno(element: any, index: number) {
@@ -557,13 +557,14 @@ export class ComprasComponent {
   }
 
   total(element: any, index: number) {
-    this.dataSourceCargarArticulos[index].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(element[0].valorUnitario, element[0].cantidad, element[0].impuestoUnitario), element[0].descuentoUnitario)
+    this.dataSourceCargarArticulos[index].precios[0].total = this.utilsService.calculartotal(this.utilsService.calcularSubtotal(element[0].valorUnitario, element[0].cantidad, element[0].descuentoUnitario), element[0].impuestoUnitario)
   }
 
   unitarioIvaIncluido(element: any, index: number) {
     this.ivaIncluido = element[0].impuestoUnitario === "019" ? true : false;
     if (this.ivaIncluido) {
       this.dataSourceCargarArticulos[index].precios[0].valorUnitario = this.utilsService.calcularUnitario(element[0].valorUnitario, parseInt(element[0].impuestoUnitario));
+      this.dataSourceCargarArticulos[index].precios[0].subtotalUnitario = this.utilsService.calcularUnitario(element[0].subtotalUnitario, parseInt(element[0].impuestoUnitario));
     }
   }
 
