@@ -98,6 +98,9 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "cache": {
+      "environment": "all"
+    }
   }
 }
