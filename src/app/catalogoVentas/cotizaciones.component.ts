@@ -325,13 +325,15 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
     }
     this.dataSourceSales =
     {
-      "numeroFactura": new Date().getTime(),
-      "fechaFactura": this.utilsService.getDate(null),
+      "numeroCotizacion": new Date().getTime(),
+      "fechaCotizacion": this.utilsService.getDate(null),
       "fechaVencimiento": this.utilsService.getDate(null),
       "subtotal": this.operaciones.subtotalCompra,
       "impuesto": this.operaciones.impuestoCompra,
       "descuento": this.operaciones.descuentoCompra,
       "total": this.operaciones.subtotalCompra - this.operaciones.descuentoCompra,
+      "usuario": this.tokenService.userName,
+      "fechaConsultas": new Date(),
       "cliente": {
         "nombreRazonSocial": this.consultaCliente.nombreRazonSocial,
         "tipoDocumento": this.consultaCliente.tipoDocumento,
@@ -341,6 +343,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       },
       "articulo": this.dataSourceSalesArticle,
     }
+    console.log(this.dataSourceSales)
     this.dialogo
       .open(DialogoCotizacionComponent, {
         data: this.dataSourceSales
@@ -349,12 +352,37 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       .subscribe((confirmar: boolean) => {
         try {
           if (confirmar) {
-            this.refreshPage();
+            this.guardarCotizacion();
           }
         } catch (error) {
           //alert("No hacer nada");
         }
       });
+  }
+
+  async guardarCotizacion() {
+    const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/quotations';
+    //const url = 'http://localhost:3030/api/sales';
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`
+      })
+    };
+    this.isLoadingResults = true;
+    try {
+      const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
+      this.mensajeExitoso = "Cotización guardada correctamente.";
+      this.isLoadingResults = false;
+      setTimeout(() => {
+        this.refreshPage();
+      }, 200);
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallido = 'Error al guardar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
   }
 
   async guardarCliente() {

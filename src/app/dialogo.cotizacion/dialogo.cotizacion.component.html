@@ -5,9 +5,6 @@
             <strong>{{ dataSourceSales.cliente.nombreRazonSocial }}</strong>. Su cotizacion fue realizada correctamente
             <button class="btn btn-sm btn-info ml-1 mr-1" (click)="print()">
                 Imprimir Cotización</button>
-            <button class="btn btn-sm btn-info ml-2" (click)="cerrar()">
-                Realizar una nueva orden
-            </button>
             <button class="btn btn-sm btn-info ml-3" (click)="continuar()">
                 Continuar Cotizando
             </button>
@@ -15,8 +12,8 @@
         <div class="card"  id="printable">
             <div class="card-header">
                 Fecha Cotización:
-                <strong>{{ dataSourceSales.fechaFactura}}</strong>
-                <span class="float-right"> <strong> Cotización # {{ dataSourceSales.numeroFactura }} </strong></span>
+                <strong>{{ dataSourceSales.fechaCotizacion}}</strong>
+                <span class="float-right"> <strong> Cotización # {{ dataSourceSales.numeroCotizacion }} </strong></span>
             </div>
             <div class="card-body">
                 <div class="row">

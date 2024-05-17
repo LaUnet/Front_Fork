@@ -448,11 +448,11 @@
                                 style="font-family:Impact; width: 80%; margin-right: 15%; background-color: gainsboro;"
                                 color="basic">Abrir Caja
                                 <mat-icon>all_inbox</mat-icon>
-                            </button>                      
-                            <button *ngIf="this.tokenService.rolName" mat-button type="button" matTooltip="Vaciar Ventas"
-                                (click)="cleanVentaVerificada()"
+                            </button>
+                            <button *ngIf="this.tokenService.rolName" mat-button type="button"
+                                matTooltip="Vaciar Ventas" (click)="cleanVentaVerificada()"
                                 style="font-family:Impact; width: 80%; margin-right: 15%; background-color: gainsboro;"
-                                color="basic">Vaciar Ventas 
+                                color="basic">Vaciar Ventas
                                 <mat-icon>clear_all</mat-icon>
                             </button>
                             <button type="button" mat-mini-fab matTooltip="Registrar Cliente" color="basic"
@@ -478,11 +478,11 @@
                             </mat-form-field>
                         </td>
                         <td>
-                            <mat-form-field class="full-width" appearance="outline" style="position: static;">
-                                <mat-label style="font-weight:bold">Tipo Documento</mat-label>
-                                <mat-icon matSuffix>perm_identity</mat-icon>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label style="font-weight:bold">Nombre Cliente</mat-label>
+                                <mat-icon matSuffix>person</mat-icon>
                                 <input matInput style="font-weight:bold; color: rgb(53, 53, 134);" type="text"
-                                    [(ngModel)]="consultaCliente.tipoDocumento" name="tipoDocumento"
+                                    [(ngModel)]="consultaCliente.nombreRazonSocial" name="nombreRazonSocial"
                                     [errorStateMatcher]="matcher" disabled>
                             </mat-form-field>
                         </td>
@@ -491,12 +491,16 @@
                 <table class="full-width" style="margin-top: -2%;">
                     <tr>
                         <td>
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label style="font-weight:bold">Nombre Cliente</mat-label>
-                                <mat-icon matSuffix>person</mat-icon>
-                                <input matInput style="font-weight:bold; color: rgb(53, 53, 134);" type="text"
-                                    [(ngModel)]="consultaCliente.nombreRazonSocial" name="nombreRazonSocial"
-                                    [errorStateMatcher]="matcher" disabled>
+                            <mat-form-field class="full-width" appearance="outline" style="position: static;">
+                                <mat-label style="font-weight:bold">Consultar # Cotización</mat-label>
+                                <input matInput type="text" [(ngModel)]="consultaCliente.numeroCotizacion"
+                                    name="numeroDocumento" [formControl]="consultaNumeroCotizacionFormControl"
+                                    [errorStateMatcher]="matcher" (keydown.enter)="buscarCotizacion()">
+                                <button type="button" mat-icon-button matSuffix color="basic"
+                                    [disabled]="consultaNumeroCotizacionFormControl.invalid"
+                                    (click)="buscarCotizacion()">
+                                    <mat-icon matSuffix color="primary">request_quote</mat-icon>
+                                </button>
                             </mat-form-field>
                         </td>
                     </tr>
@@ -531,9 +535,14 @@
                                                 -
                                             </button>
                                         </div>
-                                        <input type="text" style="background-color: white;"
-                                            class="form-control text-center" value="{{row.cantidad}}" disabled />
-                                        <!-- #qtyRef (keyup)="changeQty(carItem, i, qtyRef.value, 'replace')" -->
+                                        
+                                        <div disabled *ngIf="carItem.stock < row.cantidad" type="text" class="form-control text-center" style="background-color: rgb(228, 125, 125);" disabled>
+                                            {{row.cantidad}}
+                                        </div>
+                                        <div *ngIf="carItem.stock >= row.cantidad" type="text" class="form-control text-center" disabled>
+                                            {{row.cantidad}}
+                                        </div>
+                                        <!-- #qtyRef (keyup)="changeQty(carItem, i, qtyRef.value, 'replace')"  <input type="text" class="form-control text-center" style="background-color: white;" value="{{row.cantidad}}" disabled /> -->
                                         <div class="input-group-append">
                                             <button class="btn btn-info" type="button"
                                                 (click)="changeQty(carItem, i, 1, '')">
@@ -733,7 +742,7 @@
                             <ng-container matColumnDef="vendedor">
                                 <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
                                     *matHeaderCellDef> Vendedor </th>
-                                <td mat-cell *matCellDef="let viewItem">           
+                                <td mat-cell *matCellDef="let viewItem">
                                     {{viewItem.vendedor}}
                                 </td>
                             </ng-container>

@@ -29,27 +29,7 @@ export class DialogoCotizacionComponent implements OnInit{
   print() {
     window.focus();
     window.print();
-    /**
-    let printContents, printCard, printCardheader, printCardbody, popupWin;
-    printCard = document.getElementById("card")?.innerHTML.toString();
-    printCardheader = document.getElementById("cardheader")?.innerHTML.toString();
-    printCardbody = document.getElementById("cardbody")?.innerHTML.toString();
-    printContents = (<string>printCard + "", <string>printCardheader + "", <string>printCardheader + "").replace("col-sm", "col-xs");
-    // console.log(printContents);
-    document.open();
-    document.write(`
-      <html>
-        <head>
-        ${printCard},
-        ${printCardheader}
-        </head>
-        <body onload="window.print();">
-          ${printCardbody}
-        </body>
-      </html>`);
-    window.close();
-    document.close();
-    */
+    this.dialogo.close(true);
   }
 
   cerrar() {
