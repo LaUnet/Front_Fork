@@ -396,7 +396,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     };
 
     let httpParams = new HttpParams();
-    httpParams = element.codigoBarras !== "" ? httpParams.append('codigoBarras', element.codigoBarras) : httpParams.append('codigo', element.codigo);
+    httpParams = httpParams.append('codigo', element.codigo);
     this.isLoadingResults = true;
     try {
       this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?${httpParams}`, httpOptions)
