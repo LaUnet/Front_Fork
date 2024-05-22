@@ -28,7 +28,6 @@ export class DialogoBuscarCotizacionComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public mensaje: string, @Inject(TokenService) public tokenService: TokenService, @Inject(HttpClient) private http: HttpClient) { }
 
   seleccionar(element: any): void {
-    console.log(element)
     this.dialogo.close(element);
   }
 

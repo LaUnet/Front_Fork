@@ -399,7 +399,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     httpParams = httpParams.append('codigo', element.codigo);
     this.isLoadingResults = true;
     try {
-      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?${httpParams}`, httpOptions)
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             if (response.Data.totalDocs === 0) {

@@ -78,7 +78,6 @@ export class ReportesDetalleArticulosComponent implements OnInit {
             this.dataSourceMovimientos = new MatTableDataSource(this.tableUtilsService.mapDetalleArticulos(response.Data.docs));
             this.dataSourceArticulos.paginator = this.paginator;
             this.dataSourceArticulos.sort = this.sort;
-            console.log(response.Data.docs)
           }
           this.isLoadingResults = false;
           //this.dataSourceMovimientos = this.dataSourceArticulos.filteredData;
@@ -114,7 +113,6 @@ export class ReportesDetalleArticulosComponent implements OnInit {
 
   changeList(value: any) {
     const filtro = this.dataSourceMovimientos.filteredData.filter((stock: { Stock: number; }) => stock.Stock <= value);
-    console.log(filtro)
   }
 }
 

@@ -240,7 +240,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
     httpParams = process === 0 ? httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion) : httpParams.append('codigoBarras', this.nuevaBusqueda.buscarCodigoBarras);
     this.isLoadingResults = true;
     try {
-      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?${httpParams}`, httpOptions)
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             if (response.Data.totalDocs === 0) {
@@ -429,7 +429,6 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/quotations?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            console.log(response.Data[0].articulo.length)
             for (let i = 0; i < response.Data[0].articulo.length; i++) {
               this.buscarCatalogoCotizacion(response.Data[0].articulo[i]);
             }
@@ -474,7 +473,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
     httpParams = httpParams.append('codigo', element.codigo);
     this.isLoadingResults = true;
     try {
-      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?${httpParams}`, httpOptions)
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             if (response.Data.totalDocs === 0) {
