@@ -25,36 +25,11 @@ section {
 }
 
 @media print {
-  @page {
-    page-break-inside: avoid;
-    page-break-after: always;
-    size: 210mm 297mm;
-    margin: 5mm 5mm 5mm 5mm;
-    orphans: 0;
-    widows: 0;
-  }
-
-  .nueva-pagina {
-    page-break-before: always;
-    }
-    
-  .formulario {
-     zoom:90%;
-  }
-  .formulario:nth-child(even) { 
-      page-break-inside: avoid;
-      page-break-after: always;
-  }
-  body * {
-    visibility:hidden;
-  }
-  #printable, #printable * {
-    visibility:visible;
-  }
   #printable {
-    position:fixed;
+    position: fixed;
     margin-top: 0%;
     left: 0;
     top: 0;
+    display: table-footer-group;
   }
 }
