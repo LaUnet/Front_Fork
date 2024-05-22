@@ -32,6 +32,12 @@ export class DialogoCotizacionComponent implements OnInit{
     this.dialogo.close(true);
   }
 
+  printOnly() {
+    window.focus();
+    window.print();
+    this.dialogo.close(false);
+  }
+
   cerrar() {
     this.dialogo.close(true);
   }
