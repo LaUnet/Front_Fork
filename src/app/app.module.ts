@@ -21,6 +21,7 @@ import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.co
 import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.component';
 import { DialogoMetodoPagoComponent } from './dialogo.metodoPago/dialogo.metodoPago.component';
 import { DialogoCotizacionComponent } from './dialogo.cotizacion/dialogo.cotizacion.component';
+import { DialogoBuscarCotizacionComponent } from './dialogo.buscarCotizacion/dialogo.buscarCotizacion.component';
 import { ReportesVentasComponent } from './reportes/reportesVentas.component';
 import { ReportesComprasComponent } from './reportes/reportesCompras.component';
 import { ReportesDetalleArticulosComponent } from './reportes/reportesDetalleArticulos.component';
@@ -96,7 +97,8 @@ import { CurrencyPipe } from '@angular/common';
     RegistrarCajaComponent,
     AdministrarCajaComponent,
     CotizacionesComponent,
-    DialogoCotizacionComponent
+    DialogoCotizacionComponent,
+    DialogoBuscarCotizacionComponent
   ],
   imports: [
     BrowserModule,

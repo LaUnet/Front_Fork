@@ -9,6 +9,8 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { DialogoCarItemComponent } from "../dialogo.carItem/dialogo.carItem.component";
 import { DialogoCotizacionComponent } from '../dialogo.cotizacion/dialogo.cotizacion.component';
+import { DialogoBuscarCotizacionComponent } from "../dialogo.buscarCotizacion/dialogo.buscarCotizacion.component";
+
 import { MatSort } from '@angular/material/sort';
 import { NavigationEnd, Router } from '@angular/router';
 import { LocalStorageService } from '../local-storage.service';
@@ -46,6 +48,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
   dataSourceSales: any = [];
   dataSourceSalesArticle: any = [];
   isLoadingResults: boolean = false;
+  inventarioCotizacion: boolean = true
   //Pagination
   pageEvent!: PageEvent;
   pageIndex: number = 0;
@@ -106,6 +109,8 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
   municipioFormControl = new FormControl('', [Validators.required]);
   barrioFormControl = new FormControl('', [Validators.required]);
   tipoClienteFormControl = new FormControl('', [Validators.required]);
+  consultaNumeroCotizacionFormControl = new FormControl('', [Validators.required]);
+  consultaNumeroDocumentoFormControl = new FormControl('', [Validators.required]);
 
   nuevoCliente: any = {
     tipoDocumento: '',
@@ -124,7 +129,6 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
   /**
  * Control Error Textfields Consultar Customers
  */
-  consultaNumeroDocumentoFormControl = new FormControl('', [Validators.required]);
   consultaCliente: any = {
     tipoDocumento: '',
     numeroDocumento: '1111111111',
@@ -343,7 +347,6 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       },
       "articulo": this.dataSourceSalesArticle,
     }
-    console.log(this.dataSourceSales)
     this.dialogo
       .open(DialogoCotizacionComponent, {
         data: this.dataSourceSales
@@ -409,6 +412,137 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       this.mensajeFallidoCliente = 'Error al guardar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
+  }
+
+  async buscarCotizacion() {
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('numeroCotizacion', this.consultaCliente.numeroCotizacion);
+    this.isLoadingResults = true;
+    try {
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/quotations?${httpParams}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            console.log(response.Data[0].articulo.length)
+            for (let i = 0; i < response.Data[0].articulo.length; i++) {
+              this.buscarCatalogoCotizacion(response.Data[0].articulo[i]);
+            }
+            this.consultaCliente.nombreRazonSocial = response.Data[0].cliente.nombreRazonSocial;
+            this.consultaCliente.tipoDocumento = response.Data[0].cliente.tipoDocumento;
+            this.consultaCliente.numeroDocumento = response.Data[0].cliente.numeroDocumento;
+            this.consultaCliente.email = response.Data[0].cliente.email;
+            this.consultaCliente.tipoCliente = response.Data[0].cliente.tipoCliente;
+          }
+          this.isLoadingResults = false;
+          this.mensajeFallido = "";
+          this.consultaCliente.numeroCotizacion = "";
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          if (error.status === 404) {
+            this.mensajeFallido = 'Numero de cotización no encontrada.';
+            return;
+          }
+          console.error('Error en la solicitud:', error);
+        });
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+  }
+
+  async buscarCatalogoCotizacion(element: any) {
+    this.mensajeFallido = "";
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('codigo', element.codigo);
+    this.isLoadingResults = true;
+    try {
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?${httpParams}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            if (response.Data.totalDocs === 0) {
+              this.mensajeFallido = `Articulo ${element.descripcion}, no encontrado`;
+            } else {
+              if (response.Data.docs.length === 1) {
+                this.addToCartCotizacion(response.Data.docs[0], element)
+              }
+            }
+          }
+          this.isLoadingResults = false;
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          console.error('Error en la solicitud:', error);
+        });
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+  }
+
+  addToCartCotizacion(inventario: any = [], element: any = []) {
+    try {
+      element =
+      {
+        "_id": element._id,
+        "stock": this.utilsService.numeros(inventario.inventarios[0].stock),
+        "detalleArticulo": [
+          {
+            "codigo": element.codigo,
+            "codigoBarras": element.codigoBarras,
+            "descripcion": element.descripcion,
+            "cantidad": this.utilsService.numeros(element.cantidad),
+            "precioVenta": this.utilsService.numeros(element.precioVenta),
+            "precioMayoreo": this.utilsService.numeros(inventario.precios[0].precioMayoreo) > 0 ? inventario.precios[0].precioMayoreo : 0,
+            "precioInterno": this.utilsService.numeros(inventario.precios[0].precioInterno) > 0 ? inventario.precios[0].precioInterno : 0,
+            "descuento": this.utilsService.numeros(element.descuento),
+            "subtotal": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precioVenta), element.cantidad),
+            "impuesto": this.utilsService.numeros(element.impuesto),
+            "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precioVenta), element.cantidad) - this.utilsService.numeros(element.descuento),
+            "mayoreo": element.mayoreo,
+            "interno": element.interno,
+            "cotizacion": false,
+          }
+        ]
+      }
+
+      this.localStorageService.setItem(element._id, JSON.stringify(element));
+      this.dataSourceCarItem = [...this.dataSourceCarItem, JSON.parse(this.localStorageService.getItem(element._id)!)]
+      this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
+
+      this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
+      this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, this.utilsService.multiplicarNumero(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta, this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad)]
+      this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.numeros(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].descuento)]
+      this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallidoCliente = 'Error al cargar el producto. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+
   }
 
   setCliente() {
@@ -630,6 +764,33 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       this.operaciones.totalArticulos = 0,
       this.operaciones.totalArticulosArray = []
   };
+
+  buscarCotizacionDialogo(): void {
+    this.dialogo
+      .open(DialogoBuscarCotizacionComponent, {
+        //data: message
+      })
+      .afterClosed()
+      .subscribe((element: any = []) => {
+        try {
+          if (element.length !== 0) {
+            for (let i = 0; i < element.articulo.length; i++) {
+              this.buscarCatalogoCotizacion(element.articulo[i]);
+            }
+            this.consultaCliente.nombreRazonSocial = element.cliente.nombreRazonSocial;
+            this.consultaCliente.tipoDocumento = element.cliente.tipoDocumento;
+            this.consultaCliente.numeroDocumento = element.cliente.numeroDocumento;
+            this.consultaCliente.email = element.cliente.email;
+            this.consultaCliente.tipoCliente = element.cliente.tipoCliente;
+          } else {
+            //alert("No hacer nada");
+          }
+        } catch (error) {
+          //alert("No hacer nada");
+        }
+
+      });
+  }
 
 }
 

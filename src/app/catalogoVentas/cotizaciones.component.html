@@ -456,11 +456,11 @@
                             </mat-form-field>
                         </td>
                         <td>
-                            <mat-form-field class="full-width" appearance="outline" style="position: static;">
-                                <mat-label style="font-weight:bold">Tipo Documento</mat-label>
-                                <mat-icon matSuffix>perm_identity</mat-icon>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label style="font-weight:bold">Nombre Cliente</mat-label>
+                                <mat-icon matSuffix>person</mat-icon>
                                 <input matInput style="font-weight:bold; color: rgb(53, 53, 134);" type="text"
-                                    [(ngModel)]="consultaCliente.tipoDocumento" name="tipoDocumento"
+                                    [(ngModel)]="consultaCliente.nombreRazonSocial" name="nombreRazonSocial"
                                     [errorStateMatcher]="matcher" disabled>
                             </mat-form-field>
                         </td>
@@ -469,12 +469,15 @@
                 <table class="full-width" style="margin-top: -2%;">
                     <tr>
                         <td>
-                            <mat-form-field class="full-width" appearance="outline">
-                                <mat-label style="font-weight:bold">Nombre Cliente</mat-label>
-                                <mat-icon matSuffix>person</mat-icon>
-                                <input matInput style="font-weight:bold; color: rgb(53, 53, 134);" type="text"
-                                    [(ngModel)]="consultaCliente.nombreRazonSocial" name="nombreRazonSocial"
-                                    [errorStateMatcher]="matcher" disabled>
+                            <mat-form-field class="full-width" appearance="outline" style="position: static;">
+                                <mat-label style="font-weight:bold">Consultar # Cotización</mat-label>
+                                <input matInput type="text" [(ngModel)]="consultaCliente.numeroCotizacion"
+                                    name="numeroDocumento" [formControl]="consultaNumeroCotizacionFormControl"
+                                    [errorStateMatcher]="matcher" (keydown.enter)="buscarCotizacion()">
+                                <button type="button" mat-mini-fab matSuffix color="basic"
+                                    (click)="buscarCotizacionDialogo()" matTooltip="Buscar Cotización">
+                                    <mat-icon matSuffix color="primary">find_replace</mat-icon>
+                                </button>
                             </mat-form-field>
                         </td>
                     </tr>
