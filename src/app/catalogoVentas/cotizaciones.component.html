@@ -512,9 +512,16 @@
                                                 -
                                             </button>
                                         </div>
+                                        <div disabled *ngIf="carItem.stock < row.cantidad" type="text" class="form-control text-center" style="background-color: rgb(228, 125, 125);" disabled>
+                                            {{row.cantidad}}
+                                        </div>
+                                        <div *ngIf="carItem.stock >= row.cantidad" type="text" class="form-control text-center" disabled>
+                                            {{row.cantidad}}
+                                        </div>
+                                        <!--
                                         <input type="text" style="background-color: white;"
                                             class="form-control text-center" value="{{row.cantidad}}" disabled />
-                                        <!-- #qtyRef (keyup)="changeQty(carItem, i, qtyRef.value, 'replace')" -->
+                                         #qtyRef (keyup)="changeQty(carItem, i, qtyRef.value, 'replace')" -->
                                         <div class="input-group-append">
                                             <button class="btn btn-info" type="button"
                                                 (click)="changeQty(carItem, i, 1, '')">
