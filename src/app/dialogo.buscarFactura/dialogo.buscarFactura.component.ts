@@ -62,8 +62,8 @@ export class DialogoBuscarFacturaComponent implements OnInit {
     httpParams = httpParams.append('numeroFactura', this.consultar.cotizacionFactura);
     try {
       this.isLoadingResults = true;
-      //this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
-      this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
+      //this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceFactura = new MatTableDataSource(response.Data.docs)

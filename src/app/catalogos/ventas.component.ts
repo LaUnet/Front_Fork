@@ -311,8 +311,8 @@ export class VentasComponent implements AfterViewInit, OnInit {
     httpParams = httpParams.append('numeroFactura', this.consultaCliente.numeroFactura);
     this.isLoadingResults = true;
     try {
-      //this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
-      this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
+      //this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             for (let i = 0; i < response.Data.docs[0].articulo.length; i++) {
@@ -924,8 +924,8 @@ export class VentasComponent implements AfterViewInit, OnInit {
       let httpParams = new HttpParams();
       httpParams = httpParams.append('ventaVerificada', value);
       this.isLoadingResults = true;
-      //this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
-      this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
+      //this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceViewVerify = new MatTableDataSource(response.Data.docs);

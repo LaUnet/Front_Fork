@@ -164,8 +164,8 @@ export class DevolucionesComponent implements AfterViewInit, OnInit {
     httpParams = httpParams.append('numeroFactura', this.nuevaBusqueda.buscarVenta);
     this.isLoadingResults = true;
     try {
-      //this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
-      this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
+      //this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
