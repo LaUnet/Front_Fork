@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" class="mat-elevation-z6">
+<mat-toolbar *ngIf="this.tokenService.rolName" class="mat-elevation-z6" style="background-color: rgb(236, 210, 63);">
     <button type="button" mat-icon-button matTooltip="Menu" (click)="openedMenu=!openedMenu">
         <mat-icon>menu</mat-icon>
     </button>
@@ -15,7 +15,7 @@
     <span class="spacer"></span>
 
     <button type="button" mat-fab extended disabled class="colorText">
-        CATALOGO VENTAS
+        CATALOGO COTIZACIONES
     </button>
     <span class="spacer"></span>
     <span class="spacer"></span>
@@ -29,16 +29,6 @@
             </ng-template>
         </mat-menu>
     </button>
-    <div *ngIf="this.tokenService.rolName">
-        <button type="button" mat-icon-button matTooltip="Revisar Ventas" (click)="onToggleVerify()">
-            <div *ngIf="badge > 0">
-                <mat-icon matBadge={{badge}} matBadgeColor="warn">fact_check</mat-icon>
-            </div>
-            <div *ngIf="badge == 0">
-                <mat-icon matBadge={{badge}}>fact_check</mat-icon>
-            </div>
-        </button>
-    </div>
     <button mat-icon-button [matMenuTriggerFor]="config" matTooltip="Ajustes">
         <mat-icon>settings</mat-icon>
         <mat-menu #config="matMenu">
@@ -73,7 +63,12 @@
             </mat-list-item>
             <mat-list-item routerLink="/cotizacionesProductos" [class.mat-elevation-z0]="true">
                 <mat-icon>addchart</mat-icon>
-                <span>Cotizaciones Ventas</span>
+                <span>Catalogo Cotizaciones</span>
+            </mat-list-item>
+            <mat-list-item *ngIf="this.tokenService.rolName" routerLink="/devolucionesProductos"
+                [class.mat-elevation-z0]="true">
+                <mat-icon>assignment_return</mat-icon>
+                <span>Catalogo Devoluciones</span>
             </mat-list-item>
             <mat-divider></mat-divider>
             <mat-expansion-panel [class.mat-elevation-z0]="true">
@@ -440,21 +435,9 @@
                 <table class="full-width">
                     <tr>
                         <td>
-                            <span style="font-family: Impact;">Facturar Pedido</span>
+                            <span style="font-family: Impact;">Cotizar Pedido</span>
                         </td>
                         <mat-card-actions align="end">
-                            <button *ngIf="this.tokenService.rolName" mat-button type="button" matTooltip="Abrir Caja"
-                                (click)="printerUtilsService.connectToPrinter(false, dataSourceSales)"
-                                style="font-family:Impact; width: 80%; margin-right: 15%; background-color: gainsboro;"
-                                color="basic">Abrir Caja
-                                <mat-icon>all_inbox</mat-icon>
-                            </button>
-                            <button *ngIf="this.tokenService.rolName" mat-button type="button"
-                                matTooltip="Vaciar Ventas" (click)="cleanVentaVerificada()"
-                                style="font-family:Impact; width: 80%; margin-right: 15%; background-color: gainsboro;"
-                                color="basic">Vaciar Ventas
-                                <mat-icon>clear_all</mat-icon>
-                            </button>
                             <button type="button" mat-mini-fab matTooltip="Registrar Cliente" color="basic"
                                 (click)="openedCustomer=!openedCustomer">
                                 <mat-icon>person_add</mat-icon>
@@ -491,15 +474,24 @@
                 <table class="full-width" style="margin-top: -2%;">
                     <tr>
                         <td>
+                            <mat-form-field class="full-width" appearance="outline">
+                                <mat-label style="font-weight:bold">Correo Cliente</mat-label>
+                                <mat-icon matSuffix>email</mat-icon>
+                                <input matInput style="font-weight:bold; color: rgb(53, 53, 134);" type="text"
+                                    [(ngModel)]="consultaCliente.email" name="email" [errorStateMatcher]="matcher"
+                                    disabled>
+                            </mat-form-field>
+                        </td>
+                        <td>
                             <mat-form-field class="full-width" appearance="outline" style="position: static;">
                                 <mat-label style="font-weight:bold">Consultar # Cotización</mat-label>
                                 <input matInput type="text" [(ngModel)]="consultaCliente.numeroCotizacion"
                                     name="numeroDocumento" [formControl]="consultaNumeroCotizacionFormControl"
                                     [errorStateMatcher]="matcher" (keydown.enter)="buscarCotizacion()">
-                                <button type="button" mat-icon-button matSuffix color="basic"
-                                    [disabled]="consultaNumeroCotizacionFormControl.invalid"
-                                    (click)="buscarCotizacion()">
-                                    <mat-icon matSuffix color="primary">request_quote</mat-icon>
+                                <button type="button" mat-mini-fab matSuffix color="basic"
+                                    [disabled]="consultaNumeroCotizacionFormControl.valid"
+                                    (click)="buscarCotizacionDialogo()" matTooltip="Buscar Cotización">
+                                    <mat-icon matSuffix color="primary">published_with_changes</mat-icon>
                                 </button>
                             </mat-form-field>
                         </td>
@@ -534,14 +526,20 @@
                                                 (click)="changeQty(carItem, i, -1, '')">
                                                 -
                                             </button>
-                                        </div>                                       
-                                        <div disabled *ngIf="carItem.stock < row.cantidad" type="text" class="form-control text-center" style="background-color: rgb(228, 125, 125);" disabled>
+                                        </div>
+                                        <div disabled *ngIf="carItem.stock < row.cantidad" type="text"
+                                            class="form-control text-center"
+                                            style="background-color: rgb(228, 125, 125);" disabled>
                                             {{row.cantidad}}
                                         </div>
-                                        <div *ngIf="carItem.stock >= row.cantidad" type="text" class="form-control text-center" disabled>
+                                        <div *ngIf="carItem.stock >= row.cantidad" type="text"
+                                            class="form-control text-center" disabled>
                                             {{row.cantidad}}
                                         </div>
-                                        <!-- #qtyRef (keyup)="changeQty(carItem, i, qtyRef.value, 'replace')"  <input type="text" class="form-control text-center" style="background-color: white;" value="{{row.cantidad}}" disabled /> -->
+                                        <!--
+                                        <input type="text" style="background-color: white;"
+                                            class="form-control text-center" value="{{row.cantidad}}" disabled />
+                                         #qtyRef (keyup)="changeQty(carItem, i, qtyRef.value, 'replace')" -->
                                         <div class="input-group-append">
                                             <button class="btn btn-info" type="button"
                                                 (click)="changeQty(carItem, i, 1, '')">
@@ -679,13 +677,13 @@
                                     style="font-family:Impact; background-color:rgba(0, 255, 85, 0.658); width: 60%"
                                     [disabled]="(this.operaciones.subtotalCompra - this.operaciones.descuentoCompra) === 0 
                                     || consultaNumeroDocumentoFormControl.invalid || (this.consultaCliente.tipoDocumento === '' || this.consultaCliente.tipoDocumento === 'NO EXISTE')"
-                                    type="button" (click)="mostrarMetodoPagoCarItem()">Venta |
+                                    type="button" (click)="imprimirCotizacion()">Cotizacion |
                                     {{(this.operaciones.subtotalCompra -this.operaciones.descuentoCompra) | currency :
                                     'USD' : 'symbol' : '1.0-0'}}
                                 </button>
 
                                 <button mat-button style="background-color: gainsboro; width: 15%;" type="button"
-                                    color="primary"
+                                    color="warn"
                                     (click)="mostrarDialogo('Seguro requieres Cancelar?', 2, '', 0)">Cancelar
                                 </button>
                             </div>
@@ -694,131 +692,6 @@
                 </mat-card-actions>
             </form>
         </mat-card>
-        <!-- Contenido Ventas por revisar-->
-        <div class="verify" [ngClass]="{show:viewVerify}">
-            <mat-card> <!--class="mat-card-verify"-->
-                <form class="form" class="full-width">
-                    <div class="mat-elevation-z8">
-                        <table mat-table [dataSource]="dataSourceViewVerify" cellspacing="0">
-                            <ng-container matColumnDef="numeroFactura">
-                                <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
-                                    *matHeaderCellDef>
-                                    # Factura </th>
-                                <td mat-cell *matCellDef="let viewItem">
-                                    <div (mouseover)="viewProducts=true" (mouseout)="viewProducts=false">
-                                        <span *ngIf="!viewProducts">
-                                            {{viewItem.numeroFactura}}
-                                        </span>
-                                        <span *ngIf="viewProducts">
-                                            <button type="button" mat-icon-button matTooltip="Revisar Productos"
-                                                (mouseover)="onToggleVerifyProducts(viewItem)"
-                                                (mouseout)="onToggleVerifyProducts()">
-                                                <mat-icon>playlist_add_check</mat-icon>
-                                            </button>
-                                        </span>
-                                    </div>
-                                </td>
-                            </ng-container>
-                            <ng-container matColumnDef="fechaFactura">
-                                <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
-                                    *matHeaderCellDef> Fecha </th>
-                                <td mat-cell *matCellDef="let viewItem">
-                                    {{viewItem.fechaFactura}}
-                                </td>
-                            </ng-container>
-                            <ng-container matColumnDef="total">
-                                <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
-                                    *matHeaderCellDef>Total Venta</th>
-                                <td mat-cell *matCellDef="let viewItem; let i = index" style="font-family: Impact">
-                                    <div *ngIf="viewItem.cantidadEfectivo == 0" class="colorRowTransferencia">
-                                        {{viewItem.total | currency : 'USD' : 'symbol' : '1.0-0'}}
-                                    </div>
-                                    <div *ngIf="viewItem.cantidadEfectivo > 0" class="colorRowEfectivo">
-                                        {{viewItem.total | currency : 'USD' : 'symbol' : '1.0-0'}}
-                                    </div>
-                                </td>
-                            </ng-container>
-                            <ng-container matColumnDef="vendedor">
-                                <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
-                                    *matHeaderCellDef> Vendedor </th>
-                                <td mat-cell *matCellDef="let viewItem">
-                                    {{viewItem.vendedor}}
-                                </td>
-                            </ng-container>
-                            <ng-container matColumnDef="isVerified">
-                                <th style="font-family: Impact; background-color:gainsboro; width: 20%" mat-header-cell
-                                    *matHeaderCellDef>Acción</th>
-                                <td mat-cell *matCellDef="let viewItem; let i = index">
-                                    <button type="button" mat-mini-fab matSuffix color="primary"
-                                        matTooltip="Imprimir Recibo" class="buttonMatTable" (click)="printerUtilsService.connectToPrinter(true, viewItem);
-                                        actualizarVentaVerificada(true, viewItem)">
-                                        <mat-icon>receipt</mat-icon>
-                                    </button>
-                                    <button type="button" mat-mini-fab matSuffix color="accent"
-                                        matTooltip="Confirmar Venta" class="buttonMatTable" (click)="printerUtilsService.connectToPrinter(false, viewItem); 
-                                        actualizarVentaVerificada(true, viewItem)" onmou>
-                                        <mat-icon>library_add_check</mat-icon>
-                                    </button>
-                            </ng-container>
-                            <tr mat-header-row *matHeaderRowDef="columnasViewVerifyItems"></tr>
-                            <tr mat-row *matRowDef="let row; columns: columnasViewVerifyItems;"></tr>
-                        </table>
-                    </div>
-                </form>
-            </mat-card>
-        </div>
-        <!-- Contenido Productos por confirmar-->
-        <div class="verifyProducts" [ngClass]="{showProducts:viewVerifyProducts}">
-            <mat-card> <!--class="mat-card-verifyProducts"-->
-                <form class="form" class="full-width">
-                    <div class="mat-elevation-z8">
-                        <table mat-table [dataSource]="dataSourceViewVerifyProducts" cellspacing="0">
-                            <ng-container matColumnDef="descripcion">
-                                <th style="font-family: Impact; background-color:gainsboro; width: 25%" mat-header-cell
-                                    *matHeaderCellDef>
-                                    Descripción </th>
-                                <td mat-cell *matCellDef="let carItem">
-                                    {{carItem.descripcion}}
-                                </td>
-                                <td mat-footer-cell *matFooterCellDef style="font-family: Impact;">Total</td>
-                            </ng-container>
-                            <ng-container matColumnDef="cantidad">
-                                <th style="font-family: Impact; background-color:gainsboro; width: 18%" mat-header-cell
-                                    *matHeaderCellDef> Cantidad </th>
-                                <td mat-cell *matCellDef="let carItem; let i = index">
-                                    {{carItem.cantidad | number: '.0'}}
-                                </td>
-                                <td mat-footer-cell *matFooterCellDef></td>
-                            </ng-container>
-                            <ng-container matColumnDef="precio">
-                                <th style="font-family: Impact; background-color:gainsboro; width: 15%" mat-header-cell
-                                    *matHeaderCellDef>Precio Venta</th>
-                                <td mat-cell *matCellDef="let carItem">
-                                    {{carItem.precioVenta | currency : 'USD' : 'symbol' : '1.0-0'}}
-                                </td>
-                                <td mat-footer-cell *matFooterCellDef></td>
-                            </ng-container>
-                            <ng-container matColumnDef="total">
-                                <th style="font-family: Impact; background-color:gainsboro; width: 15%" mat-header-cell
-                                    *matHeaderCellDef> Total </th>
-                                <td mat-cell *matCellDef="let carItem; let i = index">
-                                    {{carItem.total | currency : 'USD' : 'symbol' : '1.0-0' }}
-                                </td>
-                                <strong>
-                                    <td mat-footer-cell *matFooterCellDef="let transaction"
-                                        style="font-family: Impact;">{{ getTotalVenta() | currency :
-                                        'USD' : 'symbol' : '1.0-0' }}
-                                    </td>
-                                </strong>
-                            </ng-container>
-                            <tr mat-header-row *matHeaderRowDef="columnasProducts"></tr>
-                            <tr mat-row *matRowDef="let row; columns: columnasProducts;"></tr>
-                            <tr mat-footer-row *matFooterRowDef="columnasProducts; sticky: true"></tr>
-                        </table>
-                    </div>
-                </form>
-            </mat-card>
-        </div>
         <img src="../../assets/PuntoU.jpg" class="img-fluid"
             style="position: absolute; top: 0; z-index: -100; width: 100%; min-height:min-content; max-height: max-content;">
     </mat-sidenav-content>

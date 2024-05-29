@@ -8,9 +8,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { DialogoCarItemComponent } from "../dialogo.carItem/dialogo.carItem.component";
-import { DialogoCotizacionComponent } from '../dialogo.cotizacion/dialogo.cotizacion.component';
-import { DialogoBuscarCotizacionComponent } from "../dialogo.buscarCotizacion/dialogo.buscarCotizacion.component";
-
+import { DialogoMetodoPagoComponent } from '../dialogo.metodoPago/dialogo.metodoPago.component';
 import { MatSort } from '@angular/material/sort';
 import { NavigationEnd, Router } from '@angular/router';
 import { LocalStorageService } from '../local-storage.service';
@@ -19,6 +17,8 @@ import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
 import { PrinterUtilsService } from '../printerUtils.service';
 import { CurrencyPipe } from '@angular/common';
+import { DialogoBuscarCotizacionComponent } from "../dialogo.buscarCotizacion/dialogo.buscarCotizacion.component";
+import { DialogoBuscarFacturaComponent } from "../dialogo.buscarFactura/dialogo.buscarFactura.component";
 
 /** Setear fechas */
 const month = new Date().getMonth();
@@ -26,11 +26,11 @@ const year = new Date().getFullYear();
 const day = new Date().getDate();
 
 @Component({
-  selector: 'app-cotizaciones',
-  templateUrl: './cotizaciones.component.html',
-  styleUrls: ['./ventas.component.css']
+  selector: 'app-ventas',
+  templateUrl: './ventas.component.html',
+  styleUrls: ['./catalogos.component.css']
 })
-export class CotizacionesComponent implements AfterViewInit, OnInit {
+export class VentasComponent implements AfterViewInit, OnInit {
 
   constructor(private router: Router, private http: HttpClient, public tokenService: TokenService, public dialogo: MatDialog,
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService,
@@ -38,8 +38,13 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
 
   columnas: string[] = ['codigoBarras', 'descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioventa', 'accion'];
   columnasCarItem: string[] = ['descripcion', 'cantidad', 'precio', 'total', 'isEdit'];
+  columnasViewVerifyItems: string[] = ['numeroFactura', 'fechaFactura', 'total', 'vendedor', 'isVerified'];
+  columnasProducts: string[] = ['descripcion', 'cantidad', 'precio', 'total'];
 
   //Habuilitadores + DataSources
+  viewVerifyProducts: boolean = false;
+  viewProducts: boolean = false;
+  viewVerify: boolean = false;
   openedMenu!: boolean;
   openedCustomer!: boolean;
   dataSourceCatalogo: any = [];
@@ -47,19 +52,23 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
   dataSourceCarItem: any = [];
   dataSourceSales: any = [];
   dataSourceSalesArticle: any = [];
+  dataSourceViewVerify: any = [];
+  dataSourceViewVerifyProducts: any = [];
+  dataSourceCajas: any = [];
   isLoadingResults: boolean = false;
-  inventarioCotizacion: boolean = true
   //Pagination
   pageEvent!: PageEvent;
   pageIndex: number = 0;
   pageSize !: number;
   length!: number;
   pageSizeOptions = [20];
-  //Storage
+  //Storage 
   localStorageToken !: any;
   localStorageUser !: any;
+  localStorageCashier !: any;
   subscriber!: Subscription;
   //Calculos
+  badge!: number;
   startDate!: any;
   endDate!: any;
   operaciones: any = {
@@ -110,6 +119,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
   barrioFormControl = new FormControl('', [Validators.required]);
   tipoClienteFormControl = new FormControl('', [Validators.required]);
   consultaNumeroCotizacionFormControl = new FormControl('', [Validators.required]);
+  consultaNumeroFacturaFormControl = new FormControl('', [Validators.required]);
   consultaNumeroDocumentoFormControl = new FormControl('', [Validators.required]);
 
   nuevoCliente: any = {
@@ -134,7 +144,9 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
     numeroDocumento: '1111111111',
     nombreRazonSocial: '',
     email: '',
-    tipoCliente: ''
+    tipoCliente: '',
+    numeroCotizacion: '',
+    numeroFactura: ''
   };
 
 
@@ -174,7 +186,13 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
     } else {
       this.routerLinkLogin();
     }
+    this.buscarCajaAbierta();
     this.buscarCliente();
+    this.buscarVentaVerificada(false);
+  }
+
+  ngOnDestroy() {
+    this.subscriber?.unsubscribe();
   }
 
   ngAfterContentChecked() {
@@ -185,6 +203,61 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
     setTimeout(() => {
       this.InputField.nativeElement.focus();
     }, 500);
+  }
+
+  async buscarCajaAbierta() {
+    this.startDate = new Date(year, month, day);
+    this.endDate = new Date(year, month, day + 1);
+    const token = this.tokenService.token;
+    //const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1N2M3YzI2ZDI5NDRiMmM2MWFiZWQ5NCIsImlhdCI6MTcxMTc1MTk5NywiZXhwIjoxNzExODM4Mzk3fQ.ofi_91n-PGP50bUAoXUWga26suD97WX9W9Uyy24u3Vc"
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    this.isLoadingResults = true;
+    try {
+      let httpParams = new HttpParams();
+      httpParams = httpParams.append('startDate', this.startDate);
+      httpParams = httpParams.append('endDate', this.endDate);
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashierMovements?${httpParams}`, httpOptions)
+        //this.http.get<any>(`http://localhost:3030/api/cashierMovements?${httpParams}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceCajas = response.Data.filter(((arr: { estadoActivo: any; }) => arr.estadoActivo === true))
+          }
+          this.isLoadingResults = false;
+          switch (this.dataSourceCajas.length) {
+            case 0:
+              alert("No Existe Caja Abierta")
+              this.routerLinkLogin();
+              return;
+            case 1:
+              this.localStorageService.setItem('cashier', this.dataSourceCajas[0].idCaja);
+              this.localStorageCashier = this.dataSourceCajas[0].idCaja;
+              return;
+            default:
+              alert("Seleccione Caja")
+              return;
+          }
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          if (error.status === 404) {
+            alert("No Existe Caja Abierta")
+            this.routerLinkLogin();
+            return;
+          }
+          console.error('Error en la solicitud:', error);
+        });
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
   }
 
   async buscarCliente() {
@@ -226,6 +299,52 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
     }
   }
 
+  async buscarFactura() {
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('numeroFactura', this.consultaCliente.numeroFactura);
+    this.isLoadingResults = true;
+    try {
+      //this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
+      this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            for (let i = 0; i < response.Data.docs[0].articulo.length; i++) {
+              this.buscarCatalogoVenta(response.Data.docs[0].articulo[i]);
+            }
+            this.consultaCliente.nombreRazonSocial = response.Data.docs[0].cliente.nombreRazonSocial;
+            this.consultaCliente.tipoDocumento = response.Data.docs[0].cliente.tipoDocumento;
+            this.consultaCliente.numeroDocumento = response.Data.docs[0].cliente.numeroDocumento;
+            this.consultaCliente.email = response.Data.docs[0].cliente.email;
+            this.consultaCliente.tipoCliente = response.Data.docs[0].cliente.tipoCliente;
+          }
+          this.isLoadingResults = false;
+          this.mensajeFallido = "";
+          this.consultaCliente.numeroFactura = "";
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          if (error.status === 404) {
+            this.mensajeFallido = 'Numero de factura no encontrada.';
+            return;
+          }
+          console.error('Error en la solicitud:', error);
+        });
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+  }
+
   async buscarCatalogo(process: number) {
     this.mensajeFallido = "";
     const token = this.tokenService.token;
@@ -240,7 +359,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
     httpParams = process === 0 ? httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion) : httpParams.append('codigoBarras', this.nuevaBusqueda.buscarCodigoBarras);
     this.isLoadingResults = true;
     try {
-      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             if (response.Data.totalDocs === 0) {
@@ -268,6 +387,84 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       this.nuevaBusqueda.buscarCodigoBarras = "";
     }
     this.InputField.nativeElement.focus();
+  }
+
+  async buscarCatalogoCotizacionFactura(element: any) {
+    this.mensajeFallido = "";
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('codigo', element.codigo);
+    this.isLoadingResults = true;
+    try {
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            if (response.Data.totalDocs === 0) {
+              this.mensajeFallido = `Articulo ${element.descripcion}, no encontrado`;
+            } else {
+              if (response.Data.docs.length === 1) {
+                this.addToCartCotizacionFactura(response.Data.docs[0], element)
+              }
+            }
+          }
+          this.isLoadingResults = false;
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          console.error('Error en la solicitud:', error);
+        });
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+  }
+
+  async buscarCatalogoVenta(element: any) {
+    this.mensajeFallido = "";
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('codigo', element.codigo);
+    this.isLoadingResults = true;
+    try {
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            if (response.Data.totalDocs === 0) {
+              this.mensajeFallido = `Articulo ${element.descripcion}, no encontrado`;
+            } else {
+              if (response.Data.docs.length === 1) {
+                this.addToCartCotizacionFactura(response.Data.docs[0], element)
+              }
+            }
+          }
+          this.isLoadingResults = false;
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          console.error('Error en la solicitud:', error);
+        });
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
   }
 
   filtrar(event: Event) {
@@ -321,23 +518,21 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       });
   }
 
-  imprimirCotizacion(): void {
-    //Cargamos el Json Principal con detalle Articulos
-    this.dataSourceSalesArticle = [];
-    for (let i = 0; i < this.dataSourceCarItem.length; i++) {
-      this.dataSourceSalesArticle = [...this.dataSourceSalesArticle, this.dataSourceCarItem[i].detalleArticulo[0]]
+  mostrarMetodoPagoCarItem(element: any = []): void {
+    //Cargamos el Json Principal sin detalle Articulos
+    if (!this.localStorageCashier) {
+      this.localStorageCashier = this.localStorageService.getItem('cashier');  
     }
+
     this.dataSourceSales =
     {
-      "numeroCotizacion": new Date().getTime(),
-      "fechaCotizacion": this.utilsService.getDate(null),
+      "numeroFactura": new Date().getTime(),
+      "fechaFactura": this.utilsService.getDate(null),
       "fechaVencimiento": this.utilsService.getDate(null),
       "subtotal": this.operaciones.subtotalCompra,
       "impuesto": this.operaciones.impuestoCompra,
       "descuento": this.operaciones.descuentoCompra,
       "total": this.operaciones.subtotalCompra - this.operaciones.descuentoCompra,
-      "usuario": this.tokenService.userName,
-      "fechaConsultas": new Date(),
       "cliente": {
         "nombreRazonSocial": this.consultaCliente.nombreRazonSocial,
         "tipoDocumento": this.consultaCliente.tipoDocumento,
@@ -345,17 +540,25 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
         "email": this.consultaCliente.email,
         "tipoCliente": this.consultaCliente.tipoCliente
       },
-      "articulo": this.dataSourceSalesArticle,
+      "articulo": "",
+      "formaDePago": "",
+      "cantidadEfectivo": "",
+      "cantidadTransferencia": "",
+      "facturacionElectronica": "",
+      "vendedor": "",
+      "imprimirFactura": "",
+      "idCaja": this.localStorageCashier,
+      "ventaVerificada": this.tokenService.rolName ? true : false
     }
     this.dialogo
-      .open(DialogoCotizacionComponent, {
+      .open(DialogoMetodoPagoComponent, {
         data: this.dataSourceSales
       })
       .afterClosed()
       .subscribe((confirmar: boolean) => {
         try {
           if (confirmar) {
-            this.guardarCotizacion();
+            this.guardarVenta();
           }
         } catch (error) {
           //alert("No hacer nada");
@@ -363,8 +566,15 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       });
   }
 
-  async guardarCotizacion() {
-    const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/quotations';
+  async guardarVenta() {
+    //Cargamos los articulos por iteración Principal
+    this.dataSourceSalesArticle = [];
+    for (let i = 0; i < this.dataSourceCarItem.length; i++) {
+      this.dataSourceSalesArticle = [...this.dataSourceSalesArticle, this.dataSourceCarItem[i].detalleArticulo[0]]
+    }
+    //Cargamos los articulos a la venta
+    this.dataSourceSales.articulo = this.dataSourceSalesArticle;
+    const url = 'https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales';
     //const url = 'http://localhost:3030/api/sales';
     const token = this.tokenService.token;
     const httpOptions = {
@@ -376,11 +586,12 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
     this.isLoadingResults = true;
     try {
       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
-      this.mensajeExitoso = "Cotización guardada correctamente.";
+      this.mensajeExitoso = "Venta guardada correctamente.";
       this.isLoadingResults = false;
+      this.printerUtilsService.connectToPrinter(this.dataSourceSales.imprimirFactura, this.dataSourceSales);
       setTimeout(() => {
         this.refreshPage();
-      }, 200);
+      }, 100);
     } catch (error) {
       this.isLoadingResults = false;
       this.mensajeFallido = 'Error al guardar. Por favor, revisar la consola de Errores.';
@@ -412,136 +623,6 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       this.mensajeFallidoCliente = 'Error al guardar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
-  }
-
-  async buscarCotizacion() {
-    const token = this.tokenService.token;
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`,
-      })
-    };
-    let httpParams = new HttpParams();
-    httpParams = httpParams.append('numeroCotizacion', this.consultaCliente.numeroCotizacion);
-    this.isLoadingResults = true;
-    try {
-      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/quotations?${httpParams}`, httpOptions)
-        .subscribe(response => {
-          if (response.Status) {
-            for (let i = 0; i < response.Data[0].articulo.length; i++) {
-              this.buscarCatalogoCotizacion(response.Data[0].articulo[i]);
-            }
-            this.consultaCliente.nombreRazonSocial = response.Data[0].cliente.nombreRazonSocial;
-            this.consultaCliente.tipoDocumento = response.Data[0].cliente.tipoDocumento;
-            this.consultaCliente.numeroDocumento = response.Data[0].cliente.numeroDocumento;
-            this.consultaCliente.email = response.Data[0].cliente.email;
-            this.consultaCliente.tipoCliente = response.Data[0].cliente.tipoCliente;
-          }
-          this.isLoadingResults = false;
-          this.mensajeFallido = "";
-          this.consultaCliente.numeroCotizacion = "";
-        }, error => {
-          this.isLoadingResults = false;
-          if (error.status === 401) {
-            this.routerLinkLogin();
-          }
-          if (error.status === 404) {
-            this.mensajeFallido = 'Numero de cotización no encontrada.';
-            return;
-          }
-          console.error('Error en la solicitud:', error);
-        });
-    } catch (error) {
-      this.isLoadingResults = false;
-      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
-      console.error('Error en la solicitud:', error);
-    }
-  }
-
-  async buscarCatalogoCotizacion(element: any) {
-    this.mensajeFallido = "";
-    const token = this.tokenService.token;
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'x-access-token': `${token}`,
-      })
-    };
-
-    let httpParams = new HttpParams();
-    httpParams = httpParams.append('codigo', element.codigo);
-    this.isLoadingResults = true;
-    try {
-      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
-        .subscribe(response => {
-          if (response.Status) {
-            if (response.Data.totalDocs === 0) {
-              this.mensajeFallido = `Articulo ${element.descripcion}, no encontrado`;
-            } else {
-              if (response.Data.docs.length === 1) {
-                this.addToCartCotizacion(response.Data.docs[0], element)
-              }
-            }
-          }
-          this.isLoadingResults = false;
-        }, error => {
-          this.isLoadingResults = false;
-          if (error.status === 401) {
-            this.routerLinkLogin();
-          }
-          console.error('Error en la solicitud:', error);
-        });
-    } catch (error) {
-      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
-      console.error('Error en la solicitud:', error);
-    }
-  }
-
-  addToCartCotizacion(inventario: any = [], element: any = []) {
-    try {
-      element =
-      {
-        "_id": element._id,
-        "stock": this.utilsService.numeros(inventario.inventarios[0].stock),
-        "detalleArticulo": [
-          {
-            "codigo": element.codigo,
-            "codigoBarras": element.codigoBarras,
-            "descripcion": element.descripcion,
-            "cantidad": this.utilsService.numeros(element.cantidad),
-            "precioVenta": this.utilsService.numeros(element.precioVenta),
-            "precioMayoreo": this.utilsService.numeros(inventario.precios[0].precioMayoreo) > 0 ? inventario.precios[0].precioMayoreo : 0,
-            "precioInterno": this.utilsService.numeros(inventario.precios[0].precioInterno) > 0 ? inventario.precios[0].precioInterno : 0,
-            "descuento": this.utilsService.numeros(element.descuento),
-            "subtotal": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precioVenta), element.cantidad),
-            "impuesto": this.utilsService.numeros(element.impuesto),
-            "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precioVenta), element.cantidad) - this.utilsService.numeros(element.descuento),
-            "mayoreo": element.mayoreo,
-            "interno": element.interno,
-            "cotizacion": false,
-          }
-        ]
-      }
-
-      this.localStorageService.setItem(element._id, JSON.stringify(element));
-      this.dataSourceCarItem = [...this.dataSourceCarItem, JSON.parse(this.localStorageService.getItem(element._id)!)]
-      this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
-
-      this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
-      this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
-      this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, this.utilsService.multiplicarNumero(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta, this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad)]
-      this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
-      this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.numeros(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].descuento)]
-      this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-    } catch (error) {
-      this.isLoadingResults = false;
-      this.mensajeFallidoCliente = 'Error al cargar el producto. Por favor, revisar la consola de Errores.';
-      console.error('Error en la solicitud:', error);
-    }
-
   }
 
   setCliente() {
@@ -608,22 +689,27 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       if (JSON.parse(this.localStorageService.getItem(element._id)!)) {
         for (let i = 0; i < this.dataSourceCarItem.length; i++) {
           if (this.dataSourceCarItem[i]._id === element._id) {
-            /**
             if ((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + 1) > element.inventarios[0].stock) {
               alert(`No hay suficiente Stock ${element.inventarios[0].stock}, para la cantidad de productos solicitados ${this.dataSourceCarItem[i].detalleArticulo[0].cantidad + 1}!`)
               break
             }
-             */
             this.changeQty(this.dataSourceCarItem[i], i, 1, '');
             break
           }
         }
       } else {
-        const addItem: number = 1;
         if (!element.inventarios[0] || !element.precios[0]) {
           alert(`Articulo sin configuración de Inventario y/o Precio Venta`);
           return;
         }
+        if (this.utilsService.numeros(element.inventarios[0].stock) === 0) {
+          alert(`No hay suficiente Stock ${element.inventarios[0].stock}, para la cantidad de productos solicitados ${this.utilsService.numeros(element.inventarios[0].stock) + 1}!`)
+          return;
+        }
+        if (this.utilsService.calcularInterno(element.precios[0].valorUnitario, element.precios[0].impuestoUnitario) !== this.utilsService.numeros(element.precios[0].precioInterno)) {
+          element.precios[0].precioInterno = this.utilsService.calcularInterno(element.precios[0].valorUnitario, element.precios[0].impuestoUnitario)
+        }
+        const addItem: number = 1;
         element =
         {
           "_id": element._id,
@@ -634,6 +720,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
               "codigoBarras": element.codigoBarras,
               "descripcion": element.descripcion,
               "cantidad": addItem,
+              "valorUnitario": this.utilsService.numeros(element.precios[0].valorUnitario) > 0 ? element.precios[0].valorUnitario : 0,
               "precioVenta": this.utilsService.numeros(element.precios[0].precioVenta) > 0 ? element.precios[0].precioVenta : 0,
               "precioMayoreo": this.utilsService.numeros(element.precios[0].precioMayoreo) > 0 ? element.precios[0].precioMayoreo : 0,
               "precioInterno": this.utilsService.numeros(element.precios[0].precioInterno) > 0 ? element.precios[0].precioInterno : 0,
@@ -643,7 +730,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
               "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta), addItem),
               "mayoreo": false,
               "interno": false,
-              "cotizacion": true
+              "cotizacion": false
             }
           ]
         }
@@ -668,8 +755,53 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
 
   }
 
-  changeQty(element: any = [], i: number, qty: any, process: any) {
+  addToCartCotizacionFactura(inventario: any = [], element: any = []) {
+    try {
+      element =
+      {
+        "_id": element._id,
+        "stock": this.utilsService.numeros(inventario.inventarios[0].stock),
+        "detalleArticulo": [
+          {
+            "codigo": element.codigo,
+            "codigoBarras": element.codigoBarras,
+            "descripcion": element.descripcion,
+            "cantidad": this.utilsService.numeros(element.cantidad),
+            "precioVenta": this.utilsService.numeros(element.precioVenta),
+            "precioMayoreo": this.utilsService.numeros(inventario.precios[0].precioMayoreo) > 0 ? inventario.precios[0].precioMayoreo : 0,
+            "precioInterno": this.utilsService.numeros(inventario.precios[0].precioInterno) > 0 ? inventario.precios[0].precioInterno : 0,
+            "descuento": this.utilsService.numeros(element.descuento),
+            "subtotal": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precioVenta), element.cantidad),
+            "impuesto": this.utilsService.numeros(element.impuesto),
+            "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precioVenta), element.cantidad) - this.utilsService.numeros(element.descuento),
+            "mayoreo": element.mayoreo,
+            "interno": element.interno,
+            "cotizacion": false,
+          }
+        ]
+      }
 
+      this.localStorageService.setItem(element._id, JSON.stringify(element));
+      this.dataSourceCarItem = [...this.dataSourceCarItem, JSON.parse(this.localStorageService.getItem(element._id)!)]
+      this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
+
+      this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
+      this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, this.utilsService.multiplicarNumero(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta, this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad)]
+      this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.numeros(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].descuento)]
+      this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallidoCliente = 'Error al cargar el producto. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+
+  }
+
+  changeQty(element: any = [], i: number, qty: any, process: any) {
     if (process === 'replace') {
       this.localStorageService.removeItem(element._id);
       this.dataSourceCarItem[i].detalleArticulo[0].subtotal = this.utilsService.multiplicarNumero(element.detalleArticulo[0].precioVenta, element.detalleArticulo[0].cantidad);
@@ -702,7 +834,6 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
       return;
     } else {
-      /** 
       if ((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty) > element.stock) {
         alert(`No hay suficiente Stock ${element.stock}, para la cantidad de productos solicitados ${(this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty)}!`)
         return;
@@ -711,7 +842,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
         this.borrarArticuloCarItem(this.dataSourceCarItem[i], i);
         return;
       }
-      */
+
       this.dataSourceCarItem[i].detalleArticulo[0].cantidad = this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty;
     }
     this.localStorageService.removeItem(this.dataSourceCarItem[i]._id);
@@ -764,6 +895,113 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       this.operaciones.totalArticulosArray = []
   };
 
+  onToggleVerify() {
+    this.viewVerify = !this.viewVerify
+    this.buscarVentaVerificada(false);
+  }
+
+  onToggleVerifyProducts(element: any = []) {
+    this.viewVerifyProducts = !this.viewVerifyProducts
+    if (this.viewVerifyProducts) {
+      this.dataSourceViewVerifyProducts = element.articulo;
+    }
+  }
+
+  getTotalVenta() {
+    return this.dataSourceViewVerifyProducts.map((t: { total: string | number; }) => +t.total).reduce((acc: any, value: any) => acc + value, 0);
+  }
+
+  async buscarVentaVerificada(value: boolean) {
+    this.mensajeFallido = "";
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    try {
+      let httpParams = new HttpParams();
+      httpParams = httpParams.append('ventaVerificada', value);
+      this.isLoadingResults = true;
+      //this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
+      this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            this.dataSourceViewVerify = new MatTableDataSource(response.Data.docs);
+          }
+          this.isLoadingResults = false;
+          this.dataSourceViewVerify = this.dataSourceViewVerify.filteredData;
+          this.badge = this.dataSourceViewVerify.length
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          if (error.status === 404) {
+            this.viewVerify = false
+            this.dataSourceViewVerify = [];
+            this.badge = 0;
+            return;
+          }
+          this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+          console.error('Error en la solicitud:', error);
+        });
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+  }
+
+  async actualizarVentaVerificada(value: boolean, element?: any) {
+    const url = `https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales/${element._id}`
+    const body = {
+      ventaVerificada: value
+    };
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`
+      })
+    };
+    this.isLoadingResults = true;
+    try {
+      const response = await this.http.patch(url, body, httpOptions).toPromise();
+      this.isLoadingResults = false;
+      this.buscarVentaVerificada(false);
+    } catch (error) {
+      this.mensajeFallido = 'Error al editar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+    this.isLoadingResults = false;
+  }
+
+  async cleanVentaVerificada() {
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`
+      })
+    };
+    this.isLoadingResults = true;
+    for (let i = 0; i < this.dataSourceViewVerify.length; i++) {
+      try {
+        const body = {
+          ventaVerificada: true
+        };
+        const url = `https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales/${this.dataSourceViewVerify[i]._id}`
+        const response = await this.http.patch(url, body, httpOptions).toPromise();
+      } catch (error) {
+        this.mensajeFallido = 'Error al editar. Por favor, revisar la consola de Errores.';
+        console.error('Error en la solicitud:', error);
+      }
+    }
+    this.isLoadingResults = false;
+    this.buscarVentaVerificada(false);
+  }
+  
   buscarCotizacionDialogo(): void {
     this.dialogo
       .open(DialogoBuscarCotizacionComponent, {
@@ -774,7 +1012,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
         try {
           if (element.length !== 0) {
             for (let i = 0; i < element.articulo.length; i++) {
-              this.buscarCatalogoCotizacion(element.articulo[i]);
+              this.buscarCatalogoCotizacionFactura(element.articulo[i]);
             }
             this.consultaCliente.nombreRazonSocial = element.cliente.nombreRazonSocial;
             this.consultaCliente.tipoDocumento = element.cliente.tipoDocumento;
@@ -791,8 +1029,33 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
       });
   }
 
-}
+  buscarFacturaDialogo(): void {
+    this.dialogo
+      .open(DialogoBuscarFacturaComponent, {
+        //data: message
+      })
+      .afterClosed()
+      .subscribe((element: any = []) => {
+        try {
+          if (element.length !== 0) {
+            for (let i = 0; i < element.articulo.length; i++) {
+              this.buscarCatalogoCotizacionFactura(element.articulo[i]);
+            }
+            this.consultaCliente.nombreRazonSocial = element.cliente.nombreRazonSocial;
+            this.consultaCliente.tipoDocumento = element.cliente.tipoDocumento;
+            this.consultaCliente.numeroDocumento = element.cliente.numeroDocumento;
+            this.consultaCliente.email = element.cliente.email;
+            this.consultaCliente.tipoCliente = element.cliente.tipoCliente;
+          } else {
+            //alert("No hacer nada");
+          }
+        } catch (error) {
+          //alert("No hacer nada");
+        }
 
+      });
+  }
+};
 
 export class Catalogo {
   constructor(public codigoBarras: String, public descripcion: String, public marca: string, public referencia: string,
@@ -802,6 +1065,10 @@ export class Catalogo {
 
 export class carItem {
   constructor(public descripcion: String, public cantidad: string, public precio: string, public iva: string, public total: string, public isEdit: string) { }
+}
+
+export class viewVerify {
+  constructor(public numeroFactura: String, public fechaFactura: string, public total: string, public vendedor: string, public isVerified: string) { }
 }
 
 /** Error when invalid control is dirty, touched, or submitted. */

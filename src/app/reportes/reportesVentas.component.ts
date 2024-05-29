@@ -89,10 +89,11 @@ export class ReportesVentasComponent implements OnInit {
         httpParams = httpParams.append('endDate', endDate);
       }
       this.isLoadingResults = true;
-      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
+      //this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
+      this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceVentas = new MatTableDataSource(response.Data);
+            this.dataSourceVentas = new MatTableDataSource(response.Data.docs);
             this.dataSourceVentas.paginator = this.paginator;
             this.dataSourceVentas.sort = this.sort;
           }

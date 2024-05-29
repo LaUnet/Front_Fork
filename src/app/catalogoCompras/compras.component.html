@@ -58,9 +58,13 @@
                 <mat-icon>shopping_bag</mat-icon>
                 <span>Catalogo Ventas</span>
             </mat-list-item>
-            <mat-list-item routerLink="/cotizacionesProductos" [class.mat-elevation-z0]="true">
+                        <mat-list-item routerLink="/cotizacionesProductos" [class.mat-elevation-z0]="true">
                 <mat-icon>addchart</mat-icon>
-                <span>Cotizaciones Ventas</span>
+                <span>Catalogo Cotizaciones</span>
+            </mat-list-item>
+            <mat-list-item  *ngIf="this.tokenService.rolName" routerLink="/devolucionesProductos" [class.mat-elevation-z0]="true">
+                <mat-icon>assignment_return</mat-icon>
+                <span>Catalogo Devoluciones</span>
             </mat-list-item>
             <mat-divider></mat-divider>
             <mat-expansion-panel [class.mat-elevation-z0]="true">
@@ -616,7 +620,7 @@
                             <td>
                                 <mat-form-field class="full-width" appearance="outline" cellspacing="0">
                                     <mat-label style="font-weight:bold">Total Descuento</mat-label>
-                                    <mat-icon matSuffix>percent</mat-icon>
+                                    <mat-icon matSuffix>savings</mat-icon>
                                     <input matInput [(ngModel)]="nuevaCompra.descuento" id="descuento" name="descuento"
                                         [errorStateMatcher]="matcher" type="number" matInput
                                         [(ngModel)]="nuevaCompra.descuento" disabled>
@@ -662,7 +666,7 @@
                                 <mat-icon>save</mat-icon>
                             </button>
                     <td></td>
-                    <button type="button" mat-fab color="basic" matTooltip="Cancelar Compra"
+                    <button type="button" mat-fab color="warn" matTooltip="Cancelar Compra"
                         (click)="mostrarDialogo('Seguro requieres Cancelar?', 2, '', 0)">
                         <mat-icon>cancel_presentation</mat-icon>
                     </button>

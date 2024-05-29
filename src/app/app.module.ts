@@ -14,7 +14,7 @@ import { registrarClienteComponent } from './clientes.registrar/registrar.compon
 import { buscarClienteComponent } from './clientes.buscar/buscar.component';
 import { registrarUbicacionComponent } from './ubicaciones.registrar/registrar.component';
 import { buscarUbicacionComponent } from './ubicaciones.buscar/buscar.component';
-import { VentasComponent } from './catalogoVentas/ventas.component';
+import { VentasComponent } from './catalogos/ventas.component';
 import { ComprasComponent } from './catalogoCompras/compras.component';
 import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.component';
 import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.component';
@@ -22,6 +22,7 @@ import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.compo
 import { DialogoMetodoPagoComponent } from './dialogo.metodoPago/dialogo.metodoPago.component';
 import { DialogoCotizacionComponent } from './dialogo.cotizacion/dialogo.cotizacion.component';
 import { DialogoBuscarCotizacionComponent } from './dialogo.buscarCotizacion/dialogo.buscarCotizacion.component';
+import { DialogoBuscarFacturaComponent } from './dialogo.buscarFactura/dialogo.buscarFactura.component';
 import { ReportesVentasComponent } from './reportes/reportesVentas.component';
 import { ReportesComprasComponent } from './reportes/reportesCompras.component';
 import { ReportesDetalleArticulosComponent } from './reportes/reportesDetalleArticulos.component';
@@ -29,7 +30,8 @@ import { BuscarCajaComponent } from './cajas/buscar.component';
 import { RegistrarCajaComponent } from './cajas/registrar.component';
 import { AdministrarCajaComponent } from './cajas/administrar.component';
 import { PrinterUtilsService } from '../app/printerUtils.service';
-import { CotizacionesComponent } from './catalogoVentas/cotizaciones.component';
+import { CotizacionesComponent } from './catalogos/cotizaciones.component';
+import { DevolucionesComponent } from './catalogos/devoluciones.component';
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -98,7 +100,9 @@ import { CurrencyPipe } from '@angular/common';
     AdministrarCajaComponent,
     CotizacionesComponent,
     DialogoCotizacionComponent,
-    DialogoBuscarCotizacionComponent
+    DialogoBuscarCotizacionComponent,
+    DialogoBuscarFacturaComponent,
+    DevolucionesComponent
   ],
   imports: [
     BrowserModule,

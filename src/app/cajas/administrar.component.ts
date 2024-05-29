@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, Inject, ViewChild, ElementRef} from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TokenService } from '../login/token';
 import { MatTableDataSource } from '@angular/material/table';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import { FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { NavigationEnd, Router } from '@angular/router';
@@ -64,16 +64,16 @@ export class AdministrarCajaComponent {
   //Datos para operaciones
   startDate!: any;
   endDate!: any;
-  id!: any; 
+  id!: any;
   localStorageUser !: any;
   localStorageCashier !: any;
-  
+
   /**
    * Control Error Textfields Providers
    */
   nombreFormControl = new FormControl('', [Validators.required]);
   tipoCajaFormControl = new FormControl('', [Validators.required]);
-  ubicacionCajaFormControl = new FormControl({value: '', disabled: true}, [Validators.required]);
+  ubicacionCajaFormControl = new FormControl({ value: '', disabled: true }, [Validators.required]);
   baseAperturaFormControl = new FormControl('', [Validators.required]);
   consumoInternoFormControl = new FormControl('', [Validators.required]);
   tipoMovimientoFormControl = new FormControl('', [Validators.required]);
@@ -97,8 +97,9 @@ export class AdministrarCajaComponent {
     consumoInterno: '',
     totalEFectivo: '',
     totalTransferencia: '',
-    totalRetiros:'',
-    totalBaseEfectivo:'',
+    totalRetiros: '',
+    totalRetirosTransferencia: '',
+    totalBaseEfectivo: '',
     total: '',
     tipo: '',
     razon: '',
@@ -106,10 +107,10 @@ export class AdministrarCajaComponent {
     valor: '',
     user: '',
     observacion: '',
-    tipoMovimiento:'',
-    razonMovimiento:'ADM',
-    valorMovimiento:'',
-    observacionMovimiento:'',
+    tipoMovimiento: '',
+    razonMovimiento: 'ADM',
+    valorMovimiento: '',
+    observacionMovimiento: '',
     metodoPagoMovimiento: '',
     efectivoMovimiento: '',
     transferenciaMovimiento: '',
@@ -139,7 +140,7 @@ export class AdministrarCajaComponent {
     this.changeDetector.detectChanges();
   }
 
-  @ViewChild("inputCode") InputField: any =  ElementRef;
+  @ViewChild("inputCode") InputField: any = ElementRef;
 
   async buscarCajaAbierta() {
     this.startDate = new Date(year, month, day);
@@ -158,7 +159,7 @@ export class AdministrarCajaComponent {
       httpParams = httpParams.append('startDate', this.startDate);
       httpParams = httpParams.append('endDate', this.endDate);
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashierMovements?${httpParams}`, httpOptions)
-      //this.http.get<any>(`http://localhost:3030/api/cashierMovements?${httpParams}`, httpOptions)
+        //this.http.get<any>(`http://localhost:3030/api/cashierMovements?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceCajas = response.Data.filter(((arr: { estadoActivo: any; }) => arr.estadoActivo === true))
@@ -181,15 +182,24 @@ export class AdministrarCajaComponent {
                 this.dataSourceMovimientos = this.dataSourceCajas[0].movimientos
                 this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { razon: any; tipo: any }) => arr.razon !== this.ventaInterna && arr.tipo === this.entrada))
                 this.nuevaCaja.total = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0) + this.nuevaCaja.baseApertura;
-                this.nuevaCaja.totalEfectivo = this.dataSourceMovimientos.map((t: { valorEfectivo: string | number; }) => +t.valorEfectivo).reduce((acc: any, value: any) => acc + value, 0) ;
+                this.nuevaCaja.totalEfectivo = this.dataSourceMovimientos.map((t: { valorEfectivo: string | number; }) => +t.valorEfectivo).reduce((acc: any, value: any) => acc + value, 0);
                 this.nuevaCaja.totalTransferencia = this.dataSourceMovimientos.map((t: { valorTransferencia: string | number; }) => +t.valorTransferencia).reduce((acc: any, value: any) => acc + value, 0);
                 this.dataSourceMovimientos = this.dataSourceCajas[0].movimientos
                 this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { tipo: any; }) => arr.tipo === this.salida))
-                this.nuevaCaja.totalRetiros = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0);
+                this.nuevaCaja.totalRetiros = this.dataSourceMovimientos.map((t: { valorEfectivo: string | number; }) => +t.valorEfectivo).reduce((acc: any, value: any) => acc + value, 0);
+                this.dataSourceMovimientos = this.dataSourceCajas[0].movimientos
+                this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { tipo: any; }) => arr.tipo === this.salida))
+                this.nuevaCaja.totalRetirosTransferencia = this.dataSourceMovimientos.map((t: { valorTransferencia: string | number; }) => +t.valorTransferencia).reduce((acc: any, value: any) => acc + value, 0);
                 this.dataSourceMovimientos = this.dataSourceCajas[0].movimientos
               }
-              this.nuevaCaja.totalBaseEfectivo = this.nuevaCaja.baseApertura+this.nuevaCaja.totalRetiros+this.nuevaCaja.totalEfectivo
-              this.dataSourceMovimientos = new MatTableDataSource( this.dataSourceMovimientos)
+              /**
+               * Ajuste por devoluciones
+               */
+              this.nuevaCaja.totalTransferencia = this.nuevaCaja.totalTransferencia + this.nuevaCaja.totalRetirosTransferencia
+              this.nuevaCaja.total = this.nuevaCaja.total + this.nuevaCaja.totalRetirosTransferencia
+              //
+              this.nuevaCaja.totalBaseEfectivo = this.nuevaCaja.baseApertura + this.nuevaCaja.totalRetiros + this.nuevaCaja.totalEfectivo
+              this.dataSourceMovimientos = new MatTableDataSource(this.dataSourceMovimientos)
               return;
             default:
               alert("Mas de una caja abierta");
@@ -256,12 +266,12 @@ export class AdministrarCajaComponent {
     this.isLoadingResults = true;
     try {
       let httpParams = new HttpParams();
-      if(this.startDate && this.endDate){
+      if (this.startDate && this.endDate) {
         httpParams = httpParams.append('startDate', this.startDate);
         httpParams = httpParams.append('endDate', this.endDate);
-    }
+      }
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/cashierMovements?${httpParams}`, httpOptions)
-      //this.http.get<any>(`http://localhost:3030/api/cashierMovements?${httpParams}`, httpOptions)
+        //this.http.get<any>(`http://localhost:3030/api/cashierMovements?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.nuevaCaja.baseApertura = response.Data[0].baseApertura
@@ -273,15 +283,24 @@ export class AdministrarCajaComponent {
               this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { tipo: any; }) => arr.tipo === this.salida))
               this.nuevaCaja.totalRetiros = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0);
               this.dataSourceMovimientos = response.Data[0].movimientos
-              this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { razon: any; tipo: any}) => arr.razon !== this.ventaInterna && arr.tipo === this.entrada))
+              this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { tipo: any; }) => arr.tipo === this.salida))
+              this.nuevaCaja.totalRetirosTransferencia = this.dataSourceMovimientos.map((t: { valorTransferencia: string | number; }) => +t.valorTransferencia).reduce((acc: any, value: any) => acc + value, 0);
+              this.dataSourceMovimientos = this.dataSourceCajas[0].movimientos
+              this.dataSourceMovimientos = this.dataSourceMovimientos.filter(((arr: { razon: any; tipo: any }) => arr.razon !== this.ventaInterna && arr.tipo === this.entrada))
               this.nuevaCaja.total = this.dataSourceMovimientos.map((t: { valorTotal: string | number; }) => +t.valorTotal).reduce((acc: any, value: any) => acc + value, 0) + this.nuevaCaja.baseApertura;
               this.nuevaCaja.totalEfectivo = this.dataSourceMovimientos.map((t: { valorEfectivo: string | number; }) => +t.valorEfectivo).reduce((acc: any, value: any) => acc + value, 0);
               this.nuevaCaja.totalTransferencia = this.dataSourceMovimientos.map((t: { valorTransferencia: string | number; }) => +t.valorTransferencia).reduce((acc: any, value: any) => acc + value, 0);
               this.dataSourceMovimientos = response.Data[0].movimientos
             }
           }
-          this.nuevaCaja.totalBaseEfectivo = this.nuevaCaja.baseApertura+this.nuevaCaja.totalRetiros+this.nuevaCaja.totalEfectivo
-          this.dataSourceMovimientos = new MatTableDataSource( this.dataSourceMovimientos)
+          /**
+           * Ajuste por devoluciones
+           */
+          this.nuevaCaja.totalTransferencia = this.nuevaCaja.totalTransferencia + this.nuevaCaja.totalRetirosTransferencia
+          this.nuevaCaja.total = this.nuevaCaja.total + this.nuevaCaja.totalRetirosTransferencia
+          //
+          this.nuevaCaja.totalBaseEfectivo = this.nuevaCaja.baseApertura + this.nuevaCaja.totalRetiros + this.nuevaCaja.totalEfectivo
+          this.dataSourceMovimientos = new MatTableDataSource(this.dataSourceMovimientos)
           this.isLoadingResults = false;
 
         }, error => {
@@ -374,9 +393,9 @@ export class AdministrarCajaComponent {
   }
 
   applyMovement() {
-    if(this.nuevaCaja.valorMovimiento === 0 ){
-    alert("Total Movimiento tiene valor CERO");
-    return;
+    if (this.nuevaCaja.valorMovimiento === 0) {
+      alert("Total Movimiento tiene valor CERO");
+      return;
     }
     this.applyMovements();
   }
@@ -386,12 +405,12 @@ export class AdministrarCajaComponent {
     //const url = `http://localhost:3030/api/cashierMovements/${this.dataSourceCajas[0]._id}`
     const body =
     {
-      "tipo": this.nuevaCaja.tipoMovimiento ,
+      "tipo": this.nuevaCaja.tipoMovimiento,
       "razon": this.nuevaCaja.razonMovimiento,
-      "fecha": new Date (year, month, day),
-      "valorEfectivo": this.nuevaCaja.tipoMovimiento === this.salida? -this.nuevaCaja.efectivoMovimiento: this.nuevaCaja.efectivoMovimiento,
-      "valorTransferencia": this.nuevaCaja.tipoMovimiento === this.salida? -this.nuevaCaja.transferenciaMovimiento: this.nuevaCaja.transferenciaMovimiento,
-      "valorTotal": this.nuevaCaja.tipoMovimiento === this.salida? -this.nuevaCaja.valorMovimiento: this.nuevaCaja.valorMovimiento,
+      "fecha": new Date(year, month, day),
+      "valorEfectivo": this.nuevaCaja.tipoMovimiento === this.salida ? -this.nuevaCaja.efectivoMovimiento : this.nuevaCaja.efectivoMovimiento,
+      "valorTransferencia": this.nuevaCaja.tipoMovimiento === this.salida ? -this.nuevaCaja.transferenciaMovimiento : this.nuevaCaja.transferenciaMovimiento,
+      "valorTotal": this.nuevaCaja.tipoMovimiento === this.salida ? -this.nuevaCaja.valorMovimiento : this.nuevaCaja.valorMovimiento,
       "user": this.tokenService.userName,
       "cliente": '',
       "observacion": this.nuevaCaja.observacionMovimiento,
@@ -427,32 +446,33 @@ export class AdministrarCajaComponent {
 
   setNuevaCaja() {
     this.nuevaCaja.tipoMovimiento = '',
-    this.tipoMovimientoFormControl.reset(),
-    this.nuevaCaja.razonMovimiento = 'ADM',
-    this.razonMovimientoFormControl.reset(),
-    this.nuevaCaja.valorMovimiento = '',
-    this.nuevaCaja.observacionMovimiento = '',
-    this.observacionFormControl.reset();
+      this.tipoMovimientoFormControl.reset(),
+      this.nuevaCaja.razonMovimiento = 'ADM',
+      this.razonMovimientoFormControl.reset(),
+      this.nuevaCaja.valorMovimiento = '',
+      this.nuevaCaja.observacionMovimiento = '',
+      this.observacionFormControl.reset();
     this.nuevaCaja.metodoPagoMovimiento = '',
-    this.metodoPagoMovimientoFormControl.reset();
+      this.metodoPagoMovimientoFormControl.reset();
     this.nuevaCaja.efectivoMovimiento = '',
-    this.nuevaCaja.transferenciaMovimiento = ''
+      this.nuevaCaja.transferenciaMovimiento = ''
   };
 
   setResumenMovimientos() {
     this.nuevaCaja.baseApertura = '',
-    this.nuevaCaja.consumoInterno = '',
-    this.nuevaCaja.totalEFectivo = '',
-    this.nuevaCaja.totalTransferencia = '',
-    this.nuevaCaja.totalRetiros = '',
-    this.nuevaCaja.total = '',
-    this.nuevaCaja.totalBaseEfectivo =''
+      this.nuevaCaja.consumoInterno = '',
+      this.nuevaCaja.totalEFectivo = '',
+      this.nuevaCaja.totalTransferencia = '',
+      this.nuevaCaja.totalRetiros = '',
+      this.nuevaCaja.totalRetirosTransferencia = '',
+      this.nuevaCaja.total = '',
+      this.nuevaCaja.totalBaseEfectivo = ''
   };
 
   filtrar(event: Event) {
     const filtro = (event.target as HTMLInputElement).value;
     this.dataSourceMovimientos.filter = filtro.trim().toLowerCase();
-} 
+  }
 }
 
 export class compras {

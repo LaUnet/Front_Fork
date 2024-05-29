@@ -3,6 +3,18 @@
     <td></td>
     <div mat-dialog-content>
         <!-- <p>{{mensaje}}</p> -->
+        <div>
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Consultar Cotización</mat-label>
+                <input matInput type="text" [(ngModel)]="consultar.cotizacionFactura" name="cotizacionFactura"
+                    [formControl]="cotizacionFacturaFormControl" [errorStateMatcher]="matcher"
+                    (keydown.enter)="buscarCotizacion()">
+                <button type="button" mat-icon-button matSuffix color="basic"
+                    (click)="buscarCotizacion()">
+                    <mat-icon matSuffix color="primary">description</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
         <div *ngIf="isLoadingResults" class="loading-shade">
             <mat-progress-spinner color="primary" mode="indeterminate">
             </mat-progress-spinner>
@@ -65,6 +77,6 @@
     </div>
 
     <div mat-dialog-actions align="end">
-        <button mat-button (click)="cerrar()" color="primary" cdkFocusInitial>CANCELAR</button>
+        <button mat-button (click)="cerrar()" color="warn" cdkFocusInitial>CANCELAR</button>
     </div>
 </section>

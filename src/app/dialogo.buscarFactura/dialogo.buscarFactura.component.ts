@@ -9,21 +9,21 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-dialogo.buscarCotizacion',
-  templateUrl: './dialogo.buscarCotizacion.component.html',
-  styleUrls: ['./dialogo.buscarCotizacion.component.css']
+  selector: 'app-dialogo.buscarFactura',
+  templateUrl: './dialogo.buscarFactura.component.html',
+  styleUrls: ['./dialogo.buscarFactura.component.css']
 })
-export class DialogoBuscarCotizacionComponent implements OnInit {
+export class DialogoBuscarFacturaComponent implements OnInit {
 
-  columnas: string[] = ['cotizacion', 'subtotal', 'descuento', 'total', 'cliente', 'usuario', 'accion'];
+  columnas: string[] = ['numeroFactura', 'fechaFactura', 'efectivo', 'transferencia', 'total', 'vendedor', 'facturaElectronica', 'numeroDevolucion', 'accion'];
 
   matcher = new MyErrorStateMatcher();
   isLoadingResults: boolean = false;
-  dataSourceCotizacion: any = [];
+  dataSourceFactura: any = [];
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
     /**
-   * Control Error Textfields Articles
+   * Control Error Textfields
    */
     cotizacionFacturaFormControl = new FormControl('');
     consultar = {
@@ -31,7 +31,7 @@ export class DialogoBuscarCotizacionComponent implements OnInit {
     };
 
   constructor(
-    public dialogo: MatDialogRef<DialogoBuscarCotizacionComponent>,
+    public dialogo: MatDialogRef<DialogoBuscarFacturaComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string, @Inject(TokenService) public tokenService: TokenService, @Inject(HttpClient) private http: HttpClient, private router: Router) { }
 
   seleccionar(element: any): void {
@@ -43,10 +43,9 @@ export class DialogoBuscarCotizacionComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.buscarCotizacion();
   }
 
-  async buscarCotizacion() {
+  async buscarFactura() {
     this.mensajeFallido = "";
     const token = this.tokenService.token;
     const httpOptions = {
@@ -55,16 +54,21 @@ export class DialogoBuscarCotizacionComponent implements OnInit {
         'x-access-token': `${token}`,
       })
     };
+    if(this.consultar.cotizacionFactura == ""){
+      this.mensajeFallido = 'Ingrese Numero de Factura'
+      return;
+    }
     let httpParams = new HttpParams();
-    httpParams = httpParams.append('numeroCotizacion', this.consultar.cotizacionFactura);
+    httpParams = httpParams.append('numeroFactura', this.consultar.cotizacionFactura);
     try {
       this.isLoadingResults = true;
-      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/quotations?${httpParams}`, httpOptions)
+      //this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
+      this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceCotizacion = new MatTableDataSource(response.Data)
-            if (response.Data.length === 0) {
-              this.mensajeFallido = 'Cotizacion no encontrada';
+            this.dataSourceFactura = new MatTableDataSource(response.Data.docs)
+            if (response.Data.docs.length === 0) {
+              this.mensajeFallido = 'Factura no encontrada';
             }
           }
           this.isLoadingResults = false;
