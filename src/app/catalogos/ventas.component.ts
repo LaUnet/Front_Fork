@@ -528,7 +528,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     {
       "numeroFactura": new Date().getTime(),
       "fechaFactura": this.utilsService.getDate(null),
-      "fechaVencimiento": this.utilsService.getDate(new Date(year, month, day + 20)),
+      "fechaVencimiento": this.utilsService.getDate(new Date(year, month, day + 7)),
       "subtotal": this.operaciones.subtotalCompra,
       "impuesto": this.operaciones.impuestoCompra,
       "descuento": this.operaciones.descuentoCompra,

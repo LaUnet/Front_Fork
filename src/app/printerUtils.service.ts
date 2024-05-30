@@ -75,10 +75,11 @@ export class PrinterUtilsService {
               'Telefono: 300 8002603' + '\x0a' +
               '--------------------------------------------------------' + '\x0a' +
               '\x1b' + '\x61' + '\x00' + // Left align
-              'Fecha    :' + dataSourceSales.fechaFactura.substr(0, 19) + '\x0a' +
-              'Remision :' + dataSourceSales.numeroFactura + '\x0a' +
-              'Cliente  :' + dataSourceSales.cliente.nombreRazonSocial + '\x0a' +
-              'Documento:' + dataSourceSales.cliente.numeroDocumento + '\x0a' +
+              'Fecha      :' + dataSourceSales.fechaFactura.substr(0, 19) + '\x0a' +
+              'Remision   :' + dataSourceSales.numeroFactura + '\x0a' +
+              'Vencimiento:' + dataSourceSales.fechaVencimiento + '\x0a' +
+              'Cliente    :' + dataSourceSales.cliente.nombreRazonSocial + '\x0a' +
+              'Documento  :' + dataSourceSales.cliente.numeroDocumento + '\x0a' +
               '--------------------------------------------------------' + '\x0a' +
               '\x1B' + '\x45' + '\x0D' + //Bold ON
               '\x1b' + '\x61' + '\x10' + // Left align
@@ -162,12 +163,12 @@ export class PrinterUtilsService {
             'Telefono: 300 8002603' + '\x0a' +
             '--------------------------------------------------------' + '\x0a' +
             '\x1b' + '\x61' + '\x00' + // Left align
-            'Fecha Rem   :' + dataSourceSales.fechaFactura.substr(0, 19) + '\x0a' +
-            'Remision :' + dataSourceSales.numeroFactura + '\x0a' +
-            'Fecha Dev    :' + dataSourceSales.fechaDevolucion.substr(0, 19) + '\x0a' +
-            'Devolucion :' + dataSourceSales.numeroDevolucion + '\x0a' +
-            'Cliente  :' + dataSourceSales.cliente.nombreRazonSocial + '\x0a' +
-            'Documento:' + dataSourceSales.cliente.numeroDocumento + '\x0a' +
+            'Fecha Rem :' + dataSourceSales.fechaFactura.substr(0, 19) + '\x0a' +
+            'Remision  :' + dataSourceSales.numeroFactura + '\x0a' +
+            'Fecha Dev :' + dataSourceSales.fechaDevolucion.substr(0, 19) + '\x0a' +
+            'Devolucion:' + dataSourceSales.numeroDevolucion + '\x0a' +
+            'Cliente   :' + dataSourceSales.cliente.nombreRazonSocial + '\x0a' +
+            'Documento :' + dataSourceSales.cliente.numeroDocumento + '\x0a' +
             '--------------------------------------------------------' + '\x0a' +
             '\x1B' + '\x45' + '\x0D' + //Bold ON
             '\x1b' + '\x61' + '\x10' + // Left align
@@ -222,7 +223,7 @@ export class PrinterUtilsService {
             '\x1B' + '\x61' + '\x01' + // Center align
             '--------------------------------------------------------' + '\x0a' +
             '\x1B' + '\x45' + '\x0D' + //Bold ON
-            'Gracias por su compra!' + '\x0a' +
+            'Gracias por su visita!' + '\x0a' +
             '\x0a' + '\x0a' + '\x0a' + '\x0a' + '\x0a' +
             '\x10' + '\x14' + '\x01' + '\x00' + '\x05' +
             '\x1D' + '\x56' + '\x01'
