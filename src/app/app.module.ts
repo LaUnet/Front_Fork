@@ -20,7 +20,7 @@ import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.com
 import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.component';
 import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.component';
 import { DialogoMetodoPagoComponent } from './dialogo.metodoPago/dialogo.metodoPago.component';
-import { DialogoCotizacionComponent } from './dialogo.cotizacion/dialogo.cotizacion.component';
+import { DialogoCotizacionComponent } from './dialogo.imprimirCotizacion/dialogo.cotizacion.component';
 import { DialogoBuscarCotizacionComponent } from './dialogo.buscarCotizacion/dialogo.buscarCotizacion.component';
 import { DialogoBuscarFacturaComponent } from './dialogo.buscarFactura/dialogo.buscarFactura.component';
 import { ReportesVentasComponent } from './reportes/reportesVentas.component';

@@ -8,7 +8,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { DialogoCarItemComponent } from "../dialogo.carItem/dialogo.carItem.component";
-import { DialogoCotizacionComponent } from '../dialogo.cotizacion/dialogo.cotizacion.component';
+import { DialogoCotizacionComponent } from '../dialogo.imprimirCotizacion/dialogo.cotizacion.component';
 import { DialogoBuscarCotizacionComponent } from "../dialogo.buscarCotizacion/dialogo.buscarCotizacion.component";
 
 import { MatSort } from '@angular/material/sort';
