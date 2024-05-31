@@ -261,10 +261,10 @@ export class DevolucionesComponent implements AfterViewInit, OnInit {
             "codigoBarras": element.codigoBarras,
             "descripcion": element.descripcion,
             "cantidad": this.utilsService.numeros(element.cantidad),
-            "valorUnitario": this.utilsService.numeros(element.valorUnitario) > 0 ? element.valorUnitario : inventario.precios[0].valorUnitario,
+            "valorUnitario": this.utilsService.numeros(element.valorUnitario) > 0 ? element.valorUnitario : this.utilsService.numeros(inventario.precios[0].valorUnitario) > 0?inventario.precios[0].valorUnitario: 0,
             "precioVenta": this.utilsService.numeros(element.precioVenta),
-            "precioMayoreo": this.utilsService.numeros(element.precioMayoreo) > 0 ? element.precioMayoreo : inventario.precios[0].precioMayoreo,
-            "precioInterno": this.utilsService.numeros(element.precioInterno) > 0 ? element.precioInterno : inventario.precios[0].precioInterno,
+            "precioMayoreo": this.utilsService.numeros(element.precioMayoreo) > 0 ? element.precioMayoreo : this.utilsService.numeros(inventario.precios[0].precioMayoreo) > 0? inventario.precios[0].precioMayoreo: 0,
+            "precioInterno": this.utilsService.numeros(element.precioInterno) > 0 ? element.precioInterno : this.utilsService.numeros(inventario.precios[0].precioInterno) > 0? inventario.precios[0].precioInterno: 0,
             "descuento": this.utilsService.numeros(element.descuento),
             "subtotal": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precioVenta), element.cantidad),
             "impuesto": this.utilsService.numeros(element.impuesto) > 0 ? this.utilsService.numeros(element.impuesto) : 0,
@@ -450,6 +450,7 @@ export class DevolucionesComponent implements AfterViewInit, OnInit {
       }, 100);
     } catch (error) {
       this.isLoadingResults = false;
+      console.log(this.dataSourceSales)
       this.mensajeFallido = 'Error al guardar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
