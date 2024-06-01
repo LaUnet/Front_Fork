@@ -8,6 +8,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { DialogoCarItemComponent } from "../dialogo.carItem/dialogo.carItem.component";
+import { DialogoCarItemVariableComponent } from "../dialogo.carItemVariable/dialogo.carItemVariable.component";
 import { DialogoMetodoPagoComponent } from '../dialogo.metodoPago/dialogo.metodoPago.component';
 import { MatSort } from '@angular/material/sort';
 import { NavigationEnd, Router } from '@angular/router';
@@ -45,6 +46,8 @@ export class VentasComponent implements AfterViewInit, OnInit {
   viewVerifyProducts: boolean = false;
   viewProducts: boolean = false;
   viewVerify: boolean = false;
+  isServicio: string = 'SER';
+
   openedMenu!: boolean;
   openedCustomer!: boolean;
   dataSourceCatalogo: any = [];
@@ -312,7 +315,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     this.isLoadingResults = true;
     try {
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
-      //this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
+        //this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             for (let i = 0; i < response.Data.docs[0].articulo.length; i++) {
@@ -498,30 +501,51 @@ export class VentasComponent implements AfterViewInit, OnInit {
 
   mostrarArticuloCarItem(element: any = [], i: number): void {
     element.isEdit = true;
-    this.dialogo
-      .open(DialogoCarItemComponent, {
-        data: element
-      })
-      .afterClosed()
-      .subscribe((confirmar: boolean) => {
-        try {
-          if (confirmar) {
-            element.isEdit = false;
-            this.changeQty(element, i, 0, 'replace');
-          } else {
-            element.isEdit = false;
+    if (element.detalleArticulo[0].unidadMedida === this.isServicio) {
+      this.dialogo
+        .open(DialogoCarItemVariableComponent, {
+          data: element
+        })
+        .afterClosed()
+        .subscribe((confirmar: boolean) => {
+          try {
+            if (confirmar) {
+              element.isEdit = false;
+              this.changeQty(element, i, 0, 'replace');
+            } else {
+              element.isEdit = false;
+            }
+          } catch (error) {
+            //alert("No hacer nada");
           }
-        } catch (error) {
-          //alert("No hacer nada");
-        }
-        element.isEdit = false;
-      });
+          element.isEdit = false;
+        });
+    } else {
+      this.dialogo
+        .open(DialogoCarItemComponent, {
+          data: element
+        })
+        .afterClosed()
+        .subscribe((confirmar: boolean) => {
+          try {
+            if (confirmar) {
+              element.isEdit = false;
+              this.changeQty(element, i, 0, 'replace');
+            } else {
+              element.isEdit = false;
+            }
+          } catch (error) {
+            //alert("No hacer nada");
+          }
+          element.isEdit = false;
+        });
+    }
   }
 
   mostrarMetodoPagoCarItem(element: any = []): void {
     //Cargamos el Json Principal sin detalle Articulos
     if (!this.localStorageCashier) {
-      this.localStorageCashier = this.localStorageService.getItem('cashier');  
+      this.localStorageCashier = this.localStorageService.getItem('cashier');
     }
 
     this.dataSourceSales =
@@ -719,6 +743,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
               "codigo": element.codigo,
               "codigoBarras": element.codigoBarras,
               "descripcion": element.descripcion,
+              "unidadMedida": element.unidadMedida,
               "cantidad": addItem,
               "valorUnitario": this.utilsService.numeros(element.precios[0].valorUnitario) > 0 ? element.precios[0].valorUnitario : 0,
               "precioVenta": this.utilsService.numeros(element.precios[0].precioVenta) > 0 ? element.precios[0].precioVenta : 0,
@@ -766,6 +791,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
             "codigo": element.codigo,
             "codigoBarras": element.codigoBarras,
             "descripcion": element.descripcion,
+            "unidadMedida": element.unidadMedida,
             "cantidad": this.utilsService.numeros(element.cantidad),
             "precioVenta": this.utilsService.numeros(element.precioVenta),
             "precioMayoreo": this.utilsService.numeros(inventario.precios[0].precioMayoreo) > 0 ? inventario.precios[0].precioMayoreo : 0,
@@ -925,7 +951,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
       httpParams = httpParams.append('ventaVerificada', value);
       this.isLoadingResults = true;
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
-      //this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
+        //this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
             this.dataSourceViewVerify = new MatTableDataSource(response.Data.docs);
@@ -1001,7 +1027,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
     this.isLoadingResults = false;
     this.buscarVentaVerificada(false);
   }
-  
+
   buscarCotizacionDialogo(): void {
     this.dialogo
       .open(DialogoBuscarCotizacionComponent, {

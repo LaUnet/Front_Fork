@@ -70,6 +70,10 @@
         <mat-icon>addchart</mat-icon>
         <span>Catalogo Cotizaciones</span>
       </mat-list-item>
+      <mat-list-item  *ngIf="this.tokenService.rolName" routerLink="/devolucionesProductos" [class.mat-elevation-z0]="true">
+        <mat-icon>assignment_return</mat-icon>
+        <span>Catalogo Devoluciones</span>
+    </mat-list-item>
       <mat-divider></mat-divider>
       <mat-expansion-panel [class.mat-elevation-z0]="true">
         <mat-expansion-panel-header>

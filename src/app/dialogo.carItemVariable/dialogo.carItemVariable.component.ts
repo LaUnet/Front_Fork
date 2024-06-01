@@ -14,10 +14,8 @@ import { UtilsService } from '../utils.service';
 export class DialogoCarItemVariableComponent implements OnInit {
 
   matcher = new MyErrorStateMatcher();
-  isVentaUnitaria !: boolean;
-  isVentaMayoreo !: boolean;
-  isVentaInterna !: boolean;
-  isPrecioVariable !: boolean;
+  isVentaUnitaria : boolean = true;
+  isPrecioVariable : boolean = false;
   isCotizacion !: boolean;
   disabledButton !: boolean;
   mensajeFallido: string = '';
@@ -30,13 +28,12 @@ export class DialogoCarItemVariableComponent implements OnInit {
   impuestoFormControl = new FormControl('');
   descuentoFormControl = new FormControl('');
   totalFormControl = new FormControl('');
+  precioVariableFormControl = new FormControl('');
 
   articuloCarItem = {
     descripcion: '',
     cantidad: 0,
     precioMenudeo: 0,
-    precioMayoreo: 0,
-    precioInterno: 0,
     precioVariable: 0,
     impuesto: 0,
     descuento: 0,
@@ -47,33 +44,17 @@ export class DialogoCarItemVariableComponent implements OnInit {
     public dialogo: MatDialogRef<DialogoCarItemVariableComponent>,
     @Inject(MAT_DIALOG_DATA) public element: any = [], @Inject(MAT_DIALOG_DATA) public index: number,
     @Inject(LocalStorageService) private localStorageService: LocalStorageService, public utilsService: UtilsService) {
-    this.isVentaUnitaria = element.detalleArticulo[0].mayoreo || element.detalleArticulo[0].interno ? false : true;
-    this.isVentaMayoreo = element.detalleArticulo[0].mayoreo ? true : false;
-    this.isVentaInterna = element.detalleArticulo[0].interno ? true : false;
     this.isCotizacion = element.detalleArticulo[0].cotizacion ? true : false;
-    this.isPrecioVariable = element.detalleArticulo[0].unidadMedida == 'SER' ? true : false;
     this.articuloCarItem.cantidad = this.utilsService.numeros(element.detalleArticulo[0].cantidad);
     this.articuloCarItem.precioMenudeo = this.utilsService.numeros(element.detalleArticulo[0].precioVenta);
-    this.articuloCarItem.precioMayoreo = this.utilsService.numeros(element.detalleArticulo[0].precioMayoreo);
-    this.articuloCarItem.precioInterno = this.utilsService.numeros(element.detalleArticulo[0].precioInterno);
     this.articuloCarItem.descuento = this.utilsService.numeros(element.detalleArticulo[0].descuento);
     this.articuloCarItem.total = this.utilsService.numeros(element.detalleArticulo[0].total);
   }
 
   actualizar(): void {
-    this.element.detalleArticulo[0].mayoreo = this.isVentaMayoreo ? true : false
-    this.element.detalleArticulo[0].interno = this.isPrecioVariable ? true : false
     this.element.detalleArticulo[0].cantidad = this.articuloCarItem.cantidad;
-    this.element.detalleArticulo[0].precioVenta = this.articuloCarItem.precioMenudeo;
-    this.element.detalleArticulo[0].precioMayoreo = this.articuloCarItem.precioMayoreo;
-    this.element.detalleArticulo[0].precioInterno = this.articuloCarItem.precioVariable;
+    this.element.detalleArticulo[0].precioVenta = this.isPrecioVariable? this.utilsService.numeros(this.articuloCarItem.precioVariable) : this.articuloCarItem.precioMenudeo;
     this.element.detalleArticulo[0].total = this.articuloCarItem.total;
-    if (this.isVentaMayoreo) {
-      this.element.detalleArticulo[0].descuento = this.utilsService.calcularDescuentoMayoreoInterno(this.articuloCarItem.total, this.utilsService.multiplicarNumero(this.articuloCarItem.precioMayoreo, this.articuloCarItem.cantidad));
-    }
-    if (this.isVentaInterna) {
-      this.element.detalleArticulo[0].descuento = this.utilsService.calcularDescuentoMayoreoInterno(this.articuloCarItem.total, this.utilsService.multiplicarNumero(this.articuloCarItem.precioInterno, this.articuloCarItem.cantidad));
-    }
     if (this.isVentaUnitaria || this.isPrecioVariable) {
       this.element.detalleArticulo[0].descuento = 0;
     }
@@ -87,50 +68,31 @@ export class DialogoCarItemVariableComponent implements OnInit {
   }
 
   toggleUnitario(estado: any, cantidad: any) {
-
     if (estado) {
       this.disabledButton = this.articuloCarItem.cantidad > 0 ? false : true;
-      this.isVentaMayoreo = false;
-      this.isVentaInterna = false;
+      this.isPrecioVariable = false;
       this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMenudeo)
-      this.isVentaUnitaria = estado;
       this.onEnter(cantidad);
     } else {
-      if (!this.isVentaMayoreo && !this.isVentaInterna) {
+      if (!this.isVentaUnitaria && !this.isPrecioVariable) {
         this.disabledButton = true;
       }
     }
   };
 
-  toggleMayoreo(estado: any, cantidad: any) {
+  toggleVariable(estado: any, cantidad: any) {
     if (estado) {
       this.disabledButton = this.articuloCarItem.cantidad > 0 ? false : true;
       this.isVentaUnitaria = false;
-      this.isVentaInterna = false;
-      this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMayoreo)
-      this.isVentaMayoreo = estado;
+      this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioVariable)
       this.onEnter(cantidad);
     } else {
-      if (!this.isVentaUnitaria && !this.isVentaInterna) {
+      if (!this.isVentaUnitaria && !this.isPrecioVariable) {
         this.disabledButton = true;
       }
     }
   };
 
-  toggleInterno(estado: any, cantidad: any) {
-    if (estado) {
-      this.disabledButton = this.articuloCarItem.cantidad > 0 ? false : true;
-      this.isVentaUnitaria = false;
-      this.isVentaMayoreo = false;
-      this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioInterno)
-      this.isVentaInterna = estado;
-      this.onEnter(cantidad);
-    } else {
-      if (!this.isVentaMayoreo && !this.isVentaUnitaria) {
-        this.disabledButton = true;
-      }
-    }
-  };
 
   onEnter(cantidad: any) {
     this.disabledButton = false;
@@ -144,11 +106,8 @@ export class DialogoCarItemVariableComponent implements OnInit {
       if (this.isVentaUnitaria) {
         this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMenudeo)
       }
-      if (this.isVentaMayoreo) {
-        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMayoreo);
-      }
-      if (this.isVentaInterna) {
-        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioInterno);
+      if (this.isPrecioVariable) {
+        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioVariable)
       }
       return;
     }
@@ -158,16 +117,48 @@ export class DialogoCarItemVariableComponent implements OnInit {
       if (this.isVentaUnitaria) {
         this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMenudeo)
       }
-      if (this.isVentaMayoreo) {
-        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMayoreo);
-      }
-      if (this.isVentaInterna) {
-        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioInterno);
+      if (this.isPrecioVariable) {
+        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioVariable);
       }
     }
     if (this.utilsService.numeros(cantidad) > this.utilsService.numeros(this.element.stock)) {
       this.disabledButton = true
       this.mensajeFallido = "No hay suficiente Stock " + this.element.stock + " para la cantidad de productos solicitados " + cantidad;
+      this.articuloCarItem.cantidad = this.articuloCarItem.cantidad
+      this.articuloCarItem.total = this.articuloCarItem.total;
+    }
+  }
+
+  onEnterPrice(precio: any) {
+    this.disabledButton = false;
+    this.mensajeFallido = "";
+
+    if (this.utilsService.numeros(precio) === 0) {
+      this.disabledButton = true;
+      return;
+    }
+    this.articuloCarItem.precioVariable = precio;
+    if (this.isCotizacion) {
+      if (this.isVentaUnitaria) {
+        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMenudeo)
+      }
+      if (this.isPrecioVariable) {
+        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioVariable)
+      }
+      return;
+    }
+
+    if (this.utilsService.numeros(this.articuloCarItem.cantidad) <= this.utilsService.numeros(this.element.stock)) {
+      if (this.isVentaUnitaria) {
+        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMenudeo)
+      }
+      if (this.isPrecioVariable) {
+        this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioVariable);
+      }
+    }
+    if (this.utilsService.numeros(this.articuloCarItem.cantidad) > this.utilsService.numeros(this.element.stock)) {
+      this.disabledButton = true
+      this.mensajeFallido = "No hay suficiente Stock " + this.element.stock + " para la cantidad de productos solicitados " + this.articuloCarItem.cantidad;
       this.articuloCarItem.cantidad = this.articuloCarItem.cantidad
       this.articuloCarItem.total = this.articuloCarItem.total;
     }

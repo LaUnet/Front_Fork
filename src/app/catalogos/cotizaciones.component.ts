@@ -8,6 +8,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { DialogoCarItemComponent } from "../dialogo.carItem/dialogo.carItem.component";
+import { DialogoCarItemVariableComponent } from "../dialogo.carItemVariable/dialogo.carItemVariable.component";
 import { DialogoCotizacionComponent } from '../dialogo.imprimirCotizacion/dialogo.cotizacion.component';
 import { DialogoBuscarCotizacionComponent } from "../dialogo.buscarCotizacion/dialogo.buscarCotizacion.component";
 
@@ -49,6 +50,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
   dataSourceSalesArticle: any = [];
   isLoadingResults: boolean = false;
   inventarioCotizacion: boolean = true
+  isServicio: string = 'SER';
   //Pagination
   pageEvent!: PageEvent;
   pageIndex: number = 0;
@@ -301,24 +303,45 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
 
   mostrarArticuloCarItem(element: any = [], i: number): void {
     element.isEdit = true;
-    this.dialogo
-      .open(DialogoCarItemComponent, {
-        data: element
-      })
-      .afterClosed()
-      .subscribe((confirmar: boolean) => {
-        try {
-          if (confirmar) {
-            element.isEdit = false;
-            this.changeQty(element, i, 0, 'replace');
-          } else {
-            element.isEdit = false;
+    if (element.detalleArticulo[0].unidadMedida === this.isServicio) {
+      this.dialogo
+        .open(DialogoCarItemVariableComponent, {
+          data: element
+        })
+        .afterClosed()
+        .subscribe((confirmar: boolean) => {
+          try {
+            if (confirmar) {
+              element.isEdit = false;
+              this.changeQty(element, i, 0, 'replace');
+            } else {
+              element.isEdit = false;
+            }
+          } catch (error) {
+            //alert("No hacer nada");
           }
-        } catch (error) {
-          //alert("No hacer nada");
-        }
-        element.isEdit = false;
-      });
+          element.isEdit = false;
+        });
+    } else {
+      this.dialogo
+        .open(DialogoCarItemComponent, {
+          data: element
+        })
+        .afterClosed()
+        .subscribe((confirmar: boolean) => {
+          try {
+            if (confirmar) {
+              element.isEdit = false;
+              this.changeQty(element, i, 0, 'replace');
+            } else {
+              element.isEdit = false;
+            }
+          } catch (error) {
+            //alert("No hacer nada");
+          }
+          element.isEdit = false;
+        });
+    }
   }
 
   imprimirCotizacion(): void {
@@ -509,6 +532,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
             "codigo": element.codigo,
             "codigoBarras": element.codigoBarras,
             "descripcion": element.descripcion,
+            "unidadMedida": element.unidadMedida,
             "cantidad": this.utilsService.numeros(element.cantidad),
             "precioVenta": this.utilsService.numeros(element.precioVenta),
             "precioMayoreo": this.utilsService.numeros(inventario.precios[0].precioMayoreo) > 0 ? inventario.precios[0].precioMayoreo : 0,
@@ -633,6 +657,7 @@ export class CotizacionesComponent implements AfterViewInit, OnInit {
               "codigo": element.codigo,
               "codigoBarras": element.codigoBarras,
               "descripcion": element.descripcion,
+              "unidadMedida": element.unidadMedida,
               "cantidad": addItem,
               "precioVenta": this.utilsService.numeros(element.precios[0].precioVenta) > 0 ? element.precios[0].precioVenta : 0,
               "precioMayoreo": this.utilsService.numeros(element.precios[0].precioMayoreo) > 0 ? element.precios[0].precioMayoreo : 0,

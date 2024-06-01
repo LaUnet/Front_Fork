@@ -168,8 +168,13 @@ export class DevolucionesComponent implements AfterViewInit, OnInit {
       //this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
-            this.devolucion = response.Data.docs[0].numeroDevolucion === null || response.Data.docs[0].numeroDevolucion === "" || !response.Data.docs[0].numeroDevolucion ? false : true
+            if (response.Data.totalDocs === 0) {
+              this.mensajeFallido = `Factura ${this.nuevaBusqueda.buscarVenta}, no encontrada`;
+
+            }else{
+              this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
+              this.devolucion = response.Data.docs[0].numeroDevolucion === null || response.Data.docs[0].numeroDevolucion === "" || !response.Data.docs[0].numeroDevolucion ? false : true
+            }
           }
           this.isLoadingResults = false;
         }, error => {
