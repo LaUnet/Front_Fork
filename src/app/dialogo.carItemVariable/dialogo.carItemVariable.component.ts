@@ -69,11 +69,12 @@ export class DialogoCarItemVariableComponent implements OnInit {
 
   toggleUnitario(estado: any, cantidad: any) {
     if (estado) {
-      this.disabledButton = this.articuloCarItem.cantidad > 0 ? false : true;
       this.isPrecioVariable = false;
+      this.disabledButton = this.articuloCarItem.cantidad > 0 ? false : true;
       this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioMenudeo)
       this.onEnter(cantidad);
     } else {
+      this.isPrecioVariable = true;
       if (!this.isVentaUnitaria && !this.isPrecioVariable) {
         this.disabledButton = true;
       }
@@ -82,11 +83,12 @@ export class DialogoCarItemVariableComponent implements OnInit {
 
   toggleVariable(estado: any, cantidad: any) {
     if (estado) {
-      this.disabledButton = this.articuloCarItem.cantidad > 0 ? false : true;
       this.isVentaUnitaria = false;
+      this.disabledButton = this.articuloCarItem.cantidad > 0 ? false : true;
       this.articuloCarItem.total = this.utilsService.multiplicarNumero(this.articuloCarItem.cantidad, this.articuloCarItem.precioVariable)
       this.onEnter(cantidad);
     } else {
+      this.isVentaUnitaria = true;
       if (!this.isVentaUnitaria && !this.isPrecioVariable) {
         this.disabledButton = true;
       }

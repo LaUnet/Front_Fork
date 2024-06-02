@@ -70,10 +70,11 @@
         <mat-icon>addchart</mat-icon>
         <span>Catalogo Cotizaciones</span>
       </mat-list-item>
-      <mat-list-item  *ngIf="this.tokenService.rolName" routerLink="/devolucionesProductos" [class.mat-elevation-z0]="true">
+      <mat-list-item *ngIf="this.tokenService.rolName" routerLink="/devolucionesProductos"
+        [class.mat-elevation-z0]="true">
         <mat-icon>assignment_return</mat-icon>
         <span>Catalogo Devoluciones</span>
-    </mat-list-item>
+      </mat-list-item>
       <mat-divider></mat-divider>
       <mat-expansion-panel [class.mat-elevation-z0]="true">
         <mat-expansion-panel-header>
@@ -235,8 +236,14 @@
           <ng-container matColumnDef="precioInterno">
             <th mat-header-cell *matHeaderCellDef>Precio Interno</th>
             <td mat-cell *matCellDef="let articulo">
-              <span *ngFor="let row of articulo.precios">{{this.utilsService.calcularInterno(row.valorUnitario, row.impuestoUnitario) | currency : 'USD' :
-                'symbol' : '1.0-0'}}</span>
+              <span *ngFor="let row of articulo.precios">
+                <div *ngIf="articulo.unidadMedida === this.isCentimetro">
+                {{row.precioInterno | currency : 'USD' : 'symbol' : '1.0-0'}}
+                </div>
+                <div *ngIf="articulo.unidadMedida !== this.isCentimetro">
+                  {{this.utilsService.calcularInterno(row.valorUnitario, row.impuestoUnitario) | currency : 'USD' : 'symbol' : '1.0-0'}}
+                </div>
+              </span>
             </td>
           </ng-container>
 

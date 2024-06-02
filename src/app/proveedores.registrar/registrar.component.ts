@@ -4,6 +4,7 @@ import { TokenService } from '../login/token';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { LocalStorageService } from '../local-storage.service';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 })
 export class registrarProveedorComponent {
 
-  constructor(private router: Router,private http: HttpClient, public tokenService: TokenService, private route: ActivatedRoute) 
+  constructor(private router: Router,private http: HttpClient, public tokenService: TokenService, private route: ActivatedRoute, public localStorageService: LocalStorageService) 
   { this._id = this.route.snapshot.paramMap.get('id'); }
 
    /**
@@ -50,12 +51,17 @@ export class registrarProveedorComponent {
   opened: boolean = false;
   proveedores: any[] = [];
   proveedoresEncontrados: any[] = [];
+  localStorageUser !: any;
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
 
 
   ngOnInit(): void {
     this.isLoadingResults= false;
+    this.localStorageUser = this.localStorageService.getItem('user_key');
+    if (!this.localStorageUser) {
+      this.routerLinkLogin();
+    }
     this.cargarEditarProveedor();
   }
 

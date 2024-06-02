@@ -26,6 +26,7 @@ export class buscarArticuloComponent implements OnInit, AfterViewInit {
   pageSizeOptions = [13, 30, 60, 100];
   isLoadingResults: boolean = false;
   opened: boolean = false;
+  isCentimetro: string = 'CEN';
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
 

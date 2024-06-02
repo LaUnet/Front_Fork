@@ -27,6 +27,7 @@ export class registrarArticuloComponent {
   precioVentaFormControl = new FormControl('', [Validators.required]);
   precioMayoreoFormControl = new FormControl('', [Validators.required]);
   precioInternoFormControl = new FormControl('', [Validators.required]);
+  isCentimetro: string = 'CEN';
   matcher = new MyErrorStateMatcher();
 
   _id: string | null;
@@ -154,7 +155,7 @@ export class registrarArticuloComponent {
               this.nuevoArticulo.valorUnitario = response.Data.docs[0].precios[0] ? response.Data.docs[0].precios[0].valorUnitario : 0;
               this.nuevoArticulo.impuestoUnitario = response.Data.docs[0].precios[0] ? response.Data.docs[0].precios[0].impuestoUnitario : 0;
               if ( this.utilsService.calcularInterno(this.nuevoArticulo.valorUnitario, this.nuevoArticulo.impuestoUnitario) !== this.utilsService.numeros(this.nuevoArticulo.precioInterno)) {
-                this.nuevoArticulo.precioInterno = this.utilsService.calcularInterno(this.nuevoArticulo.valorUnitario, this.nuevoArticulo.impuestoUnitario)
+                this.nuevoArticulo.precioInterno = this.nuevoArticulo.unidadMedida === this.isCentimetro? response.Data.docs[0].precios[0].precioInterno: this.utilsService.calcularInterno(this.nuevoArticulo.valorUnitario, this.nuevoArticulo.impuestoUnitario)
               }
             }
           }, error => {

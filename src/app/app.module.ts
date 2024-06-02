@@ -20,6 +20,7 @@ import { DialogoConfirmacionComponent } from './dialogo.confirmacion/dialogo.com
 import { DialogoArticuloComponent } from './dialogo.articulo/dialogo.articulo.component';
 import { DialogoCarItemComponent } from './dialogo.carItem/dialogo.carItem.component';
 import { DialogoCarItemVariableComponent } from './dialogo.carItemVariable/dialogo.carItemVariable.component';
+import { DialogoCarItemCentimetroComponent } from "./dialogo.carItemCentimetro/dialogo.carItemCentimetro.component";
 import { DialogoMetodoPagoComponent } from './dialogo.metodoPago/dialogo.metodoPago.component';
 import { DialogoCotizacionComponent } from './dialogo.imprimirCotizacion/dialogo.cotizacion.component';
 import { DialogoBuscarCotizacionComponent } from './dialogo.buscarCotizacion/dialogo.buscarCotizacion.component';
@@ -104,7 +105,8 @@ import { CurrencyPipe } from '@angular/common';
     DialogoBuscarCotizacionComponent,
     DialogoBuscarFacturaComponent,
     DevolucionesComponent,
-    DialogoCarItemVariableComponent
+    DialogoCarItemVariableComponent,
+    DialogoCarItemCentimetroComponent
   ],
   imports: [
     BrowserModule,
