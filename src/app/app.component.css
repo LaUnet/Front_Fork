@@ -6,3 +6,10 @@
     background-size: cover;
     font-family: Arial, sans-serif;
   }
+
+  mat-grid-tile {
+    background: #00499e !important;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+  }
+ 
