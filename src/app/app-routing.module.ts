@@ -12,11 +12,18 @@ import { registrarClienteComponent } from './clientes.registrar/registrar.compon
 import { buscarClienteComponent } from './clientes.buscar/buscar.component';
 import { registrarUbicacionComponent } from './ubicaciones.registrar/registrar.component';
 import { buscarUbicacionComponent } from './ubicaciones.buscar/buscar.component';
-import { VentasComponent } from './catalogoVentas/ventas.component';
+import { VentasComponent } from './catalogos/ventas.component';
 import { ComprasComponent } from './catalogoCompras/compras.component';
 import { ReportesVentasComponent } from './reportes/reportesVentas.component';
 import { ReportesComprasComponent } from './reportes/reportesCompras.component';
+import { BuscarCajaComponent } from './cajas/buscar.component';
+import { RegistrarCajaComponent } from './cajas/registrar.component';
+import { AdministrarCajaComponent } from './cajas/administrar.component';
 import { ReportesDetalleArticulosComponent } from './reportes/reportesDetalleArticulos.component';
+import { CotizacionesComponent } from './catalogos/cotizaciones.component';
+import { DevolucionesComponent } from './catalogos/devoluciones.component';
+
+
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -42,7 +49,12 @@ const routes: Routes = [
   { path: 'reportesVentas', component: ReportesVentasComponent },
   { path: 'reportesCompras', component: ReportesComprasComponent },
   { path: 'reportesArticulos', component: ReportesDetalleArticulosComponent },
-  
+  { path: 'buscarCaja', component: BuscarCajaComponent },
+  { path: 'registrarCaja', component: RegistrarCajaComponent },
+  { path: 'editarCaja/:id', component: RegistrarCajaComponent },
+  { path: 'administrarCaja', component: AdministrarCajaComponent },
+  { path: 'cotizacionesProductos', component: CotizacionesComponent },
+  { path: 'devolucionesProductos', component: DevolucionesComponent },
 ];
 
 @NgModule({

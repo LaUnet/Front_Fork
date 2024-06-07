@@ -98,3 +98,17 @@ mat-sidenav {
   margin-top: 0.1%;
   width: 100%;
 }
+
+.button24 {
+  width: 30px;
+  height: 30px;
+}
+
+.buttonMatTable {
+  width: 30px;
+  height: 30px;
+}
+
+.icon24 {
+  color: blue;
+}

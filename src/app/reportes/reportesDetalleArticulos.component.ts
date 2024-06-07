@@ -24,7 +24,7 @@ export class ReportesDetalleArticulosComponent implements OnInit {
     private _adapter: DateAdapter<any>, public tableUtilsService: TableUtilsService,
     @Inject(MAT_DATE_LOCALE) private _locale: string ) { }
 
-  columnas: string[] = ['No', 'CodigoBarras', 'Descripcion', 'Referencia', 'Marca', 'Ubicacion', 'UnidadMedida', 'Stock', 'PrecioVenta', 'PrecioMayoreo'];
+  columnas: string[] = ['No', 'CodigoBarras', 'Descripcion', 'Referencia', 'Marca', 'Ubicacion', 'PrecioCompra', 'Stock', 'PrecioVenta', 'PrecioMayoreo'];
 
   isLoadingResults: boolean = false;
   mensajeExitoso: string = '';
@@ -113,12 +113,11 @@ export class ReportesDetalleArticulosComponent implements OnInit {
 
   changeList(value: any) {
     const filtro = this.dataSourceMovimientos.filteredData.filter((stock: { Stock: number; }) => stock.Stock <= value);
-    console.log(filtro)
   }
 }
 
 export class Catalogo {
   constructor(public No: String, public CodigoBarras: String,public Descripcion: String, public Marca: string, public Referencia: string,
-    public Ubicacion: string, public UnidadMedida: string, public Stock: string, public PrecioVenta: string, public PrecioMayoreo: string
+    public Ubicacion: string, public PrecioCompra: string, public Stock: string, public PrecioVenta: string, public PrecioMayoreo: string
     ) { }
 }

@@ -4,6 +4,7 @@ import { TokenService } from '../login/token';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { LocalStorageService } from '../local-storage.service';
 
 @Component({
   selector: 'app-registrarUbicacion',
@@ -12,7 +13,7 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 })
 export class registrarUbicacionComponent {
 
-  constructor(private router: Router,private http: HttpClient, public tokenService: TokenService, private route: ActivatedRoute) 
+  constructor(private router: Router,private http: HttpClient, public tokenService: TokenService, private route: ActivatedRoute,public localStorageService: LocalStorageService) 
   { this._id = this.route.snapshot.paramMap.get('id'); }
 
   /**
@@ -32,6 +33,7 @@ export class registrarUbicacionComponent {
   opened: boolean = false;
   isLoadingResults: boolean = false;
   ubicacionesEncontrados: any[] = [];
+  localStorageUser !: any;
   mensajeExitoso: string = '';
   mensajeFallido: string = '';
   nuevaUbicacion = {
@@ -42,6 +44,10 @@ export class registrarUbicacionComponent {
   };
 
   ngOnInit(): void {
+    this.localStorageUser = this.localStorageService.getItem('user_key');
+    if (!this.localStorageUser) {
+      this.routerLinkLogin();
+    }
     this.cargarEditarUbicacion();
   }
 

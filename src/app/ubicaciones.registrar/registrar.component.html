@@ -24,8 +24,19 @@
     </mat-menu>
   </button> 
   
-  <button mat-icon-button matTooltip="Ajustes">
+  <button mat-icon-button [matMenuTriggerFor]="config" matTooltip="Ajustes">
     <mat-icon>settings</mat-icon>
+    <mat-menu #config="matMenu">
+      <button mat-menu-item [matMenuTriggerFor]="caja">
+        <mat-icon>all_inbox</mat-icon>
+        <span>Caja</span>
+      </button>
+    </mat-menu>   
+    <mat-menu #caja="matMenu">
+      <button mat-menu-item routerLink="/registrarCaja">Registrar</button>
+      <button mat-menu-item routerLink="/buscarCaja">Buscar</button>
+      <button *ngIf="this.tokenService.rolName" mat-menu-item routerLink="/administrarCaja">Administrar</button>
+    </mat-menu>
   </button> 
   <button mat-icon-button matTooltip={{this.tokenService.userName}}>
     <mat-icon>assignment_ind</mat-icon>
@@ -42,10 +53,18 @@
       <mat-list-item routerLink="/menu" matTooltip="Punto U" (click)="opened=!opened">
         <mat-icon>home</mat-icon>
       </mat-list-item>
-      <mat-list-item routerLink="/ventasProductos" [class.mat-elevation-z0]="true" style="cursor: pointer">
+      <mat-list-item routerLink="/ventasProductos" [class.mat-elevation-z0]="true">
         <mat-icon>shopping_bag</mat-icon>
         <span>Catalogo Ventas</span>
       </mat-list-item>
+        <mat-list-item routerLink="/cotizacionesProductos" [class.mat-elevation-z0]="true">
+        <mat-icon>addchart</mat-icon>
+        <span>Catalogo Cotizaciones</span>
+    </mat-list-item>
+    <mat-list-item  *ngIf="this.tokenService.rolName" routerLink="/devolucionesProductos" [class.mat-elevation-z0]="true">
+      <mat-icon>assignment_return</mat-icon>
+      <span>Catalogo Devoluciones</span>
+  </mat-list-item>
       <mat-divider></mat-divider>
       <mat-expansion-panel [class.mat-elevation-z0]="true">
         <mat-expansion-panel-header>
@@ -79,7 +98,7 @@
       <mat-divider></mat-divider>
       <mat-expansion-panel [class.mat-elevation-z0]="true">
         <mat-expansion-panel-header>
-          <mat-icon>location_searching</mat-icon>
+          <mat-icon>location_on</mat-icon>
           <span> Ubicaciones</span>
         </mat-expansion-panel-header>
         <mat-nav-list>

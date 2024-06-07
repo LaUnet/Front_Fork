@@ -8,29 +8,40 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 import { DialogoConfirmacionComponent } from "../dialogo.confirmacion/dialogo.component";
 import { DialogoCarItemComponent } from "../dialogo.carItem/dialogo.carItem.component";
-import { DialogoMetodoPagoComponent } from '../dialogo.metodoPago/dialogo.metodoPago.component';
+import { DialogoCarItemVariableComponent } from "../dialogo.carItemVariable/dialogo.carItemVariable.component";
+import { DialogoCarItemCentimetroComponent } from "../dialogo.carItemCentimetro/dialogo.carItemCentimetro.component";
+import { DialogoCotizacionComponent } from '../dialogo.imprimirCotizacion/dialogo.cotizacion.component';
+import { DialogoBuscarCotizacionComponent } from "../dialogo.buscarCotizacion/dialogo.buscarCotizacion.component";
+
 import { MatSort } from '@angular/material/sort';
 import { NavigationEnd, Router } from '@angular/router';
 import { LocalStorageService } from '../local-storage.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { filter } from 'rxjs';
 import { UtilsService } from '../utils.service';
+import { PrinterUtilsService } from '../printerUtils.service';
+import { CurrencyPipe } from '@angular/common';
+
+/** Setear fechas */
+const month = new Date().getMonth();
+const year = new Date().getFullYear();
+const day = new Date().getDate();
 
 @Component({
-  selector: 'app-ventas',
-  templateUrl: './ventas.component.html',
-  styleUrls: ['./ventas.component.css']
+  selector: 'app-cotizaciones',
+  templateUrl: './cotizaciones.component.html',
+  styleUrls: ['./catalogos.component.css']
 })
-export class VentasComponent implements AfterViewInit, OnInit {
+export class CotizacionesComponent implements AfterViewInit, OnInit {
 
   constructor(private router: Router, private http: HttpClient, public tokenService: TokenService, public dialogo: MatDialog,
     public localStorageService: LocalStorageService, private changeDetector: ChangeDetectorRef, public utilsService: UtilsService,
-    public elementRef: ElementRef) { }
+    public elementRef: ElementRef, private currencyPipe: CurrencyPipe, public printerUtilsService: PrinterUtilsService) { }
 
   columnas: string[] = ['codigoBarras', 'descripcion', 'referencia', 'marca', 'ubicacion', 'unidadMedida', 'stock', 'precioventa', 'accion'];
   columnasCarItem: string[] = ['descripcion', 'cantidad', 'precio', 'total', 'isEdit'];
 
-  usbDevice: any = [];
+  //Habuilitadores + DataSources
   openedMenu!: boolean;
   openedCustomer!: boolean;
   dataSourceCatalogo: any = [];
@@ -39,6 +50,9 @@ export class VentasComponent implements AfterViewInit, OnInit {
   dataSourceSales: any = [];
   dataSourceSalesArticle: any = [];
   isLoadingResults: boolean = false;
+  inventarioCotizacion: boolean = true
+  isServicio: string = 'SER';
+  isCentimetro: string = 'CEN';
   //Pagination
   pageEvent!: PageEvent;
   pageIndex: number = 0;
@@ -50,6 +64,8 @@ export class VentasComponent implements AfterViewInit, OnInit {
   localStorageUser !: any;
   subscriber!: Subscription;
   //Calculos
+  startDate!: any;
+  endDate!: any;
   operaciones: any = {
     cantidadArticulos: 0,
     subtotalCompra: 0,
@@ -97,6 +113,8 @@ export class VentasComponent implements AfterViewInit, OnInit {
   municipioFormControl = new FormControl('', [Validators.required]);
   barrioFormControl = new FormControl('', [Validators.required]);
   tipoClienteFormControl = new FormControl('', [Validators.required]);
+  consultaNumeroCotizacionFormControl = new FormControl('', [Validators.required]);
+  consultaNumeroDocumentoFormControl = new FormControl('', [Validators.required]);
 
   nuevoCliente: any = {
     tipoDocumento: '',
@@ -115,12 +133,12 @@ export class VentasComponent implements AfterViewInit, OnInit {
   /**
  * Control Error Textfields Consultar Customers
  */
-  consultaNumeroDocumentoFormControl = new FormControl('', [Validators.required]);
   consultaCliente: any = {
     tipoDocumento: '',
     numeroDocumento: '1111111111',
     nombreRazonSocial: '',
-    email: ''
+    email: '',
+    tipoCliente: ''
   };
 
 
@@ -141,6 +159,8 @@ export class VentasComponent implements AfterViewInit, OnInit {
   mensajeExitosoCliente: string = '';
   mensajeFallidoCliente: string = '';
 
+
+
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild("inputCode") InputField: any = ElementRef;
@@ -151,16 +171,14 @@ export class VentasComponent implements AfterViewInit, OnInit {
     this.subscriber = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => { });
-    this.localStorageToken = this.localStorageService.getItem('access_token');
     this.localStorageUser = this.localStorageService.getItem('user_key');
     this.localStorageService.clear();
-    this.localStorageService.setItem('access_token', this.localStorageToken);
-    this.localStorageService.setItem('user_key', this.localStorageUser);
+    if (this.localStorageUser) {
+      this.localStorageService.setItem('user_key', this.localStorageUser);
+    } else {
+      this.routerLinkLogin();
+    }
     this.buscarCliente();
-  }
-
-  ngOnDestroy() {
-    this.subscriber?.unsubscribe();
   }
 
   ngAfterContentChecked() {
@@ -194,6 +212,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
             this.consultaCliente.tipoDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoDocumento : "NO EXISTE"
             this.consultaCliente.numeroDocumento = this.dataSourceClientes !== null ? this.dataSourceClientes[0].numeroDocumento : null
             this.consultaCliente.email = this.dataSourceClientes !== null ? this.dataSourceClientes[0].email : null
+            this.consultaCliente.tipoCliente = this.dataSourceClientes !== null ? this.dataSourceClientes[0].tipoCliente : null
           }
           this.isLoadingResults = false;
           //this.enviarImpresion();
@@ -225,10 +244,9 @@ export class VentasComponent implements AfterViewInit, OnInit {
     httpParams = process === 0 ? httpParams.append('descripcion', this.nuevaBusqueda.buscarDescripcion) : httpParams.append('codigoBarras', this.nuevaBusqueda.buscarCodigoBarras);
     this.isLoadingResults = true;
     try {
-      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/articles?${httpParams}`, httpOptions)
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
             if (response.Data.totalDocs === 0) {
               this.mensajeFallido = 'Articulo no encontrado';
             } else {
@@ -236,6 +254,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
                 this.addToCart(response.Data.docs[0])
               }
             }
+            this.dataSourceCatalogo = new MatTableDataSource(response.Data.docs);
           }
           this.isLoadingResults = false;
         }, error => {
@@ -286,60 +305,101 @@ export class VentasComponent implements AfterViewInit, OnInit {
 
   mostrarArticuloCarItem(element: any = [], i: number): void {
     element.isEdit = true;
-    this.dialogo
-      .open(DialogoCarItemComponent, {
-        data: element
-      })
-      .afterClosed()
-      .subscribe((confirmar: boolean) => {
-        try {
-          if (confirmar) {
-            element.isEdit = false;
-            this.changeQty(element, i, 0, 'replace');
-          } else {
-            element.isEdit = false;
+    if (element.detalleArticulo[0].unidadMedida === this.isServicio) {
+      this.dialogo
+        .open(DialogoCarItemVariableComponent, {
+          data: element
+        })
+        .afterClosed()
+        .subscribe((confirmar: boolean) => {
+          try {
+            if (confirmar) {
+              element.isEdit = false;
+              this.changeQty(element, i, 0, 'replace');
+            } else {
+              element.isEdit = false;
+            }
+          } catch (error) {
+            //alert("No hacer nada");
           }
-        } catch (error) {
-          //alert("No hacer nada");
-        }
-        element.isEdit = false;
-      });
+          element.isEdit = false;
+        });
+    } else if (element.detalleArticulo[0].unidadMedida === this.isCentimetro) {
+      this.dialogo
+        .open(DialogoCarItemCentimetroComponent, {
+          data: element
+        })
+        .afterClosed()
+        .subscribe((confirmar: boolean) => {
+          try {
+            if (confirmar) {
+              element.isEdit = false;
+              this.changeQty(element, i, 0, 'replace');
+            } else {
+              element.isEdit = false;
+            }
+          } catch (error) {
+            //alert("No hacer nada");
+          }
+          element.isEdit = false;
+        });
+    } else {
+      this.dialogo
+        .open(DialogoCarItemComponent, {
+          data: element
+        })
+        .afterClosed()
+        .subscribe((confirmar: boolean) => {
+          try {
+            if (confirmar) {
+              element.isEdit = false;
+              this.changeQty(element, i, 0, 'replace');
+            } else {
+              element.isEdit = false;
+            }
+          } catch (error) {
+            //alert("No hacer nada");
+          }
+          element.isEdit = false;
+        });
+    }
   }
 
-  mostrarMetodoPagoCarItem(element: any = []): void {
-    //Cargamos el Json Principal sin detalle Articulos
+  imprimirCotizacion(): void {
+    //Cargamos el Json Principal con detalle Articulos
+    this.dataSourceSalesArticle = [];
+    for (let i = 0; i < this.dataSourceCarItem.length; i++) {
+      this.dataSourceSalesArticle = [...this.dataSourceSalesArticle, this.dataSourceCarItem[i].detalleArticulo[0]]
+    }
     this.dataSourceSales =
     {
-      "numeroFactura": new Date().getTime(),
-      "fechaFactura": this.utilsService.getDate(null),
-      "fechaVencimiento": this.utilsService.getDate(null),
+      "numeroCotizacion": new Date().getTime(),
+      "fechaCotizacion": this.utilsService.getDate(null),
+      "fechaVencimiento": this.utilsService.getDate(new Date(year, month, day + 20)),
       "subtotal": this.operaciones.subtotalCompra,
       "impuesto": this.operaciones.impuestoCompra,
       "descuento": this.operaciones.descuentoCompra,
       "total": this.operaciones.subtotalCompra - this.operaciones.descuentoCompra,
+      "usuario": this.tokenService.userName,
+      "fechaConsultas": new Date(),
       "cliente": {
         "nombreRazonSocial": this.consultaCliente.nombreRazonSocial,
         "tipoDocumento": this.consultaCliente.tipoDocumento,
         "numeroDocumento": this.consultaCliente.numeroDocumento,
         "email": this.consultaCliente.email,
+        "tipoCliente": this.consultaCliente.tipoCliente
       },
-      "articulo": "",
-      "formaDePago": "",
-      "cantidadEfectivo": "",
-      "cantidadTransferencia": "",
-      "facturacionElectronica": "",
-      "vendedor": "",
+      "articulo": this.dataSourceSalesArticle,
     }
-
     this.dialogo
-      .open(DialogoMetodoPagoComponent, {
+      .open(DialogoCotizacionComponent, {
         data: this.dataSourceSales
       })
       .afterClosed()
       .subscribe((confirmar: boolean) => {
         try {
           if (confirmar) {
-            this.guardarVenta();
+            this.guardarCotizacion();
           }
         } catch (error) {
           //alert("No hacer nada");
@@ -347,15 +407,8 @@ export class VentasComponent implements AfterViewInit, OnInit {
       });
   }
 
-  async guardarVenta() {
-    //Cargamos los articulos por iteración Principal
-    this.dataSourceSalesArticle = [];
-    for (let i = 0; i < this.dataSourceCarItem.length; i++) {
-      this.dataSourceSalesArticle = [...this.dataSourceSalesArticle, this.dataSourceCarItem[i].detalleArticulo[0]]
-    }
-    //Caergamos los articulos a la venta
-    this.dataSourceSales.articulo = this.dataSourceSalesArticle;
-    const url = 'https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales';
+  async guardarCotizacion() {
+    const url = 'https://p02--node-launet--m5lw8pzgzy2k.code.run/api/quotations';
     //const url = 'http://localhost:3030/api/sales';
     const token = this.tokenService.token;
     const httpOptions = {
@@ -367,12 +420,11 @@ export class VentasComponent implements AfterViewInit, OnInit {
     this.isLoadingResults = true;
     try {
       const response = await this.http.post(url, this.dataSourceSales, httpOptions).toPromise();
-      this.mensajeExitoso = "Venta guardada correctamente.";
+      this.mensajeExitoso = "Cotización guardada correctamente.";
       this.isLoadingResults = false;
-      //this.connectToPrinter(false);
       setTimeout(() => {
         this.refreshPage();
-      }, 100);
+      }, 200);
     } catch (error) {
       this.isLoadingResults = false;
       this.mensajeFallido = 'Error al guardar. Por favor, revisar la consola de Errores.';
@@ -404,6 +456,137 @@ export class VentasComponent implements AfterViewInit, OnInit {
       this.mensajeFallidoCliente = 'Error al guardar. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
+  }
+
+  async buscarCotizacion() {
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('numeroCotizacion', this.consultaCliente.numeroCotizacion);
+    this.isLoadingResults = true;
+    try {
+      this.http.get<any>(`https://p02--node-launet--m5lw8pzgzy2k.code.run/api/quotations?${httpParams}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            for (let i = 0; i < response.Data[0].articulo.length; i++) {
+              this.buscarCatalogoCotizacion(response.Data[0].articulo[i]);
+            }
+            this.consultaCliente.nombreRazonSocial = response.Data[0].cliente.nombreRazonSocial;
+            this.consultaCliente.tipoDocumento = response.Data[0].cliente.tipoDocumento;
+            this.consultaCliente.numeroDocumento = response.Data[0].cliente.numeroDocumento;
+            this.consultaCliente.email = response.Data[0].cliente.email;
+            this.consultaCliente.tipoCliente = response.Data[0].cliente.tipoCliente;
+          }
+          this.isLoadingResults = false;
+          this.mensajeFallido = "";
+          this.consultaCliente.numeroCotizacion = "";
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          if (error.status === 404) {
+            this.mensajeFallido = 'Numero de cotización no encontrada.';
+            return;
+          }
+          console.error('Error en la solicitud:', error);
+        });
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+  }
+
+  async buscarCatalogoCotizacion(element: any) {
+    this.mensajeFallido = "";
+    const token = this.tokenService.token;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'x-access-token': `${token}`,
+      })
+    };
+
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('codigo', element.codigo);
+    this.isLoadingResults = true;
+    try {
+      this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/detailArticle?${httpParams}`, httpOptions)
+        .subscribe(response => {
+          if (response.Status) {
+            if (response.Data.totalDocs === 0) {
+              this.mensajeFallido = `Articulo ${element.descripcion}, no encontrado`;
+            } else {
+              if (response.Data.docs.length === 1) {
+                this.addToCartCotizacion(response.Data.docs[0], element)
+              }
+            }
+          }
+          this.isLoadingResults = false;
+        }, error => {
+          this.isLoadingResults = false;
+          if (error.status === 401) {
+            this.routerLinkLogin();
+          }
+          console.error('Error en la solicitud:', error);
+        });
+    } catch (error) {
+      this.mensajeFallido = 'Error al consultar. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+  }
+
+  addToCartCotizacion(inventario: any = [], element: any = []) {
+    try {
+      element =
+      {
+        "_id": element._id,
+        "stock": this.utilsService.numeros(inventario.inventarios[0].stock),
+        "detalleArticulo": [
+          {
+            "codigo": element.codigo,
+            "codigoBarras": element.codigoBarras,
+            "descripcion": element.descripcion,
+            "unidadMedida": element.unidadMedida,
+            "cantidad": this.utilsService.numeros(element.cantidad),
+            "precioVenta": this.utilsService.numeros(element.precioVenta),
+            "precioMayoreo": this.utilsService.numeros(inventario.precios[0].precioMayoreo) > 0 ? inventario.precios[0].precioMayoreo : 0,
+            "precioInterno": this.utilsService.numeros(inventario.precios[0].precioInterno) > 0 ? inventario.precios[0].precioInterno : 0,
+            "descuento": this.utilsService.numeros(element.descuento),
+            "subtotal": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precioVenta), element.cantidad),
+            "impuesto": this.utilsService.numeros(element.impuesto),
+            "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precioVenta), element.cantidad) - this.utilsService.numeros(element.descuento),
+            "mayoreo": element.mayoreo,
+            "interno": element.interno,
+            "cotizacion": false,
+          }
+        ]
+      }
+
+      this.localStorageService.setItem(element._id, JSON.stringify(element));
+      this.dataSourceCarItem = [...this.dataSourceCarItem, JSON.parse(this.localStorageService.getItem(element._id)!)]
+      this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
+
+      this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
+      this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, this.utilsService.multiplicarNumero(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta, this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad)]
+      this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.numeros(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].descuento)]
+      this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallidoCliente = 'Error al cargar el producto. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
+
   }
 
   setCliente() {
@@ -470,61 +653,78 @@ export class VentasComponent implements AfterViewInit, OnInit {
       if (JSON.parse(this.localStorageService.getItem(element._id)!)) {
         for (let i = 0; i < this.dataSourceCarItem.length; i++) {
           if (this.dataSourceCarItem[i]._id === element._id) {
+            if (element.unidadMedida === this.isCentimetro) {
+              this.construirArticulo(element);
+              break;
+            }
+            /**
             if ((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + 1) > element.inventarios[0].stock) {
               alert(`No hay suficiente Stock ${element.inventarios[0].stock}, para la cantidad de productos solicitados ${this.dataSourceCarItem[i].detalleArticulo[0].cantidad + 1}!`)
               break
             }
+             */
             this.changeQty(this.dataSourceCarItem[i], i, 1, '');
             break
           }
         }
       } else {
-        const addItem: number = 1;
         if (!element.inventarios[0] || !element.precios[0]) {
           alert(`Articulo sin configuración de Inventario y/o Precio Venta`);
           return;
         }
-        element =
-        {
-          "_id": element._id,
-          "stock": this.utilsService.numeros(element.inventarios[0].stock),
-          "detalleArticulo": [
-            {
-              "codigo": element.codigo,
-              "codigoBarras": element.codigoBarras,
-              "descripcion": element.descripcion,
-              "cantidad": addItem,
-              "precioVenta": this.utilsService.numeros(element.precios[0].precioVenta) > 0 ? element.precios[0].precioVenta : 0,
-              "precioMayoreo": this.utilsService.numeros(element.precios[0].precioMayoreo) > 0 ? element.precios[0].precioMayoreo : 0,
-              "precioInterno": this.utilsService.numeros(element.precios[0].precioInterno) > 0 ? element.precios[0].precioInterno : 0,
-              "descuento": 0,
-              "subtotal": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta), addItem),
-              "impuesto": this.utilsService.numeros(element.precios[0].impuestoUnitario) > 0 ? this.utilsService.numeros(element.precios[0].impuestoUnitario) : 0,
-              "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta), addItem),
-              "mayoreo": false,
-              "interno": false
-            }
-          ]
-        }
-        this.localStorageService.setItem(element._id, JSON.stringify(element));
-        this.dataSourceCarItem = [...this.dataSourceCarItem, JSON.parse(this.localStorageService.getItem(element._id)!)]
-        this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
-
-        this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
-        this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
-        this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, this.utilsService.multiplicarNumero(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta, this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad)]
-        this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
-
-        this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.operaciones.subtotalCompraArray[this.operaciones.cantidadArticulos - 1], this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].descuento)]
-        this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+        this.construirArticulo(element);
       }
     } catch (error) {
       this.isLoadingResults = false;
       this.mensajeFallidoCliente = 'Error al cargar el producto. Por favor, revisar la consola de Errores.';
       console.error('Error en la solicitud:', error);
     }
+  }
 
+  construirArticulo(element: any) {
+    try {
+      const addItem: number = 1;
+      element =
+      {
+        "_id": element._id,
+        "stock": this.utilsService.numeros(element.inventarios[0].stock),
+        "detalleArticulo": [
+          {
+            "codigo": element.codigo,
+            "codigoBarras": element.codigoBarras,
+            "descripcion": element.descripcion,
+            "unidadMedida": element.unidadMedida,
+            "cantidad": addItem,
+            "precioVenta": this.utilsService.numeros(element.precios[0].precioVenta) > 0 ? element.precios[0].precioVenta : 0,
+            "precioMayoreo": this.utilsService.numeros(element.precios[0].precioMayoreo) > 0 ? element.precios[0].precioMayoreo : 0,
+            "precioInterno": this.utilsService.numeros(element.precios[0].precioInterno) > 0 ? element.precios[0].precioInterno : 0,
+            "descuento": 0,
+            "subtotal": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta), addItem),
+            "impuesto": this.utilsService.numeros(element.precios[0].impuestoUnitario) > 0 ? this.utilsService.numeros(element.precios[0].impuestoUnitario) : 0,
+            "total": this.utilsService.multiplicarNumero(this.utilsService.numeros(element.precios[0].precioVenta), addItem),
+            "mayoreo": false,
+            "interno": false,
+            "cotizacion": true
+          }
+        ]
+      }
+      this.localStorageService.setItem(element._id, JSON.stringify(element));
+      this.dataSourceCarItem = [...this.dataSourceCarItem, JSON.parse(this.localStorageService.getItem(element._id)!)]
+      this.operaciones.cantidadArticulos = this.dataSourceCarItem.length
+
+      this.operaciones.totalArticulosArray = [...this.operaciones.totalArticulosArray, (parseInt(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad))]
+      this.operaciones.totalArticulos = this.operaciones.totalArticulosArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.subtotalCompraArray = [...this.operaciones.subtotalCompraArray, this.utilsService.multiplicarNumero(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].precioVenta, this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad)]
+      this.operaciones.subtotalCompra = this.operaciones.subtotalCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+
+      this.operaciones.descuentoCompraArray = [...this.operaciones.descuentoCompraArray, this.utilsService.calcularDescuento(this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].valorUnitario, this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].cantidad, this.dataSourceCarItem[this.operaciones.cantidadArticulos - 1].detalleArticulo[0].descuento)]
+      this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
+    } catch (error) {
+      this.isLoadingResults = false;
+      this.mensajeFallidoCliente = 'Error al cargar el producto. Por favor, revisar la consola de Errores.';
+      console.error('Error en la solicitud:', error);
+    }
   }
 
   changeQty(element: any = [], i: number, qty: any, process: any) {
@@ -561,6 +761,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
       this.operaciones.descuentoCompra = this.operaciones.descuentoCompraArray.reduce((accumulator: number, currentValue: number) => accumulator + currentValue);
       return;
     } else {
+      /** 
       if ((this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty) > element.stock) {
         alert(`No hay suficiente Stock ${element.stock}, para la cantidad de productos solicitados ${(this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty)}!`)
         return;
@@ -569,7 +770,7 @@ export class VentasComponent implements AfterViewInit, OnInit {
         this.borrarArticuloCarItem(this.dataSourceCarItem[i], i);
         return;
       }
-
+      */
       this.dataSourceCarItem[i].detalleArticulo[0].cantidad = this.dataSourceCarItem[i].detalleArticulo[0].cantidad + qty;
     }
     this.localStorageService.removeItem(this.dataSourceCarItem[i]._id);
@@ -622,93 +823,35 @@ export class VentasComponent implements AfterViewInit, OnInit {
       this.operaciones.totalArticulosArray = []
   };
 
-  async connectToPrinter(value: boolean) {
-    try {
-      this.usbDevice = await (navigator as any).usb.getDevices()
-      if (this.usbDevice.length > 0) {
-        this.usbDevice.forEach((value: any, index: number) => {
-          //Por el momento nombre de la impresora quemados en codigo si tiene mas de 1 dispositivo vinculado
-          if (value.productName === "TM-T88V") {
-            this.usbDevice = value;
-            return;
-          }
-        });
-      };
-      if (this.usbDevice.length !== undefined) {
-        this.usbDevice = await (navigator as any).usb.requestDevice({ filters: [{ productName: 'TM-T88V' }] })
-        if (this.usbDevice.length > 1) {
-          this.usbDevice.forEach((value: any, index: number) => {
-            //Por el momento nombre de la impresora quemados en codigo si tiene mas de 1 dispositivo vinculado
-            if (value.productName === "TM-T88V") {
-              this.usbDevice = value;
-              return;
+  buscarCotizacionDialogo(): void {
+    this.dialogo
+      .open(DialogoBuscarCotizacionComponent, {
+        //data: message
+      })
+      .afterClosed()
+      .subscribe((element: any = []) => {
+        try {
+          if (element.length !== 0) {
+            for (let i = 0; i < element.articulo.length; i++) {
+              this.buscarCatalogoCotizacion(element.articulo[i]);
             }
-          });
-        };
-      };
-      this.sendToPrinter(value);
-    } catch (error) {
-      console.error('Error conectando dispositivo USB:', error);
-    }
-  };
-
-  async sendToPrinter(value: boolean) {
-    try {
-      if (this.usbDevice) {
-        //Configuración del TSPL
-        if (!value) {
-          const cmd = ['\x10' + '\x14' + '\x01' + '\x00' + '\x05'];
-          await this.usbDevice.open()
-            .then(() => this.usbDevice.selectConfiguration(1))
-            .then(() => this.usbDevice.claimInterface(this.usbDevice.configuration.interfaces[0]?.interfaceNumber))
-            await this.usbDevice.transferOut(
-              this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
-              new Uint8Array(
-                new TextEncoder().encode(cmd.join())
-              )
-              );
-        } else {
-          //'DIRECTION 0\r\nCLS\r\nTEXT 56,24,"3",0,1,1,"ABC"\r\nPRINT 1\r\n',
-          //{ type: 'raw', format: 'image', flavor: 'file', data: 'assets/img/image_sample_bw.png', options: { language: "ESCPOS", dotDensity: 'double' } },
-          const cmd = [        
-            '\x1B' + '\x40'+          // init
-            //'\x1D' + '\x56'  + '\x31'+ // Cut
-            '\x0A'+                   // line break
-            '\x1B' + '\x61' + '\x31'+ // center align
-            'PAPELERIA PUNTO U' + '\x0A'+
-            '\x0A'+                   // line break
-            '\x10' + '\x14' + '\x01' + '\x00' + '\x05' // Cash Drawer
-            ];
-          await this.usbDevice.open()
-            .then(() => this.usbDevice.selectConfiguration(1))
-            .then(() => this.usbDevice.claimInterface(this.usbDevice.configuration.interfaces[0]?.interfaceNumber))
-          await this.usbDevice.transferOut(
-            this.usbDevice.configuration.interfaces[0]?.alternate.endpoints.find((obj: any) => obj.direction === 'out').endpointNumber,
-            new Uint8Array(
-              new TextEncoder().encode(cmd.join())
-            )
-          );
+            this.consultaCliente.nombreRazonSocial = element.cliente.nombreRazonSocial;
+            this.consultaCliente.tipoDocumento = element.cliente.tipoDocumento;
+            this.consultaCliente.numeroDocumento = element.cliente.numeroDocumento;
+            this.consultaCliente.email = element.cliente.email;
+            this.consultaCliente.tipoCliente = element.cliente.tipoCliente;
+          } else {
+            //alert("No hacer nada");
+          }
+        } catch (error) {
+          //alert("No hacer nada");
         }
-        await this.usbDevice.releaseInterface(0);
-        await this.usbDevice.close();
-      }
-    } catch (error) {
-      console.error("Error enviando a la impresora:", error);
-    }
-  };
 
-  async disconnectToDevice() {
-    try {
-      if (this.usbDevice) {
-        await this.usbDevice.close();
-        console.log('Disconnected from USB device.');
-      }
-    } catch (error) {
-      console.error('Error disconnecting from USB device:', error);
-    }
-  };
+      });
+  }
 
-};
+}
+
 
 export class Catalogo {
   constructor(public codigoBarras: String, public descripcion: String, public marca: string, public referencia: string,

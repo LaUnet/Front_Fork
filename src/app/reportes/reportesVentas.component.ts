@@ -11,6 +11,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TableUtilsService } from '../tableUtils.service';
+import { PrinterUtilsService } from '../printerUtils.service';
 
 /** Setear fechas */
 const today = new Date();
@@ -30,9 +31,9 @@ export class ReportesVentasComponent implements OnInit {
   constructor(private router: Router, private http: HttpClient, public tokenService: TokenService,
     public utilsService: UtilsService, private changeDetector: ChangeDetectorRef,
     private _adapter: DateAdapter<any>, public tableUtilsService: TableUtilsService,
-    @Inject(MAT_DATE_LOCALE) private _locale: string,) { }
+    @Inject(MAT_DATE_LOCALE) private _locale: string,public printerUtilsService: PrinterUtilsService) { }
 
-  columnas: string[] = ['No', 'numeroFactura', 'fechaFactura', 'efectivo', 'transferencia', 'valorTransaccion', 'nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'email', 'facturaElectronica', 'vendedor'];
+  columnas: string[] = ['No', 'numeroFactura', 'fechaFactura', 'efectivo', 'transferencia', 'valorTransaccion', 'nombreRazonSocial', 'tipoDocumento', 'numeroDocumento', 'email', 'facturaElectronica', 'vendedor', 'isPrinter'];
 
   isLoadingResults: boolean = false;
   mensajeExitoso: string = '';
@@ -89,9 +90,10 @@ export class ReportesVentasComponent implements OnInit {
       }
       this.isLoadingResults = true;
       this.http.get<any>(`https://p01--node-launet2--m5lw8pzgzy2k.code.run/api/sales?${httpParams}`, httpOptions)
+      //this.http.get<any>(`http://localhost:3030/api/sales?${httpParams}`, httpOptions)
         .subscribe(response => {
           if (response.Status) {
-            this.dataSourceVentas = new MatTableDataSource(response.Data);
+            this.dataSourceVentas = new MatTableDataSource(response.Data.docs);
             this.dataSourceVentas.paginator = this.paginator;
             this.dataSourceVentas.sort = this.sort;
           }
@@ -170,4 +172,5 @@ export interface Transaction {
   numeroDocumento: string;
   facturaElectronica: string;
   vendedor: string;
+  isPrinter: string;
 }
